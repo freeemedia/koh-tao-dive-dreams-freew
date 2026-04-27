@@ -3,7 +3,7 @@
 // GET  /api/admin-bookings          → list all bookings
 // PATCH /api/admin-bookings?id=xxx  → update booking fields
 
-const { createClient } = require('@supabase/supabase-js');
+import { createClient } from '@supabase/supabase-js';
 
 function getSupabaseAdmin() {
   const url = process.env.SUPABASE_URL;
@@ -12,7 +12,7 @@ function getSupabaseAdmin() {
   return createClient(url, key);
 }
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   // CORS for local dev
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, PATCH, OPTIONS');
@@ -58,4 +58,4 @@ module.exports = async (req, res) => {
   }
 
   res.status(405).json({ error: 'Method not allowed' });
-};
+}
