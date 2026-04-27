@@ -1,4 +1,3 @@
-import AdminBookings from '../components/AdminBookings';
 import AdminUsersManager from '../components/AdminUsersManager';
 import AffiliateClicksAdmin from '../components/AffiliateClicksAdmin';
 import LanguageSwitcher from '../components/LanguageSwitcher';
@@ -17,18 +16,13 @@ const Admin = () => {
     // Tab navigation UI
     // Add more admin tabs here
     const tabs = [
-      { key: 'bookings', label: t('admin.tab_bookings', { defaultValue: 'Bookings' }) },
       { key: 'affiliate-clicks', label: t('admin.tab_affiliate_clicks', { defaultValue: 'Affiliate Clicks' }) },
       { key: 'project-manager', label: t('admin.tab_project_manager', { defaultValue: 'Project Manager' }) },
     ];
   const jiraEmbedUrl = import.meta.env.VITE_JIRA_EMBED_URL || '';
   const jiraProjectUrl = import.meta.env.VITE_JIRA_PROJECT_URL || jiraEmbedUrl || 'https://divinginasia.atlassian.net';
-  const [activeTab, setActiveTab] = useState('bookings');
-  const [bookings, setBookings] = useState([]);
+  const [activeTab, setActiveTab] = useState('affiliate-clicks');
   const [loading, setLoading] = useState(false);
-  const [selectedBookingId, setSelectedBookingId] = useState(null);
-  const [commentDraft, setCommentDraft] = useState('');
-  const [savingComment, setSavingComment] = useState(false);
   const [financeModalOpen, setFinanceModalOpen] = useState(false);
   const [financeLoading, setFinanceLoading] = useState(false);
   const [financeSaving, setFinanceSaving] = useState(false);
@@ -100,60 +94,11 @@ const Admin = () => {
   };
 
   useEffect(() => {
-    if (activeTab === 'bookings' || activeTab === 'comments') {
-      setLoading(true);
-      async function fetchBookings() {
-        try {
-          const { data: { session } } = await supabase.auth.getSession();
-          const token = session?.access_token;
-          if (!token) throw new Error('Not authenticated');
-          const res = await fetch('/api/bookings', {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (!res.ok) throw new Error('Failed to fetch bookings');
-          const data = await res.json();
-          setBookings(data);
-        } catch (err) {
-          setBookings([]);
-        } finally {
-          setLoading(false);
-        }
-      }
-      fetchBookings();
-    }
-  }, [activeTab]);
-
-  // When a booking is selected in comments tab, set draft
-  useEffect(() => {
-    if (activeTab === 'comments' && selectedBookingId) {
-      const b = bookings.find(b => b.id === selectedBookingId);
-      setCommentDraft(b?.internal_notes || '');
-    }
-  }, [selectedBookingId, bookings, activeTab]);
-
-  useEffect(() => {
     if (financeModalOpen) {
       loadFinanceSettings();
     }
   }, [financeModalOpen]);
 
-  const handleSaveComment = async () => {
-    if (!selectedBookingId) return;
-    setSavingComment(true);
-    try {
-      const res = await fetch(`/api/booking_inquiries?id=${selectedBookingId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ internal_notes: commentDraft }),
-      });
-      if (!res.ok) throw new Error('Failed to save comment');
-      setBookings(prev => prev.map(b => b.id === selectedBookingId ? { ...b, internal_notes: commentDraft } : b));
-    } catch (e) {
-      alert('Error saving comment: ' + (e instanceof Error ? e.message : e));
-    } finally {
-      setSavingComment(false);
-    }
-  };
 
 
   return (
@@ -250,11 +195,6 @@ const Admin = () => {
         </Dialog>
 
         <div style={{ width: '100%' }}>
-          {activeTab === 'bookings' && (
-            <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
-              <AdminBookings />
-            </div>
-          )}
           {activeTab === 'affiliate-clicks' && (
             <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
               <AffiliateClicksAdmin />
