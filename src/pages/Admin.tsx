@@ -1,11 +1,18 @@
+import AdminBookings from '../components/AdminBookings';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const Admin = () => {
   const { t } = useTranslation();
   const jiraEmbedUrl = import.meta.env.VITE_JIRA_EMBED_URL || '';
   const jiraProjectUrl = import.meta.env.VITE_JIRA_PROJECT_URL || jiraEmbedUrl || 'https://divinginasia.atlassian.net';
+  const [activeTab, setActiveTab] = useState<'bookings' | 'project-manager'>('bookings');
+
+  const tabs = [
+    { key: 'bookings' as const, label: t('admin.tab_bookings', { defaultValue: 'Bookings' }) },
+    { key: 'project-manager' as const, label: t('admin.tab_project_manager', { defaultValue: 'Project Manager' }) },
+  ];
 
   return (
     <div className="min-h-[80vh] pt-[10px] bg-gradient-to-br from-blue-50 to-emerald-50">
@@ -16,6 +23,17 @@ const Admin = () => {
         <h1 className="text-3xl font-bold tracking-wide mb-2">{t('admin.dashboard_title', { defaultValue: 'Admin Dashboard' })}</h1>
       </header>
       <div className="flex flex-col items-center mb-8">
+        <nav className="flex flex-row gap-6 justify-center">
+          {tabs.map(tab => (
+            <button
+              key={tab.key}
+              className={`px-7 py-3 text-base font-semibold rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-400 ${activeTab === tab.key ? 'bg-blue-600 text-white shadow' : 'bg-transparent text-gray-700 hover:bg-blue-100'}`}
+              onClick={() => setActiveTab(tab.key)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </nav>
         <a
           href="/"
           className="mt-4 inline-block rounded bg-gray-500 px-5 py-2 text-base font-semibold text-white hover:bg-gray-700 shadow"
@@ -24,6 +42,12 @@ const Admin = () => {
         </a>
       </div>
       <div className="px-6">
+        {activeTab === 'bookings' && (
+          <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
+            <AdminBookings />
+          </div>
+        )}
+        {activeTab === 'project-manager' && (
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100 space-y-4">
           <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
             <div>
@@ -45,6 +69,7 @@ const Admin = () => {
             {t('admin.project_manager_embedding_not_supported', { defaultValue: '(Direct embedding is not supported by Jira. Use the button above to access your board.)' })}
           </div>
         </div>
+        )}
       </div>
     </div>
   );
