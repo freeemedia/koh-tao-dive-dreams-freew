@@ -12,24 +12,29 @@ interface CurrencyContextProps {
 
 const CurrencyContext = createContext<CurrencyContextProps | undefined>(undefined);
 
+// Approximate fallback rates (USD base): update periodically if no API key is set
+const FALLBACK_RATES = { THB: 34.0, USD: 1.0, EUR: 0.93 };
+
 export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currency, setCurrency] = useState<Currency>('THB');
-  const [exchangeRates, setExchangeRates] = useState<{ [key: string]: number }>({ THB: 1, USD: 1, EUR: 1 });
+  const [exchangeRates, setExchangeRates] = useState<{ [key: string]: number }>(FALLBACK_RATES);
 
   useEffect(() => {
     const fetchRates = async () => {
+      const apiKey = import.meta.env.VITE_OPENEXCHANGERATES_API_KEY;
+      if (!apiKey) return; // use fallback rates
       try {
-        const res = await fetch(`https://openexchangerates.org/api/latest.json?app_id=${import.meta.env.VITE_OPENEXCHANGERATES_API_KEY}&symbols=THB,USD,EUR`);
+        const res = await fetch(`https://openexchangerates.org/api/latest.json?app_id=${apiKey}&symbols=THB,USD,EUR`);
         const data = await res.json();
-        if (data && data.rates) {
+        if (data && data.rates && data.rates.THB && data.rates.USD && data.rates.EUR) {
           setExchangeRates({
-            THB: data.rates.THB || 1,
-            USD: data.rates.USD || 1,
-            EUR: data.rates.EUR || 1,
+            THB: data.rates.THB,
+            USD: data.rates.USD,
+            EUR: data.rates.EUR,
           });
         }
       } catch {
-        // fallback: keep default rates
+        // keep fallback rates on error
       }
     };
     fetchRates();
