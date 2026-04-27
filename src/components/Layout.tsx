@@ -60,6 +60,8 @@ const Footer: React.FC = () => {
   const { i18n } = useTranslation();
   const [footerContent, setFooterContent] = React.useState<{ [key: string]: string }>({});
   const locale = i18n.language.startsWith('nl') ? 'nl' : 'en';
+  const isDutch = locale === 'nl';
+  const tripFooterUrl = buildTripFooterUrl();
 
   React.useEffect(() => {
     // Fetch all footer content for the current locale
@@ -84,10 +86,89 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-[#0a2239] text-white mt-12">
       <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* ...existing code for links and sections... */}
-        <div className="border-t border-[#1a3a5c] pt-6 text-center text-xs text-gray-500">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-4 mb-10">
+          <div>
+            <div className="text-xl font-bold text-cyan-400 mb-3">Pro Diving Asia</div>
+            <p className="text-sm leading-relaxed text-gray-300 mb-4">
+              {isDutch
+                ? 'Koh Tao\'s premium duikschool voor PADI-cursussen, fun dives en onvergetelijke onderwaterervaringen.'
+                : 'Koh Tao\'s premium dive school for PADI courses, fun dives, and unforgettable underwater experiences.'}
+            </p>
+            <div className="flex items-center gap-3">
+              <a
+                href={FACEBOOK_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="text-gray-300 transition hover:text-cyan-400"
+              >
+                <Facebook className="h-5 w-5" />
+              </a>
+              <a
+                href={INSTAGRAM_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="text-gray-300 transition hover:text-cyan-400"
+              >
+                <Instagram className="h-5 w-5" />
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-cyan-400 text-xs font-bold uppercase tracking-wider mb-4">
+              {isDutch ? 'Duiken' : 'Diving'}
+            </h4>
+            <ul className="space-y-2 text-sm text-gray-300">
+              <li><Link to="/courses/open-water" className="hover:text-white transition">Open Water</Link></li>
+              <li><Link to="/courses/advanced" className="hover:text-white transition">Advanced</Link></li>
+              <li><Link to="/courses/rescue" className="hover:text-white transition">Rescue Diver</Link></li>
+              <li><Link to="/courses/divemaster" className="hover:text-white transition">Divemaster</Link></li>
+              <li><Link to="/fun-diving-koh-tao" className="hover:text-white transition">{isDutch ? 'Fun Diving' : 'Fun Diving'}</Link></li>
+              <li><Link to="/#contact" className="hover:text-white transition">{isDutch ? 'Contact' : 'Contact'}</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-cyan-400 text-xs font-bold uppercase tracking-wider mb-4">Koh Tao</h4>
+            <ul className="space-y-2 text-sm text-gray-300">
+              <li><Link to="/koh-tao-info" className="hover:text-white transition">{isDutch ? 'Over Koh Tao' : 'About Koh Tao'}</Link></li>
+              <li><Link to="/accommodation" className="hover:text-white transition">{isDutch ? 'Accommodatie' : 'Accommodation'}</Link></li>
+              <li><Link to="/beaches-koh-tao" className="hover:text-white transition">{isDutch ? 'Stranden' : 'Beaches'}</Link></li>
+              <li><Link to="/food-drink" className="hover:text-white transition">{isDutch ? 'Eten & Drinken' : 'Food & Drink'}</Link></li>
+              <li><Link to="/things-to-do" className="hover:text-white transition">{isDutch ? 'Dingen om te doen' : 'Things To Do'}</Link></li>
+              <li><Link to="/how-to-get-here" className="hover:text-white transition">{isDutch ? 'Hoe kom je hier' : 'How To Get Here'}</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-cyan-400 text-xs font-bold uppercase tracking-wider mb-4">
+              {isDutch ? 'Info' : 'Info'}
+            </h4>
+            <ul className="space-y-2 text-sm text-gray-300">
+              <li><Link to="/weather-koh-tao" className="hover:text-white transition">{isDutch ? 'Weer' : 'Weather'}</Link></li>
+              <li><Link to="/visas-koh-tao" className="hover:text-white transition">Visa</Link></li>
+              <li><Link to="/medical-services" className="hover:text-white transition">{isDutch ? 'Medisch' : 'Medical'}</Link></li>
+              <li><Link to="/accommodation-booking" className="hover:text-white transition">Booking.com</Link></li>
+              <li>
+                <a
+                  href={tripFooterUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition"
+                  onClick={() => trackAffiliateClick('footer-link', 'trip.com', tripFooterUrl)}
+                >
+                  Trip.com
+                </a>
+              </li>
+              <li><Link to="/#contact" className="hover:text-white transition">{isDutch ? 'Neem contact op' : 'Contact Us'}</Link></li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="border-t border-[#1a3a5c] pt-6 text-center text-xs text-gray-500 space-y-1">
           {footerContent.footer_line_1 || `© ${new Date().getFullYear()} Pro Diving Asia — All rights reserved | Powered By One Media Asia Co, Ltd`}
-          <br />
           {footerContent.footer_line_2 && <span>{footerContent.footer_line_2}</span>}
         </div>
       </div>
