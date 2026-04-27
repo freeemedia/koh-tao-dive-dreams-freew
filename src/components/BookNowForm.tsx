@@ -99,7 +99,7 @@ const BookNowForm: React.FC = () => {
   const handlePayNow = async () => {
     setLoading(true);
     await sendToSupabaseAndEmail(true);
-    window.location.href = `${PAYPAL_BASE}/${deposit}`;
+    window.location.href = `${PAYPAL_BASE}/${deposit}THB`;
   };
 
   const handleNotNow = async () => {

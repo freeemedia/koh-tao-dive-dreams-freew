@@ -318,7 +318,7 @@ const AdminBookings: React.FC = () => {
     // Add account_id and site_id as query parameters for commission tracking
     const accountId = '7864578';
     const siteId = '295439656';
-    return `${paypalLink}/${amount}?account_id=${accountId}&site_id=${siteId}`;
+    return `${paypalLink}/${amount}THB?account_id=${accountId}&site_id=${siteId}`;
   };
 
   useEffect(() => {
