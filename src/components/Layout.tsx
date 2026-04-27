@@ -69,7 +69,7 @@ const Footer: React.FC = () => {
       const { data, error } = await supabase
         .from('page_content')
         .select('section_key, content_value')
-        .eq('page_slug', 'contact')
+        .eq('page_slug', '#contact')
         .eq('locale', locale)
         .in('section_key', ['footer_line_1', 'footer_line_2']);
       if (!error && data) {
@@ -121,24 +121,24 @@ const Footer: React.FC = () => {
               {isDutch ? 'Duiken' : 'Diving'}
             </h4>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link to="/courses/open-water" className="hover:text-white transition">Open Water</Link></li>
-              <li><Link to="/courses/advanced" className="hover:text-white transition">Advanced</Link></li>
-              <li><Link to="/courses/rescue" className="hover:text-white transition">Rescue Diver</Link></li>
-              <li><Link to="/courses/divemaster" className="hover:text-white transition">Divemaster</Link></li>
-              <li><Link to="/fun-diving-koh-tao" className="hover:text-white transition">{isDutch ? 'Fun Diving' : 'Fun Diving'}</Link></li>
-              <li><Link to="/#contact" className="hover:text-white transition">{isDutch ? 'Contact' : 'Contact'}</Link></li>
+              <li><Link to="/#/courses/open-water" className="hover:text-white transition">Open Water</Link></li>
+              <li><Link to="/#/courses/advanced" className="hover:text-white transition">Advanced</Link></li>
+              <li><Link to="/#/courses/rescue" className="hover:text-white transition">Rescue Diver</Link></li>
+              <li><Link to="/#/courses/divemaster" className="hover:text-white transition">Divemaster</Link></li>
+              <li><Link to="/#/fun-diving-koh-tao" className="hover:text-white transition">{isDutch ? 'Fun Diving' : 'Fun Diving'}</Link></li>
+              <li><Link to="/#/contact" className="hover:text-white transition">{isDutch ? 'Contact' : 'Contact'}</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-cyan-400 text-xs font-bold uppercase tracking-wider mb-4">Koh Tao</h4>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link to="/koh-tao-info" className="hover:text-white transition">{isDutch ? 'Over Koh Tao' : 'About Koh Tao'}</Link></li>
-              <li><Link to="/accommodation" className="hover:text-white transition">{isDutch ? 'Accommodatie' : 'Accommodation'}</Link></li>
-              <li><Link to="/beaches-koh-tao" className="hover:text-white transition">{isDutch ? 'Stranden' : 'Beaches'}</Link></li>
-              <li><Link to="/food-drink" className="hover:text-white transition">{isDutch ? 'Eten & Drinken' : 'Food & Drink'}</Link></li>
-              <li><Link to="/things-to-do" className="hover:text-white transition">{isDutch ? 'Dingen om te doen' : 'Things To Do'}</Link></li>
-              <li><Link to="/how-to-get-here" className="hover:text-white transition">{isDutch ? 'Hoe kom je hier' : 'How To Get Here'}</Link></li>
+              <li><Link to="/#/koh-tao-info" className="hover:text-white transition">{isDutch ? 'Over Koh Tao' : 'About Koh Tao'}</Link></li>
+              <li><Link to="/#/accommodation" className="hover:text-white transition">{isDutch ? 'Accommodatie' : 'Accommodation'}</Link></li>
+              <li><Link to="/#/beaches-koh-tao" className="hover:text-white transition">{isDutch ? 'Stranden' : 'Beaches'}</Link></li>
+              <li><Link to="/#/food-drink" className="hover:text-white transition">{isDutch ? 'Eten & Drinken' : 'Food & Drink'}</Link></li>
+              <li><Link to="/#/things-to-do" className="hover:text-white transition">{isDutch ? 'Dingen om te doen' : 'Things To Do'}</Link></li>
+              <li><Link to="/#/how-to-get-here" className="hover:text-white transition">{isDutch ? 'Hoe kom je hier' : 'How To Get Here'}</Link></li>
             </ul>
           </div>
 
@@ -147,10 +147,10 @@ const Footer: React.FC = () => {
               {isDutch ? 'Info' : 'Info'}
             </h4>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link to="/weather-koh-tao" className="hover:text-white transition">{isDutch ? 'Weer' : 'Weather'}</Link></li>
-              <li><Link to="/visas-koh-tao" className="hover:text-white transition">Visa</Link></li>
-              <li><Link to="/medical-services" className="hover:text-white transition">{isDutch ? 'Medisch' : 'Medical'}</Link></li>
-              <li><Link to="/accommodation-booking" className="hover:text-white transition">Booking.com</Link></li>
+              <li><Link to="/#/weather-koh-tao" className="hover:text-white transition">{isDutch ? 'Weer' : 'Weather'}</Link></li>
+              <li><Link to="/#/visas-koh-tao" className="hover:text-white transition">Visa</Link></li>
+              <li><Link to="/#/medical-services" className="hover:text-white transition">{isDutch ? 'Medisch' : 'Medical'}</Link></li>
+              <li><Link to="/#/accommodation-booking" className="hover:text-white transition">Booking.com</Link></li>
               <li>
                 <a
                   href={tripFooterUrl}
@@ -162,7 +162,7 @@ const Footer: React.FC = () => {
                   Trip.com
                 </a>
               </li>
-              <li><Link to="/#contact" className="hover:text-white transition">{isDutch ? 'Neem contact op' : 'Contact Us'}</Link></li>
+              <li><Link to="/#/contact" className="hover:text-white transition">{isDutch ? 'Neem contact op' : 'Contact Us'}</Link></li>
             </ul>
           </div>
         </div>
