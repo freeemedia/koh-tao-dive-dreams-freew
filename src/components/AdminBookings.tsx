@@ -148,23 +148,17 @@ const AdminBookings: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        const token = session?.access_token;
-        if (!token) throw new Error('Not authenticated');
-        const res = await fetch('/api/bookings', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error('Failed to fetch bookings');
-        const data = await res.json();
+        const res = await fetch('/api/admin-bookings');
+        if (!res.ok) {
+          const payload = await res.json().catch(() => ({}));
+          throw new Error(payload?.error || `HTTP ${res.status}`);
+        }
+        const data: Booking[] = await res.json();
         setBookings(data);
         const initialDrafts: Record<string, string> = {};
-        if (Array.isArray(data)) {
-          data.forEach((booking: Booking) => {
-            initialDrafts[booking.id] = booking.status || 'pending';
-          });
-        } else {
-          console.error('Data is not an array:', data);
-        }
+        data.forEach((booking: Booking) => {
+          initialDrafts[booking.id] = booking.status || 'pending';
+        });
         setStatusDrafts(initialDrafts);
       } catch (err: any) {
         setError(err.message || 'Failed to fetch bookings');
@@ -226,10 +220,10 @@ const AdminBookings: React.FC = () => {
     setNoteSaving(true);
     setNoteResult(null);
     try {
-      const res = await fetch('/api/bookings', {
-        method: 'POST',
+      const res = await fetch(`/api/admin-bookings?id=${financeModalBook.id}`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: financeModalBook.id, internal_notes: noteDraft }),
+        body: JSON.stringify({ internal_notes: noteDraft }),
       });
 
       if (!res.ok) {
@@ -270,10 +264,10 @@ const AdminBookings: React.FC = () => {
     setBankTransferResult(null);
 
     try {
-      const res = await fetch('/api/bookings', {
-        method: 'POST',
+      const res = await fetch(`/api/admin-bookings?id=${financeModalBook.id}`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: financeModalBook.id, bank_transfer_details: bankTransferDraft }),
+        body: JSON.stringify({ bank_transfer_details: bankTransferDraft }),
       });
 
       if (!res.ok) {
@@ -315,10 +309,10 @@ const AdminBookings: React.FC = () => {
     setStatusResult(null);
 
     try {
-      const res = await fetch('/api/bookings', {
-        method: 'POST',
+      const res = await fetch(`/api/admin-bookings?id=${bookId}`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: bookId, status: selectedStatus }),
+        body: JSON.stringify({ status: selectedStatus }),
       });
 
       if (!res.ok) {
