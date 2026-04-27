@@ -2,6 +2,7 @@ import AdminBookings from '../components/AdminBookings';
 import AdminPagesManager from '../components/AdminPagesManager';
 import AdminUsersManager from '../components/AdminUsersManager';
 import AffiliateClicksAdmin from '../components/AffiliateClicksAdmin';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
@@ -161,7 +162,10 @@ const Admin = () => {
 
 
   <div className="min-h-[80vh] pt-[10px] bg-gradient-to-br from-blue-50 to-emerald-50">
-    <header className="w-full py-8 mb-8 bg-gradient-to-r from-blue-700 to-emerald-600 shadow-lg text-white rounded-b-3xl flex flex-col items-center">
+    <header className="w-full py-8 mb-8 bg-gradient-to-r from-blue-700 to-emerald-600 shadow-lg text-white rounded-b-3xl flex flex-col items-center relative">
+      <div className="absolute top-4 right-6">
+        <LanguageSwitcher />
+      </div>
       <h1 className="text-3xl font-bold tracking-wide mb-2">{t('admin.dashboard_title', { defaultValue: 'Admin Dashboard' })}</h1>
       <p className="text-lg opacity-80">{t('admin.dashboard_subtitle', { defaultValue: 'Manage bookings, pages, and more' })}</p>
     </header>
