@@ -1,4 +1,4 @@
-const dbPath = '/home/u983007073/tmp/bookings.db';
+const dbPath = '/home/u983007073/koh-tao-dive-dreams/divinginasia.com/koh-tao-dive-dreams/tmp/bookings.db';
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database(dbPath);
 
