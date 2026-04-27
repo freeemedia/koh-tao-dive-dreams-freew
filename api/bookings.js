@@ -1,9 +1,37 @@
-const dbPath = process.env.SQLITE_PATH || './bookings.db';
+const dbPath = '/home/u983007073/tmp/bookings.db';
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database(dbPath);
 
 module.exports = (req, res) => {
   if (req.method === 'GET') {
+    if (req.query?.inspect === 'tables') {
+      const inspectDb = new sqlite3.Database(dbPath, (openErr) => {
+        if (openErr) {
+          return res.status(500).json({ error: openErr.message, dbPath });
+        }
+
+        inspectDb.all(
+          "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name",
+          [],
+          (qErr, rows) => {
+            inspectDb.close();
+
+            if (qErr) {
+              return res.status(500).json({ error: qErr.message, dbPath });
+            }
+
+            return res.status(200).json({
+              connected: true,
+              dbPath,
+              tables: rows.map((row) => row.name),
+            });
+          }
+        );
+      });
+
+      return;
+    }
+
     db.all('SELECT * FROM bookings', [], (err, rows) => {
       if (err) {
         return res.status(500).json({ error: err.message });
