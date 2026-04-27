@@ -1,73 +1,74 @@
-const dbPath = process.env.SQLITE_PATH || './bookings.db';
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database(dbPath);
+// /api/bookings.js (for Vercel)
+import { Client } from 'pg';
 
-module.exports = (req, res) => {
+export default async function handler(req, res) {
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL, // Set this in Vercel env vars
+  });
+  await client.connect();
+
   if (req.method === 'GET') {
-    db.all('SELECT * FROM bookings', [], (err, rows) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
+    try {
+      const { rows } = await client.query('SELECT * FROM bookings');
       res.status(200).json({ bookings: rows });
-    });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   } else if (req.method === 'POST') {
     const { id, status, comments, ...rest } = req.body || {};
     if (!id) {
       // CREATE new booking
-      // Accepts all fields in rest
       const fields = Object.keys(rest);
       const values = Object.values(rest);
       if (fields.length === 0) {
-        return res.status(400).json({ error: 'No booking data provided' });
+        res.status(400).json({ error: 'No booking data provided' });
+        await client.end();
+        return;
       }
-      const placeholders = fields.map(() => '?').join(', ');
-      const sql = `INSERT INTO bookings (${fields.join(', ')}) VALUES (${placeholders})`;
-      db.run(sql, values, function (err) {
-        if (err) {
-          return res.status(500).json({ error: err.message });
-        }
-        db.get('SELECT * FROM bookings WHERE id = ?', [this.lastID], (err2, row) => {
-          if (err2) {
-            return res.status(500).json({ error: err2.message });
-          }
-          res.status(201).json(row);
-        });
-      });
+      const placeholders = fields.map((_, i) => `$${i + 1}`).join(', ');
+      const sql = `INSERT INTO bookings (${fields.join(', ')}) VALUES (${placeholders}) RETURNING *`;
+      try {
+        const result = await client.query(sql, values);
+        res.status(201).json(result.rows[0]);
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+      await client.end();
       return;
     }
-    // UPDATE booking by id (existing logic)
+    // UPDATE booking by id
     const updateFields = [];
     const updateValues = [];
+    let idx = 1;
     if (status !== undefined) {
-      updateFields.push('status = ?');
+      updateFields.push(`status = $${idx++}`);
       updateValues.push(status);
     }
     if (comments !== undefined) {
-      updateFields.push('comments = ?');
+      updateFields.push(`comments = $${idx++}`);
       updateValues.push(comments);
     }
     for (const key in rest) {
-      updateFields.push(`${key} = ?`);
+      updateFields.push(`${key} = $${idx++}`);
       updateValues.push(rest[key]);
     }
     if (updateFields.length === 0) {
-      return res.status(400).json({ error: 'No fields to update' });
+      res.status(400).json({ error: 'No fields to update' });
+      await client.end();
+      return;
     }
     updateValues.push(id);
-    const updateSql = `UPDATE bookings SET ${updateFields.join(', ')} WHERE id = ?`;
-    db.run(updateSql, updateValues, function (err) {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      db.get('SELECT * FROM bookings WHERE id = ?', [id], (err2, row) => {
-        if (err2) {
-          return res.status(500).json({ error: err2.message });
-        }
-        res.status(200).json(row);
-      });
-    });
+    const updateSql = `UPDATE bookings SET ${updateFields.join(', ')} WHERE id = $${idx} RETURNING *`;
+    try {
+      const result = await client.query(updateSql, updateValues);
+      res.status(200).json(result.rows[0]);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+    await client.end();
   } else {
     res.setHeader('Allow', ['GET', 'POST']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
+    await client.end();
   }
-};
+}

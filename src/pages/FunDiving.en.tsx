@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Fish, Waves, MapPin, Clock, DollarSign, Users } from 'lucide-react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useEffect, useState, useMemo } from 'react';
-import { useBookNowModal } from '@/components/useBookNowModal';
+import FunDiveBooking from '../components/FunDiveBooking';
 import DropboxGallerySection from '@/components/DropboxGallerySection';
 import { tryAutoScroll, scrollToWithOffset } from '@/lib/scroll';
 import { usePageContent } from '@/hooks/usePageContent';
@@ -17,7 +17,7 @@ const FUN_DIVING_DROPBOX_FOLDER = 'fun-diving';
 const FunDiving = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
-  const { setShowBookNow, BookNowModalComponent } = useBookNowModal();
+  const [showFunDiveBooking, setShowFunDiveBooking] = useState(false);
   const locale = 'en';
   const fallbackContent = useMemo(() => ({
     fun_diving_hero_title: 'Fun Diving Koh Tao',
@@ -44,12 +44,7 @@ const FunDiving = () => {
     fun_diving_marine_tab_title: 'Discover the Underwater World',
     // ...add more as needed for other tabs
   }), []);
-  // Force Dutch subtitle regardless of content source
-  const { content: originalContent } = usePageContent({ pageSlug: 'fun-diving', locale, fallbackContent });
-  const content = {
-    ...originalContent,
-    fun_diving_hero_subtitle: 'Beleef het beste van de onderwaterwereld van Koh Tao met onze professioneel begeleide fun duiktrips. Ontdek kleurrijke koraalriffen, ontmoet bijzonder onderwaterleven en maak onvergetelijke herinneringen.'
-  };
+  const { content } = usePageContent({ pageSlug: 'fun-diving', locale, fallbackContent });
   const diveSites = [
     {
       name: "Sail Rock",
@@ -161,13 +156,31 @@ const FunDiving = () => {
             <Button
               size="lg"
               className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg"
-              onClick={() => setShowBookNow(true)}
+              onClick={() => {
+                setShowFunDiveBooking(true);
+              }}
             >
               Book a Fun Dive NOW
             </Button>
             <Button size="lg" className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg" onClick={() => { try{ sessionStorage.setItem('scrollTo','course-openWater') }catch(_){ } ; navigate('/courses'); }}>{content.fun_diving_hero_cta2}</Button>
           </div>
-          {BookNowModalComponent}
+          {showFunDiveBooking && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-60 p-4"
+              onClick={() => setShowFunDiveBooking(false)}
+            >
+              <div className="relative z-50 w-full max-w-md" onClick={(event) => event.stopPropagation()}>
+                <FunDiveBooking />
+                <button
+                  className="absolute top-2 right-2 bg-white rounded-full shadow p-2 text-gray-700 hover:bg-gray-100"
+                  onClick={() => setShowFunDiveBooking(false)}
+                  aria-label="Close Fun Dive Booking"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -302,7 +315,7 @@ const FunDiving = () => {
                       <li>Premium equipment</li>
                       <li>Max 4 divers per guide</li>
                     </ul>
-                          <Button variant="secondary" onClick={() => setShowBookNow(true)}>Inquire / Book</Button>
+                          <Button variant="secondary" onClick={() => { window.open('https://booking.divinginasia.com/booking?item=Fun%20Dive&type=dive&price=1800&currency=THB&dives=2', '_blank', 'noopener'); }}>Inquire / Book</Button>
                   </CardContent>
                 </Card>
 
@@ -325,7 +338,7 @@ const FunDiving = () => {
                       <Button variant="outline" asChild>
                         <Link to="/courses/discover-scuba">View Program</Link>
                       </Button>
-                      <Button variant="secondary" onClick={() => setShowBookNow(true)}>Inquire / Book</Button>
+                      <Button variant="secondary" onClick={() => { window.open('https://booking.divinginasia.com/booking?item=Discover%20Scuba&type=dive&price=2500&currency=THB', '_blank', 'noopener'); }}>Inquire / Book</Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -345,7 +358,7 @@ const FunDiving = () => {
                       <li>Experienced guides and briefings</li>
                       <li>Pickup & return to Koh Tao</li>
                     </ul>
-                    <Button variant="secondary" onClick={() => setShowBookNow(true)}>Inquire / Book</Button>
+                    <Button variant="secondary" onClick={() => { window.open('https://booking.divinginasia.com/booking?item=Sail%20Rock%20Special&type=dive&price=2900&currency=THB', '_blank', 'noopener'); }}>Inquire / Book</Button>
                   </CardContent>
                 </Card>
               </div>
@@ -821,7 +834,7 @@ const FunDiving = () => {
                 </div>
                 <Button
                   size="lg"
-                  onClick={() => setShowBookNow(true)}
+                  onClick={() => navigate('/booking?item=Fun%20Dive&type=dive&price=1800&currency=THB&dives=2')}
                 >
                   Send Booking Request
                 </Button>

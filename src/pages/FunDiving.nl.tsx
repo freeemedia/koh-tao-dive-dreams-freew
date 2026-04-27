@@ -302,7 +302,7 @@ const FunDiving = () => {
                       <li>Premium uitrusting</li>
                       <li>Maximaal 4 duikers per gids</li>
                     </ul>
-                          <Button variant="secondary" onClick={() => { navigate(`/booking?item=${encodeURIComponent('Fun Dive')}&type=dive&price=1800&currency=THB&dives=2`); }}>Info / Boeken</Button>
+                          <Button variant="secondary" onClick={() => { window.open('https://booking.divinginasia.com/booking?item=Fun%20Dive&type=dive&price=1800&currency=THB&dives=2', '_blank', 'noopener'); }}>Info / Boeken</Button>
                   </CardContent>
                 </Card>
 
@@ -325,7 +325,7 @@ const FunDiving = () => {
                       <Button variant="outline" asChild>
                         <Link to="/courses/discover-scuba">Bekijk programma</Link>
                       </Button>
-                      <Button variant="secondary" onClick={() => { navigate(`/booking?item=${encodeURIComponent('Discover Scuba')}&type=dive&price=2500&currency=THB`); }}>Info / Boeken</Button>
+                      <Button variant="secondary" onClick={() => { window.open('https://booking.divinginasia.com/booking?item=Discover%20Scuba&type=dive&price=2500&currency=THB', '_blank', 'noopener'); }}>Info / Boeken</Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -345,7 +345,7 @@ const FunDiving = () => {
                       <li>Ervaren gidsen en briefings</li>
                       <li>Ophalen en terugbrengen op Koh Tao</li>
                     </ul>
-                    <Button variant="secondary" onClick={() => { navigate(`/booking?item=${encodeURIComponent('Sail Rock Special')}&type=dive&price=2900&currency=THB`); }}>Info / Boeken</Button>
+                    <Button variant="secondary" onClick={() => { window.open('https://booking.divinginasia.com/booking?item=Sail%20Rock%20Special&type=dive&price=2900&currency=THB', '_blank', 'noopener'); }}>Info / Boeken</Button>
                   </CardContent>
                 </Card>
               </div>
@@ -808,7 +808,7 @@ const FunDiving = () => {
                 </div>
                 <Button
                   size="lg"
-                  onClick={() => window.open('/booknow.html', '_blank')}
+                  onClick={() => navigate('/booking?item=Fun%20Dive&type=dive&price=2000&currency=THB&dives=2')}
                 >
                   Verstuur boekingsaanvraag
                 </Button>

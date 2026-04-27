@@ -110,6 +110,8 @@
     <h1>Pro Diving</h1>
     <div class="subtitle">Booking / Inquiry Form</div>
     <form id="bookingForm">
+      <!-- Hidden field to include PayPal link in the email -->
+      <input type="hidden" name="PayPal Deposit Link" value="https://paypal.me/divinginasia" />
       <input type="text" name="name" placeholder="Name" required />
       <input type="email" name="email" placeholder="Email" required />
       <input type="tel" name="phone" placeholder="Phone" required />
@@ -128,6 +130,7 @@
       <textarea name="comments" rows="3" placeholder="Comments / Questions"></textarea>
       <button type="submit">Send Booking</button>
     </form>
+    <a id="paypalLink" href="https://paypal.me/divinginasia" target="_blank" style="display:inline-block;margin:1em 0 0.5em 0;padding:0.75em 2em;background:#0070ba;color:#fff;border-radius:4px;font-size:1.1em;text-decoration:none;font-weight:bold;">Pay Deposit via PayPal</a><br>
     <div class="success-message" id="successMsg">Thank you! Your enquiry has been sent.</div>
     <div class="error-message" id="errorMsg">Sorry, there was a problem sending your enquiry. Please try again.</div>
   </div>
@@ -137,7 +140,7 @@
     if(params.get('item')) {
       document.getElementById('courseField').value = decodeURIComponent(params.get('item'));
     }
-    // Web3Forms integration
+    // Web3Forms integration and send to /api/bookings
     const form = document.getElementById('bookingForm');
     const successMsg = document.getElementById('successMsg');
     const errorMsg = document.getElementById('errorMsg');
@@ -146,14 +149,33 @@
       successMsg.style.display = 'none';
       errorMsg.style.display = 'none';
       const formData = new FormData(form);
-      // Use your actual Web3Forms access key
       formData.append('access_key', 'e4c4edf6-6e35-456a-87da-b32b961b449a');
+
+      // Prepare booking data for SQLite API
+      const bookingData = {
+        name: form.elements['name'].value,
+        email: form.elements['email'].value,
+        phone: form.elements['phone'].value,
+        course: form.elements['course'].value,
+        date: form.elements['date'].value,
+        experience: form.elements['experience'].checked ? 'Yes' : 'No',
+        level: form.elements['level'].value,
+        comments: form.elements['comments'].value
+      };
+
       try {
+        // Send to Web3Forms (email)
         const response = await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
           body: formData
         });
         const result = await response.json();
+        // Send to SQLite API (local server)
+        fetch('/api/bookings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(bookingData)
+        });
         if(result.success) {
           successMsg.style.display = 'block';
           form.reset();

@@ -19,6 +19,7 @@
 </head>
 <body>
   <div class="container">
+      <button id="newBookingBtn" style="margin-bottom:1em;background:#0070ba;color:#fff;padding:0.7em 2em;border:none;border-radius:6px;cursor:pointer;float:right;">New Booking</button>
     <h1>Booking Admin Panel</h1>
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="Search by name, email, course..." />
@@ -45,7 +46,69 @@
     </table>
   </div>
   <script>
-    const API_BASE = window.location.port === '3003' ? 'http://localhost:3003' : '';
+        // New Booking Modal
+        function showNewBookingModal() {
+          let modal = document.getElementById('newBookingModal');
+          if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'newBookingModal';
+            modal.style = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;z-index:9999;';
+            modal.innerHTML = `
+              <div style="background:#fff;padding:2em 2em 1em 2em;border-radius:10px;max-width:420px;width:100%;box-shadow:0 4px 24px #0070ba22;">
+                <h3 style='margin-top:0;'>Add New Booking</h3>
+                <form id="newBookingForm">
+                  <input name="name" placeholder="Name" required style="width:100%;margin-bottom:0.7em;padding:0.5em;border-radius:6px;border:1px solid #b2dfdb;" />
+                  <input name="email" placeholder="Email" type="email" required style="width:100%;margin-bottom:0.7em;padding:0.5em;border-radius:6px;border:1px solid #b2dfdb;" />
+                  <input name="phone" placeholder="Phone" style="width:100%;margin-bottom:0.7em;padding:0.5em;border-radius:6px;border:1px solid #b2dfdb;" />
+                  <input name="course" placeholder="Course" required style="width:100%;margin-bottom:0.7em;padding:0.5em;border-radius:6px;border:1px solid #b2dfdb;" />
+                  <input name="date" placeholder="Date" type="date" required style="width:100%;margin-bottom:0.7em;padding:0.5em;border-radius:6px;border:1px solid #b2dfdb;" />
+                  <input name="level" placeholder="Level" style="width:100%;margin-bottom:0.7em;padding:0.5em;border-radius:6px;border:1px solid #b2dfdb;" />
+                  <input name="experience" placeholder="Experience" style="width:100%;margin-bottom:0.7em;padding:0.5em;border-radius:6px;border:1px solid #b2dfdb;" />
+                  <textarea name="comments" placeholder="Comments" style="width:100%;margin-bottom:0.7em;padding:0.5em;border-radius:6px;border:1px solid #b2dfdb;"></textarea>
+                  <select name="status" style="width:100%;margin-bottom:0.7em;padding:0.5em;border-radius:6px;border:1px solid #b2dfdb;">
+                    <option value="pending">pending</option>
+                    <option value="paid">paid</option>
+                    <option value="cancelled">cancelled</option>
+                  </select>
+                  <div style="margin-top:1em;text-align:right;">
+                    <button type="button" id="modalCancelNewBooking" style="margin-right:1em;padding:0.5em 1.5em;">Cancel</button>
+                    <button type="submit" style="background:#0070ba;color:#fff;padding:0.5em 1.5em;border:none;border-radius:6px;">Add</button>
+                  </div>
+                </form>
+              </div>
+            `;
+            document.body.appendChild(modal);
+          } else {
+            modal.style.display = 'flex';
+          }
+          document.getElementById('modalCancelNewBooking').onclick = () => { modal.style.display = 'none'; };
+          document.getElementById('newBookingForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const booking = {
+              name: form.name.value,
+              email: form.email.value,
+              phone: form.phone.value,
+              course: form.course.value,
+              date: form.date.value,
+              level: form.level.value,
+              experience: form.experience.value,
+              comments: form.comments.value,
+              status: form.status.value
+            };
+            await fetch(`${API_BASE}/api/bookings`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(booking)
+            });
+            modal.style.display = 'none';
+            fetchBookings().then(renderTable);
+          };
+        }
+
+        document.getElementById('newBookingBtn').onclick = showNewBookingModal;
+    // Use localhost for dev, Hostinger API for production
+    const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://api.hostinger.com/v1';
     async function fetchBookings() {
       const res = await fetch(`${API_BASE}/api/bookings`);
       const data = await res.json();
@@ -59,17 +122,23 @@
       const tbody = document.querySelector('#bookingsTable tbody');
       tbody.innerHTML = '';
       bookings.forEach(b => {
-        const paypalLink = extractPayPalLink(b.comments);
+        // Use DB field names for new bookings, fallback to old names for legacy
+        const course = b.course_title || b.course || '';
+        const date = b.preferred_date || b.date || '';
+        const level = b.experience_level || b.level || '';
+        const experience = b.experience || '';
+        const comments = b.message || b.comments || '';
+        const paypalLink = extractPayPalLink(comments);
         tbody.innerHTML += `<tr>
           <td>${b.id}</td>
           <td>${b.name || ''}</td>
           <td>${b.email || ''}</td>
           <td>${b.phone || ''}</td>
-          <td>${b.course || ''}</td>
-          <td>${b.date || ''}</td>
-          <td>${b.level || ''}</td>
-          <td>${b.experience || ''}</td>
-          <td style="max-width:200px;white-space:pre-line;">${(b.comments || '').replace(/(https:\/\/paypal\.me\/[\w/]+)/g, '<a href="$1" target="_blank" class="paypal-link">PayPal</a>')}</td>
+          <td>${course}</td>
+          <td>${date}</td>
+          <td>${level}</td>
+          <td>${experience}</td>
+          <td style="max-width:200px;white-space:pre-line;">${(comments || '').replace(/(https:\/\/paypal\.me\/[\w\/]+)/g, '<a href="$1" target="_blank" class="paypal-link">PayPal</a>')}</td>
           <td>${paypalLink ? `<a href="${paypalLink}" target="_blank" class="paypal-link">PayPal</a>` : ''}</td>
           <td><select class="status-select" data-id="${b.id}">
             <option value="pending"${b.status === 'pending' ? ' selected' : ''}>pending</option>
@@ -124,15 +193,42 @@
           }
           if (e.target.classList.contains('edit-btn')) {
             const id = e.target.getAttribute('data-id');
-            const newComments = prompt('Edit comments:');
-            if (newComments !== null) {
+            // Create a modal for multi-line comment editing (supports Dutch and any language)
+            let modal = document.getElementById('editModal');
+            if (!modal) {
+              modal = document.createElement('div');
+              modal.id = 'editModal';
+              modal.style = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;z-index:9999;';
+              modal.innerHTML = `
+                <div style="background:#fff;padding:2em 2em 1em 2em;border-radius:10px;max-width:400px;width:100%;box-shadow:0 4px 24px #0070ba22;">
+                  <h3 style='margin-top:0;'>Edit Comments (any language)</h3>
+                  <textarea id="modalComments" rows="6" style="width:100%;font-size:1em;padding:0.7em 1em;border-radius:6px;border:1px solid #b2dfdb;"></textarea>
+                  <div style="margin-top:1em;text-align:right;">
+                    <button id="modalCancel" style="margin-right:1em;padding:0.5em 1.5em;">Cancel</button>
+                    <button id="modalSave" style="background:#0070ba;color:#fff;padding:0.5em 1.5em;border:none;border-radius:6px;">Save</button>
+                  </div>
+                </div>
+              `;
+              document.body.appendChild(modal);
+            } else {
+              modal.style.display = 'flex';
+            }
+            // Pre-fill textarea with current comments
+            const row = e.target.closest('tr');
+            const currentComments = row ? row.querySelector('td:nth-child(9)').innerText : '';
+            document.getElementById('modalComments').value = currentComments;
+            // Handle modal actions
+            document.getElementById('modalCancel').onclick = () => { modal.style.display = 'none'; };
+            document.getElementById('modalSave').onclick = async () => {
+              const newComments = document.getElementById('modalComments').value;
+              modal.style.display = 'none';
               await fetch(`${API_BASE}/api/bookings`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, comments: newComments })
               });
               fetchBookings().then(renderTable);
-            }
+            };
           }
         });
         document.addEventListener('change', async function(e) {

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin CMS Panel</title>
+  <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f8f8; margin: 0; }
+    .container { max-width: 900px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 24px #0070ba22; padding: 2rem; }
+    h1 { color: #0070ba; }
+    .hidden { display: none; }
+    label, select, input[type=password] { margin-bottom: 1em; display: block; }
+    #fileList { margin-bottom: 1em; }
+    #logoutBtn { float: right; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Admin CMS Panel</h1>
+    <div id="cmsSection">
+      <label for="fileList">Select Page to Edit:</label>
+      <select id="fileList"></select>
+      <div style="margin: 1em 0;">
+        <input type="text" id="newPageName" placeholder="New page name (e.g. about.html)" style="width: 250px;" />
+        <button id="createPageBtn">Add Page</button>
+        <span id="createMsg" style="color:#c62828;"></span>
+      </div>
+      <textarea id="editor"></textarea>
+      <button id="saveBtn">Save Changes</button>
+      <div id="saveMsg"></div>
+      <hr style="margin:2em 0;" />
+      <button id="showBookingsBtn">Show Bookings</button>
+      <div id="bookingsSection" style="margin-top:2em;"></div>
+    </div>
+      document.getElementById('showBookingsBtn').onclick = async function() {
+        const bookingsSection = document.getElementById('bookingsSection');
+        bookingsSection.innerHTML = 'Loading bookings...';
+        try {
+          const res = await fetch('/api/bookings');
+          const data = await res.json();
+          const bookings = data.bookings || data || [];
+          if (!Array.isArray(bookings) || bookings.length === 0) {
+            bookingsSection.innerHTML = '<div>No bookings found.</div>';
+            return;
+          }
+          let table = '<table border="1" cellpadding="8" style="border-collapse:collapse;width:100%">';
+          table += '<thead><tr>';
+          Object.keys(bookings[0]).forEach(key => { table += `<th>${key}</th>`; });
+          table += '</tr></thead><tbody>';
+          bookings.forEach(b => {
+            table += '<tr>';
+            Object.values(b).forEach(val => { table += `<td>${val}</td>`; });
+            table += '</tr>';
+          });
+          table += '</tbody></table>';
+          bookingsSection.innerHTML = table;
+        } catch (e) {
+          bookingsSection.innerHTML = '<div style="color:red">Failed to load bookings.</div>';
+        }
+      };
+  </div>
+  <script>
+    tinymce.init({ selector: '#editor', height: 500 });
+    // No login required, load CMS immediately
+    window.addEventListener('DOMContentLoaded', () => {
+      loadFiles();
+    });
+    async function loadFiles(selectFile) {
+      const res = await fetch('/api/cms/files');
+      const files = await res.json();
+      const fileList = document.getElementById('fileList');
+      fileList.innerHTML = '';
+      files.forEach(f => {
+        const opt = document.createElement('option');
+        opt.value = f;
+        opt.textContent = f;
+        fileList.appendChild(opt);
+      });
+      if (files.length) {
+        if (selectFile && files.includes(selectFile)) {
+          fileList.value = selectFile;
+          loadFile(selectFile);
+        } else {
+          loadFile(files[0]);
+        }
+      }
+      fileList.onchange = () => loadFile(fileList.value);
+    }
+        document.getElementById('createPageBtn').onclick = async function() {
+          const name = document.getElementById('newPageName').value.trim();
+          const msg = document.getElementById('createMsg');
+          msg.textContent = '';
+          if (!name.endsWith('.html')) {
+            msg.textContent = 'Page name must end with .html';
+            return;
+          }
+          const res = await fetch('/api/cms/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ file: name, content: '' })
+          });
+          const data = await res.json();
+          if (data.success) {
+            document.getElementById('newPageName').value = '';
+            await loadFiles(name);
+            msg.textContent = 'Page created!';
+            setTimeout(() => { msg.textContent = ''; }, 2000);
+          } else {
+            msg.textContent = data.error || 'Failed to create page.';
+          }
+        };
+    async function loadFile(filename) {
+      const res = await fetch('/api/cms/file?file=' + encodeURIComponent(filename));
+      const data = await res.json();
+      tinymce.get('editor').setContent(data.content || '');
+    }
+    document.getElementById('saveBtn').onclick = async function() {
+      const filename = document.getElementById('fileList').value;
+      const content = tinymce.get('editor').getContent();
+      const res = await fetch('/api/cms/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ file: filename, content })
+      });
+      const data = await res.json();
+      document.getElementById('saveMsg').textContent = data.success ? 'Saved!' : 'Save failed.';
+      setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 2000);
+    };
+  </script>
+</body>
+</html>

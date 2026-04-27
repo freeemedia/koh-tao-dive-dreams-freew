@@ -1,7 +1,6 @@
 import AdminBookings from '../components/AdminBookings';
 import AdminPagesManager from '../components/AdminPagesManager';
 import AdminUsersManager from '../components/AdminUsersManager';
-import AffiliateClicksAdmin from '../components/AffiliateClicksAdmin';
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -12,14 +11,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 // Remove static sectionKeyList, use dynamic fetching
 
 const Admin = () => {
-    // Tab navigation UI
-    // Add more admin tabs here
-    const tabs = [
-      { key: 'bookings', label: 'Bookings' },
-      { key: 'affiliate-clicks', label: 'Affiliate Clicks' },
-      { key: 'pages', label: 'Pages Manager' },
-      { key: 'project-manager', label: 'Project Manager' },
-    ];
+  // Tab navigation UI
+  // Add more admin tabs here
+  const tabs = [
+    { key: 'bookings', label: 'Bookings' },
+    { key: 'pages', label: 'Pages Manager' },
+    { key: 'project-manager', label: 'Project Manager' },
+  ];
   const jiraEmbedUrl = import.meta.env.VITE_JIRA_EMBED_URL || '';
   const jiraProjectUrl = import.meta.env.VITE_JIRA_PROJECT_URL || jiraEmbedUrl || 'https://divinginasia.atlassian.net';
   const [activeTab, setActiveTab] = useState('bookings');
@@ -158,18 +156,18 @@ const Admin = () => {
   return (
 
 
-  <div className="min-h-[80vh] pt-[10px] bg-gradient-to-br from-blue-50 to-emerald-50">
-    <header className="w-full py-8 mb-8 bg-gradient-to-r from-blue-700 to-emerald-600 shadow-lg text-white rounded-b-3xl flex flex-col items-center">
-      <h1 className="text-3xl font-bold tracking-wide mb-2">Admin Dashboard</h1>
-      <p className="text-lg opacity-80">Manage bookings, pages, and more</p>
-    </header>
+    <div className="min-h-[80vh] pt-[10px] bg-gradient-to-br from-blue-50 to-emerald-50">
+      <header className="w-full py-8 mb-8 bg-gradient-to-r from-blue-700 to-emerald-600 shadow-lg text-white rounded-b-3xl flex flex-col items-center">
+        <h1 className="text-3xl font-bold tracking-wide mb-2">Admin Dashboard</h1>
+        <p className="text-lg opacity-80">Manage bookings, pages, and more</p>
+      </header>
       {/* Centered horizontal tab row with more spacing */}
       <div className="flex flex-col items-center mb-8">
         <nav className="flex flex-row gap-6 justify-center">
           {tabs.map(tab => (
             <button
               key={tab.key}
-              className={`px-7 py-3 text-base font-semibold rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:z-10 ${activeTab === tab.key ? 'bg-blue-600 text-white shadow' : 'bg-transparent text-gray-700 hover:bg-blue-100'}`}
+              className={`px-7 py-3 text-base font-semibold rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:z-10 ${activeTab === tab.key ? 'bg-blue-600 text-white shadow-lg' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
               onClick={() => setActiveTab(tab.key)}
               style={{ minWidth: 160 }}
             >
@@ -249,11 +247,6 @@ const Admin = () => {
           {activeTab === 'bookings' && (
             <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
               <AdminBookings />
-            </div>
-          )}
-          {activeTab === 'affiliate-clicks' && (
-            <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
-              <AffiliateClicksAdmin />
             </div>
           )}
           {activeTab === 'pages' && (

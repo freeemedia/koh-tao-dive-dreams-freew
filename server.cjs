@@ -1,5 +1,4 @@
 const express = require('express');
-const { requireAdmin } = require('./api/_lib/auth');
 const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');

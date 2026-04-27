@@ -12,7 +12,7 @@ import { hasAdminAccess } from '@/lib/adminAccess';
 import Layout from './components/Layout';
 import Courses from './components/Courses';
 
-import Index from './pages';
+import Index from './pages/index';
 import NotFound from './pages/NotFound';
 import BookingAffiliate from './pages/BookingAffiliate';
 import AgodaHotels from './pages/AgodaHotels';
@@ -104,8 +104,6 @@ import DivemasterInternship from './pages/internship/Divemaster';
 import InstructorInternship from './pages/internship/Instructor';
 import FacebookFeedPage from './pages/FacebookFeedPage';
 import BookingToJiraForm from './components/BookingToJiraForm';
-
-// import BookNowSite from './pages/BookNowSite';
 
 import './i18n';
 
@@ -301,7 +299,6 @@ const App = () => (
               <Route path="/WeatherKohTao" element={<WeatherKohTao />} />
               <Route path="/facebook" element={<FacebookFeedPage />} />
               <Route path="/booking-to-jira" element={<RequireAdmin><BookingToJiraForm /></RequireAdmin>} />
-              {/* <Route path="/booknow-site" element={<BookNowSite />} /> */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>

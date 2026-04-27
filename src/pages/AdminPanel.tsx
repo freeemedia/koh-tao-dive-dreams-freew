@@ -19,7 +19,7 @@ const AdminPanel: React.FC = () => {
 
   const fetchBookings = async () => {
     setLoading(true);
-    const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://koh-tao-dive-dreams-mocha.vercel.app';
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://koh-tao-dive-dreams-.vercel.app';
     const res = await fetch(`${import.meta.env.VITE_API_URL}/api/bookings`);
     const jb = await res.json();
     // Map server booking schema to local Booking type
