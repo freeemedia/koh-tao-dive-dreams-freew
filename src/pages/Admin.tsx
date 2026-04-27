@@ -1,5 +1,4 @@
 import AdminBookings from '../components/AdminBookings';
-import AdminPagesManager from '../components/AdminPagesManager';
 import AdminUsersManager from '../components/AdminUsersManager';
 import AffiliateClicksAdmin from '../components/AffiliateClicksAdmin';
 import LanguageSwitcher from '../components/LanguageSwitcher';
@@ -20,7 +19,6 @@ const Admin = () => {
     const tabs = [
       { key: 'bookings', label: t('admin.tab_bookings', { defaultValue: 'Bookings' }) },
       { key: 'affiliate-clicks', label: t('admin.tab_affiliate_clicks', { defaultValue: 'Affiliate Clicks' }) },
-      { key: 'pages', label: t('admin.tab_pages_manager', { defaultValue: 'Pages Manager' }) },
       { key: 'project-manager', label: t('admin.tab_project_manager', { defaultValue: 'Project Manager' }) },
     ];
   const jiraEmbedUrl = import.meta.env.VITE_JIRA_EMBED_URL || '';
@@ -260,13 +258,6 @@ const Admin = () => {
           {activeTab === 'affiliate-clicks' && (
             <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
               <AffiliateClicksAdmin />
-            </div>
-          )}
-          {activeTab === 'pages' && (
-            <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
-                <React.Suspense fallback={<div>{t('admin.loading_pages_manager', { defaultValue: 'Loading Pages Manager...' })}</div>}>
-                <AdminPagesManager />
-              </React.Suspense>
             </div>
           )}
           {activeTab === 'project-manager' && (
