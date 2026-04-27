@@ -12,14 +12,67 @@ function getSupabaseAdmin() {
   return createClient(url, key);
 }
 
+function getAllowedAdminEmails() {
+  const raw = (process.env.ADMIN_EMAILS || process.env.VITE_ADMIN_EMAILS || '').trim();
+  return raw
+    .split(',')
+    .map((email) => String(email || '').trim().toLowerCase())
+    .filter(Boolean);
+}
+
+async function ensureAdmin(req, supabase) {
+  const viewToken = process.env.ADMIN_BOOKINGS_VIEW_TOKEN || process.env.ADMIN_VIEW_TOKEN;
+  const suppliedViewToken = req.headers['x-admin-view-token'] || req.query?.view_token;
+  if (req.method === 'GET' && viewToken && suppliedViewToken && String(suppliedViewToken) === String(viewToken)) {
+    return { ok: true, mode: 'view-token' };
+  }
+
+  const staticToken = process.env.ADMIN_LOGIN_TOKEN || process.env.ADMIN_API_TOKEN;
+  const suppliedAdminToken = req.headers['x-admin-login-token'];
+
+  if (staticToken && suppliedAdminToken && String(suppliedAdminToken) === String(staticToken)) {
+    return { ok: true, mode: 'static-token' };
+  }
+
+  const authHeader = req.headers.authorization || '';
+  const bearerToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
+  if (!bearerToken) {
+    return { ok: false, status: 401, error: 'Missing admin credentials' };
+  }
+
+  const { data, error } = await supabase.auth.getUser(bearerToken);
+  if (error || !data?.user) {
+    return { ok: false, status: 401, error: 'Invalid admin session token' };
+  }
+
+  const user = data.user;
+  const appRole = user.app_metadata?.app_role;
+  const userRole = user.user_metadata?.app_role || user.user_metadata?.role;
+  if (appRole === 'admin' || userRole === 'admin') {
+    return { ok: true, mode: 'supabase-role' };
+  }
+
+  const allowedEmails = getAllowedAdminEmails();
+  const normalizedEmail = String(user.email || '').trim().toLowerCase();
+  if (allowedEmails.includes(normalizedEmail)) {
+    return { ok: true, mode: 'allowlist' };
+  }
+
+  return { ok: false, status: 403, error: 'Admin access denied' };
+}
+
 export default async function handler(req, res) {
   // CORS for local dev
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, PATCH, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-login-token, x-admin-view-token');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const supabase = getSupabaseAdmin();
+  const adminCheck = await ensureAdmin(req, supabase);
+  if (!adminCheck.ok) {
+    return res.status(adminCheck.status || 401).json({ error: adminCheck.error || 'Unauthorized' });
+  }
 
   if (req.method === 'GET') {
     const { data, error } = await supabase

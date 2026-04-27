@@ -267,7 +267,7 @@ const AdminBookings: React.FC = () => {
       setError(null);
       try {
         // Fetch via server-side API that uses service role key (bypasses RLS)
-        const res = await fetch('/api/admin-bookings');
+        const res = await adminAuthedFetch('/api/admin-bookings');
         if (!res.ok) {
           const payload = await res.json().catch(() => ({}));
           throw new Error(payload?.error || `HTTP ${res.status}`);
@@ -335,9 +335,8 @@ const AdminBookings: React.FC = () => {
     setNoteSaving(true);
     setNoteResult(null);
     try {
-      const res = await fetch(`/api/admin-bookings?id=${financeModalBooking.id}`, {
+      const res = await adminAuthedFetch(`/api/admin-bookings?id=${financeModalBooking.id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ internal_notes: noteDraft }),
       });
       if (!res.ok) { const p = await res.json().catch(() => ({})); throw new Error(p?.error || 'Failed to save note'); }
@@ -375,9 +374,8 @@ const AdminBookings: React.FC = () => {
     setBankTransferResult(null);
 
     try {
-      const res = await fetch(`/api/admin-bookings?id=${financeModalBooking.id}`, {
+      const res = await adminAuthedFetch(`/api/admin-bookings?id=${financeModalBooking.id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ bank_transfer_details: bankTransferDraft }),
       });
       if (!res.ok) { const p = await res.json().catch(() => ({})); throw new Error(p?.error || 'Failed to save bank transfer details'); }
@@ -416,9 +414,8 @@ const AdminBookings: React.FC = () => {
     setStatusResult(null);
 
     try {
-      const res = await fetch(`/api/admin-bookings?id=${bookingId}`, {
+      const res = await adminAuthedFetch(`/api/admin-bookings?id=${bookingId}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: selectedStatus }),
       });
       if (!res.ok) { const p = await res.json().catch(() => ({})); throw new Error(p?.error || 'Failed to update status'); }
@@ -489,9 +486,8 @@ const AdminBookings: React.FC = () => {
 
   const handleInlineEdit = async (id: string, field: string, value: string) => {
     try {
-      const res = await fetch(`/api/admin-bookings?id=${id}`, {
+      const res = await adminAuthedFetch(`/api/admin-bookings?id=${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ [field]: value }),
       });
       if (!res.ok) throw new Error('Failed to update');
