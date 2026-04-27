@@ -6,15 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Calendar, User, Mail, Phone, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -77,6 +68,8 @@ type BookingItemType = 'course' | 'dive' | 'stay';
 const       BookingPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const wpApiBase = (import.meta.env.VITE_WP_API_BASE || '').trim().replace(/\/+$/, '');
+  const wpApiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || '').trim();
   const apiBaseRaw = (import.meta.env.VITE_API_BASE_URL || '').trim();
   const apiBaseNormalized = apiBaseRaw
     ? (apiBaseRaw.startsWith('http://') || apiBaseRaw.startsWith('https://')
@@ -95,6 +88,8 @@ const       BookingPage: React.FC = () => {
   );
   const selectedBookingKind = (searchParams.get('bookingKind') || '').trim();
   const bookingSource = (searchParams.get('source') || 'direct').trim();
+  const guestCount = Math.max(0, Number(searchParams.get('people') || '0') || 0);
+  const nightsCount = Math.max(0, Number(searchParams.get('nights') || '0') || 0);
   const rawType = (searchParams.get('type') || '').trim();
   const genericType: BookingItemType = selectedBookingKind === 'course' ? 'course' : 'dive';
   const itemType: BookingItemType = rawType === 'dive' || rawType === 'stay' || rawType === 'course'
@@ -120,7 +115,6 @@ const       BookingPage: React.FC = () => {
   const initialCourseFunDiveCount = Math.min(10, Math.max(0, Number(searchParams.get('courseFunDives') || '0') || 0));
   const [courseFunDiveCount, setCourseFunDiveCount] = useState<number>(initialCourseFunDiveCount);
   const [stayWithUs, setStayWithUs] = useState<boolean>(searchParams.get('stay') === 'yes');
-  const [showStayPopup, setShowStayPopup] = useState(false);
 
   const getFunDiveRate = (dives: number) => {
     if (dives >= 10) return 800;
@@ -163,7 +157,7 @@ const       BookingPage: React.FC = () => {
   });
 
   const [showPaymentLinks, setShowPaymentLinks] = useState(false);
-  const [showSkipPaymentPopup, setShowSkipPaymentPopup] = useState(false);
+  const [inquiryNotice, setInquiryNotice] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = async (data: BookingFormData) => {
@@ -244,6 +238,49 @@ const       BookingPage: React.FC = () => {
         message: messageWithSource,
       };
 
+      let wpSaved = false;
+      if (wpApiBase && wpApiKey) {
+        try {
+          const wpPayload = {
+            status: 'new',
+            booking_type: itemType,
+            item_title: bookingItemTitle,
+            name: data.name,
+            email: data.email,
+            phone: data.phone || '',
+            preferred_date: data.preferred_date || '',
+            guests: guestCount,
+            nights: nightsCount,
+            experience_level: data.experience_level || '',
+            payment_choice: data.paymentChoice || 'none',
+            currency: depositCurrency || 'THB',
+            deposit_amount: amountMajor > 0 ? amountMajor : null,
+            total_amount: totalItemCostMajor > 0 ? totalItemCostMajor : null,
+            due_amount: totalItemCostMajor > 0 ? Math.max(totalItemCostMajor - amountMajor, 0) : null,
+            paypal_link: data.paymentChoice === 'now' ? `${PAYPAL_LINK}/${amountMajor}THB` : '',
+            addons: addonsText,
+            booking_source: bookingSource,
+            message: messageWithSource,
+          };
+
+          const wpRes = await fetch(`${wpApiBase}/wp-json/ktd/v1/bookings`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-ktd-api-key': wpApiKey,
+            },
+            body: JSON.stringify(wpPayload),
+          });
+          wpSaved = wpRes.ok;
+          if (!wpRes.ok) {
+            const wpError = await wpRes.text().catch(() => 'unknown error');
+            console.warn('WordPress booking save failed', wpRes.status, wpError);
+          }
+        } catch (wpErr) {
+          console.warn('WordPress booking save request failed', wpErr);
+        }
+      }
+
       const res = await fetch(apiUrl('/api/send-booking-notification'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -256,11 +293,15 @@ const       BookingPage: React.FC = () => {
       if (res.ok && responseData.success) {
         if (responseData.warning) {
           toast.warning(`Booking saved, but email notification needs attention: ${responseData.warning}`);
+        } else if (wpApiBase && wpApiKey && !wpSaved) {
+          toast.warning('Inquiry sent, but WordPress booking storage failed.');
         }
         if (data.paymentChoice === 'now' && amountMajor > 0) {
+          setInquiryNotice(null);
           setShowPaymentLinks(true);
         } else {
-          setShowSkipPaymentPopup(true);
+          setShowPaymentLinks(false);
+          setInquiryNotice(SKIP_PAYMENT_MESSAGE);
         }
       } else {
         const errMsg = responseData?.message || responseData?.error || `HTTP ${res.status}`;
@@ -268,9 +309,11 @@ const       BookingPage: React.FC = () => {
         if (persisted) {
           toast.error(`Inquiry saved, but email notification failed: ${errMsg}`);
           if (data.paymentChoice === 'now' && amountMajor > 0) {
+            setInquiryNotice(null);
             setShowPaymentLinks(true);
           } else {
-            setShowSkipPaymentPopup(true);
+            setShowPaymentLinks(false);
+            setInquiryNotice(SKIP_PAYMENT_MESSAGE);
           }
         } else {
           toast.error(`Submission failed: ${errMsg}. Please retry.`);
@@ -391,7 +434,6 @@ const       BookingPage: React.FC = () => {
               onClick={() => {
                 if (isCourseBooking || isDiveBooking) {
                   setStayWithUs(true);
-                  setShowStayPopup(true);
                   return;
                 }
                 navigate('/booking?item=Resort%20Accommodation&type=stay&currency=THB');
@@ -435,9 +477,6 @@ const       BookingPage: React.FC = () => {
                 onChange={(e) => {
                   const checked = e.target.checked;
                   setStayWithUs(checked);
-                  if (checked) {
-                    setShowStayPopup(true);
-                  }
                 }}
               />
               Stay with us (accommodation)
@@ -644,51 +683,17 @@ const       BookingPage: React.FC = () => {
             <p className="text-sm text-muted-foreground">Or <button className="underline" onClick={() => { 
               form.reset(); 
               setShowPaymentLinks(false); 
-              setShowSkipPaymentPopup(true); 
+              setInquiryNotice(SKIP_PAYMENT_MESSAGE);
             }}>skip payment for now</button></p>
           </div>
         )}
+
+        {inquiryNotice && (
+          <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+            {inquiryNotice}
+          </div>
+        )}
       </div>
-
-      <AlertDialog open={showStayPopup} onOpenChange={setShowStayPopup}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{isCourseBooking ? 'Accommodation Included' : 'Accommodation Request Noted'}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {isCourseBooking
-                ? 'Accommodation free with us for courses.'
-                : 'Deposit payable now for your dives and accommodation total pricing to be confirmed. Please leave details in the form below and we will contact to confirm your total amount payable on arrival or deposit before arriving.'}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction>OK</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog
-        open={showSkipPaymentPopup}
-        onOpenChange={(open) => {
-          setShowSkipPaymentPopup(open);
-          if (!open) {
-            form.reset();
-            navigate('/');
-          }
-        }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Inquiry Sent</AlertDialogTitle>
-            <AlertDialogDescription>{SKIP_PAYMENT_MESSAGE}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction onClick={() => {
-              form.reset();
-              navigate('/');
-            }}>OK</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 };
