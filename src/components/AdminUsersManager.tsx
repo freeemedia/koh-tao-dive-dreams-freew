@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 
 type AppRole = 'admin' | 'user';
@@ -30,6 +31,7 @@ interface AuditRow {
 const shortId = (value: string) => `${value.slice(0, 8)}...${value.slice(-6)}`;
 
 const AdminUsersManager: React.FC = () => {
+  const { t } = useTranslation();
   const [rows, setRows] = useState<UserRoleRow[]>([]);
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
   const [auditRows, setAuditRows] = useState<AuditRow[]>([]);
@@ -172,21 +174,21 @@ const AdminUsersManager: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold">Users</h2>
+      <h2 className="text-xl font-bold">{t('admin.users_title', { defaultValue: 'Users' })}</h2>
 
       <div className="rounded border border-gray-200 p-3">
-        <div className="mb-2 text-sm font-semibold">Add User Role</div>
+        <div className="mb-2 text-sm font-semibold">{t('admin.users_add_role', { defaultValue: 'Add User Role' })}</div>
         <div className="grid grid-cols-1 gap-2 md:grid-cols-6">
           <input
             value={searchDraft}
             onChange={(e) => setSearchDraft(e.target.value)}
-            placeholder="Search by name, phone, or UUID"
+            placeholder={t('admin.users_search_placeholder', { defaultValue: 'Search by name, phone, or UUID' })}
             className="rounded border border-gray-300 px-3 py-2 md:col-span-2"
           />
           <input
             value={userIdDraft}
             onChange={(e) => setUserIdDraft(e.target.value)}
-            placeholder="Supabase user UUID"
+            placeholder={t('admin.users_uuid_placeholder', { defaultValue: 'Supabase user UUID' })}
             className="rounded border border-gray-300 px-3 py-2 md:col-span-2"
           />
           <select
@@ -201,7 +203,7 @@ const AdminUsersManager: React.FC = () => {
           <input
             value={noteDraft}
             onChange={(e) => setNoteDraft(e.target.value)}
-            placeholder="Optional audit note"
+            placeholder={t('admin.users_optional_audit_note', { defaultValue: 'Optional audit note' })}
             className="rounded border border-gray-300 px-3 py-2"
           />
           <button
@@ -210,7 +212,7 @@ const AdminUsersManager: React.FC = () => {
             disabled={saving}
             className="rounded bg-blue-600 px-3 py-2 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {saving ? 'Saving...' : 'Add Role'}
+            {saving ? t('admin.saving', { defaultValue: 'Saving...' }) : t('admin.users_add_role_button', { defaultValue: 'Add Role' })}
           </button>
         </div>
 
@@ -230,11 +232,11 @@ const AdminUsersManager: React.FC = () => {
               </button>
             );
           })}
-          {!matchingUsers.length ? <div className="text-xs text-gray-500">No matching users.</div> : null}
+          {!matchingUsers.length ? <div className="text-xs text-gray-500">{t('admin.users_no_matches', { defaultValue: 'No matching users.' })}</div> : null}
         </div>
       </div>
 
-      {loading ? <div>Loading users...</div> : null}
+      {loading ? <div>{t('admin.users_loading', { defaultValue: 'Loading users...' })}</div> : null}
       {error ? <div className="text-red-600">Error: {error}</div> : null}
 
       {!loading && !error && (
@@ -242,15 +244,15 @@ const AdminUsersManager: React.FC = () => {
           <table className="min-w-full border-collapse">
             <thead>
               <tr className="bg-gray-50">
-                <th className="border border-gray-200 p-2 text-left">User ID</th>
-                <th className="border border-gray-200 p-2 text-left">Roles</th>
+                <th className="border border-gray-200 p-2 text-left">{t('admin.users_user_id', { defaultValue: 'User ID' })}</th>
+                <th className="border border-gray-200 p-2 text-left">{t('admin.users_roles', { defaultValue: 'Roles' })}</th>
               </tr>
             </thead>
             <tbody>
               {grouped.map((row) => (
                 <tr key={row.userId}>
                   <td className="border border-gray-200 p-2 text-xs md:text-sm">
-                    <div>{profileMap.get(row.userId)?.full_name || 'Unknown user'}</div>
+                    <div>{profileMap.get(row.userId)?.full_name || t('admin.users_unknown_user', { defaultValue: 'Unknown user' })}</div>
                     <div className="text-[11px] text-gray-500" title={row.userId}>{row.userId}</div>
                   </td>
                   <td className="border border-gray-200 p-2">
@@ -265,9 +267,9 @@ const AdminUsersManager: React.FC = () => {
                             type="button"
                             className="text-red-600 hover:text-red-700"
                             onClick={() => removeRole(row.userId, role)}
-                            title="Remove role"
+                            title={t('admin.users_remove_role_title', { defaultValue: 'Remove role' })}
                           >
-                            remove
+                            {t('admin.users_remove', { defaultValue: 'remove' })}
                           </button>
                         </span>
                       ))}
@@ -278,7 +280,7 @@ const AdminUsersManager: React.FC = () => {
               {grouped.length === 0 && (
                 <tr>
                   <td className="p-3 text-sm text-gray-500" colSpan={2}>
-                    No user roles found.
+                    {t('admin.users_no_roles_found', { defaultValue: 'No user roles found.' })}
                   </td>
                 </tr>
               )}
@@ -289,17 +291,17 @@ const AdminUsersManager: React.FC = () => {
 
       {!loading && !error && (
         <div className="rounded border border-gray-200 p-3">
-          <div className="mb-2 text-sm font-semibold">Role Change Audit</div>
+          <div className="mb-2 text-sm font-semibold">{t('admin.users_role_change_audit', { defaultValue: 'Role Change Audit' })}</div>
           <div className="max-h-64 overflow-auto">
             <table className="min-w-full border-collapse text-xs md:text-sm">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="border border-gray-200 p-2 text-left">When</th>
-                  <th className="border border-gray-200 p-2 text-left">Action</th>
-                  <th className="border border-gray-200 p-2 text-left">Target User</th>
-                  <th className="border border-gray-200 p-2 text-left">Role</th>
-                  <th className="border border-gray-200 p-2 text-left">Changed By</th>
-                  <th className="border border-gray-200 p-2 text-left">Note</th>
+                  <th className="border border-gray-200 p-2 text-left">{t('admin.users_when', { defaultValue: 'When' })}</th>
+                  <th className="border border-gray-200 p-2 text-left">{t('admin.users_action', { defaultValue: 'Action' })}</th>
+                  <th className="border border-gray-200 p-2 text-left">{t('admin.users_target_user', { defaultValue: 'Target User' })}</th>
+                  <th className="border border-gray-200 p-2 text-left">{t('admin.users_role', { defaultValue: 'Role' })}</th>
+                  <th className="border border-gray-200 p-2 text-left">{t('admin.users_changed_by', { defaultValue: 'Changed By' })}</th>
+                  <th className="border border-gray-200 p-2 text-left">{t('admin.users_note', { defaultValue: 'Note' })}</th>
                 </tr>
               </thead>
               <tbody>
@@ -315,7 +317,7 @@ const AdminUsersManager: React.FC = () => {
                 ))}
                 {!auditRows.length && (
                   <tr>
-                    <td className="p-3 text-sm text-gray-500" colSpan={6}>No audit rows yet.</td>
+                    <td className="p-3 text-sm text-gray-500" colSpan={6}>{t('admin.users_no_audit_rows', { defaultValue: 'No audit rows yet.' })}</td>
                   </tr>
                 )}
               </tbody>

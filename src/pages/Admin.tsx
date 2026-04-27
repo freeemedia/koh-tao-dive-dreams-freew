@@ -3,6 +3,7 @@ import AdminPagesManager from '../components/AdminPagesManager';
 import AdminUsersManager from '../components/AdminUsersManager';
 import AffiliateClicksAdmin from '../components/AffiliateClicksAdmin';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
@@ -12,13 +13,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 // Remove static sectionKeyList, use dynamic fetching
 
 const Admin = () => {
+    const { t } = useTranslation();
     // Tab navigation UI
     // Add more admin tabs here
     const tabs = [
-      { key: 'bookings', label: 'Bookings' },
-      { key: 'affiliate-clicks', label: 'Affiliate Clicks' },
-      { key: 'pages', label: 'Pages Manager' },
-      { key: 'project-manager', label: 'Project Manager' },
+      { key: 'bookings', label: t('admin.tab_bookings', { defaultValue: 'Bookings' }) },
+      { key: 'affiliate-clicks', label: t('admin.tab_affiliate_clicks', { defaultValue: 'Affiliate Clicks' }) },
+      { key: 'pages', label: t('admin.tab_pages_manager', { defaultValue: 'Pages Manager' }) },
+      { key: 'project-manager', label: t('admin.tab_project_manager', { defaultValue: 'Project Manager' }) },
     ];
   const jiraEmbedUrl = import.meta.env.VITE_JIRA_EMBED_URL || '';
   const jiraProjectUrl = import.meta.env.VITE_JIRA_PROJECT_URL || jiraEmbedUrl || 'https://divinginasia.atlassian.net';
@@ -160,8 +162,8 @@ const Admin = () => {
 
   <div className="min-h-[80vh] pt-[10px] bg-gradient-to-br from-blue-50 to-emerald-50">
     <header className="w-full py-8 mb-8 bg-gradient-to-r from-blue-700 to-emerald-600 shadow-lg text-white rounded-b-3xl flex flex-col items-center">
-      <h1 className="text-3xl font-bold tracking-wide mb-2">Admin Dashboard</h1>
-      <p className="text-lg opacity-80">Manage bookings, pages, and more</p>
+      <h1 className="text-3xl font-bold tracking-wide mb-2">{t('admin.dashboard_title', { defaultValue: 'Admin Dashboard' })}</h1>
+      <p className="text-lg opacity-80">{t('admin.dashboard_subtitle', { defaultValue: 'Manage bookings, pages, and more' })}</p>
     </header>
       {/* Centered horizontal tab row with more spacing */}
       <div className="flex flex-col items-center mb-8">
@@ -182,13 +184,13 @@ const Admin = () => {
           onClick={() => setFinanceModalOpen(true)}
           className="mt-4 rounded bg-emerald-600 px-5 py-2 text-base font-semibold text-white hover:bg-emerald-700 shadow"
         >
-          Global Finance Defaults
+          {t('admin.global_finance_defaults', { defaultValue: 'Global Finance Defaults' })}
         </button>
         <a
           href="/"
           className="mt-4 inline-block rounded bg-gray-500 px-5 py-2 text-base font-semibold text-white hover:bg-gray-700 shadow"
         >
-          Back to Main Page
+          {t('admin.back_to_main_page', { defaultValue: 'Back to Main Page' })}
         </a>
       </div>
       {/* Main Content */}
@@ -196,11 +198,11 @@ const Admin = () => {
         <Dialog open={financeModalOpen} onOpenChange={setFinanceModalOpen}>
           <DialogContent className="sm:max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Global Finance Defaults</DialogTitle>
+              <DialogTitle>{t('admin.global_finance_defaults', { defaultValue: 'Global Finance Defaults' })}</DialogTitle>
             </DialogHeader>
             <div className="space-y-3">
               {financeLoading ? (
-                <div className="text-sm text-gray-500">Loading finance settings...</div>
+                <div className="text-sm text-gray-500">{t('admin.loading_finance_settings', { defaultValue: 'Loading finance settings...' })}</div>
               ) : (
                 financeFields.map((field) => (
                   <div key={field.key}>
@@ -230,7 +232,7 @@ const Admin = () => {
                   onClick={() => setFinanceModalOpen(false)}
                   className="rounded border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700"
                 >
-                  Cancel
+                  {t('admin.cancel', { defaultValue: 'Cancel' })}
                 </button>
                 <button
                   type="button"
@@ -238,7 +240,7 @@ const Admin = () => {
                   disabled={financeSaving || financeLoading}
                   className="rounded bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {financeSaving ? 'Saving...' : 'Save Finance Settings'}
+                  {financeSaving ? t('admin.saving', { defaultValue: 'Saving...' }) : t('admin.save_finance_settings', { defaultValue: 'Save Finance Settings' })}
                 </button>
               </div>
             </div>
@@ -258,7 +260,7 @@ const Admin = () => {
           )}
           {activeTab === 'pages' && (
             <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
-              <React.Suspense fallback={<div>Loading Pages Manager...</div>}>
+                <React.Suspense fallback={<div>{t('admin.loading_pages_manager', { defaultValue: 'Loading Pages Manager...' })}</div>}>
                 <AdminPagesManager />
               </React.Suspense>
             </div>
@@ -269,7 +271,7 @@ const Admin = () => {
                 <div>
                   <h2 className="text-xl font-semibold">Project Manager</h2>
                   <p className="text-sm text-gray-600">
-                    Jira cannot be embedded due to Atlassian restrictions. Please use the button below to open the Jira project board in a new tab.
+                    {t('admin.project_manager_jira_restriction', { defaultValue: 'Jira cannot be embedded due to Atlassian restrictions. Please use the button below to open the Jira project board in a new tab.' })}
                   </p>
                 </div>
                 <a
@@ -278,11 +280,11 @@ const Admin = () => {
                   rel="noreferrer"
                   className="inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
                 >
-                  Open Jira
+                  {t('admin.open_jira', { defaultValue: 'Open Jira' })}
                 </a>
               </div>
               <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-6 text-sm text-gray-600">
-                (Direct embedding is not supported by Jira. Use the button above to access your board.)
+                {t('admin.project_manager_embedding_not_supported', { defaultValue: '(Direct embedding is not supported by Jira. Use the button above to access your board.)' })}
               </div>
             </div>
           )}
