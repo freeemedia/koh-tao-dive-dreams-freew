@@ -43,10 +43,10 @@ const Admin = () => {
   const FINANCE_SLUG = 'admin-finance';
   const FINANCE_LOCALE = 'en';
   const financeFields: Array<{ key: string; label: string; multiline?: boolean; placeholder?: string }> = [
-    { key: 'paypal_link', label: 'PayPal Link', placeholder: 'https://paypal.me/prodivingasia' },
-    { key: 'course_deposit_rate', label: 'Course Deposit Rate', placeholder: '0.2' },
-    { key: 'default_deposit_amount', label: 'Default Deposit Amount', placeholder: 'e.g. 2500' },
-    { key: 'bank_transfer_details', label: 'Bank Transfer Details', multiline: true, placeholder: 'Bank name, account number, IBAN/SWIFT...' },
+    { key: 'paypal_link', label: t('admin.finance_paypal_link', { defaultValue: 'PayPal Link' }), placeholder: t('admin.finance_paypal_placeholder', { defaultValue: 'https://paypal.me/prodivingasia' }) },
+    { key: 'course_deposit_rate', label: t('admin.finance_course_deposit_rate', { defaultValue: 'Course Deposit Rate' }), placeholder: t('admin.finance_course_deposit_rate_placeholder', { defaultValue: '0.2' }) },
+    { key: 'default_deposit_amount', label: t('admin.finance_default_deposit_amount', { defaultValue: 'Default Deposit Amount' }), placeholder: t('admin.finance_default_deposit_amount_placeholder', { defaultValue: 'e.g. 2500' }) },
+    { key: 'bank_transfer_details', label: t('admin.finance_bank_transfer_details', { defaultValue: 'Bank Transfer Details' }), multiline: true, placeholder: t('admin.finance_bank_transfer_placeholder', { defaultValue: 'Bank name, account number, IBAN/SWIFT...' }) },
   ];
 
   const loadFinanceSettings = async () => {

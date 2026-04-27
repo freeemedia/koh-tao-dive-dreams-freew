@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -249,6 +250,7 @@ const LOCALE_FILTERS = ['en', 'nl'] as const;
 const CONTENT_FILTERS = ['hero', 'prices', 'faq'] as const;
 
 const AdminPagesManager: React.FC = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState<PageContentRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -628,12 +630,12 @@ const AdminPagesManager: React.FC = () => {
       .filter(([, rows]) => rows.length > 0);
   }, [filteredRows]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div>{t('admin.loading', { defaultValue: 'Loading...' })}</div>;
+  if (error) return <div>{t('admin.error', { defaultValue: 'Error' })}: {error}</div>;
 
   return (
     <div className="p-6">
-      <h1 className="text-xl font-semibold">Pages Manager</h1>
+      <h1 className="text-xl font-semibold">{t('admin.pages_manager_title', { defaultValue: 'Pages Manager' })}</h1>
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <button
@@ -641,14 +643,14 @@ const AdminPagesManager: React.FC = () => {
           onClick={() => setEditorMode('page')}
           className={`rounded px-3 py-1 text-sm font-semibold ${editorMode === 'page' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'}`}
         >
-          Page Editor
+          {t('admin.pages_page_editor', { defaultValue: 'Page Editor' })}
         </button>
         <button
           type="button"
           onClick={() => setEditorMode('rows')}
           className={`rounded px-3 py-1 text-sm font-semibold ${editorMode === 'rows' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'}`}
         >
-          Row Table
+          {t('admin.pages_row_table', { defaultValue: 'Row Table' })}
         </button>
         <label className="ml-2 inline-flex items-center gap-2 text-sm text-gray-700">
           <input
@@ -656,7 +658,7 @@ const AdminPagesManager: React.FC = () => {
             checked={useWysiwyg}
             onChange={(e) => setUseWysiwyg(e.target.checked)}
           />
-          WYSIWYG editor
+          {t('admin.pages_wysiwyg', { defaultValue: 'WYSIWYG editor' })}
         </label>
       </div>
 
@@ -664,7 +666,7 @@ const AdminPagesManager: React.FC = () => {
         <div className="mt-4 rounded border border-gray-200 p-4">
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <div className="md:col-span-2">
-              <label className="mb-1 block text-sm font-medium text-gray-700">Page</label>
+              <label className="mb-1 block text-sm font-medium text-gray-700">{t('admin.pages_page_label', { defaultValue: 'Page' })}</label>
               <select
                 value={selectedPageSlug}
                 onChange={(e) => setSelectedPageSlug(e.target.value)}
@@ -684,7 +686,7 @@ const AdminPagesManager: React.FC = () => {
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Locale</label>
+              <label className="mb-1 block text-sm font-medium text-gray-700">{t('admin.pages_locale_label', { defaultValue: 'Locale' })}</label>
               <div className="flex gap-2">
                 <button
                   type="button"
@@ -731,7 +733,7 @@ const AdminPagesManager: React.FC = () => {
                       setPageDraft(nextDraft);
                     }}
                   >
-                    Copy all English content to Dutch
+                    {t('admin.pages_copy_english_to_dutch', { defaultValue: 'Copy all English content to Dutch' })}
                   </button>
                 </div>
               )}
@@ -788,12 +790,12 @@ const AdminPagesManager: React.FC = () => {
                   disabled={savingPage || pageSectionKeys.length === 0}
                   className="rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {savingPage ? 'Saving...' : `Save ${pageSectionKeys.length} Sections`}
+                  {savingPage ? t('admin.saving', { defaultValue: 'Saving...' }) : t('admin.pages_save_sections', { defaultValue: 'Save {{count}} Sections', count: pageSectionKeys.length }).replace('{{count}}', String(pageSectionKeys.length))}
                 </button>
               </div>
             </>
           ) : (
-            <div className="mt-4 text-sm text-gray-500">No pages found in page_content yet.</div>
+            <div className="mt-4 text-sm text-gray-500">{t('admin.pages_no_pages', { defaultValue: 'No pages found in page_content yet.' })}</div>
           )}
         </div>
       )}
@@ -804,7 +806,7 @@ const AdminPagesManager: React.FC = () => {
         <input
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search page, section, locale, or content"
+          placeholder={t('admin.pages_search_placeholder', { defaultValue: 'Search page, section, locale, or content' })}
           className="min-w-[280px] flex-1 rounded border border-gray-300 px-3 py-2"
           aria-label="Search page rows"
         />
@@ -815,7 +817,7 @@ const AdminPagesManager: React.FC = () => {
           className="rounded border border-gray-300 px-3 py-2"
           aria-label="Filter by section"
         >
-          <option value="all">All Sections</option>
+          <option value="all">{t('admin.pages_all_sections', { defaultValue: 'All Sections' })}</option>
           {GROUP_ORDER.map((group) => (
             <option key={group} value={group}>{group}</option>
           ))}
