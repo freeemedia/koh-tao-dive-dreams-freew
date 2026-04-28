@@ -47,9 +47,9 @@
   <script>
     const API_BASE = window.location.port === '3003' ? 'http://localhost:3003' : '';
     async function fetchBookings() {
-      const res = await fetch(`${API_BASE}/api/bookings`);
+      const res = await fetch(`${API_BASE}/api/admin-bookings`);
       const data = await res.json();
-      return data.bookings || [];
+      return Array.isArray(data) ? data : (data.bookings || []);
     }
     function extractPayPalLink(comments) {
       const match = comments && comments.match(/https:\/\/paypal\.me\/[\w/]+/);

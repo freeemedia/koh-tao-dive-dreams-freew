@@ -218,10 +218,7 @@ const AdminBookings: React.FC = () => {
     const { data: { session } } = await supabase.auth.getSession();
     const token = session?.access_token;
     const adminLoginToken = window.localStorage.getItem('admin_login_token');
-
-    if (!token && !adminLoginToken) {
-      throw new Error('No authenticated admin session found');
-    }
+    const viewToken = import.meta.env.VITE_ADMIN_BOOKINGS_VIEW_TOKEN || window.localStorage.getItem('admin_view_token');
 
     const headers = new Headers(init?.headers || {});
     if (token) {
@@ -230,11 +227,27 @@ const AdminBookings: React.FC = () => {
     if (adminLoginToken) {
       headers.set('x-admin-login-token', adminLoginToken);
     }
+    if (viewToken) {
+      headers.set('x-admin-view-token', String(viewToken));
+    }
     if (!headers.has('Content-Type')) {
       headers.set('Content-Type', 'application/json');
     }
 
-    return fetch(url, { ...init, headers });
+    let finalUrl = url;
+    if (viewToken) {
+      try {
+        const parsed = new URL(url, window.location.origin);
+        if (!parsed.searchParams.has('view_token')) {
+          parsed.searchParams.set('view_token', String(viewToken));
+        }
+        finalUrl = parsed.pathname + parsed.search + parsed.hash;
+      } catch {
+        // Keep original URL if parsing fails.
+      }
+    }
+
+    return fetch(finalUrl, { ...init, headers });
   };
 
   const escalateToJira = async (booking: Booking) => {

@@ -13,10 +13,10 @@ export default function BookingsPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('https://divinginasia.com/api/bookings');
+      const res = await fetch('/api/admin-bookings');
       if (!res.ok) throw new Error('Failed to fetch bookings');
       const json = await res.json();
-      setBookings(json.bookings || []);
+      setBookings(Array.isArray(json) ? json : (json.bookings || []));
     } catch (err) {
       setError(err.message);
     }
