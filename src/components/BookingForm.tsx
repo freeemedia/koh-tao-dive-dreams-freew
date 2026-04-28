@@ -84,7 +84,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
         deposit_amount: typeof depositMajor === 'number' ? `฿${depositMajor}` : 'N/A',
         message: messageBody,
       };
-      const response = await fetch(apiUrl('/send-booking-notification'), {
+      const response = await fetch(apiUrl('/api/send-booking-notification'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
