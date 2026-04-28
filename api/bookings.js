@@ -1,101 +1,77 @@
-const dbPath = '/home/u983007073/koh-tao-dive-dreams/divinginasia.com/koh-tao-dive-dreams/tmp/bookings.db';
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database(dbPath);
+import { createClient } from '@supabase/supabase-js';
 
-module.exports = (req, res) => {
+function getSupabaseAdmin() {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) {
+    throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY env vars');
+  }
+  return createClient(url, key);
+}
+
+function parseBody(req) {
+  if (!req || req.body == null) return {};
+  if (typeof req.body === 'string') {
+    try {
+      return JSON.parse(req.body);
+    } catch {
+      return {};
+    }
+  }
+  return req.body;
+}
+
+export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  const supabase = getSupabaseAdmin();
+
   if (req.method === 'GET') {
-    if (req.query?.inspect === 'tables') {
-      const inspectDb = new sqlite3.Database(dbPath, (openErr) => {
-        if (openErr) {
-          return res.status(500).json({ error: openErr.message, dbPath });
-        }
+    const { data, error } = await supabase
+      .from('bookings')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-        inspectDb.all(
-          "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name",
-          [],
-          (qErr, rows) => {
-            inspectDb.close();
+    if (error) return res.status(500).json({ error: error.message });
+    return res.status(200).json({ bookings: data || [] });
+  }
 
-            if (qErr) {
-              return res.status(500).json({ error: qErr.message, dbPath });
-            }
+  if (req.method === 'POST') {
+    const body = parseBody(req);
+    const { id, ...rest } = body || {};
 
-            return res.status(200).json({
-              connected: true,
-              dbPath,
-              tables: rows.map((row) => row.name),
-            });
-          }
-        );
-      });
-
-      return;
-    }
-
-    db.all('SELECT * FROM bookings', [], (err, rows) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      res.status(200).json({ bookings: rows });
-    });
-  } else if (req.method === 'POST') {
-    const { id, status, comments, ...rest } = req.body || {};
     if (!id) {
-      // CREATE new booking
-      // Accepts all fields in rest
-      const fields = Object.keys(rest);
-      const values = Object.values(rest);
-      if (fields.length === 0) {
-        return res.status(400).json({ error: 'No booking data provided' });
-      }
-      const placeholders = fields.map(() => '?').join(', ');
-      const sql = `INSERT INTO bookings (${fields.join(', ')}) VALUES (${placeholders})`;
-      db.run(sql, values, function (err) {
-        if (err) {
-          return res.status(500).json({ error: err.message });
-        }
-        db.get('SELECT * FROM bookings WHERE id = ?', [this.lastID], (err2, row) => {
-          if (err2) {
-            return res.status(500).json({ error: err2.message });
-          }
-          res.status(201).json(row);
-        });
-      });
-      return;
+      const { data, error } = await supabase
+        .from('bookings')
+        .insert({ ...rest })
+        .select()
+        .single();
+
+      if (error) return res.status(500).json({ error: error.message });
+      return res.status(201).json(data);
     }
-    // UPDATE booking by id (existing logic)
-    const updateFields = [];
-    const updateValues = [];
-    if (status !== undefined) {
-      updateFields.push('status = ?');
-      updateValues.push(status);
-    }
-    if (comments !== undefined) {
-      updateFields.push('comments = ?');
-      updateValues.push(comments);
-    }
-    for (const key in rest) {
-      updateFields.push(`${key} = ?`);
-      updateValues.push(rest[key]);
-    }
-    if (updateFields.length === 0) {
+
+    if (Object.keys(rest).length === 0) {
       return res.status(400).json({ error: 'No fields to update' });
     }
-    updateValues.push(id);
-    const updateSql = `UPDATE bookings SET ${updateFields.join(', ')} WHERE id = ?`;
-    db.run(updateSql, updateValues, function (err) {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      db.get('SELECT * FROM bookings WHERE id = ?', [id], (err2, row) => {
-        if (err2) {
-          return res.status(500).json({ error: err2.message });
-        }
-        res.status(200).json(row);
-      });
-    });
-  } else {
-    res.setHeader('Allow', ['GET', 'POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+
+    const { data, error } = await supabase
+      .from('bookings')
+      .update({ ...rest })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) return res.status(500).json({ error: error.message });
+    return res.status(200).json(data);
   }
-};
+
+  res.setHeader('Allow', ['GET', 'POST']);
+  return res.status(405).end(`Method ${req.method} Not Allowed`);
+}
