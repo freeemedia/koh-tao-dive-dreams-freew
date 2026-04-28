@@ -171,6 +171,50 @@ const Footer: React.FC = () => {
               <li><Link to="/accommodation-booking" className="hover:text-white transition">Booking.com</Link></li>
             </ul>
           </div>
+
+          <div>
+            <h4 className="text-cyan-400 text-xs font-bold uppercase tracking-wider mb-4">
+              {isDutch ? 'Contact' : 'Contact Us'}
+            </h4>
+            <ul className="space-y-3 text-sm text-gray-300">
+              <li>
+                <span className="block text-white font-semibold text-xs uppercase tracking-wider mb-1">{isDutch ? 'Locatie' : 'Location'}</span>
+                <span className="leading-relaxed">
+                  Sairee Beach, Koh Tao<br />
+                  Surat Thani 84360, Thailand
+                </span>
+              </li>
+              <li>
+                <span className="block text-white font-semibold text-xs uppercase tracking-wider mb-1">{isDutch ? 'Telefoon' : 'Phone'}</span>
+                <a href="tel:+6677456789" className="block hover:text-white transition">+66 77 456 789</a>
+                <a href="tel:+66891234567" className="block hover:text-white transition">+66 89 123 4567</a>
+              </li>
+              <li>
+                <span className="block text-white font-semibold text-xs uppercase tracking-wider mb-1">Email</span>
+                <a href="mailto:contact@divinginasia.com" className="hover:text-white transition">contact@divinginasia.com</a>
+              </li>
+              <li>
+                <span className="block text-white font-semibold text-xs uppercase tracking-wider mb-1">
+                  {isDutch ? 'Openingstijden' : 'Opening Hours'}
+                </span>
+                <span className="block">{isDutch ? 'Dagelijks: 07:00 – 19:00' : 'Daily: 07:00 – 19:00'}</span>
+                <span className="block">{isDutch ? 'Noodgeval: 24/7' : 'Emergency: 24/7'}</span>
+              </li>
+              <li>
+                <span className="block text-white font-semibold text-xs uppercase tracking-wider mb-2">
+                  {isDutch ? 'Volg Ons' : 'Follow Us'}
+                </span>
+                <div className="flex items-center gap-3">
+                  <a href={FACEBOOK_LINK} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-gray-300 transition hover:text-cyan-400">
+                    <Facebook className="h-5 w-5" />
+                  </a>
+                  <a href={INSTAGRAM_LINK} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-gray-300 transition hover:text-cyan-400">
+                    <Instagram className="h-5 w-5" />
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div className="border-t border-[#1a3a5c] pt-6 text-center text-xs text-gray-500 space-y-1">
