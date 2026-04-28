@@ -71,25 +71,50 @@ const Login: React.FC = () => {
     setIsLoading(true);
     try {
       if (isAdminLogin) {
-        const response = await fetch(buildApiUrl('/api/admin-login'), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
-        });
+        try {
+          const response = await fetch(buildApiUrl('/api/admin-login'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+          });
 
-        const payload = await response.json().catch(() => ({}));
-        if (!response.ok || !payload?.success) {
-          toast.error(payload?.error || 'Admin login failed');
+          if (response.ok) {
+            const payload = await response.json().catch(() => ({}));
+            if (payload?.success) {
+              window.localStorage.setItem('admin_authenticated', '1');
+              if (payload?.token) {
+                window.localStorage.setItem('admin_login_token', payload.token);
+              }
+              toast.success('Admin login successful');
+              navigate('/admin', { replace: true });
+              return;
+            }
+          }
+
+          // Fallback: allow admin login via Supabase session when API route is not available.
+          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) {
+            toast.error(error.message || 'Admin login failed');
+            return;
+          }
+
+          const user = data.session?.user || null;
+          if (!user || !hasAdminAccess(user)) {
+            await supabase.auth.signOut();
+            toast.error('Your account is signed in but does not have admin access.');
+            return;
+          }
+
+          window.localStorage.setItem('admin_authenticated', '1');
+          window.localStorage.removeItem('admin_login_token');
+          toast.success('Admin login successful');
+          navigate('/admin', { replace: true });
+          return;
+        } catch (err) {
+          console.error(err);
+          toast.error('Admin login failed');
           return;
         }
-
-        window.localStorage.setItem('admin_authenticated', '1');
-        if (payload?.token) {
-          window.localStorage.setItem('admin_login_token', payload.token);
-        }
-        toast.success('Admin login successful');
-        navigate('/admin', { replace: true });
-        return;
       }
 
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
