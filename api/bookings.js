@@ -50,11 +50,10 @@ export default async function handler(req, res) {
       const { data, error } = await supabase
         .from('bookings')
         .insert({ ...rest })
-        .select()
-        .single();
+        .select();
 
       if (error) return res.status(500).json({ error: error.message });
-      return res.status(201).json(data);
+      return res.status(201).json(Array.isArray(data) ? data[0] : data);
     }
 
     if (Object.keys(rest).length === 0) {
@@ -65,11 +64,10 @@ export default async function handler(req, res) {
       .from('bookings')
       .update({ ...rest })
       .eq('id', id)
-      .select()
-      .single();
+      .select();
 
     if (error) return res.status(500).json({ error: error.message });
-    return res.status(200).json(data);
+    return res.status(200).json(Array.isArray(data) ? data[0] : data);
   }
 
   res.setHeader('Allow', ['GET', 'POST']);

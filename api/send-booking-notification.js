@@ -82,14 +82,21 @@ export default async function handler(req, res) {
       .filter(Boolean)
       .join('\n');
 
-    await transporter.sendMail({
-      from: fromEmail,
-      to: bookingTo,
-      subject: `New Booking Inquiry: ${item_title || 'Booking'}`,
-      text: textBody,
-    });
-
-    return res.status(200).json({ success: true });
+    try {
+      await transporter.sendMail({
+        from: fromEmail,
+        to: bookingTo,
+        subject: `New Booking Inquiry: ${item_title || 'Booking'}`,
+        text: textBody,
+      });
+      return res.status(200).json({ success: true });
+    } catch (mailErr) {
+      console.error('send-booking-notification mail error', mailErr);
+      return res.status(200).json({
+        success: true,
+        warning: mailErr instanceof Error ? mailErr.message : 'Email notification failed',
+      });
+    }
   } catch (err) {
     console.error('send-booking-notification error', err);
     return res.status(500).json({
