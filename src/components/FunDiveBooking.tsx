@@ -109,9 +109,7 @@ const FunDiveBooking: React.FC<FunDiveBookingProps> = ({ initialSite }) => {
       <BookingModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        onSubmit={async data => {
-          setProcessing(true);
-          // Compose booking payload
+        onSubmit={data => {
           const payload = {
             name: data.name,
             email: data.email,
@@ -122,41 +120,24 @@ const FunDiveBooking: React.FC<FunDiveBookingProps> = ({ initialSite }) => {
             item_title: selectedSite || 'Fun Dive',
             course_title: selectedSite || 'Fun Dive',
           };
-          // Send to email notification API
-          try {
-            await fetch('/api/send-booking-notification', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload),
-            });
-          } catch (e) {
-            // Optionally handle error
-          }
-          // Send to Supabase bookings API
-          try {
-            await fetch('/api/bookings', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload),
-            });
-          } catch (e) {
-            // Optionally handle error
-          }
+          // Fire-and-forget — don't await
+          fetch('/api/send-booking-notification', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          }).catch(() => {});
+          fetch('/api/bookings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          }).catch(() => {});
           setModalOpen(false);
-          setTimeout(() => {
-            setProcessing(false);
-            setShowConfirmation(true);
-            setSelectedSite(null);
-            setShowNotice(false);
-          }, 1200);
+          setShowConfirmation(true);
+          setSelectedSite(null);
+          setShowNotice(false);
         }}
       />
-      {processing && (
-        <div className="mt-8 p-5 bg-blue-50 border-l-4 border-blue-400 text-blue-900 rounded-lg shadow text-center animate-pulse">
-          <strong>Processing...</strong> Please wait while we submit your booking.
-        </div>
-      )}
-      {showConfirmation && !processing && (
+      {showConfirmation && (
         <div className="mt-8 p-5 bg-green-50 border-l-4 border-green-400 text-green-900 rounded-lg shadow text-center">
           <strong>Thank you!</strong> Your booking request has been submitted. We will contact you soon to confirm your dive.
         </div>

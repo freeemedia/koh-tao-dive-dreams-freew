@@ -4,6 +4,14 @@
 
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "redirects": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "admin.divinginasia.com" }],
+      "destination": "/admin",
+      "permanent": false
+    }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",

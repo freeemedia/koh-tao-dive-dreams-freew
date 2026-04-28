@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 
 
 
@@ -14,7 +13,11 @@ const COURSE_PRICES: Record<string, number> = {
 
 const PAYPAL_BASE = 'https://paypal.me/prodivingasia';
 
-const BookNowForm: React.FC = () => {
+interface BookNowFormProps {
+  fullPage?: boolean;
+}
+
+const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
   const [form, setForm] = useState({
     name: '',
     course_title: '',
@@ -36,81 +39,84 @@ const BookNowForm: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    if (e.target.name === 'course_title') setShowPayOptions(true);
   };
 
   const sendToSupabaseAndEmail = async (payNow: boolean) => {
-    // Save booking to Supabase
-    await supabase.from('bookings').insert([
-      {
-        name: form.name,
-        course_title: form.course_title,
-        email: form.email,
-        phone: form.phone,
-        item_type: 'web-booking',
-        accommodation_type: form.accommodation_type,
-        preferred_date: form.arrival_date,
-        experience_level: form.diving_experience,
-        message: form.message,
-        status: 'new',
-        total_amount: coursePrice,
-        deposit_amount: deposit,
-        payment_status: payNow ? 'deposit_requested' : 'pending',
-      },
-    ]);
-    // Send to Web3Forms
-    const formEl = document.createElement('form');
-    formEl.action = 'https://api.web3forms.com/submit';
-    formEl.method = 'POST';
-    formEl.style.display = 'none';
-    [
-      ['access_key', 'e4c4edf6-6e35-456a-87da-b32b961b449a'],
-      ['subject', 'New Booking Inquiry from Website'],
-      ['redirect', 'https://divinginasia.com/thank-you.html'],
-      ['name', form.name],
-      ['course_title', form.course_title],
-      ['email', form.email],
-      ['phone', form.phone],
-      ['accommodation_type', form.accommodation_type],
-      ['arrival_date', form.arrival_date],
-      ['diving_experience', form.diving_experience],
-      ['message', form.message],
-      ['course_price', coursePrice.toString()],
-      ['deposit_amount', deposit.toString()],
-      ['payment_status', payNow ? 'deposit_requested' : 'pending'],
-    ].forEach(([k, v]) => {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = k as string;
-      input.value = v as string;
-      formEl.appendChild(input);
+    // Submit via API (saves to Supabase + mirrors to WordPress)
+    // Fire-and-forget: don't wait for response, use timeout, continue regardless
+    Promise.race([
+      fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          course_title: form.course_title,
+          email: form.email,
+          phone: form.phone,
+          preferred_date: form.arrival_date,
+          experience_level: form.diving_experience,
+          payment_choice: payNow ? 'deposit_requested' : 'pending',
+          message: form.message,
+          status: 'new',
+          booking_type: 'course',
+          booking_source: 'vercel-form',
+        }),
+      }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000)),
+    ]).catch(() => {
+      // Silently fail
     });
-    document.body.appendChild(formEl);
-    formEl.submit();
+    // Done immediately; payment/thank-you proceeds
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError(null);
     setShowPayOptions(true);
   };
 
   const handlePayNow = async () => {
     setLoading(true);
-    await sendToSupabaseAndEmail(true);
-    window.location.href = `${PAYPAL_BASE}/${deposit}THB`;
+    sendToSupabaseAndEmail(true);
+    // Redirect after 500ms to let API fire
+    setTimeout(() => {
+      window.location.href = `${PAYPAL_BASE}/${deposit}THB`;
+    }, 500);
   };
 
   const handleNotNow = async () => {
     setLoading(true);
-    await sendToSupabaseAndEmail(false);
-    setShowThankYou(true);
-    setLoading(false);
+    sendToSupabaseAndEmail(false);
+    // Show thank you after 500ms to let API fire
+    setTimeout(() => {
+      setShowThankYou(true);
+      setLoading(false);
+    }, 500);
   };
 
+  const containerStyle: React.CSSProperties = fullPage
+    ? {
+        width: '100%',
+        maxWidth: 920,
+        margin: '0 auto',
+        background: '#fff',
+        color: '#222',
+        padding: '2.5rem',
+        borderRadius: 14,
+        boxShadow: '0 12px 40px rgba(2, 6, 23, 0.12)',
+      }
+    : {
+        maxWidth: 500,
+        margin: '2rem auto',
+        background: '#fff',
+        color: '#222',
+        padding: '2.5rem',
+        borderRadius: 10,
+        boxShadow: '0 2px 12px #0002',
+      };
+
   return (
-    <div className="form-container" style={{ maxWidth: 500, margin: '2rem auto', background: '#fff', color: '#222', padding: '2.5rem', borderRadius: 10, boxShadow: '0 2px 12px #0002' }}>
+    <div className="form-container" style={containerStyle}>
       <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
         <img src="/images/logo.png" alt="Diving In Asia Logo" style={{ maxWidth: 180, height: 'auto' }} />
       </div>

@@ -3,7 +3,7 @@ import Papa from 'papaparse';
 // Clean admin bookings table: shows Name, Email, Phone, Course, Date, Total, Deposit, To Be Paid, PayPal link.
 // To add more columns or features, edit below. For comments or notes, add a new column and input logic as needed.
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 // Comment type for booking comments
 interface BookingComment {
@@ -36,6 +36,7 @@ interface Booking {
   total_amount?: number | null;
   due_amount?: number | null;
   bank_transfer_details?: string | null;
+  booking_source?: string;
 }
 
 
@@ -48,12 +49,29 @@ const AdminBookings: React.FC = () => {
     // Filter state
     const [filterStatus, setFilterStatus] = useState<string>('');
     const [filterText, setFilterText] = useState<string>('');
+    const [dateFrom, setDateFrom] = useState<string>('');
+    const [dateTo, setDateTo] = useState<string>('');
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [deleting, setDeleting] = useState(false);
     const [deleteResult, setDeleteResult] = useState<string | null>(null);
 
+    const getBookingDate = (booking: Booking) => {
+      const raw = booking.preferred_date || booking.created_at;
+      if (!raw) return null;
+      const dt = new Date(raw);
+      return Number.isNaN(dt.getTime()) ? null : dt;
+    };
+
+    const getBookingValue = (booking: Booking) => {
+      if (typeof booking.total_amount === 'number' && booking.total_amount > 0) return booking.total_amount;
+      if (typeof booking.subtotal_amount === 'number' && booking.subtotal_amount > 0) return booking.subtotal_amount;
+      if (typeof booking.total_payable_now === 'number' && booking.total_payable_now > 0) return booking.total_payable_now;
+      if (typeof booking.deposit_amount === 'number' && booking.deposit_amount > 0) return booking.deposit_amount;
+      return 0;
+    };
+
     // Filtered bookings
-    const filteredBookings = bookings.filter((b) => {
+    const filteredBookings = useMemo(() => bookings.filter((b) => {
       const statusMatch = filterStatus ? (b.status === filterStatus) : true;
       const text = filterText.toLowerCase();
       const textMatch =
@@ -61,9 +79,15 @@ const AdminBookings: React.FC = () => {
         b.name.toLowerCase().includes(text) ||
         b.email.toLowerCase().includes(text) ||
         (b.course_title && b.course_title.toLowerCase().includes(text)) ||
-        (b.phone && b.phone.toLowerCase().includes(text));
-      return statusMatch && textMatch;
-    });
+        (b.phone && b.phone.toLowerCase().includes(text)) ||
+        (b.booking_source && b.booking_source.toLowerCase().includes(text));
+
+      const rowDate = getBookingDate(b);
+      const fromOk = !dateFrom || (rowDate && rowDate >= new Date(`${dateFrom}T00:00:00`));
+      const toOk = !dateTo || (rowDate && rowDate <= new Date(`${dateTo}T23:59:59`));
+
+      return statusMatch && textMatch && Boolean(fromOk) && Boolean(toOk);
+    }), [bookings, filterStatus, filterText, dateFrom, dateTo]);
 
     // Delete booking
     const handleDelete = async (id: string) => {
@@ -99,7 +123,7 @@ const AdminBookings: React.FC = () => {
   const [statusDrafts, setStatusDrafts] = useState<Record<string, string>>({});
   const [statusSavingId, setStatusSavingId] = useState<string | null>(null);
   const [statusResult, setStatusResult] = useState<string | null>(null);
-  const [view, setView] = useState<'table' | 'calendar'>('table');
+  const [view, setView] = useState<'table' | 'board' | 'calendar'>('table');
   const [showFunDiveBooking, setShowFunDiveBooking] = useState(false);
   const [financeModalBooking, setFinanceModalBooking] = useState<Booking | null>(null);
   // Comments state for finance modal
@@ -168,6 +192,7 @@ const AdminBookings: React.FC = () => {
   const [copyResult, setCopyResult] = useState<string | null>(null);
   const [copyStatus, setCopyStatus] = useState<Record<string, string>>({});
   const [jiraStatus, setJiraStatus] = useState<Record<string, string>>({});
+  const [assigneeDrafts, setAssigneeDrafts] = useState<Record<string, string>>({});
 
   // Currency state
   const [currency, setCurrency] = useState<'THB' | 'USD' | 'EUR'>('THB');
@@ -288,10 +313,14 @@ const AdminBookings: React.FC = () => {
         const bookingData: Booking[] = await res.json();
         setBookings(bookingData);
         const initialDrafts: Record<string, string> = {};
+        const initialAssignees: Record<string, string> = {};
         bookingData.forEach((booking: Booking) => {
           initialDrafts[booking.id] = booking.status || 'pending';
+          const match = (booking.internal_notes || '').match(/Assigned Instructor:\s*([^\n]+)/i);
+          initialAssignees[booking.id] = match?.[1]?.trim() || '';
         });
         setStatusDrafts(initialDrafts);
+        setAssigneeDrafts(initialAssignees);
       } catch (err: any) {
         setError(err.message || 'Failed to fetch bookings');
       } finally {
@@ -442,6 +471,84 @@ const AdminBookings: React.FC = () => {
       setStatusSavingId(null);
     }
   };
+
+  const normalizePhoneForWhatsApp = (phone?: string) => {
+    if (!phone) return '';
+    const digits = phone.replace(/[^\d+]/g, '');
+    if (digits.startsWith('+')) return digits.slice(1);
+    return digits;
+  };
+
+  const openWhatsApp = (booking: Booking) => {
+    const phone = normalizePhoneForWhatsApp(booking.phone);
+    if (!phone) return;
+    const text = encodeURIComponent(`Hi ${booking.name}, this is Koh Tao Dive Dreams regarding your booking for ${booking.course_title}${booking.preferred_date ? ` on ${booking.preferred_date}` : ''}.`);
+    window.open(`https://wa.me/${phone}?text=${text}`, '_blank', 'noopener,noreferrer');
+  };
+
+  const openInvoiceDraft = (booking: Booking) => {
+    const amount = getBookingValue(booking);
+    const subject = encodeURIComponent(`Invoice for ${booking.course_title} booking`);
+    const body = encodeURIComponent(
+      `Hello ${booking.name},\n\nPlease find your booking invoice details:\nCourse: ${booking.course_title}\nDate: ${booking.preferred_date || '-'}\nAmount: ${amount || '-'} THB\nStatus: ${booking.status}\n\nThank you.`
+    );
+    window.open(`mailto:${booking.email}?subject=${subject}&body=${body}`);
+  };
+
+  const saveAssignee = async (booking: Booking) => {
+    const assignee = (assigneeDrafts[booking.id] || '').trim();
+    if (!assignee) return;
+    const prefix = `Assigned Instructor: ${assignee}`;
+    const current = booking.internal_notes || '';
+    const nextNotes = current.includes('Assigned Instructor:')
+      ? current.replace(/Assigned Instructor:\s*[^\n]*/i, prefix)
+      : `${prefix}${current ? `\n${current}` : ''}`;
+
+    await handleInlineEdit(booking.id, 'internal_notes', nextNotes);
+    setStatusResult(`Instructor assigned to ${booking.name}.`);
+  };
+
+  const bookingMetrics = useMemo(() => {
+    const statusCounts = filteredBookings.reduce<Record<string, number>>((acc, booking) => {
+      const key = booking.status || 'pending';
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {});
+
+    const totalRevenue = filteredBookings.reduce((sum, booking) => sum + getBookingValue(booking), 0);
+    const payableNow = filteredBookings.reduce((sum, booking) => sum + (getPayableNow(booking) || 0), 0);
+
+    const byCourse = filteredBookings.reduce<Record<string, number>>((acc, booking) => {
+      const key = booking.course_title || 'Unspecified';
+      acc[key] = (acc[key] || 0) + getBookingValue(booking);
+      return acc;
+    }, {});
+
+    const bySource = filteredBookings.reduce<Record<string, number>>((acc, booking) => {
+      const key = booking.booking_source || 'unknown';
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {});
+
+    const topCourses = Object.entries(byCourse)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 4);
+
+    const topSources = Object.entries(bySource)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 4);
+
+    return {
+      totalBookings: filteredBookings.length,
+      totalRevenue,
+      payableNow,
+      pending: statusCounts.pending || 0,
+      confirmed: statusCounts.confirmed || 0,
+      cancelled: statusCounts.cancelled || 0,
+      topCourses,
+      topSources,
+    };
+  }, [filteredBookings]);
 
   const InlineEditCell: React.FC<{
     value: string;

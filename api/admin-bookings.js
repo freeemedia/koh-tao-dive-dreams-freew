@@ -75,6 +75,34 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'GET') {
+    const wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
+    const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
+
+    if (wpUrl && wpApiKey) {
+      // Proxy from WordPress REST API
+      let wpRes, wpJson;
+      try {
+        const sep = wpUrl.includes('?') ? '&' : '?';
+        const endpoint = `${wpUrl}/wp-json/ktd/v1/bookings${sep}nocache=${Date.now()}`;
+        wpRes = await fetch(endpoint, {
+          cache: 'no-store',
+          headers: {
+            'x-ktd-api-key': wpApiKey,
+            'cache-control': 'no-cache',
+          },
+        });
+        wpJson = await wpRes.json();
+      } catch (err) {
+        return res.status(502).json({ error: 'Failed to reach WordPress: ' + err.message });
+      }
+      if (!wpRes.ok) {
+        return res.status(wpRes.status).json({ error: wpJson?.message || 'WordPress API error' });
+      }
+      const rows = Array.isArray(wpJson?.data) ? wpJson.data : (Array.isArray(wpJson) ? wpJson : []);
+      return res.status(200).json(rows);
+    }
+
+    // Fallback: Supabase
     const { data, error } = await supabase
       .from('bookings')
       .select('*')
