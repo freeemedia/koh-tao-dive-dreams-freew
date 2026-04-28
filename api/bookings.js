@@ -47,9 +47,16 @@ export default async function handler(req, res) {
     const { id, ...rest } = body || {};
 
     if (!id) {
+      const payload = {
+        id: (globalThis.crypto && typeof globalThis.crypto.randomUUID === 'function')
+          ? globalThis.crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        ...rest,
+      };
+
       const { data, error } = await supabase
         .from('bookings')
-        .insert({ ...rest })
+        .insert(payload)
         .select();
 
       if (error) return res.status(500).json({ error: error.message });
