@@ -83,10 +83,10 @@ const Footer: React.FC = () => {
     fetchFooterContent();
   }, [locale]);
 
-  return (
+    return (
     <footer className="bg-[#0a2239] text-white mt-12">
       <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-4 mb-10">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-5 mb-10">
           <div>
             <div className="text-xl font-bold text-cyan-400 mb-3">Pro Diving Asia</div>
             <p className="text-sm leading-relaxed text-gray-300 mb-4">
@@ -121,36 +121,42 @@ const Footer: React.FC = () => {
               {isDutch ? 'Duiken' : 'Diving'}
             </h4>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link to="#/courses/open-water" className="hover:text-white transition">Open Water</Link></li>
-              <li><Link to="#/courses/advanced" className="hover:text-white transition">Advanced</Link></li>
-              <li><Link to="#/courses/rescue" className="hover:text-white transition">Rescue Diver</Link></li>
-              <li><Link to="#/courses/divemaster" className="hover:text-white transition">Divemaster</Link></li>
-              <li><Link to="#/fun-diving-koh-tao" className="hover:text-white transition">{isDutch ? 'Fun Diving' : 'Fun Diving'}</Link></li>
-              <li><Link to="#/contact" className="hover:text-white transition">{isDutch ? 'Contact' : 'Contact'}</Link></li>
+              <li><Link to="/courses" className="hover:text-white transition">{isDutch ? 'Cursussen' : 'Courses'}</Link></li>
+              <li><Link to="/courses/open-water" className="hover:text-white transition">Open Water</Link></li>
+              <li><Link to="/courses/advanced" className="hover:text-white transition">Advanced</Link></li>
+              <li><Link to="/courses/rescue" className="hover:text-white transition">Rescue Diver</Link></li>
+              <li><Link to="/courses/divemaster" className="hover:text-white transition">Divemaster</Link></li>
+              <li><Link to="/fun-diving-koh-tao" className="hover:text-white transition">{isDutch ? 'Fun Diving' : 'Fun Diving'}</Link></li>
+              <li><Link to="/marine-life" className="hover:text-white transition">{isDutch ? 'Mariene Fauna' : 'Marine Life'}</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-cyan-400 text-xs font-bold uppercase tracking-wider mb-4">{isDutch ? 'Duikplekken' : 'Dive Sites'}</h4>
+            <ul className="space-y-2 text-sm text-gray-300">
+              <li><Link to="/koh-tao-dive-sites" className="hover:text-white transition">{isDutch ? 'Overzicht' : 'Overview'}</Link></li>
+              <li><Link to="/dive-sites/sail-rock" className="hover:text-white transition">Sail Rock</Link></li>
+              <li><Link to="/dive-sites/chumphon-pinnacle" className="hover:text-white transition">Chumphon Pinnacle</Link></li>
+              <li><Link to="/dive-sites/south-west-pinnacle" className="hover:text-white transition">South West Pinnacle</Link></li>
+              <li><Link to="/dive-sites/japanese-gardens" className="hover:text-white transition">Japanese Gardens</Link></li>
+              <li><Link to="/dive-sites/htms-sattakut" className="hover:text-white transition">HTMS Sattakut</Link></li>
+              <li><Link to="/dive-sites/shark-island" className="hover:text-white transition">Shark Island</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-cyan-400 text-xs font-bold uppercase tracking-wider mb-4">Koh Tao</h4>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link to="#/koh-tao-info" className="hover:text-white transition">{isDutch ? 'Over Koh Tao' : 'About Koh Tao'}</Link></li>
-              <li><Link to="#/accommodation" className="hover:text-white transition">{isDutch ? 'Accommodatie' : 'Accommodation'}</Link></li>
-              <li><Link to="#/beaches-koh-tao" className="hover:text-white transition">{isDutch ? 'Stranden' : 'Beaches'}</Link></li>
-              <li><Link to="#/food-drink" className="hover:text-white transition">{isDutch ? 'Eten & Drinken' : 'Food & Drink'}</Link></li>
-              <li><Link to="#/things-to-do" className="hover:text-white transition">{isDutch ? 'Dingen om te doen' : 'Things To Do'}</Link></li>
-              <li><Link to="#/how-to-get-here" className="hover:text-white transition">{isDutch ? 'Hoe kom je hier' : 'How To Get Here'}</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-cyan-400 text-xs font-bold uppercase tracking-wider mb-4">
-              {isDutch ? 'Info' : 'Info'}
-            </h4>
-            <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link to="#/weather-koh-tao" className="hover:text-white transition">{isDutch ? 'Weer' : 'Weather'}</Link></li>
-              <li><Link to="#/visas-koh-tao" className="hover:text-white transition">Visa</Link></li>
-              <li><Link to="#/medical-services" className="hover:text-white transition">{isDutch ? 'Medisch' : 'Medical'}</Link></li>
-              <li><Link to="#/accommodation-booking" className="hover:text-white transition">Booking.com</Link></li>
+              <li><Link to="/Accommodation" className="hover:text-white transition">{isDutch ? 'Accommodatie' : 'Accommodation'}</Link></li>
+              <li><Link to="/ThingsToDo" className="hover:text-white transition">{isDutch ? 'Dingen om te doen' : 'Things To Do'}</Link></li>
+              <li><Link to="/BeachesKohTao" className="hover:text-white transition">{isDutch ? 'Stranden' : 'Beaches'}</Link></li>
+              <li><Link to="/FoodDrink" className="hover:text-white transition">{isDutch ? 'Eten & Drinken' : 'Food & Drink'}</Link></li>
+              <li><Link to="/HowToGetHere" className="hover:text-white transition">{isDutch ? 'Hoe kom je hier' : 'How To Get Here'}</Link></li>
+              <li><Link to="/WeatherKohTao" className="hover:text-white transition">{isDutch ? 'Weer' : 'Weather'}</Link></li>
+              <li><Link to="/VisasKohTao" className="hover:text-white transition">Visa</Link></li>
+              <li><Link to="/MedicalServices" className="hover:text-white transition">{isDutch ? 'Medisch' : 'Medical'}</Link></li>
+              <li><Link to="/ViewpointsKohTao" className="hover:text-white transition">{isDutch ? 'Uitkijkpunten' : 'Viewpoints'}</Link></li>
+              <li><Link to="/BanksKohTao" className="hover:text-white transition">{isDutch ? 'Banken & Geldautomaten' : 'Banks & ATMs'}</Link></li>
               <li>
                 <a
                   href={tripFooterUrl}
@@ -162,7 +168,7 @@ const Footer: React.FC = () => {
                   Trip.com
                 </a>
               </li>
-              <li><Link to="#/contact" className="hover:text-white transition">{isDutch ? 'Neem contact op' : 'Contact Us'}</Link></li>
+              <li><Link to="/accommodation-booking" className="hover:text-white transition">Booking.com</Link></li>
             </ul>
           </div>
         </div>
