@@ -124,7 +124,7 @@ const FunDiveBooking: React.FC<FunDiveBookingProps> = ({ initialSite }) => {
           };
           // Send to email notification API
           try {
-            await fetch('/send-booking-notification', {
+            await fetch('/api/send-booking-notification', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(payload),
