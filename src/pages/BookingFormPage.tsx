@@ -272,7 +272,7 @@ const       BookingPage: React.FC = () => {
             message: messageWithSource,
           };
 
-          const wpRes = await fetch(`${wpApiBase}/wp-json/ktd/v1/bookings`, {
+          const wpRes = await fetch(`${wpApiBase}/wp-json/ktd/v1/bookings/create`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
