@@ -415,6 +415,8 @@ const AdminPagesManager: React.FC = () => {
       );
 
       return {
+        // Include id so new rows satisfy the NOT NULL constraint; preserve existing id for updates.
+        id: existing?.id || crypto.randomUUID(),
         // Preserve existing slug format when present (legacy short slugs or canonical paths)
         // so updates target existing rows instead of forcing new inserts.
         page_slug: existing?.page_slug || getCanonicalPageSlug(selectedPageSlug),
