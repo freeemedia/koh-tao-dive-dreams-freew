@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/accordion";
 import { usePageContent } from '@/hooks/usePageContent';
 import { useCurrency } from '@/hooks/useCurrency';
+import InlineCourseBookingForm from './InlineCourseBookingForm';
 
 const Courses = () => {
 
@@ -544,6 +545,11 @@ const Courses = () => {
                   <Link to={course.path} className="flex-1">
                     <Button variant="outline" className="w-full">{t('courses.viewCourse', 'View course')}</Button>
                   </Link>
+                  <Link to={`${course.path}#book-with-us`} className="flex-1">
+                    <Button className="w-full bg-teal-600 hover:bg-teal-700 text-white">
+                      {isDutch ? 'Boek nu' : 'Book with Us Now'}
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -552,7 +558,7 @@ const Courses = () => {
 
         <div className="bg-blue-600 rounded-xl p-8 text-white text-center">
           <h3 className="text-2xl font-bold mb-4">{t('courses.specialOffers.title')}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 text-left">
             <div className="bg-blue-700 rounded-lg p-6">
               <h4 className="font-bold text-xl mb-2">{t('courses.specialOffers.combo.title')}</h4>
               <p className="text-blue-200 mb-3">{t('courses.specialOffers.combo.description')}</p>
@@ -584,6 +590,42 @@ const Courses = () => {
                 {isDutch ? 'Boek Bundel' : 'Book Bundle'}
               </a>
             </div>
+
+            <div className="bg-amber-500 rounded-lg p-6 border-2 border-amber-300 text-amber-950">
+              <h4 className="font-bold text-xl mb-2">🔥 {isDutch ? 'Speciale Aanbieding' : 'Special Offer'}</h4>
+              <p className="mb-3 font-medium">
+                {isDutch
+                  ? 'Open Water naar Divemaster pakket met 15% korting.'
+                  : 'Open Water to Divemaster package with 15% savings.'}
+              </p>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-3xl font-extrabold">{getDisplayedPrice('฿56,780')}</span>
+                <span className="line-through text-amber-900/70">{getDisplayedPrice('฿66,800')}</span>
+              </div>
+              <Link
+                to="/packages/open-water-to-divemaster"
+                className="block w-full rounded-lg bg-amber-950 py-3 text-center font-semibold text-amber-100 no-underline hover:bg-black"
+              >
+                {isDutch ? 'Bekijk pakket' : 'View Package'}
+              </Link>
+            </div>
+          </div>
+
+          <div className="mt-10 bg-white rounded-xl p-6 text-left text-gray-900 max-w-3xl mx-auto">
+            <h4 className="text-2xl font-bold text-center mb-2">
+              {isDutch ? 'Boek bij ons nu' : 'Book with Us Now'}
+            </h4>
+            <p className="text-center text-gray-600 mb-6">
+              {isDutch
+                ? 'Vul het formulier in en wij nemen snel contact met je op voor planning en betaling.'
+                : 'Fill in the form and we will contact you quickly for scheduling and payment.'}
+            </p>
+            <InlineCourseBookingForm
+              itemType="course"
+              itemTitle="Open Water to Divemaster Special Offer"
+              depositMajor={11360}
+              depositCurrency="THB"
+            />
           </div>
         </div>
       </div>
