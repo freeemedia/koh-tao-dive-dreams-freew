@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
+import { queueWordPressCrmSync } from '@/lib/wordpressCrmSync';
 
 const bookingSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
@@ -125,6 +126,42 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
         if (responseData.warning) {
           toast.warning(`Booking saved, but email notification needs attention: ${responseData.warning}`);
         }
+
+        // Fire-and-forget CRM sync
+        const wpApiBase = (import.meta.env.VITE_WP_API_BASE || '').trim();
+        const wpApiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || '').trim();
+        if (wpApiBase && wpApiKey) {
+          queueWordPressCrmSync({
+            wpApiBase,
+            wpApiKey,
+            payload: {
+              source: 'website',
+              source_page: window.location.pathname,
+              event_type: 'booking_created',
+              submitted_at: new Date().toISOString(),
+              contact: {
+                full_name: data.name,
+                email: data.email,
+                phone: data.phone || '',
+              },
+              booking: {
+                course_interest: itemTitle,
+                preferred_start_date: data.preferred_date || '',
+                experience_level: data.experience_level || '',
+                message: data.message || '',
+                payment_choice: paymentChoice,
+                payment_status: 'new_inquiry',
+                deposit_amount: typeof depositMajor === 'number' ? depositMajor : undefined,
+                currency: depositCurrency || 'THB',
+              },
+              tags: [
+                'website-form',
+                `${itemType}-page`,
+              ].filter(Boolean),
+            },
+          });
+        }
+
         toast.success('Booking inquiry sent. We will contact you shortly.');
         form.reset();
         onClose();
