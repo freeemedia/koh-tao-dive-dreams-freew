@@ -22,9 +22,8 @@ const bookingSchema = z.object({
   preferred_date: z.string().trim().min(1, 'Preferred date is required'),
   experience_level: z.string().optional(),
   message: z.string().trim().max(1000).optional(),
-
+  paymentChoice: z.enum(['paypal', 'inquire']).default('inquire'),
 });
-
 
 type BookingFormData = z.infer<typeof bookingSchema>;
 
@@ -155,6 +154,8 @@ const       BookingPage: React.FC = () => {
     return availableAddons.reduce((sum, a) => sum + (selectedAddons[a.id] ? a.amount : 0), 0);
   }, [isDiveBooking, availableAddons, selectedAddons]);
 
+  const paypalBase = (import.meta.env.VITE_PAYPAL_LINK || 'https://paypal.me/prodivingasia').trim().replace(/\/+$/, '');
+
   const form = useForm<BookingFormData>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
@@ -164,6 +165,7 @@ const       BookingPage: React.FC = () => {
       preferred_date: new Date().toISOString().slice(0, 10),
       experience_level: '',
       message: searchParams.get('message') || '',
+      paymentChoice: 'inquire',
     },
   });
 
@@ -239,7 +241,7 @@ const       BookingPage: React.FC = () => {
         accommodation: data.accommodation || 'N/A',
         preferred_date: data.preferred_date || 'N/A',
         experience_level: data.experience_level || 'N/A',
-        payment_choice: 'inquire',
+        payment_choice: data.paymentChoice === 'paypal' ? 'Pay deposit via PayPal' : 'Inquire only - pay later',
         item_title: bookingItemTitle,
         full_price: totalItemCostMajor > 0 ? `฿${totalItemCostMajor}` : (isStayBooking ? 'Quote on request' : 'N/A'),
         dive_count: isFunDiveBooking ? funDiveCount : 'N/A',
@@ -275,7 +277,7 @@ const       BookingPage: React.FC = () => {
             guests: guestCount,
             nights: nightsCount,
             experience_level: data.experience_level || '',
-            payment_choice: 'inquire',
+            payment_choice: data.paymentChoice === 'paypal' ? 'paypal' : 'inquire',
             currency: depositCurrency || 'THB',
             deposit_amount: depositAmountMajor,
             total_amount: totalAmountMajor,
@@ -330,7 +332,7 @@ const       BookingPage: React.FC = () => {
         deposit_amount: depositAmountMajor != null ? `฿${depositAmountMajor}` : 'Quote on request',
         total_amount: totalAmountMajor != null ? `฿${totalAmountMajor}` : 'Quote on request',
         balance_amount: balanceAmountMajor != null ? `฿${balanceAmountMajor}` : 'Quote on request',
-        payment_choice: 'inquire',
+        payment_choice: data.paymentChoice === 'paypal' ? 'PayPal deposit' : 'Inquire only',
       };
       sessionStorage.setItem('bookingData', JSON.stringify(bookingDetailsForDisplay));
 
@@ -364,9 +366,9 @@ const       BookingPage: React.FC = () => {
                 guest_count: guestCount || undefined,
                 accommodation_interest: data.accommodation || '',
                 message: messageWithSource,
-                payment_choice: 'inquire',
-                payment_mode: 'inquire',
-                payment_status: wpSaved ? 'new_inquiry' : 'not_synced',
+                payment_choice: data.paymentChoice === 'paypal' ? 'paypal' : 'inquire',
+                payment_mode: data.paymentChoice === 'paypal' ? 'paypal' : 'inquire',
+                payment_status: data.paymentChoice === 'paypal' ? 'deposit_paypal_redirect' : (wpSaved ? 'new_inquiry' : 'not_synced'),
                 deposit_amount: depositAmountMajor,
                 total_amount: totalAmountMajor,
                 currency: depositCurrency || 'THB',
@@ -381,8 +383,13 @@ const       BookingPage: React.FC = () => {
           });
         }
 
-        setTimeout(() => window.location.href = '/thank-you.html', 1500);
-        setInquiryNotice(SKIP_PAYMENT_MESSAGE);
+        if (data.paymentChoice === 'paypal' && amountMajor > 0) {
+          const paypalUrl = `${paypalBase}/${amountMajor}THB`;
+          setTimeout(() => { window.location.href = paypalUrl; }, 1200);
+        } else {
+          setTimeout(() => window.location.href = '/thank-you.html', 1500);
+          setInquiryNotice(SKIP_PAYMENT_MESSAGE);
+        }
       } else {
         const errMsg = responseData?.message || responseData?.error || `HTTP ${res.status}`;
         console.error('Booking notification error:', errMsg, responseData);
@@ -745,12 +752,53 @@ const       BookingPage: React.FC = () => {
               </FormItem>
             )} />
 
-
+            {!isStayBooking && depositMajor > 0 && (
+              <div className="p-4 border rounded-lg bg-muted/20">
+                <h3 className="font-semibold mb-3">Payment Option</h3>
+                <FormField control={form.control} name="paymentChoice" render={({ field }) => (
+                  <FormItem>
+                    <div className="flex flex-col gap-3">
+                      <label className="flex items-start gap-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          className="mt-1"
+                          value="paypal"
+                          checked={field.value === 'paypal'}
+                          onChange={() => field.onChange('paypal')}
+                        />
+                        <div>
+                          <div className="font-medium">Pay deposit now via PayPal</div>
+                          <div className="text-sm text-muted-foreground">
+                            Secure your booking by paying the deposit (฿{depositMajor + totalAddons}) via PayPal. You'll be redirected after submitting.
+                          </div>
+                        </div>
+                      </label>
+                      <label className="flex items-start gap-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          className="mt-1"
+                          value="inquire"
+                          checked={field.value === 'inquire'}
+                          onChange={() => field.onChange('inquire')}
+                        />
+                        <div>
+                          <div className="font-medium">Inquire only — pay later</div>
+                          <div className="text-sm text-muted-foreground">
+                            We'll contact you to arrange payment. No money taken now.
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+              </div>
+            )}
 
             <div className="flex gap-3 pt-4">
               <Button type="button" variant="outline" onClick={() => navigate(-1)} className="flex-1">Cancel</Button>
               <Button type="submit" disabled={isSubmitting} className="flex-1 bg-primary hover:bg-primary/90">
-                {isSubmitting ? 'Sending...' : 'Submit Inquiry'}
+                {isSubmitting ? 'Sending...' : (form.watch('paymentChoice') === 'paypal' && !isStayBooking && depositMajor > 0 ? 'Submit & Pay via PayPal' : 'Submit Inquiry')}
               </Button>
             </div>
           </form>
