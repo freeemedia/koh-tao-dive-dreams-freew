@@ -719,7 +719,8 @@ class KTD_Booking_Manager {
         $existing = $contacts_api->getContact($email);
         $created = !$existing;
 
-        $subscriber = \FluentCrm\App\Models\Subscriber::updateOrCreate($subscriber_data, true, false, false);
+        $subscriber_model = new \FluentCrm\App\Models\Subscriber();
+        $subscriber = $subscriber_model->updateOrCreate($subscriber_data, true, false, false);
 
         if (!$subscriber) {
             return new WP_Error('ktd_fluentcrm_sync_failed', 'Failed to create or update FluentCRM contact.', array('status' => 500));
