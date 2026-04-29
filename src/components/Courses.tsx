@@ -625,6 +625,8 @@ const Courses = () => {
               itemTitle="Open Water to Divemaster Special Offer"
               depositMajor={11360}
               depositCurrency="THB"
+              crmSource="ktd-home-special-offer"
+              crmTags={["open-water-to-divemaster", "special-offer", "home-page"]}
             />
           </div>
         </div>

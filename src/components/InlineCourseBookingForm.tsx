@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Calendar, User, Mail, Phone, MessageSquare } from 'lucide-react';
+import { Calendar, User, Mail, Phone, MessageSquare, Globe, Hotel, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,6 +16,9 @@ const schema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100),
   email: z.string().trim().email('Invalid email').max(255),
   phone: z.string().trim().max(20).optional(),
+  nationality: z.string().trim().max(80).optional(),
+  accommodation: z.string().trim().max(120).optional(),
+  guest_count: z.string().trim().max(2).optional(),
   preferred_date: z.string().optional(),
   experience_level: z.string().optional(),
   message: z.string().trim().max(1000).optional(),
@@ -29,6 +32,8 @@ interface Props {
   itemTitle: string;
   depositMajor?: number;
   depositCurrency?: string;
+  crmSource?: string;
+  crmTags?: string[];
 }
 
 const InlineCourseBookingForm: React.FC<Props> = ({
@@ -36,6 +41,8 @@ const InlineCourseBookingForm: React.FC<Props> = ({
   itemTitle,
   depositMajor,
   depositCurrency = 'THB',
+  crmSource = 'ktd-website',
+  crmTags = [],
 }) => {
   const [submitted, setSubmitted] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState('');
@@ -50,6 +57,9 @@ const InlineCourseBookingForm: React.FC<Props> = ({
       name: '',
       email: '',
       phone: '',
+      nationality: '',
+      accommodation: '',
+      guest_count: '1',
       preferred_date: '',
       experience_level: '',
       message: '',
@@ -68,12 +78,16 @@ const InlineCourseBookingForm: React.FC<Props> = ({
         name: data.name,
         email: data.email,
         phone: data.phone || 'N/A',
+        nationality: data.nationality || 'N/A',
+        accommodation: data.accommodation || 'N/A',
+        guest_count: data.guest_count || '1',
         preferred_date: data.preferred_date || 'N/A',
         experience_level: data.experience_level || 'N/A',
         payment_choice: data.paymentChoice === 'paypal' ? 'paypal-deposit' : 'inquire',
         deposit_amount: deposit > 0 ? `฿${deposit}` : 'N/A',
-        message: `Phone: ${data.phone || 'N/A'}\nPreferred Date: ${data.preferred_date || 'N/A'}\nExperience Level: ${data.experience_level || 'N/A'}\nPayment: ${data.paymentChoice}\n\nMessage:\n${data.message || 'N/A'}`,
+        message: `Phone: ${data.phone || 'N/A'}\nNationality: ${data.nationality || 'N/A'}\nAccommodation: ${data.accommodation || 'N/A'}\nGroup Size: ${data.guest_count || '1'}\nPreferred Date: ${data.preferred_date || 'N/A'}\nExperience Level: ${data.experience_level || 'N/A'}\nPayment: ${data.paymentChoice}\n\nMessage:\n${data.message || 'N/A'}`,
       };
+      const guestCount = data.guest_count === '6' ? 6 : Number(data.guest_count || '1');
 
       const res = await fetch(apiUrl('/api/send-booking-notification'), {
         method: 'POST',
@@ -110,22 +124,29 @@ const InlineCourseBookingForm: React.FC<Props> = ({
           wpApiBase,
           wpApiKey,
           payload: {
-            source: 'website',
+            source: crmSource,
             source_page: window.location.pathname,
             event_type: 'booking_created',
             submitted_at: new Date().toISOString(),
-            contact: { full_name: data.name, email: data.email, phone: data.phone || '' },
+            contact: {
+              full_name: data.name,
+              email: data.email,
+              phone: data.phone || '',
+              country: data.nationality || '',
+            },
             booking: {
               course_interest: itemTitle,
               preferred_start_date: data.preferred_date || '',
               experience_level: data.experience_level || '',
+              guest_count: Number.isFinite(guestCount) ? guestCount : 1,
+              accommodation_interest: data.accommodation || '',
               message: data.message || '',
               payment_choice: data.paymentChoice,
               payment_status: data.paymentChoice === 'paypal' ? 'deposit_paypal_redirect' : 'new_inquiry',
               deposit_amount: deposit || undefined,
               currency: depositCurrency,
             },
-            tags: ['website-form', `${itemType}-page`, 'inline-form'].filter(Boolean),
+            tags: ['ktd', 'website-form', `${itemType}-page`, 'inline-form', ...crmTags].filter(Boolean),
           },
         });
       }
@@ -192,10 +213,46 @@ const InlineCourseBookingForm: React.FC<Props> = ({
             </FormItem>
           )} />
 
+          <FormField control={form.control} name="nationality" render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2"><Globe className="h-4 w-4" /> Nationality</FormLabel>
+              <FormControl><Input placeholder="e.g. Dutch, British, Thai" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+
+          <FormField control={form.control} name="accommodation" render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2"><Hotel className="h-4 w-4" /> Accommodation</FormLabel>
+              <FormControl><Input placeholder="Hotel name or area on Koh Tao" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+
           <FormField control={form.control} name="preferred_date" render={({ field }) => (
             <FormItem>
               <FormLabel className="flex items-center gap-2"><Calendar className="h-4 w-4" /> Preferred Date</FormLabel>
               <FormControl><Input type="date" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+
+          <FormField control={form.control} name="guest_count" render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2"><Users className="h-4 w-4" /> Group Size</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value || '1'}>
+                <FormControl>
+                  <SelectTrigger><SelectValue placeholder="How many people?" /></SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="1">1 person</SelectItem>
+                  <SelectItem value="2">2 people</SelectItem>
+                  <SelectItem value="3">3 people</SelectItem>
+                  <SelectItem value="4">4 people</SelectItem>
+                  <SelectItem value="5">5 people</SelectItem>
+                  <SelectItem value="6">6+ people</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )} />
