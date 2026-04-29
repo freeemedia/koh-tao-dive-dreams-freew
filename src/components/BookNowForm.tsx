@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 const COURSE_PRICES: Record<string, number> = {
   'Open Water': 11500,
   'Advanced Open Water': 10500,
-  'Rescue Diver': 13000,
+  'Rescue Diver': 10000,
   'Divemaster': 35000,
   'Fun Dive': 1800,
 };
