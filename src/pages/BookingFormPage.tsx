@@ -381,6 +381,36 @@ const       BookingPage: React.FC = () => {
                 Fun Dives
               </Button>
             </div>
+            {selectedBookingKind === 'course' && (
+              <div className="mt-4">
+                <p className="text-sm text-white/80 mb-2">Select your course:</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {[
+                    { label: 'PADI Open Water', slug: 'open-water', price: 11000 },
+                    { label: 'PADI Advanced Open Water', slug: 'advanced-open-water', price: 10000 },
+                    { label: 'PADI Rescue Diver', slug: 'rescue-diver', price: 4500 },
+                    { label: 'PADI Divemaster', slug: 'divemaster', price: 10000 },
+                    { label: 'Discover Scuba Diving', slug: 'discover-scuba', price: 3500 },
+                    { label: 'PADI Wreck Diver Specialty', slug: 'wreck-diver', price: 8000 },
+                    { label: 'PADI Deep Diver Specialty', slug: 'deep-diver', price: 8000 },
+                    { label: 'PADI Night Diver Specialty', slug: 'night-diver', price: 8000 },
+                    { label: 'PADI Underwater Photography', slug: 'photography', price: 8000 },
+                    { label: 'Enriched Air (Nitrox)', slug: 'enriched-air', price: 8000 },
+                    { label: '3 Specialty Bundle', slug: '', price: 18000, item: '3 Specialty Bundle' },
+                    { label: 'Other / Ask us', slug: '', price: 0, item: 'Course Enquiry' },
+                  ].map(({ label, slug, price, item }) => (
+                    <button
+                      key={label}
+                      type="button"
+                      className="text-left px-3 py-2 rounded bg-white/10 hover:bg-white/20 border border-white/30 text-white text-sm font-medium transition"
+                      onClick={() => navigate(`/booking?item=${encodeURIComponent(item || label)}&type=course${price ? `&price=${price}` : ''}${price ? '&currency=THB' : ''}${slug ? `&course=${slug}` : ''}&source=${encodeURIComponent(bookingSource)}`)}
+                    >
+                      {label}{price ? ` — ฿${price.toLocaleString()}` : ''}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
