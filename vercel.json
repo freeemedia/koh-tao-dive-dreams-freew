@@ -6,15 +6,15 @@
   "outputDirectory": "dist",
   "redirects": [
     {
-      "source": "/",
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "admin.divinginasia.com" }],
-      "destination": "/admin",
+      "destination": "https://lightsalmon-dinosaur-377714.hostingersite.com/wp-admin/$1",
       "permanent": false
     },
     {
-      "source": "/",
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "admin.divnginasia.com" }],
-      "destination": "/admin",
+      "destination": "https://lightsalmon-dinosaur-377714.hostingersite.com/wp-admin/$1",
       "permanent": false
     }
   ],
