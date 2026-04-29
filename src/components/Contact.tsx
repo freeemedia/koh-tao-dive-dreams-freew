@@ -3,7 +3,6 @@ import { MapPin, Phone, Mail, Clock, Facebook, Instagram, MessageCircle } from '
 import { toast } from 'sonner';
 import { usePageContent } from '@/hooks/usePageContent';
 import { useTranslation } from 'react-i18next';
-import CalendarSubscribe from './CalendarSubscribe';
 
 // Do not call emailjs.init with the service ID — we'll pass the public key on send.
 
@@ -293,7 +292,6 @@ const ContactWrapper = () => {
   return (
     <>
       <Contact />
-      {user && <CalendarSubscribe />}
     </>
   );
 };
