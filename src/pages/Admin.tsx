@@ -15,60 +15,94 @@ const Admin = () => {
   ];
 
   return (
-    <div className="min-h-[80vh] pt-[10px] bg-gradient-to-br from-blue-50 to-emerald-50">
-      <header className="w-full py-8 mb-8 bg-gradient-to-r from-blue-700 to-emerald-600 shadow-lg text-white rounded-b-3xl flex flex-col items-center relative">
-        <div className="absolute top-4 right-6">
-          <LanguageSwitcher />
+    <div className="min-h-[80vh] bg-slate-100">
+      <header className="relative overflow-hidden border-b border-slate-800/40 bg-[#0e1a2b] text-slate-100 shadow-xl">
+        <div className="pointer-events-none absolute -left-16 -top-16 h-52 w-52 rounded-full bg-cyan-400/20 blur-2xl" />
+        <div className="pointer-events-none absolute -right-16 -bottom-16 h-64 w-64 rounded-full bg-blue-500/20 blur-2xl" />
+        <div className="relative mx-auto flex w-full max-w-[1400px] flex-col gap-3 px-6 py-8">
+          <div className="absolute right-6 top-4">
+            <LanguageSwitcher />
+          </div>
+          <p className="text-xs uppercase tracking-[0.2em] text-cyan-300">Operations Console</p>
+          <h1 className="text-3xl font-bold tracking-wide">{t('admin.dashboard_title', { defaultValue: 'Admin Dashboard' })}</h1>
         </div>
-        <h1 className="text-3xl font-bold tracking-wide mb-2">{t('admin.dashboard_title', { defaultValue: 'Admin Dashboard' })}</h1>
       </header>
-      <div className="flex flex-col items-center mb-8">
-        <nav className="flex flex-row gap-6 justify-center">
-          {tabs.map(tab => (
-            <button
-              key={tab.key}
-              className={`px-7 py-3 text-base font-semibold rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-400 ${activeTab === tab.key ? 'bg-blue-600 text-white shadow' : 'bg-transparent text-gray-700 hover:bg-blue-100'}`}
-              onClick={() => setActiveTab(tab.key)}
+
+      <div className="mx-auto w-full max-w-[1400px] px-6 py-6">
+        <div className="mb-6 grid gap-4 md:grid-cols-3">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <p className="text-xs uppercase tracking-wide text-slate-500">Bookings</p>
+            <p className="mt-2 text-xl font-semibold text-slate-900">Live Intake</p>
+          </div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <p className="text-xs uppercase tracking-wide text-slate-500">Billing</p>
+            <p className="mt-2 text-xl font-semibold text-slate-900">Status Tracking</p>
+          </div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <p className="text-xs uppercase tracking-wide text-slate-500">Workflow</p>
+            <p className="mt-2 text-xl font-semibold text-slate-900">Project Manager</p>
+          </div>
+        </div>
+
+        <div className="mb-6 flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
+          <nav className="flex flex-wrap gap-3 rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+            {tabs.map(tab => (
+              <button
+                key={tab.key}
+                className={`rounded-lg px-5 py-2 text-sm font-semibold transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-400 ${activeTab === tab.key ? 'bg-slate-900 text-white shadow' : 'text-slate-700 hover:bg-slate-100'}`}
+                onClick={() => setActiveTab(tab.key)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </nav>
+          <div className="flex items-center gap-2">
+            <a
+              href="https://lightsalmon-dinosaur-377714.hostingersite.com/wp-admin"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700 shadow-sm transition hover:bg-blue-100"
             >
-              {tab.label}
-            </button>
-          ))}
-        </nav>
-        <a
-          href="/"
-          className="mt-4 inline-block rounded bg-gray-500 px-5 py-2 text-base font-semibold text-white hover:bg-gray-700 shadow"
-        >
-          {t('admin.back_to_main_page', { defaultValue: 'Back to Main Page' })}
-        </a>
-      </div>
-      <div className="px-6">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg>
+              WP Admin
+            </a>
+            <a
+              href="/"
+              className="inline-block rounded-lg bg-slate-700 px-4 py-2 text-sm font-semibold text-white shadow transition hover:bg-slate-900"
+            >
+              {t('admin.back_to_main_page', { defaultValue: 'Back to Main Page' })}
+            </a>
+          </div>
+        </div>
+
         {activeTab === 'bookings' && (
-          <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xl">
             <AdminBookings />
           </div>
         )}
+
         {activeTab === 'project-manager' && (
-        <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100 space-y-4">
-          <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-            <div>
-              <h2 className="text-xl font-semibold">Project Manager</h2>
-              <p className="text-sm text-gray-600">
-                {t('admin.project_manager_jira_restriction', { defaultValue: 'Jira cannot be embedded due to Atlassian restrictions. Please use the button below to open the Jira project board in a new tab.' })}
-              </p>
+          <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
+            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+              <div>
+                <h2 className="text-xl font-semibold text-slate-900">Project Manager</h2>
+                <p className="text-sm text-slate-600">
+                  {t('admin.project_manager_jira_restriction', { defaultValue: 'Jira cannot be embedded due to Atlassian restrictions. Please use the button below to open the Jira project board in a new tab.' })}
+                </p>
+              </div>
+              <a
+                href={jiraProjectUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+              >
+                {t('admin.open_jira', { defaultValue: 'Open Jira' })}
+              </a>
             </div>
-            <a
-              href={jiraProjectUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-            >
-              {t('admin.open_jira', { defaultValue: 'Open Jira' })}
-            </a>
+            <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-600">
+              {t('admin.project_manager_embedding_not_supported', { defaultValue: '(Direct embedding is not supported by Jira. Use the button above to access your board.)' })}
+            </div>
           </div>
-          <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-6 text-sm text-gray-600">
-            {t('admin.project_manager_embedding_not_supported', { defaultValue: '(Direct embedding is not supported by Jira. Use the button above to access your board.)' })}
-          </div>
-        </div>
         )}
       </div>
     </div>

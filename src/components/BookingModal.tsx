@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 interface BookingModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: any) => void | Promise<void>;
 }
 
 
@@ -19,6 +19,8 @@ const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, onSubmit }) 
     experience: '',
     message: '',
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Load saved form data when modal opens
   useEffect(() => {
@@ -60,11 +62,21 @@ const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, onSubmit }) 
   };
 
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(form);
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
-    onClose();
+    if (submitting) return;
+
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      await Promise.resolve(onSubmit(form));
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+      onClose();
+    } catch {
+      setSubmitError('Unable to submit right now. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
 
@@ -85,9 +97,10 @@ const BookingModal: React.FC<BookingModalProps> = ({ open, onClose, onSubmit }) 
           <input name="date" value={form.date} onChange={handleChange} placeholder="Preferred Date" className="w-full border p-1.5 sm:p-2 rounded text-gray-900 text-sm sm:text-base" type="date" />
           <input name="experience" value={form.experience} onChange={handleChange} placeholder="Experience Level" className="w-full border p-1.5 sm:p-2 rounded text-gray-900 text-sm sm:text-base" />
           <textarea name="message" value={form.message} onChange={handleChange} placeholder="Message" className="w-full border p-1.5 sm:p-2 rounded text-gray-900 text-sm sm:text-base" />
+          {submitError && <p className="text-sm text-red-600">{submitError}</p>}
           <div className="flex justify-end gap-2 mt-2 sm:mt-4">
-            <button type="button" onClick={onClose} className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-200 rounded text-gray-900 text-sm sm:text-base">Cancel</button>
-            <button type="submit" className="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-600 text-white rounded text-sm sm:text-base">Submit</button>
+            <button type="button" onClick={onClose} disabled={submitting} className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-200 rounded text-gray-900 text-sm sm:text-base disabled:opacity-60">Cancel</button>
+            <button type="submit" disabled={submitting} className="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-600 text-white rounded text-sm sm:text-base disabled:opacity-60">{submitting ? 'Submitting...' : 'Submit'}</button>
           </div>
         </form>
       </div>

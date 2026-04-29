@@ -16,7 +16,7 @@ const BookingModalWeb3Forms: React.FC = () => {
             </div>
             <h2 style={{textAlign:'center'}}>Booking / Inquiry Form</h2>
             <form action="https://api.web3forms.com/submit" method="POST" style={{marginTop:'1rem'}}>
-              <input type="hidden" name="access_key" value="e4c4edf6-6e35-456a-87da-b32b961b449a" />
+              <input type="hidden" name="access_key" value="b42b4f7a-b0b3-4ba9-8197-cf5abe9f09e6" />
               <input type="hidden" name="subject" value="New Booking Inquiry from Website" />
               <input type="hidden" name="redirect" value="https://www.divinginasia.com/thank-you.html" />
               <label>Name<input type="text" name="name" required /></label>

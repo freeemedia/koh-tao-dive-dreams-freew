@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 
 import { Clock, Star, ChevronDown, ChevronUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -32,25 +32,37 @@ const Courses = () => {
     course_open_water_duration: t('courses.openWater.duration'),
     course_open_water_max_depth: t('courses.openWater.maxDepth'),
     course_open_water_price: t('courses.openWater.price'),
-    // Removed USD/EUR fallback prices
+    course_open_water_price_usd: '320',
+    course_open_water_price_eur: '290',
     course_open_water_description: t('courses.openWater.description'),
+    course_open_water_full_description: t('courses.openWater.fullDescription'),
+    course_open_water_includes: (t('courses.openWater.includes', { returnObjects: true }) as string[]).join('\n'),
+    course_open_water_whats_next: t('courses.openWater.whatsNext'),
+    course_open_water_images: (t('courses.openWater.courseImages', { returnObjects: true }) as string[]).join(', '),
 
     course_advanced_title: t('courses.advanced.title'),
     course_advanced_level: t('courses.advanced.level'),
     course_advanced_duration: t('courses.advanced.duration'),
     course_advanced_max_depth: t('courses.advanced.maxDepth'),
     course_advanced_price: t('courses.advanced.price'),
-    // Removed USD/EUR fallback prices
+    course_advanced_price_usd: '290',
+    course_advanced_price_eur: '265',
     course_advanced_description: t('courses.advanced.description'),
+    course_advanced_full_description: t('courses.advanced.fullDescription'),
+    course_advanced_includes: (t('courses.advanced.includes', { returnObjects: true }) as string[]).join('\n'),
+    course_advanced_images: (t('courses.advanced.courseImages', { returnObjects: true }) as string[]).join(', '),
 
     course_efr_title: t('courses.efr.title'),
     course_efr_level: t('courses.efr.level'),
     course_efr_duration: t('courses.efr.duration'),
     course_efr_max_depth: t('courses.efr.maxDepth'),
     course_efr_price: t('courses.efr.price'),
-    course_efr_price_usd: '130',
-    course_efr_price_eur: '120',
+    course_efr_price_usd: '167',
+    course_efr_price_eur: '154',
     course_efr_description: t('courses.efr.description'),
+    course_efr_full_description: t('courses.efr.fullDescription'),
+    course_efr_includes: (t('courses.efr.includes', { returnObjects: true }) as string[]).join('\n'),
+    course_efr_images: (t('courses.efr.courseImages', { returnObjects: true }) as string[]).join(', '),
 
     course_rescue_title: t('courses.rescue.title'),
     course_rescue_level: t('courses.rescue.level'),
@@ -60,6 +72,9 @@ const Courses = () => {
     course_rescue_price_usd: '290',
     course_rescue_price_eur: '265',
     course_rescue_description: t('courses.rescue.description'),
+    course_rescue_full_description: t('courses.rescue.fullDescription'),
+    course_rescue_includes: (t('courses.rescue.includes', { returnObjects: true }) as string[]).join('\n'),
+    course_rescue_images: (t('courses.rescue.courseImages', { returnObjects: true }) as string[]).join(', '),
 
     course_divemaster_title: t('courses.divemaster.title'),
     course_divemaster_level: t('courses.divemaster.level'),
@@ -69,6 +84,9 @@ const Courses = () => {
     course_divemaster_price_usd: '1190',
     course_divemaster_price_eur: '1090',
     course_divemaster_description: t('courses.divemaster.description'),
+    course_divemaster_full_description: t('courses.divemaster.fullDescription'),
+    course_divemaster_includes: (t('courses.divemaster.includes', { returnObjects: true }) as string[]).join('\n'),
+    course_divemaster_images: (t('courses.divemaster.courseImages', { returnObjects: true }) as string[]).join(', '),
 
     course_instructor_title: t('courses.instructor.title'),
     course_instructor_level: t('courses.instructor.level'),
@@ -78,6 +96,9 @@ const Courses = () => {
     course_instructor_price_usd: '1710',
     course_instructor_price_eur: '1560',
     course_instructor_description: t('courses.instructor.description'),
+    course_instructor_full_description: t('courses.instructor.fullDescription'),
+    course_instructor_includes: (t('courses.instructor.includes', { returnObjects: true }) as string[]).join('\n'),
+    course_instructor_images: (t('courses.instructor.courseImages', { returnObjects: true }) as string[]).join(', '),
 
     course_discover_scuba_title: 'Discover Scuba Diving (DSD)',
     course_discover_scuba_level: isDutch ? 'Beginner' : 'Beginner',
@@ -89,6 +110,13 @@ const Courses = () => {
     course_discover_scuba_description: isDutch
       ? 'Geen brevet nodig. De ideale eerste stap om veilig kennis te maken met duiken.'
       : 'No certification required. The perfect first step to experience scuba diving safely.',
+    course_discover_scuba_full_description: isDutch
+      ? 'Discover Scuba Diving is ontworpen voor beginners. Je leert basisvaardigheden in een veilige omgeving en maakt daarna je eerste buitenwaterduik met een professional.'
+      : 'Discover Scuba Diving is designed for beginners. You learn core skills in a safe environment and then complete your first open water dive with a professional.',
+    course_discover_scuba_includes: (isDutch
+      ? ['Gecertificeerde duikprofessional', 'Alle uitrusting inbegrepen', 'Kleine groepen (max 4)', 'Extra duiken mogelijk']
+      : ['Certified scuba dive professional', 'All equipment included', 'Small groups (max 4)', 'Additional dives available']).join('\n'),
+    course_discover_scuba_images: 'photo-1659518893171-b15e20a8e201.avif',
 
     course_discover_scuba_deluxe_title: 'Discover Scuba Diving Deluxe',
     course_discover_scuba_deluxe_level: isDutch ? 'Beginner' : 'Beginner',
@@ -100,6 +128,13 @@ const Courses = () => {
     course_discover_scuba_deluxe_description: isDutch
       ? 'Uitgebreide DSD met 3 duiken voor meer onderwatertijd en een relaxter tempo.'
       : 'Extended DSD with 3 dives for more underwater time and a more relaxed pace.',
+    course_discover_scuba_deluxe_full_description: isDutch
+      ? 'DSD Deluxe bevat zwembad/confined training plus een kustduik en twee bootduiken rond Koh Tao. Perfect als je meer ervaring wilt voordat je beslist over Open Water.'
+      : 'DSD Deluxe includes confined training plus one shore dive and two boat dives around Koh Tao. Ideal if you want more experience before deciding on Open Water.',
+    course_discover_scuba_deluxe_includes: (isDutch
+      ? ['3 begeleide duiken', 'Alle uitrusting inbegrepen', 'Gecertificeerde instructeur', 'Kleine groepen (max 4)']
+      : ['3 guided dives', 'All equipment included', 'Certified instructor', 'Small groups (max 4)']).join('\n'),
+    course_discover_scuba_deluxe_images: 'photo-1682687982423-295485af248a.avif',
   }), [t, locale, isDutch]);
 
   const { content: homeContent } = usePageContent({
@@ -120,10 +155,85 @@ const Courses = () => {
       currency,
       maximumFractionDigits: 0,
     }).format(amount);
+
+  const parseMultilineList = (value: string) =>
+    String(value || '')
+      .split(/\r?\n/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+  const parseCommaSeparatedList = (value: string) =>
+    String(value || '')
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+
   // Helper to get THB price as number from price string (e.g., '฿2,500')
   const getThbPrice = (price: string) => {
     const digits = String(price || '').replace(/[^\d.]/g, '').replace(/,/g, '');
     return digits ? Number(digits) : 0;
+  };
+
+  const getDisplayedPrice = (priceLabel: string) => {
+    const thbAmount = getThbPrice(priceLabel);
+    return formatCurrency(thbAmount, 'THB');
+  };
+
+  const parseCurrencyAmount = (value: string) => {
+    const digits = String(value || '').replace(/[^\d.\-]/g, '');
+    return digits ? Number(digits) : 0;
+  };
+
+  const getFallbackForeignPrice = (courseKey: string, currency: 'USD' | 'EUR') => {
+    const keyMap: Record<string, { usd: string; eur: string }> = {
+      openWater: {
+        usd: homeFallbackContent.course_open_water_price_usd,
+        eur: homeFallbackContent.course_open_water_price_eur,
+      },
+      advanced: {
+        usd: homeFallbackContent.course_advanced_price_usd,
+        eur: homeFallbackContent.course_advanced_price_eur,
+      },
+      efr: {
+        usd: homeFallbackContent.course_efr_price_usd,
+        eur: homeFallbackContent.course_efr_price_eur,
+      },
+      rescue: {
+        usd: homeFallbackContent.course_rescue_price_usd,
+        eur: homeFallbackContent.course_rescue_price_eur,
+      },
+      divemaster: {
+        usd: homeFallbackContent.course_divemaster_price_usd,
+        eur: homeFallbackContent.course_divemaster_price_eur,
+      },
+      instructor: {
+        usd: homeFallbackContent.course_instructor_price_usd,
+        eur: homeFallbackContent.course_instructor_price_eur,
+      },
+      discoverScuba: {
+        usd: homeFallbackContent.course_discover_scuba_price_usd,
+        eur: homeFallbackContent.course_discover_scuba_price_eur,
+      },
+      discoverScubaDeluxe: {
+        usd: homeFallbackContent.course_discover_scuba_deluxe_price_usd,
+        eur: homeFallbackContent.course_discover_scuba_deluxe_price_eur,
+      },
+    };
+
+    const mapped = keyMap[courseKey];
+    const rawFallback = currency === 'USD' ? mapped?.usd : mapped?.eur;
+    return parseCurrencyAmount(rawFallback || '0');
+  };
+
+  const sanitizeForeignPrice = (rawValue: string, fallbackValue: number) => {
+    const parsed = parseCurrencyAmount(rawValue);
+
+    // Guard against accidental THB values pasted into USD/EUR fields (e.g. 11,000).
+    if (!parsed || parsed >= 2000) {
+      return fallbackValue;
+    }
+
+    return parsed;
   };
 
 
@@ -139,10 +249,10 @@ const Courses = () => {
       priceUsd: homeContent.course_open_water_price_usd,
       priceEur: homeContent.course_open_water_price_eur,
       description: homeContent.course_open_water_description,
-      fullDescription: t('courses.openWater.fullDescription'),
-      includes: t('courses.openWater.includes', { returnObjects: true }),
-      whatsNext: t('courses.openWater.whatsNext'),
-      courseImages: t('courses.openWater.courseImages', { returnObjects: true }),
+      fullDescription: homeContent.course_open_water_full_description,
+      includes: parseMultilineList(homeContent.course_open_water_includes),
+      whatsNext: homeContent.course_open_water_whats_next,
+      courseImages: parseCommaSeparatedList(homeContent.course_open_water_images),
       icon: "🤿",
       depositMajor: 2000,
       depositCurrency: 'THB'
@@ -158,9 +268,9 @@ const Courses = () => {
       priceUsd: homeContent.course_advanced_price_usd,
       priceEur: homeContent.course_advanced_price_eur,
       description: homeContent.course_advanced_description,
-      fullDescription: t('courses.advanced.fullDescription'),
-      includes: t('courses.advanced.includes', { returnObjects: true }),
-      courseImages: t('courses.advanced.courseImages', { returnObjects: true }),
+      fullDescription: homeContent.course_advanced_full_description,
+      includes: parseMultilineList(homeContent.course_advanced_includes),
+      courseImages: parseCommaSeparatedList(homeContent.course_advanced_images),
       icon: "🌊",
       depositMajor: 2500,
       depositCurrency: 'THB'
@@ -176,9 +286,9 @@ const Courses = () => {
       priceUsd: homeContent.course_efr_price_usd,
       priceEur: homeContent.course_efr_price_eur,
       description: homeContent.course_efr_description,
-      fullDescription: t('courses.efr.fullDescription'),
-      includes: t('courses.efr.includes', { returnObjects: true }),
-      courseImages: t('courses.efr.courseImages', { returnObjects: true }),
+      fullDescription: homeContent.course_efr_full_description,
+      includes: parseMultilineList(homeContent.course_efr_includes),
+      courseImages: parseCommaSeparatedList(homeContent.course_efr_images),
       icon: "🏥",
       depositMajor: 500,
       depositCurrency: 'THB'
@@ -194,9 +304,9 @@ const Courses = () => {
       priceUsd: homeContent.course_rescue_price_usd,
       priceEur: homeContent.course_rescue_price_eur,
       description: homeContent.course_rescue_description,
-      fullDescription: t('courses.rescue.fullDescription'),
-      includes: t('courses.rescue.includes', { returnObjects: true }),
-      courseImages: t('courses.rescue.courseImages', { returnObjects: true }),
+      fullDescription: homeContent.course_rescue_full_description,
+      includes: parseMultilineList(homeContent.course_rescue_includes),
+      courseImages: parseCommaSeparatedList(homeContent.course_rescue_images),
       icon: "🚨",
       depositMajor: 3000,
       depositCurrency: 'THB'
@@ -212,9 +322,9 @@ const Courses = () => {
       priceUsd: homeContent.course_divemaster_price_usd,
       priceEur: homeContent.course_divemaster_price_eur,
       description: homeContent.course_divemaster_description,
-      fullDescription: t('courses.divemaster.fullDescription'),
-      includes: t('courses.divemaster.includes', { returnObjects: true }),
-      courseImages: t('courses.divemaster.courseImages', { returnObjects: true }),
+      fullDescription: homeContent.course_divemaster_full_description,
+      includes: parseMultilineList(homeContent.course_divemaster_includes),
+      courseImages: parseCommaSeparatedList(homeContent.course_divemaster_images),
       icon: "👨‍🏫",
       depositMajor: 5000,
       depositCurrency: 'THB'
@@ -230,9 +340,9 @@ const Courses = () => {
       priceUsd: homeContent.course_instructor_price_usd,
       priceEur: homeContent.course_instructor_price_eur,
       description: homeContent.course_instructor_description,
-      fullDescription: t('courses.instructor.fullDescription'),
-      includes: t('courses.instructor.includes', { returnObjects: true }),
-      courseImages: t('courses.instructor.courseImages', { returnObjects: true }),
+      fullDescription: homeContent.course_instructor_full_description,
+      includes: parseMultilineList(homeContent.course_instructor_includes),
+      courseImages: parseCommaSeparatedList(homeContent.course_instructor_images),
       icon: "🎓",
       depositMajor: 10000,
       depositCurrency: 'THB'
@@ -248,13 +358,9 @@ const Courses = () => {
       priceUsd: homeContent.course_discover_scuba_price_usd,
       priceEur: homeContent.course_discover_scuba_price_eur,
       description: homeContent.course_discover_scuba_description,
-      fullDescription: isDutch
-        ? 'Discover Scuba Diving is ontworpen voor beginners. Je leert basisvaardigheden in een veilige omgeving en maakt daarna je eerste buitenwaterduik met een professional.'
-        : 'Discover Scuba Diving is designed for beginners. You learn core skills in a safe environment and then complete your first open water dive with a professional.',
-      includes: isDutch
-        ? ['Gecertificeerde duikprofessional', 'Alle uitrusting inbegrepen', 'Kleine groepen (max 4)', 'Extra duiken mogelijk']
-        : ['Certified scuba dive professional', 'All equipment included', 'Small groups (max 4)', 'Additional dives available'],
-      courseImages: ['photo-1659518893171-b15e20a8e201.avif'],
+      fullDescription: homeContent.course_discover_scuba_full_description,
+      includes: parseMultilineList(homeContent.course_discover_scuba_includes),
+      courseImages: parseCommaSeparatedList(homeContent.course_discover_scuba_images),
       icon: '🐠',
       depositMajor: 1000,
       depositCurrency: 'THB',
@@ -271,13 +377,9 @@ const Courses = () => {
       priceUsd: homeContent.course_discover_scuba_deluxe_price_usd,
       priceEur: homeContent.course_discover_scuba_deluxe_price_eur,
       description: homeContent.course_discover_scuba_deluxe_description,
-      fullDescription: isDutch
-        ? 'DSD Deluxe bevat zwembad/confined training plus een kustduik en twee bootduiken rond Koh Tao. Perfect als je meer ervaring wilt voordat je beslist over Open Water.'
-        : 'DSD Deluxe includes confined training plus one shore dive and two boat dives around Koh Tao. Ideal if you want more experience before deciding on Open Water.',
-      includes: isDutch
-        ? ['3 begeleide duiken', 'Alle uitrusting inbegrepen', 'Gecertificeerde instructeur', 'Kleine groepen (max 4)']
-        : ['3 guided dives', 'All equipment included', 'Certified instructor', 'Small groups (max 4)'],
-      courseImages: ['photo-1682687982423-295485af248a.avif'],
+      fullDescription: homeContent.course_discover_scuba_deluxe_full_description,
+      includes: parseMultilineList(homeContent.course_discover_scuba_deluxe_includes),
+      courseImages: parseCommaSeparatedList(homeContent.course_discover_scuba_deluxe_images),
       icon: '🌊',
       depositMajor: 1500,
       depositCurrency: 'THB',
@@ -318,7 +420,7 @@ const Courses = () => {
               id={`course-${course.key}`}
               className="bg-gray-200 border border-gray-400 rounded-xl shadow-md p-8 hover:shadow-lg transition-shadow duration-300 scroll-mt-20"
             >
-              <div className="flex items-start justify-between mb-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-6">
                 <div>
                   <div className="flex items-center mb-2">
                     <span className="text-3xl mr-3">{course.icon}</span>
@@ -328,10 +430,36 @@ const Courses = () => {
                     {course.level}
                   </span>
                 </div>
-                <div className="text-right">
-                  <div className="text-3xl font-bold text-blue-600">{formatCurrency(getThbPrice(course.price), 'THB')}</div>
-                  {/* Currency conversion removed */}
-                  <div className="text-sm text-gray-600">{t('courses.perPerson')}</div>
+                <div className="w-full rounded-lg border border-blue-200 bg-blue-50/70 p-3 sm:w-auto sm:min-w-[220px] sm:p-4">
+                  <div className="text-2xl font-bold leading-none text-blue-700 sm:text-3xl">{getDisplayedPrice(course.price)}</div>
+                  <div className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-blue-700">THB</div>
+                  <div className="mt-2 space-y-1">
+                    <div className="flex items-center justify-between rounded bg-white px-2 py-1 text-xs text-gray-700">
+                      <span className="font-semibold">EUR</span>
+                      <span>
+                        {formatCurrency(
+                          sanitizeForeignPrice(
+                            course.priceEur || '0',
+                            getFallbackForeignPrice(course.key, 'EUR')
+                          ),
+                          'EUR'
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between rounded bg-white px-2 py-1 text-xs text-gray-700">
+                      <span className="font-semibold">USD</span>
+                      <span>
+                        {formatCurrency(
+                          sanitizeForeignPrice(
+                            course.priceUsd || '0',
+                            getFallbackForeignPrice(course.key, 'USD')
+                          ),
+                          'USD'
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-xs text-gray-600 sm:text-right">{t('courses.perPerson')}</div>
                 </div>
               </div>
 
@@ -415,7 +543,7 @@ const Courses = () => {
               <h4 className="font-bold text-xl mb-2">{t('courses.specialOffers.combo.title')}</h4>
               <p className="text-blue-200 mb-3">{t('courses.specialOffers.combo.description')}</p>
               <div className="flex items-center justify-between">
-                <span className="text-2xl font-bold">{t('courses.specialOffers.combo.price')}</span>
+                <span className="text-2xl font-bold">{getDisplayedPrice(t('courses.specialOffers.combo.price'))}</span>
                 <span className="text-blue-300 line-through">{t('courses.specialOffers.combo.originalPrice')}</span>
               </div>
             </div>
@@ -432,13 +560,12 @@ const Courses = () => {
                   : 'Enroll in three PADI Specialty Dive Courses and pay less. Explore various aspects of scuba diving, from marine life identification to underwater photography.'}
               </p>
               <div className="flex items-center justify-between">
-                <span className="text-3xl font-bold">฿18,000</span>
-                <span className="text-emerald-200 line-through text-lg">฿24,000</span>
+                <span className="text-3xl font-bold">{getDisplayedPrice('฿18,000')}</span>
+                <span className="text-emerald-200 line-through text-lg">{getDisplayedPrice('฿24,000')}</span>
               </div>
               <a
                 href="/bookingform.html?item=3%20Specialty%20Bundle&type=course&price=18000&currency=THB"
-                className="w-full mt-4 bg-background text-emerald-600 hover:bg-emerald-50 block text-center py-3 rounded-lg font-semibold"
-                style={{ textDecoration: 'none' }}
+                className="block w-full rounded-lg bg-background py-3 text-center font-semibold text-emerald-600 no-underline hover:bg-emerald-50"
               >
                 {isDutch ? 'Boek Bundel' : 'Book Bundle'}
               </a>

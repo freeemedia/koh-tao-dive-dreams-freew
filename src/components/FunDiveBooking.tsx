@@ -28,7 +28,6 @@ const FunDiveBooking: React.FC<FunDiveBookingProps> = ({ initialSite }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [showNotice, setShowNotice] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [processing, setProcessing] = useState(false);
 
   const availableSites = useMemo(() => {
     if (!initialSite || DIVE_SITES.includes(initialSite)) {
@@ -120,12 +119,7 @@ const FunDiveBooking: React.FC<FunDiveBookingProps> = ({ initialSite }) => {
             item_title: selectedSite || 'Fun Dive',
             course_title: selectedSite || 'Fun Dive',
           };
-          // Fire-and-forget — don't await
-          fetch('/api/send-booking-notification', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          }).catch(() => {});
+          // Fire-and-forget — backend handles notifications.
           fetch('/api/bookings', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

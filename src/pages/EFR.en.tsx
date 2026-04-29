@@ -10,9 +10,9 @@ const EFREn: React.FC = () => {
         hero_title: 'Emergency First Response (EFR)',
         hero_subtitle: 'Learn essential first aid, CPR and emergency response skills - a valuable standalone certification and prerequisite for Rescue Diver.',
         course_overview: 'EFR covers Primary and Secondary Care, CPR, AED use and first aid for common diving injuries. The course is classroom and practical skills oriented and is essential for anyone progressing to Rescue Diver.',
-        price_thb: '3500',
-        price_usd: '130',
-        price_eur: '120',
+        price_thb: '4500',
+        price_usd: '167',
+        price_eur: '154',
         duration: '1 day',
       }}
       heroImage="/images/efr.jpeg"

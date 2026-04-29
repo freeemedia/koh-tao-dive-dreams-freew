@@ -133,12 +133,16 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
 
 
   const priceThb = content.price_thb || fallbackContent.price_thb || '0';
+  const priceUsd = content.price_usd || fallbackContent.price_usd || '0';
+  const priceEur = content.price_eur || fallbackContent.price_eur || '0';
   const duration = content.duration || fallbackContent.duration || 'Contact us';
   const cmsSections = buildCmsSections(content as Record<string, string | undefined>);
   const cmsFaqs = buildCmsFaqs(content as Record<string, string | undefined>);
   const displaySections = cmsSections.length > 0 ? cmsSections : sections;
   const displayFaqs = cmsFaqs.length > 0 ? cmsFaqs : faqs;
   const thbAmount = parseAmount(priceThb);
+  const usdAmount = parseAmount(priceUsd);
+  const eurAmount = parseAmount(priceEur);
   const bookingUrl = `/booking?item=${encodeURIComponent(bookingItemName || '')}&type=${bookingType}&price=${thbAmount}&currency=THB`;
 
   const heroImageUrl = heroImage || images[0];
@@ -244,21 +248,16 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
                   </div>
                   <div className="space-y-1">
                     <p className="text-2xl font-bold text-sky-600">฿{thbAmount.toLocaleString(localeTag)}</p>
-                    {exchangeRates.THB && exchangeRates.USD && (
+                    {usdAmount > 0 && (
                       <p className="text-base text-muted-foreground">
-                        ${((thbAmount / exchangeRates.THB) * exchangeRates.USD).toLocaleString(localeTag, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} USD
+                        ${usdAmount.toLocaleString(localeTag)} USD
                       </p>
                     )}
-                    {exchangeRates.THB && exchangeRates.EUR && (
+                    {eurAmount > 0 && (
                       <p className="text-base text-muted-foreground">
-                        €{((thbAmount / exchangeRates.THB) * exchangeRates.EUR).toLocaleString(localeTag, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} EUR
+                        €{eurAmount.toLocaleString(localeTag)} EUR
                       </p>
                     )}
-                    <p className="text-xs text-muted-foreground italic mt-1">
-                      {locale === 'nl'
-                        ? 'U wordt gefactureerd in THB. USD/EUR zijn ter indicatie.'
-                        : 'Charged in THB. USD & EUR are approximate for reference only.'}
-                    </p>
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground">

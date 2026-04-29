@@ -10,9 +10,9 @@ const EFRNl: React.FC = () => {
         hero_title: 'Emergency First Response (EFR)',
         hero_subtitle: 'Leer essentiele EHBO-, CPR- en noodhulpvaardigheden - een waardevolle zelfstandige certificering en vereiste voor Rescue Diver.',
         course_overview: 'EFR behandelt Primary en Secondary Care, CPR, gebruik van AED en eerste hulp bij veelvoorkomende duikverwondingen. De cursus is gericht op theorie en praktische vaardigheden en is essentieel voor wie wil doorgaan naar Rescue Diver.',
-        price_thb: '3500',
-        price_usd: '130',
-        price_eur: '120',
+        price_thb: '4500',
+        price_usd: '167',
+        price_eur: '154',
         duration: '1 dag',
       }}
       heroImage="/images/efr.jpeg"

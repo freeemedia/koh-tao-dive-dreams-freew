@@ -16,16 +16,17 @@ const bookingSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100),
   email: z.string().trim().email('Invalid email address').max(255),
   phone: z.string().trim().max(20).optional(),
+
+  accommodation: z.string().optional(),
   preferred_date: z.string().trim().min(1, 'Preferred date is required'),
   experience_level: z.string().optional(),
   message: z.string().trim().max(1000).optional(),
-  paymentChoice: z.enum(['now', 'link', 'none']).optional(),
+
 });
 
 
 type BookingFormData = z.infer<typeof bookingSchema>;
 
-const PAYPAL_LINK = 'https://paypal.me/prodivingasia';
 const COURSE_DEPOSIT_RATE = 0.2;
 const SKIP_PAYMENT_MESSAGE = 'You have chosen not to pay right now, no problem! We will contact you soon to arrange bookings and payment. Thank You, Pro Diving Asia Team.';
 
@@ -152,11 +153,9 @@ const       BookingPage: React.FC = () => {
       preferred_date: new Date().toISOString().slice(0, 10),
       experience_level: '',
       message: searchParams.get('message') || '',
-      paymentChoice: itemType === 'course' || itemType === 'dive' ? 'now' : 'none',
     },
   });
 
-  const [showPaymentLinks, setShowPaymentLinks] = useState(false);
   const [inquiryNotice, setInquiryNotice] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -166,6 +165,11 @@ const       BookingPage: React.FC = () => {
     setIsSubmitting(true);
     try {
       const amountMajor = (isStayBooking ? 0 : depositMajor) + totalAddons;
+      const totalAmountMajor = totalItemCostMajor > 0 ? totalItemCostMajor : null;
+      const depositAmountMajor = amountMajor > 0 ? amountMajor : null;
+      const balanceAmountMajor = totalItemCostMajor > 0
+        ? Math.max(totalItemCostMajor - amountMajor, 0)
+        : null;
       const selectedAddonsList = isDiveBooking
         ? availableAddons.filter((addon) => selectedAddons[addon.id]).map((addon) => ({
             id: addon.id,
@@ -187,6 +191,7 @@ const       BookingPage: React.FC = () => {
         name: data.name,
         email: data.email,
         phone: data.phone || null,
+        accommodation: data.accommodation || null,
         item_type: itemType,
         course_title: bookingItemTitle,
         preferred_date: data.preferred_date || null,
@@ -198,9 +203,9 @@ const       BookingPage: React.FC = () => {
         total_payable_now: amountMajor > 0 ? amountMajor : null,
         message: messageWithSource,
         status: 'pending',
-        deposit_amount: depositMajor,
-        total_amount: totalItemCostMajor,
-        due_amount: totalItemCostMajor - depositMajor,
+        deposit_amount: depositAmountMajor,
+        total_amount: totalAmountMajor,
+        due_amount: balanceAmountMajor,
       };
 
       let persisted = false;
@@ -220,10 +225,10 @@ const       BookingPage: React.FC = () => {
         name: data.name,
         email: data.email,
         phone: data.phone || 'N/A',
+        accommodation: data.accommodation || 'N/A',
         preferred_date: data.preferred_date || 'N/A',
         experience_level: data.experience_level || 'N/A',
-        payment_choice: data.paymentChoice === 'now' ? 'Pay deposit now via PayPal' : 'Pay later (inquire only)',
-        paypal_link: data.paymentChoice === 'now' ? `${PAYPAL_LINK}/${amountMajor}THB` : null,
+        payment_choice: 'inquire',
         item_title: bookingItemTitle,
         full_price: totalItemCostMajor > 0 ? `฿${totalItemCostMajor}` : (isStayBooking ? 'Quote on request' : 'N/A'),
         dive_count: isFunDiveBooking ? funDiveCount : 'N/A',
@@ -232,7 +237,10 @@ const       BookingPage: React.FC = () => {
         stay_with_us: isCourseBooking
           ? (stayWithUs ? 'Yes - accommodation free with course' : 'No')
           : (isDiveBooking ? (stayWithUs ? 'Yes - accommodation requested with dive booking' : 'No') : 'N/A'),
-        deposit_amount: amountMajor > 0 ? `฿${amountMajor}` : 'Quote on request',
+        payment_mode: 'inquire',
+        deposit_amount: depositAmountMajor,
+        total_amount: totalAmountMajor,
+        due_amount: balanceAmountMajor,
         addons: addonsText,
         booking_source: bookingSource,
         message: messageWithSource,
@@ -248,16 +256,17 @@ const       BookingPage: React.FC = () => {
             name: data.name,
             email: data.email,
             phone: data.phone || '',
+            accommodation: data.accommodation || '',
             preferred_date: data.preferred_date || '',
             guests: guestCount,
             nights: nightsCount,
             experience_level: data.experience_level || '',
-            payment_choice: data.paymentChoice || 'none',
+            payment_choice: 'inquire',
             currency: depositCurrency || 'THB',
-            deposit_amount: amountMajor > 0 ? amountMajor : null,
-            total_amount: totalItemCostMajor > 0 ? totalItemCostMajor : null,
-            due_amount: totalItemCostMajor > 0 ? Math.max(totalItemCostMajor - amountMajor, 0) : null,
-            paypal_link: data.paymentChoice === 'now' ? `${PAYPAL_LINK}/${amountMajor}THB` : '',
+            deposit_amount: depositAmountMajor,
+            total_amount: totalAmountMajor,
+            due_amount: balanceAmountMajor,
+            paypal_link: '',
             addons: addonsText,
             booking_source: bookingSource,
             message: messageWithSource,
@@ -289,6 +298,22 @@ const       BookingPage: React.FC = () => {
 
       const responseData = await res.json().catch(() => ({}));
 
+      // Store booking details for thank-you page display
+      const bookingDetailsForDisplay = {
+        item_title: bookingItemTitle,
+        name: data.name,
+        email: data.email,
+        phone: data.phone || 'N/A',
+        accommodation: data.accommodation || 'N/A',
+        preferred_date: data.preferred_date || 'N/A',
+        experience_level: data.experience_level || 'N/A',
+        deposit_amount: depositAmountMajor != null ? `฿${depositAmountMajor}` : 'Quote on request',
+        total_amount: totalAmountMajor != null ? `฿${totalAmountMajor}` : 'Quote on request',
+        balance_amount: balanceAmountMajor != null ? `฿${balanceAmountMajor}` : 'Quote on request',
+        payment_choice: 'inquire',
+      };
+      sessionStorage.setItem('bookingData', JSON.stringify(bookingDetailsForDisplay));
+
       // Notify user based on email API result, but booking is already persisted
       if (res.ok && responseData.success) {
         if (responseData.warning) {
@@ -296,25 +321,15 @@ const       BookingPage: React.FC = () => {
         } else if (wpApiBase && wpApiKey && !wpSaved) {
           toast.warning('Inquiry sent, but WordPress booking storage failed.');
         }
-        if (data.paymentChoice === 'now' && amountMajor > 0) {
-          setInquiryNotice(null);
-          setShowPaymentLinks(true);
-        } else {
-          setShowPaymentLinks(false);
-          setInquiryNotice(SKIP_PAYMENT_MESSAGE);
-        }
+        setTimeout(() => window.location.href = '/thank-you.html', 1500);
+        setInquiryNotice(SKIP_PAYMENT_MESSAGE);
       } else {
         const errMsg = responseData?.message || responseData?.error || `HTTP ${res.status}`;
         console.error('Booking notification error:', errMsg, responseData);
         if (persisted) {
           toast.error(`Inquiry saved, but email notification failed: ${errMsg}`);
-          if (data.paymentChoice === 'now' && amountMajor > 0) {
-            setInquiryNotice(null);
-            setShowPaymentLinks(true);
-          } else {
-            setShowPaymentLinks(false);
-            setInquiryNotice(SKIP_PAYMENT_MESSAGE);
-          }
+          setTimeout(() => window.location.href = '/thank-you.html', 1500);
+          setInquiryNotice(SKIP_PAYMENT_MESSAGE);
         } else {
           toast.error(`Submission failed: ${errMsg}. Please retry.`);
         }
@@ -547,6 +562,11 @@ const       BookingPage: React.FC = () => {
             {isStayBooking ? 'Payment:' : (isDiveBooking ? 'Total payable now (incl. add-ons):' : 'Total payable now:')}
           </div>
           <div className="text-2xl font-bold">{isStayBooking ? 'Quote on request' : `฿${depositMajor + totalAddons}`}</div>
+          {!isStayBooking && totalItemCostMajor > 0 && (
+            <div className="text-sm text-muted-foreground mt-1">
+              Total: ฿{totalItemCostMajor} · Deposit: ฿{depositMajor + totalAddons} · Balance: ฿{Math.max(totalItemCostMajor - (depositMajor + totalAddons), 0)}
+            </div>
+          )}
         </div>
 
         <Form {...form}>
@@ -571,6 +591,27 @@ const       BookingPage: React.FC = () => {
               <FormItem>
                 <FormLabel className="flex items-center gap-2"><Phone className="h-4 w-4" /> Phone</FormLabel>
                 <FormControl><Input placeholder="+66 123 456 789" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            <FormField control={form.control} name="accommodation" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Accommodation Preference</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select accommodation preference" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="">No preference</SelectItem>
+                    <SelectItem value="none">No accommodation needed</SelectItem>
+                    <SelectItem value="resort">Resort accommodation</SelectItem>
+                    <SelectItem value="nearby">Nearby hotel/guesthouse</SelectItem>
+                    <SelectItem value="own">I have my own accommodation</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )} />
@@ -612,38 +653,7 @@ const       BookingPage: React.FC = () => {
               </FormItem>
             )} />
 
-            <FormField control={form.control} name="paymentChoice" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Payment Method</FormLabel>
-                <FormControl>
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="radio"
-                        id="payment-now"
-                        name="paymentChoice"
-                        value="now"
-                        checked={field.value === 'now'}
-                        onChange={() => field.onChange('now')}
-                      />
-                      <span>{isStayBooking ? 'Pay after confirmation' : 'Pay deposit now with PayPal'}</span>
-                    </label>
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="radio"
-                        id="payment-none"
-                        name="paymentChoice"
-                        value="none"
-                        checked={field.value === 'none'}
-                        onChange={() => field.onChange('none')}
-                      />
-                      <span>{isStayBooking ? 'Send accommodation inquiry' : 'Pay later (inquire only)'}</span>
-                    </label>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
+
 
             <div className="flex gap-3 pt-4">
               <Button type="button" variant="outline" onClick={() => navigate(-1)} className="flex-1">Cancel</Button>
@@ -654,43 +664,27 @@ const       BookingPage: React.FC = () => {
           </form>
         </Form>
 
-        {showPaymentLinks && (
-          <div className="mt-8 p-6 border rounded-xl bg-muted/50 text-center space-y-4">
-            <h2 className="text-xl font-bold">Pay Your Deposit</h2>
-            <p className="text-muted-foreground">Your inquiry has been sent! To secure your booking, pay the deposit of <strong>฿{depositMajor + totalAddons}</strong> via PayPal:</p>
-            <div className="space-y-3">
-              <a
-                href={`${PAYPAL_LINK}/${depositMajor + totalAddons}THB`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                  <Button className="bg-[#0070ba] hover:bg-[#005ea6] text-white px-8 py-3 text-lg w-full">
-                    Pay ฿{depositMajor + totalAddons} (THB) with PayPal
-                  </Button>
-                  <p className="text-xs text-muted-foreground mt-1">Amount will be charged in Thai Baht (THB).</p>
-              </a>
-              <p className="text-sm text-muted-foreground">or</p>
-              <a
-                href={PAYPAL_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button variant="outline" className="px-8 py-3 text-lg w-full">
-                  Open PayPal.me/prodivingasia
-                </Button>
-              </a>
-            </div>
-            <p className="text-sm text-muted-foreground">Or <button className="underline" onClick={() => { 
-              form.reset(); 
-              setShowPaymentLinks(false); 
-              setInquiryNotice(SKIP_PAYMENT_MESSAGE);
-            }}>skip payment for now</button></p>
-          </div>
-        )}
+
 
         {inquiryNotice && (
-          <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
-            {inquiryNotice}
+          <div className="mt-8 rounded-lg border-2 border-emerald-300 bg-emerald-50 p-6 space-y-4">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-emerald-900">Inquiry Received!</h2>
+              <p className="text-emerald-700 mt-1">Confirmation email sent to <strong>{form.getValues('email')}</strong></p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-white p-4 rounded-lg text-sm">
+              <div><span className="font-semibold">Name:</span> {form.getValues('name')}</div>
+              <div><span className="font-semibold">Email:</span> {form.getValues('email')}</div>
+              <div><span className="font-semibold">Course/Activity:</span> {bookingItemTitle}</div>
+              <div><span className="font-semibold">Preferred Date:</span> {form.getValues('preferred_date')}</div>
+              <div><span className="font-semibold">Accommodation:</span> {form.getValues('accommodation') || 'Not specified'}</div>
+            </div>
+
+            <div className="bg-emerald-100 p-4 rounded-lg border-l-4 border-emerald-600">
+              <p className="text-emerald-900 font-semibold mb-2">What Happens Next?</p>
+              <p className="text-emerald-800 text-sm">{inquiryNotice}</p>
+            </div>
           </div>
         )}
       </div>

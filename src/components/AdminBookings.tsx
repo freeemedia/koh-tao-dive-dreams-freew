@@ -37,6 +37,7 @@ interface Booking {
   due_amount?: number | null;
   bank_transfer_details?: string | null;
   booking_source?: string;
+  message?: string;
 }
 
 
@@ -94,8 +95,11 @@ const AdminBookings: React.FC = () => {
       setDeleting(true);
       setDeleteResult(null);
       try {
-        const { error } = await supabase.from('bookings').delete().eq('id', id);
-        if (error) throw error;
+        const res = await adminAuthedFetch(`/api/admin-bookings?id=${id}`, { method: 'DELETE' });
+        if (!res.ok) {
+          const p = await res.json().catch(() => ({}));
+          throw new Error(p?.error || `Delete failed (HTTP ${res.status})`);
+        }
         setBookings((prev) => prev.filter((b) => b.id !== id));
         setDeleteResult('Booking deleted.');
       } catch (err: any) {
@@ -229,7 +233,7 @@ const AdminBookings: React.FC = () => {
   };
 
   const copyBookingDetails = async (booking: Booking) => {
-    const details = `Name: ${booking.name}\nEmail: ${booking.email}\nPhone: ${booking.phone || '-'}\nCourse: ${booking.course_title}\nDate: ${booking.preferred_date || '-'}\nStatus: ${booking.status}\nNotes: ${booking.internal_notes || ''}`;
+    const details = `Name: ${booking.name}\nEmail: ${booking.email}\nPhone: ${booking.phone || '-'}\nCourse: ${booking.course_title}\nDate: ${booking.preferred_date || '-'}\nStatus: ${booking.status}\nNotes: ${booking.internal_notes || booking.message || ''}`;
     try {
       await navigator.clipboard.writeText(details);
       setCopyStatus((prev) => ({ ...prev, [booking.id]: 'Copied!' }));
@@ -297,7 +301,7 @@ const AdminBookings: React.FC = () => {
     setTimeout(() => setJiraStatus((prev) => ({ ...prev, [booking.id]: '' })), 3000);
   };
 
-  const calendarFeedUrl = 'https://koh-tao-dive-dreams.vercel.app/api/bookings/calendar';
+  const calendarFeedUrl = `${window.location.origin}/api/bookings/calendar`;
 
   useEffect(() => {
     async function fetchBookings() {
@@ -316,7 +320,7 @@ const AdminBookings: React.FC = () => {
         const initialAssignees: Record<string, string> = {};
         bookingData.forEach((booking: Booking) => {
           initialDrafts[booking.id] = booking.status || 'pending';
-          const match = (booking.internal_notes || '').match(/Assigned Instructor:\s*([^\n]+)/i);
+          const match = (booking.internal_notes || booking.message || '').match(/Assigned Instructor:\s*([^\n]+)/i);
           initialAssignees[booking.id] = match?.[1]?.trim() || '';
         });
         setStatusDrafts(initialDrafts);
@@ -365,7 +369,7 @@ const AdminBookings: React.FC = () => {
 
   useEffect(() => {
     if (!financeModalBooking) return;
-    setNoteDraft(financeModalBooking.internal_notes || '');
+    setNoteDraft(financeModalBooking.internal_notes || financeModalBooking.message || '');
     setNoteResult(null);
     setBankTransferDraft(financeModalBooking.bank_transfer_details || bankTransferDetails || '');
     setBankTransferResult(null);

@@ -82,6 +82,37 @@
       background: #b3e5fc;
       color: #01579b;
     }
+    .booking-summary {
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+    .booking-summary h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: #009688;
+      font-size: 1.1rem;
+    }
+    .booking-summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eee;
+    }
+    .booking-summary-row:last-child {
+      border-bottom: none;
+    }
+    .summary-label {
+      font-weight: 500;
+      color: #333;
+    }
+    .summary-value {
+      color: #666;
+    }
     .team {
       color: #555;
       margin-top: 2.5rem;
@@ -94,8 +125,10 @@
   <div class="thankyou-container">
     <img src="/images/logo.png" alt="Diving In Asia Logo" class="thankyou-logo" />
     <h1>Thank You!</h1>
-    <p>Your booking or inquiry has been received.<br>We’ll get back to you as soon as possible!</p>
-    <div class="next-steps">
+    <p>Your booking or inquiry has been received.<br>We’ll get back to you as soon as possible!</p>    <div id="bookingSummary" class="booking-summary" style="display:none;">
+      <h3>Booking Details</h3>
+      <div id="summaryContent"></div>
+    </div>    <div class="next-steps">
       <strong>Next Steps:</strong><br>
       We’ll contact you soon with payment instructions.<br><br>
       <strong>We accept payment by:</strong>
@@ -110,5 +143,51 @@
     <a href="/" class="home-link">Return to Home</a>
     <div class="team">— Diving In Asia Team —</div>
   </div>
+
+  <script>
+    function displayBookingDetails() {
+      try {
+        const bookingData = sessionStorage.getItem('bookingData');
+        if (!bookingData) return;
+
+        const data = JSON.parse(bookingData);
+        const summaryDiv = document.getElementById('bookingSummary');
+        const contentDiv = document.getElementById('summaryContent');
+
+        const fields = [
+          { label: 'Activity', value: data.item_title },
+          { label: 'Name', value: data.name },
+          { label: 'Email', value: data.email },
+          { label: 'Phone', value: data.phone },
+          { label: 'Nationality', value: data.nationality },
+          { label: 'Accommodation', value: data.accommodation },
+          { label: 'Preferred Date', value: data.preferred_date },
+          { label: 'Experience Level', value: data.experience_level },
+          { label: 'Deposit Amount', value: data.deposit_amount },
+          { label: 'Payment Choice', value: data.payment_choice },
+        ];
+
+        let html = '';
+        fields.forEach(field => {
+          if (field.value && field.value !== 'N/A') {
+            html += '<div class="booking-summary-row">' +
+              '<span class="summary-label">' + field.label + ':</span>' +
+              '<span class="summary-value">' + field.value + '</span>' +
+              '</div>';
+          }
+        });
+
+        if (html) {
+          contentDiv.innerHTML = html;
+          summaryDiv.style.display = 'block';
+          sessionStorage.removeItem('bookingData');
+        }
+      } catch (e) {
+        console.error('Error displaying booking details:', e);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', displayBookingDetails);
+  </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 -- Booking comments table for both customers and admins
 CREATE TABLE IF NOT EXISTS booking_comments (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  booking_id uuid REFERENCES bookings(id) ON DELETE CASCADE,
+  booking_id text REFERENCES bookings(id) ON DELETE CASCADE,
   user_id uuid,
   comment text NOT NULL,
   is_admin boolean DEFAULT false,

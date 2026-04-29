@@ -245,7 +245,7 @@ const Contact = () => {
           <div className="bg-gray-800 rounded-lg p-8">
             <h3 className="text-2xl font-bold mb-6 text-center">Booking / Inquiry Form</h3>
             <form action="https://api.web3forms.com/submit" method="POST" className="space-y-4">
-              <input type="hidden" name="access_key" value="e4c4edf6-6e35-456a-87da-b32b961b449a" />
+              <input type="hidden" name="access_key" value="b42b4f7a-b0b3-4ba9-8197-cf5abe9f09e6" />
               <label htmlFor="name" className="block font-semibold">Name</label>
               <input type="text" id="name" name="name" required className="w-full border border-gray-300 rounded px-3 py-2" />
 

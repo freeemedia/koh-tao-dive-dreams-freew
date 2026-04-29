@@ -10,6 +10,12 @@
       "has": [{ "type": "host", "value": "admin.divinginasia.com" }],
       "destination": "/admin",
       "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "admin.divnginasia.com" }],
+      "destination": "/admin",
+      "permanent": false
     }
   ],
   "headers": [
@@ -28,6 +34,7 @@
   ],
   "rewrites": [
     { "source": "/functions/v1/page_content", "destination": "https://wulgixdyofyfdwcymwec.functions.supabase.co/page_content" },
+    { "source": "/wp-json/:path*", "destination": "https://lightsalmon-dinosaur-377714.hostingersite.com/wp-json/:path*" },
     { "source": "/api/:path*", "destination": "/api/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]

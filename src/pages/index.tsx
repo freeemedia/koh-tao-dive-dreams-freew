@@ -8,7 +8,6 @@ import Gallery from '../components/Gallery';
 import About from '../components/About';
 // import Contact from '../components/Contact';
 import FunDiving from './FunDiving';
-import CurrencyExchange from '../components/CurrencyExchange';
 
 const Index = () => {
 	const location = useLocation();
@@ -29,7 +28,6 @@ const Index = () => {
 		<div className="min-h-screen bg-background">
 			<Hero />
 			<About />
-			<CurrencyExchange />
 		<DiveSites />
 			<Courses />
 			<FunDiving />

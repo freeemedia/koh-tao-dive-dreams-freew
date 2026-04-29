@@ -11,19 +11,24 @@ export default function ContactForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('Sending...');
-    const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://koh-tao-dive-dreams-mocha.vercel.app';
     try {
-      const res = await fetch(`${apiBase.replace(/\/+$/, '')}/api/contact`, {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: 'b42b4f7a-b0b3-4ba9-8197-cf5abe9f09e6',
+          subject: 'New Contact Message - Koh Tao Dive Dreams',
+          from_name: form.name,
+          email: form.email,
+          message: form.message,
+        }),
       });
       const data = await res.json();
       if (data.success) {
         setStatus('Message sent!');
         setForm({ name: '', email: '', message: '' });
       } else {
-        setStatus(data.error || 'Error sending message');
+        setStatus(data.message || 'Error sending message');
       }
     } catch (err) {
       setStatus('Network error');

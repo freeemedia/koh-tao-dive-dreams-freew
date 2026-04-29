@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
   form.setAttribute('accept-charset', 'UTF-8');
   form.setAttribute('autocomplete', 'on');
   form.innerHTML = '';
-  form.innerHTML += '<input type="hidden" name="access_key" value="e4c4edf6-6e35-456a-87da-b32b961b449a">';
+  form.innerHTML += '<input type="hidden" name="access_key" value="b42b4f7a-b0b3-4ba9-8197-cf5abe9f09e6">';
   // Add PayPal link hidden field (will be updated dynamically)
   form.innerHTML += '<input type="hidden" name="paypal_link" id="paypal_link_field">';
   form.appendChild(courseSelect);
