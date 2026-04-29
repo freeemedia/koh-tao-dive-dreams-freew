@@ -31,6 +31,14 @@ const COURSE_DEPOSIT_RATE = 0.2;
 const SKIP_PAYMENT_MESSAGE = 'You have chosen not to pay right now, no problem! We will contact you soon to arrange bookings and payment. Thank You, Pro Diving Asia Team.';
 
 const COURSE_FALLBACKS: Record<string, { item: string; price?: number; currency?: string }> = {
+  'open-water': { item: 'PADI Open Water Course', price: 11000, currency: 'THB' },
+  'advanced': { item: 'PADI Advanced Open Water Course', price: 10000, currency: 'THB' },
+  'advanced-open-water': { item: 'PADI Advanced Open Water Course', price: 10000, currency: 'THB' },
+  'rescue': { item: 'PADI Rescue Diver Course', price: 4500, currency: 'THB' },
+  'rescue-diver': { item: 'PADI Rescue Diver Course', price: 4500, currency: 'THB' },
+  'divemaster': { item: 'PADI Divemaster Course', price: 10000, currency: 'THB' },
+  'discover-scuba': { item: 'Discover Scuba Diving', price: 3500, currency: 'THB' },
+  'discover-scuba-deluxe': { item: 'Discover Scuba Deluxe', price: 3500, currency: 'THB' },
   'wreck-diver': { item: 'PADI Wreck Diver Specialty', price: 8000, currency: 'THB' },
   'deep-diver': { item: 'PADI Deep Diver Specialty', price: 8000, currency: 'THB' },
   'self-reliant': { item: 'PADI Self-Reliant Diver Specialty', price: 8000, currency: 'THB' },
