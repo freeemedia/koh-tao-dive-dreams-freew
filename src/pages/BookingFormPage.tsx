@@ -403,7 +403,7 @@ const       BookingPage: React.FC = () => {
                       key={label}
                       type="button"
                       className="text-left px-3 py-2 rounded bg-white/10 hover:bg-white/20 border border-white/30 text-white text-sm font-medium transition"
-                      onClick={() => navigate(`/booking?item=${encodeURIComponent(item || label)}&type=course${price ? `&price=${price}` : ''}${price ? '&currency=THB' : ''}${slug ? `&course=${slug}` : ''}&source=${encodeURIComponent(bookingSource)}`)}
+                      onClick={() => { window.location.href = `/booking?item=${encodeURIComponent(item || label)}&type=course${price ? `&price=${price}` : ''}${price ? '&currency=THB' : ''}${slug ? `&course=${slug}` : ''}&source=${encodeURIComponent(bookingSource)}`; }}
                     >
                       {label}{price ? ` — ฿${price.toLocaleString()}` : ''}
                     </button>
