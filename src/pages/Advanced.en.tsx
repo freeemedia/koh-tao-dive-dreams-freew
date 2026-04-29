@@ -10,7 +10,7 @@ const AdvancedEn: React.FC = () => {
         hero_title: 'PADI Advanced Open Water Course',
         hero_subtitle: 'Expand your skills with five Adventure Dives including deep and navigation. Perfect for exploring deeper dive sites.',
         course_overview: 'The PADI Advanced Open Water course improves your underwater skills through hands-on dives. Includes Deep, Navigation, Peak Performance Buoyancy, and two electives like Night or Wreck diving.',
-        price_thb: '9500',
+        price_thb: '10500',
         price_usd: '275',
         price_eur: '250',
         duration: '2 days',

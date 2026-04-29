@@ -10,7 +10,7 @@ const OpenWaterEn: React.FC = () => {
         hero_title: 'PADI Open Water Course',
         hero_subtitle: "The world's most popular scuba course. Learn the fundamentals of scuba diving and get certified to dive independently with a buddy, to 18 metres/60 feet.",
         course_overview: "The Open Water course combines knowledge development, confined water dives (pool) and open water dives. You'll learn equipment setup, basic underwater skills, buoyancy control and dive planning. Our instructors keep groups small and emphasize safety and fun.\n\n",
-        price_thb: '11000',
+        price_thb: '11500',
         price_usd: '320',
         price_eur: '290',
         duration: '3-4 days',
