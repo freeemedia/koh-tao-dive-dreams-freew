@@ -13,6 +13,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { usePageContent } from '@/hooks/usePageContent';
+import { useCurrency } from '@/hooks/useCurrency';
 
 const Courses = () => {
 
@@ -20,6 +21,7 @@ const Courses = () => {
 
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { exchangeRates } = useCurrency();
   const isDutch = i18n.language.startsWith('nl');
   const locale = isDutch ? 'nl' : 'en';
 
@@ -437,25 +439,37 @@ const Courses = () => {
                     <div className="flex items-center justify-between rounded bg-white px-2 py-1 text-xs text-gray-700">
                       <span className="font-semibold">EUR</span>
                       <span>
-                        {formatCurrency(
-                          sanitizeForeignPrice(
-                            course.priceEur || '0',
-                            getFallbackForeignPrice(course.key, 'EUR')
-                          ),
-                          'EUR'
-                        )}
+                        {exchangeRates && exchangeRates.EUR && exchangeRates.THB
+                          ? formatCurrency(
+                              Math.round((parsePriceMajor(course.price) / exchangeRates.THB) * exchangeRates.EUR),
+                              'EUR'
+                            )
+                          : formatCurrency(
+                              sanitizeForeignPrice(
+                                course.priceEur || '0',
+                                getFallbackForeignPrice(course.key, 'EUR')
+                              ),
+                              'EUR'
+                            )
+                        }
                       </span>
                     </div>
                     <div className="flex items-center justify-between rounded bg-white px-2 py-1 text-xs text-gray-700">
                       <span className="font-semibold">USD</span>
                       <span>
-                        {formatCurrency(
-                          sanitizeForeignPrice(
-                            course.priceUsd || '0',
-                            getFallbackForeignPrice(course.key, 'USD')
-                          ),
-                          'USD'
-                        )}
+                        {exchangeRates && exchangeRates.USD && exchangeRates.THB
+                          ? formatCurrency(
+                              Math.round((parsePriceMajor(course.price) / exchangeRates.THB) * exchangeRates.USD),
+                              'USD'
+                            )
+                          : formatCurrency(
+                              sanitizeForeignPrice(
+                                course.priceUsd || '0',
+                                getFallbackForeignPrice(course.key, 'USD')
+                              ),
+                              'USD'
+                            )
+                        }
                       </span>
                     </div>
                   </div>
