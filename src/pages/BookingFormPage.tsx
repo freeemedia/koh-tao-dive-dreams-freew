@@ -31,9 +31,9 @@ const COURSE_DEPOSIT_RATE = 0.2;
 const SKIP_PAYMENT_MESSAGE = 'You have chosen not to pay right now, no problem! We will contact you soon to arrange bookings and payment. Thank You, Pro Diving Asia Team.';
 
 const COURSE_FALLBACKS: Record<string, { item: string; price?: number; currency?: string }> = {
-  'open-water': { item: 'PADI Open Water Course', price: 11000, currency: 'THB' },
-  'advanced': { item: 'PADI Advanced Open Water Course', price: 9500, currency: 'THB' },
-  'advanced-open-water': { item: 'PADI Advanced Open Water Course', price: 9500, currency: 'THB' },
+  'open-water': { item: 'PADI Open Water Course', price: 11500, currency: 'THB' },
+  'advanced': { item: 'PADI Advanced Open Water Course', price: 10500, currency: 'THB' },
+  'advanced-open-water': { item: 'PADI Advanced Open Water Course', price: 10500, currency: 'THB' },
   'rescue': { item: 'PADI Rescue Diver Course', price: 10000, currency: 'THB' },
   'rescue-diver': { item: 'PADI Rescue Diver Course', price: 10000, currency: 'THB' },
   'divemaster': { item: 'PADI Divemaster Course', price: 41000, currency: 'THB' },
@@ -388,8 +388,8 @@ const       BookingPage: React.FC = () => {
                 <p className="text-sm text-white/80 mb-2">Select your course:</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {[
-                    { label: 'PADI Open Water', slug: 'open-water', price: 11000 },
-                    { label: 'PADI Advanced Open Water', slug: 'advanced-open-water', price: 9500 },
+                    { label: 'PADI Open Water', slug: 'open-water', price: 11500 },
+                    { label: 'PADI Advanced Open Water', slug: 'advanced-open-water', price: 10500 },
                     { label: 'PADI Rescue Diver', slug: 'rescue-diver', price: 10000 },
                     { label: 'PADI Divemaster', slug: 'divemaster', price: 41000 },
                     { label: 'PADI Scuba Diver', slug: 'scuba-diver', price: 8500 },
