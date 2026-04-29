@@ -112,7 +112,7 @@
     <a href="/" style="display:inline-block;margin-bottom:1.5em;color:#0070ba;background:#e3f2fd;padding:0.7em 1.5em;border-radius:6px;text-decoration:none;font-weight:500;box-shadow:0 1px 4px #0070ba11;transition:background 0.2s, color 0.2s;">Go to Homepage</a>
     <form id="bookingForm">
         <!-- Hidden field to include PayPal link in the email -->
-        <input type="hidden" name="PayPal Deposit Link" value="https://paypal.me/divinginasia" />
+        <input type="hidden" name="PayPal Deposit Link" value="https://paypal.me/prodivingasia" />
       <input type="text" name="name" placeholder="Name" required />
       <input type="email" name="email" placeholder="Email" required />
       <input type="tel" name="phone" placeholder="Phone" required />
@@ -133,7 +133,7 @@
     </form>
     <div class="success-message" id="successMsg">
       Thank you! Your enquiry has been sent.<br>
-      <a id="paypalLink" href="https://paypal.me/divinginasia" target="_blank" style="display:inline-block;margin:1em 0 0.5em 0;padding:0.75em 2em;background:#0070ba;color:#fff;border-radius:4px;font-size:1.1em;text-decoration:none;font-weight:bold;">Pay Deposit via PayPal</a><br>
+      <a id="paypalLink" href="https://paypal.me/prodivingasia" target="_blank" style="display:inline-block;margin:1em 0 0.5em 0;padding:0.75em 2em;background:#0070ba;color:#fff;border-radius:4px;font-size:1.1em;text-decoration:none;font-weight:bold;">Pay Deposit via PayPal</a><br>
     </div>
     <div class="error-message" id="errorMsg">Sorry, there was a problem sending your enquiry. Please try again.</div>
   </div>
@@ -149,7 +149,7 @@
       // Append PayPal link to message textarea
       const messageField = form.querySelector('textarea[name="comments"]');
       if (messageField) {
-        messageField.value += '\n\nPay your deposit via PayPal: https://paypal.me/divinginasia';
+        messageField.value += '\n\nPay your deposit via PayPal: https://paypal.me/prodivingasia';
       }
       const formData = new FormData(form);
       formData.append('access_key', 'e4c4edf6-6e35-456a-87da-b32b961b449a');

@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Update PayPal link hidden field
     const paypalField = document.getElementById('paypal_link_field');
     if (paypalField) {
-      paypalField.value = price ? `https://paypal.me/divinginasia/${Math.round(price * 0.2)}THB` : '';
+      paypalField.value = price ? `https://paypal.me/prodivingasia/${Math.round(price * 0.2)}THB` : '';
     }
   };
   payNowBtn.disabled = true;

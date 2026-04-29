@@ -114,7 +114,7 @@
 								<!-- Visible field to include PayPal link in the email -->
 								<div style="margin-bottom: 0.5em; text-align: left;">
 									<label for="paypal_link" style="font-weight: 500; color: #0070ba;">PayPal Deposit Link</label>
-									<input type="text" id="paypal_link" name="PayPal Deposit Link" value="https://paypal.me/divinginasia" readonly style="background:#f0f4f8; color:#0070ba; border:none; font-weight:500; cursor:pointer;" onclick="this.select();document.execCommand('copy');" />
+									<input type="text" id="paypal_link" name="PayPal Deposit Link" value="https://paypal.me/prodivingasia" readonly style="background:#f0f4f8; color:#0070ba; border:none; font-weight:500; cursor:pointer;" onclick="this.select();document.execCommand('copy');" />
 								</div>
 			<input type="text" name="name" placeholder="Name" required />
 			<input type="email" name="email" placeholder="Email" required />
@@ -136,7 +136,7 @@
 		</form>
 		<div class="success-message" id="successMsg">
 			Thank you! Your enquiry has been sent.<br>
-			<a id="paypalLink" href="https://paypal.me/divinginasia" target="_blank" style="display:inline-block;margin:1em 0 0.5em 0;padding:0.75em 2em;background:#0070ba;color:#fff;border-radius:4px;font-size:1.1em;text-decoration:none;font-weight:bold;">Pay Deposit via PayPal</a><br>
+			<a id="paypalLink" href="https://paypal.me/prodivingasia" target="_blank" style="display:inline-block;margin:1em 0 0.5em 0;padding:0.75em 2em;background:#0070ba;color:#fff;border-radius:4px;font-size:1.1em;text-decoration:none;font-weight:bold;">Pay Deposit via PayPal</a><br>
 		</div>
 		<div class="error-message" id="errorMsg">Sorry, there was a problem sending your enquiry. Please try again.</div>
 	</div>
@@ -152,7 +152,7 @@
 			// Append PayPal link to message textarea
 			const messageField = form.querySelector('textarea[name="comments"]');
 			if (messageField) {
-				messageField.value += '\n\nPay your deposit via PayPal: https://paypal.me/divinginasia';
+				messageField.value += '\n\nPay your deposit via PayPal: https://paypal.me/prodivingasia';
 			}
 			const formData = new FormData(form);
 			formData.append('access_key', 'b42b4f7a-b0b3-4ba9-8197-cf5abe9f09e6');

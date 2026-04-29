@@ -274,7 +274,7 @@ const       BookingPage: React.FC = () => {
             deposit_amount: depositAmountMajor,
             total_amount: totalAmountMajor,
             due_amount: balanceAmountMajor,
-            paypal_link: '',
+            paypal_link: (import.meta.env.VITE_PAYPAL_LINK || 'https://paypal.me/prodivingasia'),
             addons: addonsText,
             booking_source: bookingSource,
             message: messageWithSource,
