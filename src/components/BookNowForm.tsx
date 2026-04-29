@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 
 
 const COURSE_PRICES: Record<string, number> = {
-  'Open Water': 12000,
-  'Advanced Open Water': 11000,
+  'Open Water': 11500,
+  'Advanced Open Water': 10500,
   'Rescue Diver': 13000,
   'Divemaster': 35000,
   'Fun Dive': 1800,
@@ -42,6 +42,12 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
   };
 
   const sendToSupabaseAndEmail = async (payNow: boolean) => {
+    const totalAmount = coursePrice > 0 ? coursePrice : null;
+    const depositAmount = deposit > 0 ? deposit : null;
+    const dueAmount = totalAmount != null && depositAmount != null
+      ? Math.max(totalAmount - depositAmount, 0)
+      : null;
+
     // Submit via API (saves to Supabase + mirrors to WordPress)
     // Fire-and-forget: don't wait for response, use timeout, continue regardless
     Promise.race([
@@ -53,12 +59,19 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
           course_title: form.course_title,
           email: form.email,
           phone: form.phone,
+          accommodation: form.accommodation_type,
           preferred_date: form.arrival_date,
           experience_level: form.diving_experience,
           payment_choice: payNow ? 'deposit_requested' : 'pending',
           message: form.message,
           status: 'new',
           booking_type: 'course',
+          item_title: form.course_title,
+          selected_price: totalAmount,
+          currency: 'THB',
+          total_amount: totalAmount,
+          deposit_amount: depositAmount,
+          due_amount: dueAmount,
           booking_source: 'vercel-form',
         }),
       }),
