@@ -38,9 +38,9 @@ const pages = {
         'Expand your skills with five Adventure Dives including deep and navigation. Perfect for exploring deeper dive sites.',
       course_overview:
         'The PADI Advanced Open Water course improves your underwater skills through hands-on dives. Includes Deep, Navigation, Peak Performance Buoyancy, and two electives like Night or Wreck diving.',
-      price_thb: '9500',
-      price_usd: '275',
-      price_eur: '250',
+      price_thb: '10500',
+      price_usd: '300',
+      price_eur: '275',
       duration: '2 days',
       section_1_title: "What you'll do",
       section_1_content:
@@ -62,9 +62,9 @@ const pages = {
         'Breid je vaardigheden uit met vijf Adventure Dives, waaronder diepduiken en navigatie. Perfect voor het verkennen van diepere duiklocaties.',
       course_overview:
         'De PADI Advanced Open Water-cursus verbetert je onderwatervaardigheden door middel van praktijkduiken. Inclusief Deep, Navigation, Peak Performance Buoyancy en twee keuzevakken zoals Night of Wreck diving.',
-      price_thb: '9500',
-      price_usd: '275',
-      price_eur: '250',
+      price_thb: '10500',
+      price_usd: '300',
+      price_eur: '275',
       duration: '2 dagen',
       section_1_title: 'Wat je doet',
       section_1_content:
