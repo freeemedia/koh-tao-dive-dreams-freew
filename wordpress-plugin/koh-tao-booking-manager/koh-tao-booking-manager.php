@@ -589,10 +589,11 @@ class KTD_Booking_Manager {
                 'addons' => sanitize_textarea_field($payload['addons'] ?? ''),
                 'booking_source' => sanitize_text_field($payload['booking_source'] ?? ''),
                 'message' => sanitize_textarea_field($payload['message'] ?? ''),
+                'internal_notes' => sanitize_textarea_field($payload['internal_notes'] ?? $payload['message'] ?? ''),
                 'raw_payload' => wp_json_encode($payload),
             ),
             array(
-                '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%f', '%f', '%f', '%s', '%s', '%s', '%s', '%s'
+                '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%f', '%f', '%f', '%s', '%s', '%s', '%s', '%s', '%s'
             )
         );
 

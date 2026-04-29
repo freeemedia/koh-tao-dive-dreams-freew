@@ -73,7 +73,7 @@
           <td>${b.preferred_date || b.date || ''}</td>
           <td>${b.booking_type || b.level || ''}</td>
           <td>${b.experience_level || b.experience || ''}</td>
-          <td style="white-space:nowrap;font-size:13px;">${b.deposit_amount ? '฿'+Number(b.deposit_amount).toLocaleString() : '-'} / ${b.total_amount ? '฿'+Number(b.total_amount).toLocaleString() : '-'}</td>
+          <td style="white-space:nowrap;font-size:13px;">${b.deposit_amount != null && b.deposit_amount !== '' ? '฿'+Number(b.deposit_amount).toLocaleString() : '-'} / ${b.total_amount != null && b.total_amount !== '' ? '฿'+Number(b.total_amount).toLocaleString() : '-'}</td>
           <td style="max-width:200px;white-space:pre-line;">${(b.message || b.internal_notes || b.comments || '').replace(/(https:\/\/paypal\.me\/[\w/]+)/g, '<a href="$1" target="_blank" class="paypal-link">PayPal</a>')}</td>
           <td>${paypalLink ? `<a href="${paypalLink}" target="_blank" class="paypal-link">PayPal</a>` : ''}</td>
           <td><select class="status-select" data-id="${b.id}">
