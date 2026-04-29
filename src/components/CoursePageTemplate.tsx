@@ -248,14 +248,14 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
                   </div>
                   <div className="space-y-1">
                     <p className="text-2xl font-bold text-sky-600">฿{thbAmount.toLocaleString(localeTag)}</p>
-                    {usdAmount > 0 && (
+                    {exchangeRates && exchangeRates.USD && exchangeRates.THB && (
                       <p className="text-base text-muted-foreground">
-                        ${usdAmount.toLocaleString(localeTag)} USD
+                        ${(thbAmount / exchangeRates.THB * exchangeRates.USD).toLocaleString(localeTag, { maximumFractionDigits: 0 })} USD
                       </p>
                     )}
-                    {eurAmount > 0 && (
+                    {exchangeRates && exchangeRates.EUR && exchangeRates.THB && (
                       <p className="text-base text-muted-foreground">
-                        €{eurAmount.toLocaleString(localeTag)} EUR
+                        €{(thbAmount / exchangeRates.THB * exchangeRates.EUR).toLocaleString(localeTag, { maximumFractionDigits: 0 })} EUR
                       </p>
                     )}
                   </div>
