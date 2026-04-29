@@ -1,4 +1,3 @@
-import AdminBookings from '../components/AdminBookings';
 import AdminPagesManager from '../components/AdminPagesManager';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import React, { useState } from 'react';
@@ -8,10 +7,9 @@ const Admin = () => {
   const { t } = useTranslation();
   const jiraEmbedUrl = import.meta.env.VITE_JIRA_EMBED_URL || '';
   const jiraProjectUrl = import.meta.env.VITE_JIRA_PROJECT_URL || jiraEmbedUrl || 'https://divinginasia.atlassian.net';
-  const [activeTab, setActiveTab] = useState<'bookings' | 'pages' | 'project-manager'>('bookings');
+  const [activeTab, setActiveTab] = useState<'pages' | 'project-manager'>('pages');
 
   const tabs = [
-    { key: 'bookings' as const, label: t('admin.tab_bookings', { defaultValue: 'Bookings' }) },
     { key: 'pages' as const, label: t('admin.tab_pages', { defaultValue: 'Page Content' }) },
     { key: 'project-manager' as const, label: t('admin.tab_project_manager', { defaultValue: 'Project Manager' }) },
   ];
@@ -31,14 +29,10 @@ const Admin = () => {
       </header>
 
       <div className="mx-auto w-full max-w-[1400px] px-6 py-6">
-        <div className="mb-6 grid gap-4 md:grid-cols-3">
+        <div className="mb-6 grid gap-4 md:grid-cols-2">
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-wide text-slate-500">Bookings</p>
-            <p className="mt-2 text-xl font-semibold text-slate-900">Live Intake</p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-wide text-slate-500">Billing</p>
-            <p className="mt-2 text-xl font-semibold text-slate-900">Status Tracking</p>
+            <p className="text-xs uppercase tracking-wide text-slate-500">Content</p>
+            <p className="mt-2 text-xl font-semibold text-slate-900">Page Editor</p>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <p className="text-xs uppercase tracking-wide text-slate-500">Workflow</p>
@@ -62,7 +56,7 @@ const Admin = () => {
             <a
               href="https://lightsalmon-dinosaur-377714.hostingersite.com/wp-admin"
               target="_blank"
-              rel="noreferrer"
+              rel="noreferrer noopener"
               className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700 shadow-sm transition hover:bg-blue-100"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg>
@@ -76,12 +70,6 @@ const Admin = () => {
             </a>
           </div>
         </div>
-
-        {activeTab === 'bookings' && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xl">
-            <AdminBookings />
-          </div>
-        )}
 
         {activeTab === 'pages' && (
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xl">
@@ -101,7 +89,7 @@ const Admin = () => {
               <a
                 href={jiraProjectUrl}
                 target="_blank"
-                rel="noreferrer"
+                rel="noreferrer noopener"
                 className="inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
               >
                 {t('admin.open_jira', { defaultValue: 'Open Jira' })}
