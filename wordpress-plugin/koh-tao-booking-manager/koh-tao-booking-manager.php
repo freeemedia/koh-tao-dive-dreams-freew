@@ -732,6 +732,7 @@ class KTD_Booking_Manager {
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Course</th>
+                            <th>Accommodation</th>
                             <th>Date</th>
                             <th>Type</th>
                             <th>Experience</th>
@@ -762,6 +763,7 @@ class KTD_Booking_Manager {
                                 <td><input class="ktd-field" data-field="email" value="<?php echo esc_attr($row['email'] ?? ''); ?>" /></td>
                                 <td><input class="ktd-field" data-field="phone" value="<?php echo esc_attr($row['phone'] ?? ''); ?>" /></td>
                                 <td><input class="ktd-field" data-field="item_title" value="<?php echo esc_attr($row['item_title'] ?? ''); ?>" /></td>
+                                <td><input class="ktd-field" data-field="accommodation" value="<?php echo esc_attr($row['accommodation'] ?? ''); ?>" /></td>
                                 <td><input class="ktd-field" data-field="preferred_date" value="<?php echo esc_attr($row['preferred_date'] ?? ''); ?>" /></td>
                                 <td style="white-space:nowrap;font-size:12px;"><?php echo esc_html($row['booking_type'] ?? ''); ?></td>
                                 <td style="font-size:12px;"><?php echo esc_html($row['experience_level'] ?? ''); ?></td>
