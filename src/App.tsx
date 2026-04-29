@@ -102,6 +102,7 @@ import UnderwaterNaturalist from './pages/specialty/UnderwaterNaturalist';
 
 import DivemasterInternship from './pages/internship/Divemaster';
 import InstructorInternship from './pages/internship/Instructor';
+import OpenWaterToDivemaster from './pages/OpenWaterToDivemaster';
 import FacebookFeedPage from './pages/FacebookFeedPage';
 import BookingToJiraForm from './components/BookingToJiraForm';
 
@@ -252,6 +253,7 @@ const App = () => (
               <Route path="/specialty/underwater-naturalist" element={<UnderwaterNaturalist />} />
               <Route path="/internship/divemaster" element={<DivemasterInternship />} />
               <Route path="/internship/instructor" element={<InstructorInternship />} />
+              <Route path="/packages/open-water-to-divemaster" element={<OpenWaterToDivemaster />} />
               <Route path="/fun-diving-koh-tao" element={<FunDiving />} />
               <Route path="/koh-tao-dive-sites" element={<DiveSitesPage />} />
               <Route path="/dive-sites/sail-rock" element={<SailRock />} />
