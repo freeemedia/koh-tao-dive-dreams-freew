@@ -8,6 +8,7 @@ import { useBookNowModal } from '@/components/useBookNowModal';
 import { usePageContent } from '@/hooks/usePageContent';
 // PageContentEditor import removed
 import Contact from './Contact';
+import InlineCourseBookingForm from './InlineCourseBookingForm';
 import DropboxGallerySection from './DropboxGallerySection';
 import ImageRow from './ImageRow';
 
@@ -275,6 +276,25 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
 
         {/* PageContentEditor removed */}
         
+        <section className="mt-12" id="book-with-us">
+          <div className="max-w-2xl mx-auto">
+            <h2 className="text-2xl font-bold mb-2">
+              {locale === 'nl' ? 'Boek bij ons' : 'Book with Us Now'}
+            </h2>
+            <p className="text-muted-foreground mb-6 text-sm">
+              {locale === 'nl'
+                ? 'Vul het formulier in en we nemen binnen 24 uur contact met je op.'
+                : 'Fill in the form below and we\'ll confirm availability within 24 hours.'}
+            </p>
+            <InlineCourseBookingForm
+              itemType={bookingType}
+              itemTitle={bookingItemName || content.hero_title || ''}
+              depositMajor={thbAmount > 0 ? Math.round(thbAmount * 0.2) : undefined}
+              depositCurrency="THB"
+            />
+          </div>
+        </section>
+
         <section className="mt-12" id="contact-section">
           <Contact />
         </section>

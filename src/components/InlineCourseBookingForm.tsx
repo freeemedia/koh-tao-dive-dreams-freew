@@ -1,0 +1,275 @@
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Calendar, User, Mail, Phone, MessageSquare } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { toast } from 'sonner';
+import { supabase } from '@/lib/supabase';
+import { queueWordPressCrmSync } from '@/lib/wordpressCrmSync';
+
+const schema = z.object({
+  name: z.string().trim().min(1, 'Name is required').max(100),
+  email: z.string().trim().email('Invalid email').max(255),
+  phone: z.string().trim().max(20).optional(),
+  preferred_date: z.string().optional(),
+  experience_level: z.string().optional(),
+  message: z.string().trim().max(1000).optional(),
+  paymentChoice: z.enum(['paypal', 'inquire']).default('inquire'),
+});
+
+type FormData = z.infer<typeof schema>;
+
+interface Props {
+  itemType: 'course' | 'dive';
+  itemTitle: string;
+  depositMajor?: number;
+  depositCurrency?: string;
+}
+
+const InlineCourseBookingForm: React.FC<Props> = ({
+  itemType,
+  itemTitle,
+  depositMajor,
+  depositCurrency = 'THB',
+}) => {
+  const [submitted, setSubmitted] = useState(false);
+  const [submittedEmail, setSubmittedEmail] = useState('');
+
+  const apiBase = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '').trim().replace(/\/+$/, '');
+  const apiUrl = (path: string) => (apiBase ? `${apiBase}${path}` : path);
+  const paypalBase = (import.meta.env.VITE_PAYPAL_LINK || 'https://paypal.me/prodivingasia').trim().replace(/\/+$/, '');
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      preferred_date: '',
+      experience_level: '',
+      message: '',
+      paymentChoice: 'inquire',
+    },
+  });
+
+  const { formState: { isSubmitting } } = form;
+
+  const onSubmit = async (data: FormData) => {
+    try {
+      const deposit = typeof depositMajor === 'number' ? depositMajor : 0;
+
+      const payload = {
+        item_title: itemTitle,
+        name: data.name,
+        email: data.email,
+        phone: data.phone || 'N/A',
+        preferred_date: data.preferred_date || 'N/A',
+        experience_level: data.experience_level || 'N/A',
+        payment_choice: data.paymentChoice === 'paypal' ? 'paypal-deposit' : 'inquire',
+        deposit_amount: deposit > 0 ? `฿${deposit}` : 'N/A',
+        message: `Phone: ${data.phone || 'N/A'}\nPreferred Date: ${data.preferred_date || 'N/A'}\nExperience Level: ${data.experience_level || 'N/A'}\nPayment: ${data.paymentChoice}\n\nMessage:\n${data.message || 'N/A'}`,
+      };
+
+      const res = await fetch(apiUrl('/api/send-booking-notification'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const resData = await res.json().catch(() => ({}));
+
+      // Persist to Supabase
+      await supabase.from('bookings').insert([{
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        preferred_date: data.preferred_date,
+        experience_level: data.experience_level,
+        message: data.message,
+        payment_choice: data.paymentChoice,
+        item_type: itemType,
+        course_title: itemTitle,
+        created_at: new Date().toISOString(),
+        status: 'pending',
+        deposit_amount: deposit,
+        total_amount: deposit > 0 ? Math.round(deposit / 0.2) : 0,
+        due_amount: deposit > 0 ? Math.round(deposit / 0.2) - deposit : 0,
+      }]).then(({ error }) => {
+        if (error) console.warn('Supabase insert error:', error);
+      });
+
+      // CRM sync
+      const wpApiBase = (import.meta.env.VITE_WP_API_BASE || '').trim();
+      const wpApiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || '').trim();
+      if (wpApiBase && wpApiKey) {
+        queueWordPressCrmSync({
+          wpApiBase,
+          wpApiKey,
+          payload: {
+            source: 'website',
+            source_page: window.location.pathname,
+            event_type: 'booking_created',
+            submitted_at: new Date().toISOString(),
+            contact: { full_name: data.name, email: data.email, phone: data.phone || '' },
+            booking: {
+              course_interest: itemTitle,
+              preferred_start_date: data.preferred_date || '',
+              experience_level: data.experience_level || '',
+              message: data.message || '',
+              payment_choice: data.paymentChoice,
+              payment_status: data.paymentChoice === 'paypal' ? 'deposit_paypal_redirect' : 'new_inquiry',
+              deposit_amount: deposit || undefined,
+              currency: depositCurrency,
+            },
+            tags: ['website-form', `${itemType}-page`, 'inline-form'].filter(Boolean),
+          },
+        });
+      }
+
+      if (res.ok && resData.success) {
+        setSubmittedEmail(data.email);
+        setSubmitted(true);
+        form.reset();
+
+        if (data.paymentChoice === 'paypal' && deposit > 0) {
+          toast.success('Booking sent! Redirecting to PayPal...');
+          setTimeout(() => { window.location.href = `${paypalBase}/${deposit}THB`; }, 1500);
+        } else {
+          toast.success('Booking inquiry sent! We\'ll be in touch within 24 hours.');
+        }
+      } else {
+        const errMsg = resData?.message || resData?.error || `HTTP ${res.status}`;
+        toast.error(`Failed to send booking: ${errMsg}`);
+      }
+    } catch (err) {
+      console.error('Booking submission error:', err);
+      toast.error('Submission failed. Please try again.');
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div className="rounded-lg border-2 border-emerald-300 bg-emerald-50 p-6 text-center">
+        <div className="text-3xl mb-3">✓</div>
+        <h3 className="text-xl font-bold text-emerald-900 mb-2">Booking Received!</h3>
+        <p className="text-emerald-700">Confirmation sent to <strong>{submittedEmail}</strong>. We'll be in touch within 24 hours.</p>
+        <Button variant="outline" className="mt-4" onClick={() => setSubmitted(false)}>
+          Submit another
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <div className="grid md:grid-cols-2 gap-4">
+          <FormField control={form.control} name="name" render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2"><User className="h-4 w-4" /> Full Name *</FormLabel>
+              <FormControl><Input placeholder="John Doe" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+
+          <FormField control={form.control} name="email" render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2"><Mail className="h-4 w-4" /> Email *</FormLabel>
+              <FormControl><Input type="email" placeholder="john@example.com" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+
+          <FormField control={form.control} name="phone" render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2"><Phone className="h-4 w-4" /> Phone</FormLabel>
+              <FormControl><Input placeholder="+66 123 456 789" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+
+          <FormField control={form.control} name="preferred_date" render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2"><Calendar className="h-4 w-4" /> Preferred Date</FormLabel>
+              <FormControl><Input type="date" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+        </div>
+
+        <FormField control={form.control} name="experience_level" render={({ field }) => (
+          <FormItem>
+            <FormLabel>Experience Level</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger><SelectValue placeholder="Select your experience level" /></SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="none">No diving experience</SelectItem>
+                <SelectItem value="beginner">Beginner (1-10 dives)</SelectItem>
+                <SelectItem value="intermediate">Intermediate (10-50 dives)</SelectItem>
+                <SelectItem value="advanced">Advanced (50+ dives)</SelectItem>
+                <SelectItem value="professional">Professional diver</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )} />
+
+        <FormField control={form.control} name="message" render={({ field }) => (
+          <FormItem>
+            <FormLabel className="flex items-center gap-2"><MessageSquare className="h-4 w-4" /> Message</FormLabel>
+            <FormControl><Textarea placeholder="Any questions or special requests?" rows={3} {...field} /></FormControl>
+            <FormMessage />
+          </FormItem>
+        )} />
+
+        {typeof depositMajor === 'number' && depositMajor > 0 && (
+          <div className="p-4 border rounded-lg bg-muted/20">
+            <p className="font-semibold mb-3 text-sm">Payment Option</p>
+            <FormField control={form.control} name="paymentChoice" render={({ field }) => (
+              <FormItem>
+                <div className="flex flex-col gap-3">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input type="radio" className="mt-1" value="paypal" checked={field.value === 'paypal'} onChange={() => field.onChange('paypal')} />
+                    <div>
+                      <div className="font-medium text-sm">Pay ฿{depositMajor} deposit now via PayPal</div>
+                      <div className="text-xs text-muted-foreground">You'll be redirected to PayPal after submitting.</div>
+                    </div>
+                  </label>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input type="radio" className="mt-1" value="inquire" checked={field.value === 'inquire'} onChange={() => field.onChange('inquire')} />
+                    <div>
+                      <div className="font-medium text-sm">Inquire only — pay later</div>
+                      <div className="text-xs text-muted-foreground">We'll contact you to arrange payment.</div>
+                    </div>
+                  </label>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )} />
+          </div>
+        )}
+
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-primary hover:bg-primary/90"
+          size="lg"
+        >
+          {isSubmitting
+            ? 'Sending...'
+            : (form.watch('paymentChoice') === 'paypal' && typeof depositMajor === 'number' && depositMajor > 0
+              ? `Book Now & Pay ฿${depositMajor} Deposit via PayPal`
+              : 'Book with Us Now')}
+        </Button>
+      </form>
+    </Form>
+  );
+};
+
+export default InlineCourseBookingForm;
