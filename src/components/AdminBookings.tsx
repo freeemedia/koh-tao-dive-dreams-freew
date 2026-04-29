@@ -828,8 +828,6 @@ const AdminBookings: React.FC = () => {
             <Dialog open={Boolean(financeModalBooking)} onOpenChange={(open) => { if (!open) setFinanceModalBooking(null); }}>
               <DialogContent className="sm:max-w-2xl">
                 <div className="space-y-3 text-sm">
-                  {/* Finance Section Heading and Status */}
-                  <FinanceSection />
                   <div><strong>Booking ID:</strong> {financeModalBooking.id}</div>
                   <div><strong>Course:</strong> {financeModalBooking.course_title}</div>
                   <div><strong>Date:</strong> {financeModalBooking.preferred_date || '-'}</div>
@@ -865,6 +863,17 @@ const AdminBookings: React.FC = () => {
                       className="mt-1 w-full rounded border border-gray-300 p-2"
                       placeholder={t('admin.finance_bank_transfer_placeholder', { defaultValue: 'Bank name, account number, IBAN/SWIFT...' })}
                     />
+                    <div className="mt-2 flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={saveBankTransferDetails}
+                        disabled={bankTransferSaving}
+                        className="rounded bg-emerald-600 px-3 py-1 text-xs font-semibold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        {bankTransferSaving ? t('admin.saving', { defaultValue: 'Saving...' }) : t('admin.save_bank_details', { defaultValue: 'Save bank details' })}
+                      </button>
+                      {bankTransferResult ? <span className="text-xs text-slate-600">{bankTransferResult}</span> : null}
+                    </div>
                   </div>
                   <div className="mt-2">
                     <strong>{t('admin.notes', { defaultValue: 'Notes' })}</strong>
