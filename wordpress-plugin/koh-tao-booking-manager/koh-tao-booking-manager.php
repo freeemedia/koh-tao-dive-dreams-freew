@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Koh Tao Booking Manager
  * Description: Stores booking requests via REST and provides an admin bookings screen.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: One Media Asia
  */
 
@@ -336,6 +336,12 @@ class KTD_Booking_Manager {
             'permission_callback' => '__return_true',
         ));
 
+        register_rest_route('ktd/v1', '/crm-intake', array(
+            'methods' => WP_REST_Server::CREATABLE,
+            'callback' => array($this, 'crm_intake'),
+            'permission_callback' => array($this, 'validate_api_key'),
+        ));
+
         register_rest_route('ktd/v1', '/bookings', array(
             'methods' => WP_REST_Server::READABLE,
             'callback' => array($this, 'list_bookings'),
@@ -605,6 +611,137 @@ class KTD_Booking_Manager {
             'success' => true,
             'id' => (int) $wpdb->insert_id,
         ), 201);
+    }
+
+    private function split_full_name($full_name) {
+        $full_name = trim((string) $full_name);
+        if ($full_name === '') {
+            return array('', '');
+        }
+
+        $parts = preg_split('/\s+/', $full_name);
+        $first = array_shift($parts);
+        $last = implode(' ', $parts);
+
+        return array($first ?: '', $last ?: '');
+    }
+
+    private function normalize_crm_tags($tags) {
+        if (!is_array($tags)) {
+            return array();
+        }
+
+        $normalized = array();
+        foreach ($tags as $tag) {
+            $slug = sanitize_title((string) $tag);
+            if ($slug === '') {
+                continue;
+            }
+            $normalized[$slug] = $slug;
+        }
+
+        return array_values($normalized);
+    }
+
+    private function resolve_crm_tag_ids($tags) {
+        $tags = $this->normalize_crm_tags($tags);
+        if (empty($tags) || !class_exists('FluentCrm\\App\\Models\\Tag')) {
+            return array();
+        }
+
+        $tag_ids = \FluentCrm\App\Models\Tag::query()
+            ->whereIn('slug', $tags)
+            ->pluck('id')
+            ->toArray();
+
+        return array_map('intval', $tag_ids);
+    }
+
+    public function crm_intake($request) {
+        if (!function_exists('FluentCrmApi') || !class_exists('FluentCrm\\App\\Models\\Subscriber')) {
+            return new WP_Error('ktd_fluentcrm_missing', 'FluentCRM is not installed or not active.', array('status' => 503));
+        }
+
+        $payload = $request->get_json_params();
+        if (!is_array($payload)) {
+            return new WP_Error('ktd_invalid_payload', 'Payload must be a JSON object.', array('status' => 400));
+        }
+
+        $contact = isset($payload['contact']) && is_array($payload['contact']) ? $payload['contact'] : array();
+        $booking = isset($payload['booking']) && is_array($payload['booking']) ? $payload['booking'] : array();
+        $email = sanitize_email($contact['email'] ?? '');
+        $full_name = sanitize_text_field($contact['full_name'] ?? '');
+
+        if ($email === '') {
+            return new WP_Error('ktd_required', 'Contact email is required.', array('status' => 400));
+        }
+
+        list($first_name, $last_name) = $this->split_full_name($full_name);
+        $booking_id = sanitize_text_field((string) ($payload['booking_id'] ?? ''));
+        $source_page = esc_url_raw((string) ($payload['source_page'] ?? ''));
+        $source = sanitize_text_field((string) ($payload['source'] ?? 'website'));
+        $event_type = sanitize_text_field((string) ($payload['event_type'] ?? 'booking_created'));
+        $tag_ids = $this->resolve_crm_tag_ids($payload['tags'] ?? array());
+
+        $custom_values = array_filter(array(
+            'course_interest' => sanitize_text_field((string) ($booking['course_interest'] ?? '')),
+            'preferred_start_date' => sanitize_text_field((string) ($booking['preferred_start_date'] ?? '')),
+            'experience_level' => sanitize_text_field((string) ($booking['experience_level'] ?? '')),
+            'guest_count' => isset($booking['guest_count']) ? absint($booking['guest_count']) : '',
+            'accommodation_interest' => sanitize_text_field((string) ($booking['accommodation_interest'] ?? '')),
+            'payment_choice' => sanitize_text_field((string) ($booking['payment_choice'] ?? '')),
+            'payment_mode' => sanitize_text_field((string) ($booking['payment_mode'] ?? '')),
+            'payment_status' => sanitize_text_field((string) ($booking['payment_status'] ?? '')),
+            'deposit_amount' => isset($booking['deposit_amount']) ? (string) $booking['deposit_amount'] : '',
+            'total_amount' => isset($booking['total_amount']) ? (string) $booking['total_amount'] : '',
+            'currency' => sanitize_text_field((string) ($booking['currency'] ?? 'THB')),
+            'external_booking_id' => $booking_id,
+            'lead_source_page' => $source_page,
+            'inquiry_message' => sanitize_textarea_field((string) ($booking['message'] ?? '')),
+        ), function ($value) {
+            return $value !== '' && $value !== null;
+        });
+
+        $subscriber_data = array(
+            'email' => $email,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'phone' => sanitize_text_field((string) ($contact['phone'] ?? '')),
+            'country' => sanitize_text_field((string) ($contact['country'] ?? '')),
+            'status' => 'subscribed',
+            'contact_type' => 'lead',
+            'source' => $source,
+            'tags' => $tag_ids,
+            'custom_values' => $custom_values,
+        );
+
+        $contacts_api = FluentCrmApi('contacts');
+        $existing = $contacts_api->getContact($email);
+        $created = !$existing;
+
+        $subscriber = \FluentCrm\App\Models\Subscriber::updateOrCreate($subscriber_data, true, false, false);
+
+        if (!$subscriber) {
+            return new WP_Error('ktd_fluentcrm_sync_failed', 'Failed to create or update FluentCRM contact.', array('status' => 500));
+        }
+
+        if (!empty($custom_values)) {
+            $subscriber->syncCustomFieldValues($custom_values, false);
+        }
+
+        if ($booking_id !== '') {
+            fluentcrm_update_subscriber_meta($subscriber->id, 'external_booking_id', $booking_id);
+        }
+
+        fluentcrm_update_subscriber_meta($subscriber->id, 'ktd_crm_last_payload', wp_json_encode($payload));
+        fluentcrm_update_subscriber_meta($subscriber->id, 'ktd_crm_last_event_type', $event_type);
+
+        return rest_ensure_response(array(
+            'ok' => true,
+            'contact_id' => (int) $subscriber->id,
+            'created' => $created,
+            'updated' => !$created,
+        ));
     }
 
     public function list_bookings() {

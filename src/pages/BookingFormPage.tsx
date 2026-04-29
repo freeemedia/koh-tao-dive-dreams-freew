@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
+import { queueWordPressCrmSync } from '@/lib/wordpressCrmSync';
 
 const bookingSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100),
@@ -259,6 +260,7 @@ const       BookingPage: React.FC = () => {
       };
 
       let wpSaved = false;
+      let wpBookingId: string | null = null;
       if (wpApiBase && wpApiKey) {
         try {
           const wpPayload = {
@@ -293,6 +295,12 @@ const       BookingPage: React.FC = () => {
             body: JSON.stringify(wpPayload),
           });
           wpSaved = wpRes.ok;
+          if (wpRes.ok) {
+            const wpData = await wpRes.json().catch(() => ({}));
+            if (wpData?.id != null) {
+              wpBookingId = String(wpData.id);
+            }
+          }
           if (!wpRes.ok) {
             const wpError = await wpRes.text().catch(() => 'unknown error');
             console.warn('WordPress booking save failed', wpRes.status, wpError);
@@ -333,6 +341,46 @@ const       BookingPage: React.FC = () => {
         } else if (wpApiBase && wpApiKey && !wpSaved) {
           toast.warning('Inquiry sent, but WordPress booking storage failed.');
         }
+
+        if (wpSaved) {
+          queueWordPressCrmSync({
+            wpApiBase,
+            wpApiKey,
+            payload: {
+              source: 'website',
+              source_page: `${window.location.pathname}${window.location.search}`,
+              event_type: 'booking_created',
+              booking_id: wpBookingId || undefined,
+              submitted_at: new Date().toISOString(),
+              contact: {
+                full_name: data.name,
+                email: data.email,
+                phone: data.phone || '',
+              },
+              booking: {
+                course_interest: bookingItemTitle,
+                preferred_start_date: data.preferred_date || '',
+                experience_level: data.experience_level || '',
+                guest_count: guestCount || undefined,
+                accommodation_interest: data.accommodation || '',
+                message: messageWithSource,
+                payment_choice: 'inquire',
+                payment_mode: 'inquire',
+                payment_status: wpSaved ? 'new_inquiry' : 'not_synced',
+                deposit_amount: depositAmountMajor,
+                total_amount: totalAmountMajor,
+                currency: depositCurrency || 'THB',
+              },
+              tags: [
+                'website-form',
+                `${itemType}-page`,
+                bookingSource || 'direct',
+                courseSlug || itemType,
+              ].filter(Boolean),
+            },
+          });
+        }
+
         setTimeout(() => window.location.href = '/thank-you.html', 1500);
         setInquiryNotice(SKIP_PAYMENT_MESSAGE);
       } else {
