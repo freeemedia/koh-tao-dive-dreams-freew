@@ -1,4 +1,5 @@
 import AdminBookings from '../components/AdminBookings';
+import AdminPagesManager from '../components/AdminPagesManager';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,10 +8,11 @@ const Admin = () => {
   const { t } = useTranslation();
   const jiraEmbedUrl = import.meta.env.VITE_JIRA_EMBED_URL || '';
   const jiraProjectUrl = import.meta.env.VITE_JIRA_PROJECT_URL || jiraEmbedUrl || 'https://divinginasia.atlassian.net';
-  const [activeTab, setActiveTab] = useState<'bookings' | 'project-manager'>('bookings');
+  const [activeTab, setActiveTab] = useState<'bookings' | 'pages' | 'project-manager'>('bookings');
 
   const tabs = [
     { key: 'bookings' as const, label: t('admin.tab_bookings', { defaultValue: 'Bookings' }) },
+    { key: 'pages' as const, label: t('admin.tab_pages', { defaultValue: 'Page Content' }) },
     { key: 'project-manager' as const, label: t('admin.tab_project_manager', { defaultValue: 'Project Manager' }) },
   ];
 
@@ -78,6 +80,12 @@ const Admin = () => {
         {activeTab === 'bookings' && (
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xl">
             <AdminBookings />
+          </div>
+        )}
+
+        {activeTab === 'pages' && (
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xl">
+            <AdminPagesManager />
           </div>
         )}
 
