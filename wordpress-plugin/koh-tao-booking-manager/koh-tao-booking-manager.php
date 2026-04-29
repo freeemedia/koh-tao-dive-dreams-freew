@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Koh Tao Booking Manager
  * Description: Stores booking requests via REST and provides an admin bookings screen.
- * Version: 1.0.1
+ * Version: 1.0.3
  * Author: One Media Asia
  */
 
@@ -44,6 +44,9 @@ class KTD_Booking_Manager {
 
         // Contact Form 7 integration
         add_action('wpcf7_mail_sent', array($this, 'handle_cf7_submission'));
+
+        // FluentForms integration — sync all submissions to FluentCRM
+        add_action('fluentform/submission_inserted', array($this, 'handle_fluentform_submission'), 10, 3);
     }
 
     public static function activate() {
@@ -743,6 +746,100 @@ class KTD_Booking_Manager {
             'created' => $created,
             'updated' => !$created,
         ));
+    }
+
+    /**
+     * Handle FluentForms submission → FluentCRM contact upsert.
+     * Works with any form. Looks for common field name patterns.
+     *
+     * @param int    $insert_id  Submission ID
+     * @param array  $form_data  Submitted field data (key => value)
+     * @param object $form       Form object
+     */
+    public function handle_fluentform_submission($insert_id, $form_data, $form) {
+        if (!class_exists('FluentCrm\App\Models\Subscriber')) {
+            return;
+        }
+
+        $data = is_array($form_data) ? $form_data : array();
+
+        // --- Resolve email ---
+        $email = '';
+        foreach (array('email', 'email_address', 'your_email') as $key) {
+            if (!empty($data[$key])) {
+                $email = sanitize_email((string) $data[$key]);
+                break;
+            }
+        }
+        if (empty($email) || !is_email($email)) {
+            return; // No valid email — skip
+        }
+
+        // --- Resolve name ---
+        $first_name = '';
+        $last_name  = '';
+        if (!empty($data['names']) && is_array($data['names'])) {
+            $first_name = sanitize_text_field((string) ($data['names']['first_name'] ?? ''));
+            $last_name  = sanitize_text_field((string) ($data['names']['last_name'] ?? ''));
+        } elseif (!empty($data['full_name'])) {
+            $parts = $this->split_full_name(sanitize_text_field((string) $data['full_name']));
+            $first_name = $parts['first'];
+            $last_name  = $parts['last'];
+        } elseif (!empty($data['name'])) {
+            $parts = $this->split_full_name(sanitize_text_field((string) $data['name']));
+            $first_name = $parts['first'];
+            $last_name  = $parts['last'];
+        }
+
+        // --- Other common fields ---
+        $phone   = sanitize_text_field((string) ($data['phone'] ?? $data['phone_number'] ?? $data['mobile'] ?? ''));
+        $country = sanitize_text_field((string) ($data['country'] ?? ''));
+        $message = sanitize_textarea_field((string) ($data['message'] ?? $data['your_message'] ?? $data['textarea'] ?? ''));
+
+        // --- Booking / course fields ---
+        $course_interest    = sanitize_text_field((string) ($data['course_interest'] ?? $data['course'] ?? $data['course_name'] ?? ''));
+        $preferred_date     = sanitize_text_field((string) ($data['preferred_date'] ?? $data['start_date'] ?? $data['date'] ?? ''));
+        $experience_level   = sanitize_text_field((string) ($data['experience_level'] ?? $data['experience'] ?? ''));
+        $accommodation      = sanitize_text_field((string) ($data['accommodation'] ?? $data['accommodation_interest'] ?? ''));
+
+        // --- Tags ---
+        $form_id   = isset($form->id) ? (int) $form->id : 0;
+        $tag_slugs = array('website-form', 'fluent-form');
+        if ($form_id) {
+            $tag_slugs[] = 'form-' . $form_id;
+        }
+        $tag_ids = $this->resolve_crm_tag_ids($tag_slugs);
+
+        // --- Custom field values ---
+        $custom_values = array_filter(array(
+            'course_interest'    => $course_interest,
+            'preferred_start_date' => $preferred_date,
+            'experience_level'   => $experience_level,
+            'accommodation_interest' => $accommodation,
+            'inquiry_message'    => $message,
+            'lead_source_page'   => 'fluent-form-' . $form_id,
+            'payment_status'     => 'new_inquiry',
+        ), function ($v) { return $v !== '' && $v !== null; });
+
+        $subscriber_data = array(
+            'email'        => $email,
+            'first_name'   => $first_name,
+            'last_name'    => $last_name,
+            'phone'        => $phone,
+            'country'      => $country,
+            'status'       => 'subscribed',
+            'contact_type' => 'lead',
+            'source'       => 'fluent-form',
+            'tags'         => $tag_ids,
+            'custom_values' => $custom_values,
+        );
+
+        $subscriber_model = new \FluentCrm\App\Models\Subscriber();
+        $subscriber = $subscriber_model->updateOrCreate($subscriber_data, true, false, false);
+
+        if ($subscriber && !empty($custom_values)) {
+            $subscriber->syncCustomFieldValues($custom_values, false);
+        }
     }
 
     public function list_bookings() {
