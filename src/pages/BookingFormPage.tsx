@@ -248,6 +248,8 @@ const       BookingPage: React.FC = () => {
           ? (stayWithUs ? 'Yes - accommodation free with course' : 'No')
           : (isDiveBooking ? (stayWithUs ? 'Yes - accommodation requested with dive booking' : 'No') : 'N/A'),
         payment_mode: 'inquire',
+        selected_price: baseCourseCostMajor > 0 ? baseCourseCostMajor : null,
+        currency: depositCurrency || 'THB',
         deposit_amount: depositAmountMajor,
         total_amount: totalAmountMajor,
         due_amount: balanceAmountMajor,

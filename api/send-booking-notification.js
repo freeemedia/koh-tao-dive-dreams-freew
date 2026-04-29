@@ -56,7 +56,7 @@ export async function sendBookingNotificationEmail(payload = {}) {
 
   const {
     name, email, phone, accommodation, accommodation_type, preferred_date, experience_level,
-    message, comments, item_title, deposit_amount, total_amount, due_amount, payment_choice, paypal_link,
+    message, comments, item_title, selected_price, currency, deposit_amount, total_amount, due_amount, payment_choice, paypal_link,
   } = payload;
   const accommodationValue = accommodation || accommodation_type || 'N/A';
 
@@ -107,6 +107,7 @@ export async function sendBookingNotificationEmail(payload = {}) {
           <tr style="${rowStyle}"><td style="${labelStyle}">Accommodation</td><td style="${valueStyle}">${accommodationValue}</td></tr>
           <tr style="${rowStyle}"><td style="${labelStyle}">Preferred Date</td><td style="${valueStyle}">${preferred_date || 'N/A'}</td></tr>
           ${experience_level && experience_level !== 'none' ? `<tr style="${rowStyle}"><td style="${labelStyle}">Experience Level</td><td style="${valueStyle}">${experience_level}</td></tr>` : ''}
+          ${selected_price != null ? `<tr style="${rowStyle}"><td style="${labelStyle}">Selected Price</td><td style="${valueStyle}">${formatMoney(selected_price)} ${currency || 'THB'}</td></tr>` : ''}
           ${total_amount != null ? `<tr style="${rowStyle}"><td style="${labelStyle}">Total Amount</td><td style="${valueStyle}">${formatMoney(total_amount)}</td></tr>` : ''}
           ${deposit_amount != null ? `<tr style="${rowStyle}"><td style="${labelStyle}">Deposit Amount</td><td style="${valueStyle}">${formatMoney(deposit_amount)}</td></tr>` : ''}
           ${due_amount != null ? `<tr style="${rowStyle}"><td style="${labelStyle}">Balance</td><td style="${valueStyle}">${formatMoney(due_amount)}</td></tr>` : ''}
@@ -246,7 +247,7 @@ export async function sendCustomerInvoiceEmail(payload = {}) {
 
   const {
     name, phone, accommodation, accommodation_type, preferred_date, arrival_date, experience_level, diving_experience,
-    item_title, course_title, activity, deposit_amount, total_amount, due_amount, payment_choice, payment_mode, paypal_link,
+    item_title, course_title, activity, selected_price, currency, deposit_amount, total_amount, due_amount, payment_choice, payment_mode, paypal_link,
   } = payload;
   const accommodationValue = accommodation || accommodation_type || 'Not specified';
   const preferredDateValue = preferred_date || arrival_date;
@@ -362,6 +363,10 @@ export async function sendCustomerInvoiceEmail(payload = {}) {
               <tr style="background:#f0f5ff;">
                 <td style="padding:12px 16px;color:#374151;font-size:14px;border-bottom:1px solid #e5e9f8;">Deposit Due Now</td>
                 <td style="padding:12px 16px;color:#0b3d91;font-size:18px;font-weight:800;border-bottom:1px solid #e5e9f8;text-align:right;">${displayDeposit}</td>
+              </tr>
+              <tr>
+                <td style="padding:12px 16px;color:#6b7280;font-size:13px;">Selected Course Price</td>
+                <td style="padding:12px 16px;color:#374151;font-size:13px;font-weight:600;text-align:right;">${selected_price != null ? `${formatMoney(selected_price)} ${currency || 'THB'}` : displayTotal}</td>
               </tr>
               <tr>
                 <td style="padding:12px 16px;color:#6b7280;font-size:13px;">Total Course Price</td>
