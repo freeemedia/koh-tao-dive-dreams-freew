@@ -64,6 +64,9 @@ const Accommodation = () => {
         people: 'Aantal personen',
         nights: 'Aantal nachten',
         details: 'Extra details',
+        divingWithUs: 'Duik je mee met ons?',
+        divingYes: 'Ja, ik duik mee',
+        divingNo: 'Nee, alleen verblijf',
         continueBooking: 'Ga verder naar boekingsformulier',
       }
     : {
@@ -93,6 +96,9 @@ const Accommodation = () => {
         people: 'Number of people',
         nights: 'Number of nights',
         details: 'Additional details',
+        divingWithUs: 'Diving with us?',
+        divingYes: 'Yes, I am diving',
+        divingNo: 'No, accommodation only',
         continueBooking: 'Continue to booking form',
       };
 
@@ -193,6 +199,7 @@ const Accommodation = () => {
   const [peopleCount, setPeopleCount] = useState<number>(2);
   const [nightCount, setNightCount] = useState<number>(2);
   const [accommodationDetails, setAccommodationDetails] = useState<string>('');
+  const [isDiving, setIsDiving] = useState<boolean>(true);
 
   const openRoomGallery = (room: RoomCard) => {
     setSelectedRoomName(room.name);
@@ -259,7 +266,7 @@ const Accommodation = () => {
         ? 'Basic Room'
         : 'Bungalow';
     const message = encodeURIComponent(
-      `Accommodation request: ${roomLabel}. Guests: ${peopleCount}. Nights: ${nightCount}. Details: ${accommodationDetails || 'None'}`
+      `Accommodation request: ${roomLabel}. Guests: ${peopleCount}. Nights: ${nightCount}. Diving: ${isDiving ? 'Yes' : 'No'}. Details: ${accommodationDetails || 'None'}`
     );
     navigate(`/booking?item=Resort%20Accommodation%20-%20${encodeURIComponent(roomLabel)}&type=stay&currency=THB&people=${peopleCount}&nights=${nightCount}&message=${message}`);
   };
@@ -343,6 +350,31 @@ const Accommodation = () => {
                     onChange={(e) => setNightCount(Math.max(1, Number(e.target.value) || 1))}
                     className="w-full h-10 rounded-md border px-3 bg-background"
                   />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium mb-2">{labels.divingWithUs}</label>
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="isDiving"
+                        checked={isDiving === true}
+                        onChange={() => setIsDiving(true)}
+                        className="accent-blue-600"
+                      />
+                      {labels.divingYes}
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="isDiving"
+                        checked={isDiving === false}
+                        onChange={() => setIsDiving(false)}
+                        className="accent-blue-600"
+                      />
+                      {labels.divingNo}
+                    </label>
+                  </div>
                 </div>
                 <div className="md:col-span-2">
                   <label htmlFor="accommodationDetails" className="block text-sm font-medium mb-2">{labels.details}</label>
