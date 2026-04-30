@@ -11,7 +11,7 @@ const COURSES = [
     title: 'Open Water Diver',
     path: '/courses/open-water',
     duration: '3–4 days',
-    priceTHB: 9900,
+    priceTHB: 11500,
     description:
       'Your first scuba certification. Learn to dive safely in confined and open water, earning the most recognised diving qualification in the world.',
   },
@@ -19,7 +19,7 @@ const COURSES = [
     title: 'Advanced Open Water',
     path: '/courses/advanced',
     duration: '2 days',
-    priceTHB: 9900,
+    priceTHB: 10500,
     description:
       'Five adventure dives including deep diving and underwater navigation. Unlock more dive sites and build real confidence underwater.',
   },
@@ -27,7 +27,7 @@ const COURSES = [
     title: 'Emergency First Response',
     path: '/courses/efr',
     duration: '1 day',
-    priceTHB: 5500,
+    priceTHB: 4500,
     description:
       'First aid and CPR training — a required prerequisite for Rescue Diver. Valuable skills for everyday life too.',
   },
@@ -35,7 +35,7 @@ const COURSES = [
     title: 'Rescue Diver',
     path: '/courses/rescue',
     duration: '3–4 days',
-    priceTHB: 12500,
+    priceTHB: 10000,
     description:
       'The most rewarding course many divers ever take. Learn to prevent and manage dive emergencies and look after fellow divers.',
   },
