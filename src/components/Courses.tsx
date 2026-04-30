@@ -558,7 +558,7 @@ const Courses = () => {
 
         <div className="bg-blue-600 rounded-xl p-8 text-white text-center">
           <h3 className="text-2xl font-bold mb-4">{t('courses.specialOffers.title')}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 text-left">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 text-left">
             <div className="bg-blue-700 rounded-lg p-6">
               <h4 className="font-bold text-xl mb-2">{t('courses.specialOffers.combo.title')}</h4>
               <p className="text-blue-200 mb-3">{t('courses.specialOffers.combo.description')}</p>
@@ -566,11 +566,6 @@ const Courses = () => {
                 <span className="text-2xl font-bold">{getDisplayedPrice(t('courses.specialOffers.combo.price'))}</span>
                 <span className="text-blue-300 line-through">{t('courses.specialOffers.combo.originalPrice')}</span>
               </div>
-            </div>
-            <div className="bg-blue-700 rounded-lg p-6">
-              <h4 className="font-bold text-xl mb-2">{t('courses.specialOffers.group.title')}</h4>
-              <p className="text-blue-200 mb-3">{t('courses.specialOffers.group.description')}</p>
-              <div className="text-2xl font-bold">{t('courses.specialOffers.group.discount')}</div>
             </div>
             <div className="bg-emerald-600 rounded-lg p-6 border-2 border-emerald-400">
               <h4 className="font-bold text-xl mb-2">🎓 {isDutch ? '3 Specialties Bundel!' : '3 Specialty Bundle!'}</h4>
@@ -630,6 +625,7 @@ const Courses = () => {
             />
           </div>
         </div>
+
       </div>
 
         {/* Booking now handled on dedicated /booking page */}

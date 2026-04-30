@@ -1,0 +1,777 @@
+<?php
+/**
+ * Template Name: KTD Dashboard Home
+ *
+ * Drop this file into your active WordPress theme folder, then:
+ *   1. Create a new Page in WP Admin → "Dashboard" (or "Home")
+ *   2. Set the Page Template to "KTD Dashboard Home"
+ *   3. Optionally set it as your front page under Settings → Reading
+ *
+ * Requires: Koh Tao Booking Manager plugin (provides wp-json/ktd/v1/ endpoints)
+ */
+
+// Redirect non-admins to login
+if ( ! is_user_logged_in() ) {
+    auth_redirect();
+}
+if ( ! current_user_can( 'manage_options' ) ) {
+    wp_die( __( 'You do not have permission to view this page.' ) );
+}
+
+// No WP header/footer — full-screen dashboard
+?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+  <meta charset="<?php bloginfo( 'charset' ); ?>">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KTD Dashboard — <?php bloginfo( 'name' ); ?></title>
+  <?php wp_head(); ?>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0f1117;
+      --surface:  #1a1d27;
+      --surface2: #21253a;
+      --border:   #2d3248;
+      --text:     #e2e8f0;
+      --muted:    #8892a4;
+      --accent:   #6366f1;
+      --accent2:  #818cf8;
+      --green:    #10b981;
+      --yellow:   #f59e0b;
+      --red:      #ef4444;
+      --blue:     #3b82f6;
+      --sidebar-w: 240px;
+    }
+
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; }
+
+    /* ── Layout ── */
+    #ktd-shell { display: flex; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    #ktd-sidebar {
+      width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      overflow-y: auto;
+    }
+    .sidebar-logo {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar-logo img { width: 32px; height: 32px; border-radius: 6px; }
+    .sidebar-logo span { font-weight: 700; font-size: 15px; color: var(--text); letter-spacing: -0.2px; }
+
+    .sidebar-section-label {
+      padding: 20px 20px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .sidebar-nav { list-style: none; padding: 0 8px; }
+    .sidebar-nav li a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 7px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: background 0.15s, color 0.15s;
+    }
+    .sidebar-nav li a:hover { background: var(--surface2); color: var(--text); }
+    .sidebar-nav li a.active { background: var(--accent); color: #fff; }
+    .sidebar-nav li a .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar-footer .avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px; color: #fff; flex-shrink: 0;
+    }
+    .sidebar-footer .user-info { flex: 1; overflow: hidden; }
+    .sidebar-footer .user-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sidebar-footer .user-role { font-size: 11px; color: var(--muted); }
+    .sidebar-footer a.logout { font-size: 18px; color: var(--muted); text-decoration: none; transition: color 0.15s; }
+    .sidebar-footer a.logout:hover { color: var(--red); }
+
+    /* ── Main area ── */
+    #ktd-main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ── Topbar ── */
+    #ktd-topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 28px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .topbar-left h1 { font-size: 18px; font-weight: 700; }
+    .topbar-left .breadcrumb { font-size: 12px; color: var(--muted); margin-top: 1px; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .topbar-badge {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .topbar-badge strong { color: var(--text); }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 16px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+
+    /* ── Content ── */
+    #ktd-content { padding: 28px; flex: 1; }
+
+    /* ── Stat cards ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .stat-card.c-blue::before { background: var(--blue); }
+    .stat-card.c-green::before { background: var(--green); }
+    .stat-card.c-yellow::before { background: var(--yellow); }
+    .stat-card.c-red::before { background: var(--red); }
+    .stat-card.c-purple::before { background: var(--accent); }
+
+    .stat-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+    .stat-value { font-size: 28px; font-weight: 800; color: var(--text); line-height: 1; }
+    .stat-sub { font-size: 12px; color: var(--muted); }
+    .stat-icon { position: absolute; right: 16px; top: 20px; font-size: 24px; opacity: 0.25; }
+
+    /* ── Grid ── */
+    .content-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+    @media (max-width: 1100px) { .content-grid { grid-template-columns: 1fr; } }
+
+    /* ── Panel ── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .panel-header h2 { font-size: 14px; font-weight: 700; }
+    .panel-header .header-actions { display: flex; gap: 8px; align-items: center; }
+    .panel-body { padding: 0; }
+
+    /* ── Table ── */
+    .ktd-table { width: 100%; border-collapse: collapse; }
+    .ktd-table thead th {
+      padding: 10px 16px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      background: var(--surface2);
+    }
+    .ktd-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+    .ktd-table tbody tr:last-child { border-bottom: none; }
+    .ktd-table tbody tr:hover { background: var(--surface2); }
+    .ktd-table td { padding: 12px 16px; font-size: 13px; vertical-align: middle; }
+
+    /* Status badges */
+    .badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: capitalize;
+    }
+    .badge-new      { background: rgba(99,102,241,.18); color: var(--accent2); }
+    .badge-pending  { background: rgba(245,158,11,.18); color: var(--yellow); }
+    .badge-confirmed{ background: rgba(16,185,129,.18); color: var(--green); }
+    .badge-cancelled{ background: rgba(239,68,68,.18);  color: var(--red); }
+    .badge-completed{ background: rgba(59,130,246,.18); color: var(--blue); }
+
+    /* ── Quick actions ── */
+    .quick-actions { display: flex; flex-direction: column; gap: 8px; padding: 16px; }
+    .action-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .action-item:hover { border-color: var(--accent); background: rgba(99,102,241,.08); color: var(--text); }
+    .action-item .action-icon { font-size: 18px; width: 28px; text-align: center; }
+    .action-item .action-label { flex: 1; }
+    .action-item .action-arrow { color: var(--muted); font-size: 16px; }
+
+    /* ── Activity feed ── */
+    .activity-list { list-style: none; padding: 0; }
+    .activity-list li {
+      display: flex;
+      gap: 12px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .activity-list li:last-child { border-bottom: none; }
+    .activity-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      margin-top: 5px; flex-shrink: 0;
+    }
+    .activity-content { flex: 1; }
+    .activity-name { font-weight: 600; }
+    .activity-detail { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .activity-time { font-size: 11px; color: var(--muted); white-space: nowrap; margin-left: auto; }
+
+    /* ── Loading ── */
+    .loading { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
+    .loading .spinner {
+      width: 24px; height: 24px; border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Search & filter bar ── */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+      background: var(--surface2);
+      flex-wrap: wrap;
+    }
+    .filter-bar input, .filter-bar select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .filter-bar input { flex: 1; min-width: 160px; }
+    .filter-bar input:focus, .filter-bar select:focus { border-color: var(--accent); }
+    .filter-bar select option { background: var(--surface); }
+
+    /* ── Empty state ── */
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--muted); }
+    .empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; }
+    .empty-state p { font-size: 13px; }
+  </style>
+</head>
+<body>
+
+<?php
+$current_user = wp_get_current_user();
+$user_initials = strtoupper( substr( $current_user->display_name, 0, 1 ) );
+$logout_url = wp_logout_url( home_url() );
+$wp_admin_url = admin_url();
+$wp_new_post_url = admin_url( 'post-new.php' );
+$site_name = get_bloginfo( 'name' );
+$logo_url = get_site_icon_url( 64 );
+?>
+
+<div id="ktd-shell">
+
+  <!-- ── Sidebar ── -->
+  <aside id="ktd-sidebar">
+    <div class="sidebar-logo">
+      <?php if ( $logo_url ) : ?>
+        <img src="<?php echo esc_url( $logo_url ); ?>" alt="Logo">
+      <?php else : ?>
+        <div style="width:32px;height:32px;border-radius:6px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;">K</div>
+      <?php endif; ?>
+      <span>KTD CRM</span>
+    </div>
+
+    <p class="sidebar-section-label">Main</p>
+    <ul class="sidebar-nav">
+      <li><a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="active">
+        <span class="nav-icon">🏠</span> Dashboard
+      </a></li>
+      <li><a href="#bookings-section" onclick="document.getElementById('bookings-section').scrollIntoView({behavior:'smooth'});return false;">
+        <span class="nav-icon">📋</span> Bookings
+      </a></li>
+      <li><a href="<?php echo esc_url( $wp_admin_url . 'admin.php?page=ktd-bookings' ); ?>">
+        <span class="nav-icon">⚙️</span> Full Admin View
+      </a></li>
+    </ul>
+
+    <p class="sidebar-section-label">WordPress</p>
+    <ul class="sidebar-nav">
+      <li><a href="<?php echo esc_url( $wp_admin_url . 'edit.php' ); ?>">
+        <span class="nav-icon">📝</span> Posts
+      </a></li>
+      <li><a href="<?php echo esc_url( $wp_admin_url . 'edit.php?post_type=page' ); ?>">
+        <span class="nav-icon">📄</span> Pages
+      </a></li>
+      <li><a href="<?php echo esc_url( $wp_admin_url . 'users.php' ); ?>">
+        <span class="nav-icon">👥</span> Users
+      </a></li>
+      <li><a href="<?php echo esc_url( $wp_admin_url . 'options-general.php' ); ?>">
+        <span class="nav-icon">🔧</span> Settings
+      </a></li>
+    </ul>
+
+    <p class="sidebar-section-label">Quick Links</p>
+    <ul class="sidebar-nav">
+      <li><a href="https://www.divinginasia.com" target="_blank">
+        <span class="nav-icon">🌐</span> Live Site ↗
+      </a></li>
+      <li><a href="https://www.divinginasia.com/booking" target="_blank">
+        <span class="nav-icon">📅</span> Booking Page ↗
+      </a></li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="avatar"><?php echo esc_html( $user_initials ); ?></div>
+      <div class="user-info">
+        <div class="user-name"><?php echo esc_html( $current_user->display_name ); ?></div>
+        <div class="user-role">Administrator</div>
+      </div>
+      <a href="<?php echo esc_url( $logout_url ); ?>" class="logout" title="Log out">⏻</a>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <div id="ktd-main">
+
+    <!-- Topbar -->
+    <header id="ktd-topbar">
+      <div class="topbar-left">
+        <h1>Dashboard</h1>
+        <div class="breadcrumb">KTD CRM &rsaquo; Overview</div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-badge">
+          <strong id="topbar-date"></strong>
+        </div>
+        <a href="<?php echo esc_url( $wp_admin_url . 'admin.php?page=ktd-bookings' ); ?>" class="btn btn-primary">
+          + New Booking
+        </a>
+        <a href="<?php echo esc_url( $wp_admin_url ); ?>" class="btn btn-ghost">WP Admin</a>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main id="ktd-content">
+
+      <!-- Stat cards -->
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card c-blue">
+          <div class="stat-icon">📋</div>
+          <div class="stat-label">Total Bookings</div>
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-sub">All time</div>
+        </div>
+        <div class="stat-card c-yellow">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-label">New / Pending</div>
+          <div class="stat-value" id="stat-pending">—</div>
+          <div class="stat-sub">Needs attention</div>
+        </div>
+        <div class="stat-card c-green">
+          <div class="stat-icon">✅</div>
+          <div class="stat-label">Confirmed</div>
+          <div class="stat-value" id="stat-confirmed">—</div>
+          <div class="stat-sub">Locked in</div>
+        </div>
+        <div class="stat-card c-purple">
+          <div class="stat-icon">💰</div>
+          <div class="stat-label">Deposits Received</div>
+          <div class="stat-value" id="stat-deposits">—</div>
+          <div class="stat-sub">THB deposited</div>
+        </div>
+        <div class="stat-card c-red">
+          <div class="stat-icon">❌</div>
+          <div class="stat-label">Cancelled</div>
+          <div class="stat-value" id="stat-cancelled">—</div>
+          <div class="stat-sub">All time</div>
+        </div>
+      </div>
+
+      <!-- Two-col grid -->
+      <div class="content-grid">
+
+        <!-- Bookings table -->
+        <div>
+          <div class="panel" id="bookings-section">
+            <div class="panel-header">
+              <h2>Recent Bookings</h2>
+              <div class="header-actions">
+                <span id="booking-count-label" style="font-size:12px;color:var(--muted);"></span>
+                <a href="<?php echo esc_url( $wp_admin_url . 'admin.php?page=ktd-bookings' ); ?>" class="btn btn-ghost" style="padding:5px 12px;font-size:12px;">View All</a>
+              </div>
+            </div>
+
+            <!-- Filter bar -->
+            <div class="filter-bar">
+              <input type="text" id="search-input" placeholder="Search name, email, course…">
+              <select id="status-filter">
+                <option value="">All statuses</option>
+                <option value="new">New</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <select id="type-filter">
+                <option value="">All types</option>
+                <option value="course">Course</option>
+                <option value="dive">Dive</option>
+                <option value="accommodation">Accommodation</option>
+              </select>
+            </div>
+
+            <div class="panel-body">
+              <div id="bookings-loading" class="loading">
+                <div class="spinner"></div>
+                Loading bookings…
+              </div>
+              <div id="bookings-table-wrap" style="display:none;overflow-x:auto;">
+                <table class="ktd-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Course / Activity</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                      <th>Deposit</th>
+                      <th>Source</th>
+                    </tr>
+                  </thead>
+                  <tbody id="bookings-tbody"></tbody>
+                </table>
+              </div>
+              <div id="bookings-empty" class="empty-state" style="display:none;">
+                <div class="empty-icon">📭</div>
+                <p>No bookings match your filters.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div style="display:flex;flex-direction:column;gap:20px;">
+
+          <!-- Quick actions -->
+          <div class="panel">
+            <div class="panel-header"><h2>Quick Actions</h2></div>
+            <div class="quick-actions">
+              <a href="https://www.divinginasia.com/booking" target="_blank" class="action-item">
+                <span class="action-icon">📅</span>
+                <span class="action-label">Open Booking Form</span>
+                <span class="action-arrow">›</span>
+              </a>
+              <a href="<?php echo esc_url( $wp_admin_url . 'admin.php?page=ktd-bookings' ); ?>" class="action-item">
+                <span class="action-icon">📋</span>
+                <span class="action-label">Manage All Bookings</span>
+                <span class="action-arrow">›</span>
+              </a>
+              <a href="https://www.divinginasia.com" target="_blank" class="action-item">
+                <span class="action-icon">🌐</span>
+                <span class="action-label">View Live Website</span>
+                <span class="action-arrow">›</span>
+              </a>
+              <a href="https://wa.me/66639230132" target="_blank" class="action-item">
+                <span class="action-icon">💬</span>
+                <span class="action-label">WhatsApp Support Line</span>
+                <span class="action-arrow">›</span>
+              </a>
+              <a href="https://dashboard.stripe.com" target="_blank" class="action-item">
+                <span class="action-icon">💳</span>
+                <span class="action-label">Stripe Dashboard</span>
+                <span class="action-arrow">›</span>
+              </a>
+              <a href="https://paypal.com" target="_blank" class="action-item">
+                <span class="action-icon">🅿️</span>
+                <span class="action-label">PayPal Dashboard</span>
+                <span class="action-arrow">›</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Recent activity -->
+          <div class="panel">
+            <div class="panel-header"><h2>Recent Activity</h2></div>
+            <div class="panel-body">
+              <div id="activity-loading" class="loading">
+                <div class="spinner"></div>
+                Loading…
+              </div>
+              <ul class="activity-list" id="activity-list" style="display:none;"></ul>
+              <div id="activity-empty" class="empty-state" style="display:none;">
+                <div class="empty-icon">🔔</div>
+                <p>No recent activity.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /content-grid -->
+
+    </main>
+  </div><!-- /ktd-main -->
+</div><!-- /ktd-shell -->
+
+<script>
+(function () {
+  'use strict';
+
+  // ── Date in topbar ─────────────────────────────────────────────
+  const dateEl = document.getElementById('topbar-date');
+  if (dateEl) {
+    const d = new Date();
+    dateEl.textContent = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  // ── REST API helpers ────────────────────────────────────────────
+  const REST_BASE = '<?php echo esc_js( get_rest_url( null, 'ktd/v1' ) ); ?>';
+  const NONCE    = '<?php echo esc_js( wp_create_nonce( 'wp_rest' ) ); ?>';
+
+  async function apiFetch(path) {
+    const res = await fetch(REST_BASE + path, {
+      headers: { 'X-WP-Nonce': NONCE }
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  }
+
+  // ── Load bookings ───────────────────────────────────────────────
+  let allBookings = [];
+
+  function statusBadge(status) {
+    const s = (status || 'new').toLowerCase().replace(/[^a-z]/g, '');
+    const map = { new: 'badge-new', pending: 'badge-pending', confirmed: 'badge-confirmed', cancelled: 'badge-cancelled', completed: 'badge-completed' };
+    return `<span class="badge ${map[s] || 'badge-new'}">${s}</span>`;
+  }
+
+  function fmtCurrency(val) {
+    const n = parseFloat(val);
+    if (!n || isNaN(n)) return '—';
+    return '฿' + n.toLocaleString('en', { maximumFractionDigits: 0 });
+  }
+
+  function fmtDate(str) {
+    if (!str) return '—';
+    try {
+      return new Date(str).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    } catch { return str; }
+  }
+
+  function timeAgo(str) {
+    if (!str) return '';
+    const diff = (Date.now() - new Date(str).getTime()) / 1000;
+    if (diff < 60)   return 'just now';
+    if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+    return Math.floor(diff / 86400) + 'd ago';
+  }
+
+  function renderTable(bookings) {
+    const tbody = document.getElementById('bookings-tbody');
+    const wrap  = document.getElementById('bookings-table-wrap');
+    const empty = document.getElementById('bookings-empty');
+    const label = document.getElementById('booking-count-label');
+
+    if (label) label.textContent = bookings.length + ' result' + (bookings.length !== 1 ? 's' : '');
+
+    if (!bookings.length) {
+      wrap.style.display  = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+
+    wrap.style.display  = 'block';
+    empty.style.display = 'none';
+
+    tbody.innerHTML = bookings.slice(0, 50).map(b => `
+      <tr>
+        <td style="color:var(--muted);font-size:11px;">#${b.id}</td>
+        <td>
+          <div style="font-weight:600;">${escHtml(b.name || '—')}</div>
+          <div style="font-size:11px;color:var(--muted);">${escHtml(b.email || '')}</div>
+        </td>
+        <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+          ${escHtml(b.item_title || b.booking_type || '—')}
+        </td>
+        <td style="white-space:nowrap;">${fmtDate(b.preferred_date || b.created_at)}</td>
+        <td>${statusBadge(b.status)}</td>
+        <td style="white-space:nowrap;">${fmtCurrency(b.deposit_amount)}</td>
+        <td style="font-size:11px;color:var(--muted);">${escHtml(b.booking_source || '—')}</td>
+      </tr>
+    `).join('');
+  }
+
+  function renderActivity(bookings) {
+    const list  = document.getElementById('activity-list');
+    const empty = document.getElementById('activity-empty');
+    const load  = document.getElementById('activity-loading');
+    if (load) load.style.display = 'none';
+
+    const recent = [...bookings].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 8);
+    if (!recent.length) { empty.style.display = 'block'; return; }
+
+    const dotColor = { new: '#6366f1', pending: '#f59e0b', confirmed: '#10b981', cancelled: '#ef4444', completed: '#3b82f6' };
+
+    list.style.display = 'block';
+    list.innerHTML = recent.map(b => {
+      const color = dotColor[(b.status || 'new').toLowerCase()] || '#6366f1';
+      return `
+        <li>
+          <div class="activity-dot" style="background:${color};"></div>
+          <div class="activity-content">
+            <div class="activity-name">${escHtml(b.name || 'Unknown')}</div>
+            <div class="activity-detail">${escHtml(b.item_title || b.booking_type || 'Booking')} · ${escHtml(b.status || 'new')}</div>
+          </div>
+          <div class="activity-time">${timeAgo(b.created_at)}</div>
+        </li>`;
+    }).join('');
+  }
+
+  function computeStats(bookings) {
+    let pending = 0, confirmed = 0, cancelled = 0, deposits = 0;
+    bookings.forEach(b => {
+      const s = (b.status || '').toLowerCase();
+      if (s === 'new' || s === 'pending') pending++;
+      if (s === 'confirmed') confirmed++;
+      if (s === 'cancelled') cancelled++;
+      const d = parseFloat(b.deposit_amount);
+      if (!isNaN(d) && d > 0) deposits += d;
+    });
+    document.getElementById('stat-total').textContent     = bookings.length;
+    document.getElementById('stat-pending').textContent   = pending;
+    document.getElementById('stat-confirmed').textContent = confirmed;
+    document.getElementById('stat-cancelled').textContent = cancelled;
+    document.getElementById('stat-deposits').textContent  = '฿' + Math.round(deposits).toLocaleString('en');
+  }
+
+  function applyFilters() {
+    const search = document.getElementById('search-input').value.toLowerCase();
+    const status = document.getElementById('status-filter').value;
+    const type   = document.getElementById('type-filter').value;
+
+    const filtered = allBookings.filter(b => {
+      const txt = [b.name, b.email, b.item_title, b.booking_source].join(' ').toLowerCase();
+      if (search && !txt.includes(search)) return false;
+      if (status && (b.status || '').toLowerCase() !== status) return false;
+      if (type   && (b.booking_type || '').toLowerCase() !== type) return false;
+      return true;
+    });
+    renderTable(filtered);
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  async function loadDashboard() {
+    try {
+      const data = await apiFetch('/bookings?per_page=200&orderby=created_at&order=desc');
+      allBookings = Array.isArray(data) ? data : (data.bookings || data.items || []);
+
+      document.getElementById('bookings-loading').style.display = 'none';
+      document.getElementById('activity-loading').style.display = 'none';
+
+      computeStats(allBookings);
+      renderTable(allBookings);
+      renderActivity(allBookings);
+
+      // Attach filter listeners
+      document.getElementById('search-input').addEventListener('input', applyFilters);
+      document.getElementById('status-filter').addEventListener('change', applyFilters);
+      document.getElementById('type-filter').addEventListener('change', applyFilters);
+
+    } catch (err) {
+      console.error('KTD Dashboard load error:', err);
+      document.getElementById('bookings-loading').innerHTML = '<p style="color:var(--red);padding:20px;">Failed to load bookings. Check console.</p>';
+      document.getElementById('activity-loading').innerHTML = '';
+    }
+  }
+
+  loadDashboard();
+})();
+</script>
+
+<?php wp_footer(); ?>
+</body>
+</html>
+<?php
+// Prevent default WP template rendering
+exit;

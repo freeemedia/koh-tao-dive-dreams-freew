@@ -8,6 +8,7 @@ const COURSE_PRICES: Record<string, number> = {
   'Advanced Open Water': 10500,
   'Rescue Diver': 10000,
   'Divemaster': 35000,
+  'IDC (Instructor Development Course)': 0,
   'Fun Dive': 1800,
 };
 
@@ -155,6 +156,7 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
                 <option value="Advanced Open Water">Advanced Open Water</option>
                 <option value="Rescue Diver">Rescue Diver</option>
                 <option value="Divemaster">Divemaster</option>
+                <option value="IDC (Instructor Development Course)">IDC (Instructor Development Course)</option>
                 <option value="Fun Dive">Fun Dive</option>
               </select>
             </div>
