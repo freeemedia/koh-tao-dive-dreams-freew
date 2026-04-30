@@ -421,127 +421,128 @@ const Courses = () => {
               id={`course-${course.key}`}
               className="rounded-lg border-2 border-white bg-card p-[5px] text-card-foreground shadow-md shadow-blue-900/15"
             >
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-6">
-                <div>
-                  <div className="flex items-center mb-2">
-                    <span className="text-3xl mr-3">{course.icon}</span>
-                    <h3 className="text-2xl font-bold text-gray-900">{course.title}</h3>
-                  </div>
-                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${getLevelColor(course.level)} bg-gray-200 text-gray-800 border-gray-400`}>
-                    {course.level}
-                  </span>
-                </div>
-                <div className="w-full rounded-lg border border-blue-200 bg-blue-50/70 p-3 sm:w-auto sm:min-w-[220px] sm:p-4">
-                  <div className="text-2xl font-bold leading-none text-blue-700 sm:text-3xl">{getDisplayedPrice(course.price)}</div>
-                  <div className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-blue-700">THB</div>
-                  <div className="mt-2 space-y-1">
-                    <div className="flex items-center justify-between rounded bg-white px-2 py-1 text-xs text-gray-700">
-                      <span className="font-semibold">EUR</span>
-                      <span>
-                        {exchangeRates && exchangeRates.EUR && exchangeRates.THB
-                          ? formatCurrency(
-                              Math.round((parsePriceMajor(course.price) / exchangeRates.THB) * exchangeRates.EUR),
-                              'EUR'
-                            )
-                          : formatCurrency(
-                              sanitizeForeignPrice(
-                                course.priceEur || '0',
-                                getFallbackForeignPrice(course.key, 'EUR')
-                              ),
-                              'EUR'
-                            )
-                        }
-                      </span>
+              <div className="p-[10px]">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-6">
+                  <div>
+                    <div className="flex items-center mb-2">
+                      <h3 className="text-2xl font-bold text-gray-900">{course.title}</h3>
                     </div>
-                    <div className="flex items-center justify-between rounded bg-white px-2 py-1 text-xs text-gray-700">
-                      <span className="font-semibold">USD</span>
-                      <span>
-                        {exchangeRates && exchangeRates.USD && exchangeRates.THB
-                          ? formatCurrency(
-                              Math.round((parsePriceMajor(course.price) / exchangeRates.THB) * exchangeRates.USD),
-                              'USD'
-                            )
-                          : formatCurrency(
-                              sanitizeForeignPrice(
-                                course.priceUsd || '0',
-                                getFallbackForeignPrice(course.key, 'USD')
-                              ),
-                              'USD'
-                            )
-                        }
-                      </span>
-                    </div>
+                    <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${getLevelColor(course.level)} bg-gray-200 text-gray-800 border-gray-400`}>
+                      {course.level}
+                    </span>
                   </div>
-                  <div className="mt-2 text-xs text-gray-600 sm:text-right">{t('courses.perPerson')}</div>
-                </div>
-              </div>
-
-              <p className="text-gray-600 mb-4">{course.description}</p>
-
-              <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-                <div className="flex items-center text-gray-700">
-                  <Clock className="h-4 w-4 mr-2 text-gray-500" />
-                  {t('courses.duration')}: {course.duration}
-                </div>
-                <div className="flex items-center text-gray-700">
-                  <div className="h-4 w-4 mr-2 text-gray-500 font-bold">📏</div>
-                  {t('courses.maxDepth')}: {course.maxDepth}
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <h4 className="font-semibold text-gray-900 mb-3">{t('courses.courseIncludes')}:</h4>
-                <ul className="space-y-2">
-                  {(course.includes as string[]).map((item: string, idx: number) => (
-                    <li key={idx} className="flex items-center text-gray-700">
-                      <Star className="h-4 w-4 mr-2 text-gray-500" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {course.fullDescription && (
-                <Accordion type="single" collapsible className="mb-4">
-                  <AccordionItem value="details" className="border-blue-200">
-                    <AccordionTrigger className="text-blue-600 hover:text-blue-700 hover:no-underline">
-                      {t('courses.readMore', 'Read more about this course')}
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="text-gray-600 space-y-4 pt-2">
-                        {(course.fullDescription as string).split('\n\n').map((paragraph, idx) => (
-                          <p key={idx}>{paragraph}</p>
-                        ))}
-                        {course.courseImages && (course.courseImages as string[]).length > 0 && (
-                          <div className="my-6">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                              {(course.courseImages as string[]).map((image, idx) => (
-                                <img
-                                  key={idx}
-                                  src={`/images/${image}`}
-                                  alt={`${course.title} - underwater scene ${idx + 1}`}
-                                  className="rounded-lg object-cover h-40 w-full"
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                        {course.whatsNext && (
-                          <p className="text-blue-600 font-semibold italic mt-4">
-                            {course.whatsNext}
-                          </p>
-                        )}
+                  <div className="w-full rounded-lg border border-blue-200 bg-blue-50/70 p-3 sm:w-auto sm:min-w-[220px] sm:p-4">
+                    <div className="text-2xl font-bold leading-none text-blue-700 sm:text-3xl">{getDisplayedPrice(course.price)}</div>
+                    <div className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-blue-700">THB</div>
+                    <div className="mt-2 space-y-1">
+                      <div className="flex items-center justify-between rounded bg-white px-2 py-1 text-xs text-gray-700">
+                        <span className="font-semibold">EUR</span>
+                        <span>
+                          {exchangeRates && exchangeRates.EUR && exchangeRates.THB
+                            ? formatCurrency(
+                                Math.round((parsePriceMajor(course.price) / exchangeRates.THB) * exchangeRates.EUR),
+                                'EUR'
+                              )
+                            : formatCurrency(
+                                sanitizeForeignPrice(
+                                  course.priceEur || '0',
+                                  getFallbackForeignPrice(course.key, 'EUR')
+                                ),
+                                'EUR'
+                              )
+                          }
+                        </span>
                       </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              )}
+                      <div className="flex items-center justify-between rounded bg-white px-2 py-1 text-xs text-gray-700">
+                        <span className="font-semibold">USD</span>
+                        <span>
+                          {exchangeRates && exchangeRates.USD && exchangeRates.THB
+                            ? formatCurrency(
+                                Math.round((parsePriceMajor(course.price) / exchangeRates.THB) * exchangeRates.USD),
+                                'USD'
+                              )
+                            : formatCurrency(
+                                sanitizeForeignPrice(
+                                  course.priceUsd || '0',
+                                  getFallbackForeignPrice(course.key, 'USD')
+                                ),
+                                'USD'
+                              )
+                          }
+                        </span>
+                      </div>
+                    </div>
+                    <div className="mt-2 text-xs text-gray-600 sm:text-right">{t('courses.perPerson')}</div>
+                  </div>
+                </div>
+
+                <p className="text-gray-600 mb-4">{course.description}</p>
+
+                <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                  <div className="flex items-center text-gray-700">
+                    <Clock className="h-4 w-4 mr-2 text-gray-500" />
+                    {t('courses.duration')}: {course.duration}
+                  </div>
+                  <div className="flex items-center text-gray-700">
+                    <div className="h-4 w-4 mr-2 text-gray-500 font-bold">📏</div>
+                    {t('courses.maxDepth')}: {course.maxDepth}
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <h4 className="font-semibold text-gray-900 mb-3">{t('courses.courseIncludes')}:</h4>
+                  <ul className="space-y-2">
+                    {(course.includes as string[]).map((item: string, idx: number) => (
+                      <li key={idx} className="flex items-center text-gray-700">
+                        <Star className="h-4 w-4 mr-2 text-gray-500" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {course.fullDescription && (
+                  <Accordion type="single" collapsible className="mb-4">
+                    <AccordionItem value="details" className="border-blue-200">
+                      <AccordionTrigger className="text-blue-600 hover:text-blue-700 hover:no-underline">
+                        {t('courses.readMore', 'Read more about this course')}
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="text-gray-600 space-y-4 pt-2">
+                          {(course.fullDescription as string).split('\n\n').map((paragraph, idx) => (
+                            <p key={idx}>{paragraph}</p>
+                          ))}
+                          {course.courseImages && (course.courseImages as string[]).length > 0 && (
+                            <div className="my-6">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                {(course.courseImages as string[]).map((image, idx) => (
+                                  <img
+                                    key={idx}
+                                    src={`/images/${image}`}
+                                    alt={`${course.title} - underwater scene ${idx + 1}`}
+                                    className="rounded-lg object-cover h-40 w-full"
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {course.whatsNext && (
+                            <p className="text-blue-600 font-semibold italic mt-4">
+                              {course.whatsNext}
+                            </p>
+                          )}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                )}
 
               
-              <div className="flex flex-col gap-3">
-                <Link to={course.path}>
-                  <Button variant="outline" className="w-full">{t('courses.viewCourse', 'View course')}</Button>
-                </Link>
+                <div className="flex flex-col gap-3">
+                  <Link to={course.path}>
+                    <Button variant="outline" className="w-full">{t('courses.viewCourse', 'View course')}</Button>
+                  </Link>
+                </div>
               </div>
             </div>
           ))}
