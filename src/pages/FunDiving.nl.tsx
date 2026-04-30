@@ -9,8 +9,6 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useEffect, useState, useMemo } from 'react';
 import { usePageContent } from '@/hooks/usePageContent';
 
-const FUN_DIVING_DROPBOX_FOLDER = 'fun-diving';
-
 const FunDiving = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
