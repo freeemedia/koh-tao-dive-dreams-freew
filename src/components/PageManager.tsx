@@ -146,6 +146,7 @@ export const PageManager: React.FC = () => {
         about_title: 'From PADI Open Water certifications to PADI Divemaster internships',
         about_paragraph_1: 'Koh Tao is not only a top destination in Thailand for your diving holiday, but also ideal for completing almost all PADI dive certifications, for both beginners and experienced divers.',
         about_paragraph_2: 'Lifetime certifications valid worldwide, at a surprisingly low price. Earn your PADI diving certification here for 11500 baht, now including 4 nights accommodation (room with private bathroom) in the course price.',
+        about_note: 'Free accommodation with our courses can only be guaranteed if booked 7 days in advance. If our accommodation is not available, we will assist you with staying in one of our partner resorts.',
       };
     } else if (editingPage.slug === 'open-water' && editingPage.locale === 'nl') {
       fallbackContent = {
@@ -160,6 +161,7 @@ export const PageManager: React.FC = () => {
         about_title: 'Van PADI Open Water-certificering tot PADI Divemaster-internships',
         about_paragraph_1: 'Koh Tao is niet alleen een topbestemming in Thailand voor je duikvakantie, maar ook ideaal om bijna alle PADI-duikcertificaten te behalen, voor zowel beginners als ervaren duikers.',
         about_paragraph_2: 'Levenslange certificaten die wereldwijd geldig zijn, voor een verrassend lage prijs. Behaal je PADI-duikcertificaat hier voor 11500 baht, nu inclusief 4 overnachtingen (kamer met badkamer) in de cursusprijs.',
+        about_note: 'Gratis accommodatie bij onze cursussen kan alleen worden gegarandeerd als er minimaal 7 dagen van tevoren wordt geboekt. Als onze accommodatie niet beschikbaar is, helpen we je graag met een verblijf in een van onze partnerresorts.',
       };
     } else {
       fallbackContent = {
@@ -174,6 +176,7 @@ export const PageManager: React.FC = () => {
         about_title: '',
         about_paragraph_1: '',
         about_paragraph_2: '',
+        about_note: '',
         courses_section_title: '',
         courses_section_subtitle: '',
         gallery_headline: '',

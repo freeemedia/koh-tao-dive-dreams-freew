@@ -24,6 +24,9 @@ const About = () => {
     about_paragraph_2: isDutch
       ? 'Levenslange certificaten die wereldwijd geldig zijn, voor een verrassend lage prijs. Behaal je PADI-duikcertificaat hier voor 11500 baht, nu inclusief 4 overnachtingen (kamer met badkamer) in de cursusprijs.'
       : 'Lifetime certifications valid worldwide, at a surprisingly low price. Earn your PADI diving certification here for 11500 baht, now including 4 nights accommodation (room with private bathroom) in the course price.',
+    about_note: isDutch
+      ? 'Gratis accommodatie bij onze cursussen kan alleen worden gegarandeerd als er minimaal 7 dagen van tevoren wordt geboekt. Als onze accommodatie niet beschikbaar is, helpen we je graag met een verblijf in een van onze partnerresorts.'
+      : 'Free accommodation with our courses can only be guaranteed if booked 7 days in advance. If our accommodation is not available, we will assist you with staying in one of our partner resorts.',
   }), [locale, isDutch]);
 
   const { content } = usePageContent({
@@ -61,6 +64,9 @@ const About = () => {
             </p>
             <p className="text-lg text-gray-600 mb-6">
               {content.about_paragraph_2}
+            </p>
+            <p className="text-base italic text-slate-500">
+              {content.about_note}
             </p>
           </div>
         </div>
