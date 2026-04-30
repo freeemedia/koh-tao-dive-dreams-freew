@@ -549,25 +549,37 @@ const Courses = () => {
 
         <div className="bg-blue-600 rounded-xl p-8 text-white text-center">
           <h3 className="text-2xl font-bold mb-4">{t('courses.specialOffers.title')}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 text-left">
-            <div className="bg-red-600 rounded-lg p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 text-left items-stretch">
+            <div className="bg-red-600 rounded-lg p-6 h-full min-h-[360px] flex flex-col">
               <h4 className="font-bold text-xl mb-2">{t('courses.specialOffers.combo.title')}</h4>
               <p className="text-blue-200 mb-3">{t('courses.specialOffers.combo.description')}</p>
-              <div className="flex flex-col items-start gap-1">
-                <span className="text-blue-300 line-through text-sm">{t('courses.specialOffers.combo.originalPrice')}</span>
-                <span className="text-2xl font-bold">{getDisplayedPrice(t('courses.specialOffers.combo.price'))}</span>
+              <div className="mt-auto">
+                <div className="flex flex-col items-start gap-1 mb-3">
+                  <span className="text-blue-300 line-through text-sm">{t('courses.specialOffers.combo.originalPrice')}</span>
+                  <span className="text-2xl font-bold">{getDisplayedPrice(t('courses.specialOffers.combo.price'))}</span>
+                </div>
+                <p className="text-xs text-blue-100 mb-3">10% deposit: {getDisplayedPrice('฿1,900')}</p>
+                <a
+                  href="/bookingform.html?item=Open%20Water%20%2B%20Advanced&type=course&price=19000&currency=THB&deposit=1900"
+                  className="block w-full rounded-lg bg-white py-3 text-center font-semibold text-red-700 no-underline hover:bg-red-50"
+                >
+                  {isDutch ? 'Boek Combo' : 'Book Combo'}
+                </a>
               </div>
             </div>
-            <div className="bg-white rounded-lg p-6 border-2 border-red-200 text-gray-900">
+            <div className="bg-white rounded-lg p-6 border-2 border-red-200 text-gray-900 h-full min-h-[360px] flex flex-col">
               <h4 className="font-bold text-xl mb-2">🎓 {isDutch ? '3 Specialties Bundel!' : '3 Specialty Bundle!'}</h4>
               <p className="text-gray-600 mb-3">
                 {isDutch 
                   ? 'Schrijf in voor drie PADI Specialty duikcursussen en betaal minder. Verken verschillende aspecten van duiken, van zeeleven herkenning tot onderwaterfotografie.'
                   : 'Enroll in three PADI Specialty Dive Courses and pay less. Explore various aspects of scuba diving, from marine life identification to underwater photography.'}
               </p>
-              <div className="flex flex-col items-start gap-1">
-                <span className="text-gray-400 line-through text-lg">{getDisplayedPrice('฿24,000')}</span>
-                <span className="text-3xl font-bold">{getDisplayedPrice('฿18,000')}</span>
+              <div className="mt-auto">
+                <div className="flex flex-col items-start gap-1 mb-3">
+                  <span className="text-gray-400 line-through text-lg">{getDisplayedPrice('฿24,000')}</span>
+                  <span className="text-3xl font-bold">{getDisplayedPrice('฿18,000')}</span>
+                </div>
+                <p className="text-xs text-gray-500 mb-3">10% deposit: {getDisplayedPrice('฿1,800')}</p>
               </div>
               <a
                 href="/bookingform.html?item=3%20Specialty%20Bundle&type=course&price=18000&currency=THB"
@@ -577,16 +589,19 @@ const Courses = () => {
               </a>
             </div>
 
-            <div className="bg-blue-700 rounded-lg p-6 border-2 border-blue-400 text-white">
+            <div className="bg-blue-700 rounded-lg p-6 border-2 border-blue-400 text-white h-full min-h-[360px] flex flex-col">
               <h4 className="font-bold text-xl mb-2">🔥 {isDutch ? 'Speciale Aanbieding' : 'Special Offer'}</h4>
               <p className="mb-3 font-medium">
                 {isDutch
                   ? 'Open Water naar Divemaster pakket met 15% korting.'
                   : 'Open Water to Divemaster package with 15% savings.'}
               </p>
-              <div className="flex flex-col items-start gap-1 mb-4">
-                <span className="line-through text-blue-200">{getDisplayedPrice('฿66,800')}</span>
-                <span className="text-3xl font-extrabold">{getDisplayedPrice('฿56,780')}</span>
+              <div className="mt-auto">
+                <div className="flex flex-col items-start gap-1 mb-4">
+                  <span className="line-through text-blue-200">{getDisplayedPrice('฿66,800')}</span>
+                  <span className="text-3xl font-extrabold">{getDisplayedPrice('฿56,780')}</span>
+                </div>
+                <p className="text-xs text-blue-100 mb-3">10% deposit: {getDisplayedPrice('฿5,678')}</p>
               </div>
               <Link
                 to="/packages/open-water-to-divemaster"
