@@ -419,7 +419,7 @@ const Courses = () => {
             <div
               key={index}
               id={`course-${course.key}`}
-              className="rounded-lg border-[10px] border-[#0d1bb5] bg-card p-[5px] text-card-foreground shadow-md shadow-blue-900/15"
+              className="rounded-lg border-[10px] border-gray-200 bg-card p-[5px] text-card-foreground shadow-md shadow-blue-900/15"
             >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-6">
                 <div>
