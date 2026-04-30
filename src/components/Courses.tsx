@@ -14,8 +14,6 @@ import {
 } from "@/components/ui/accordion";
 import { usePageContent } from '@/hooks/usePageContent';
 import { useCurrency } from '@/hooks/useCurrency';
-import InlineCourseBookingForm from './InlineCourseBookingForm';
-
 const Courses = () => {
 
 
@@ -558,7 +556,7 @@ const Courses = () => {
 
         <div className="bg-blue-600 rounded-xl p-8 text-white text-center">
           <h3 className="text-2xl font-bold mb-4">{t('courses.specialOffers.title')}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 text-left">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 text-left">
             <div className="bg-blue-700 rounded-lg p-6">
               <h4 className="font-bold text-xl mb-2">{t('courses.specialOffers.combo.title')}</h4>
               <p className="text-blue-200 mb-3">{t('courses.specialOffers.combo.description')}</p>
@@ -604,25 +602,6 @@ const Courses = () => {
                 {isDutch ? 'Bekijk pakket' : 'View Package'}
               </Link>
             </div>
-          </div>
-
-          <div className="mt-10 bg-white rounded-xl p-6 text-left text-gray-900 max-w-3xl mx-auto">
-            <h4 className="text-2xl font-bold text-center mb-2">
-              {isDutch ? 'Boek bij ons nu' : 'Book with Us Now'}
-            </h4>
-            <p className="text-center text-gray-600 mb-6">
-              {isDutch
-                ? 'Vul het formulier in en wij nemen snel contact met je op voor planning en betaling.'
-                : 'Fill in the form and we will contact you quickly for scheduling and payment.'}
-            </p>
-            <InlineCourseBookingForm
-              itemType="course"
-              itemTitle="Open Water to Divemaster Special Offer"
-              depositMajor={11360}
-              depositCurrency="THB"
-              crmSource="ktd-home-special-offer"
-              crmTags={["open-water-to-divemaster", "special-offer", "home-page"]}
-            />
           </div>
         </div>
 
