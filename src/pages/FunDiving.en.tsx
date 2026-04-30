@@ -8,11 +8,8 @@ import { Fish, Waves, MapPin, Clock, DollarSign, Users } from 'lucide-react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useEffect, useState, useMemo } from 'react';
 import { useBookNowModal } from '@/components/useBookNowModal';
-import DropboxGallerySection from '@/components/DropboxGallerySection';
 import { tryAutoScroll, scrollToWithOffset } from '@/lib/scroll';
 import { usePageContent } from '@/hooks/usePageContent';
-
-const FUN_DIVING_DROPBOX_FOLDER = 'fun-diving';
 
 const FunDiving = () => {
   const navigate = useNavigate();
