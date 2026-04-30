@@ -539,16 +539,9 @@ const Courses = () => {
 
               
               <div className="flex flex-col gap-3">
-                <div className="flex gap-3">
-                  <Link to={course.path} className="flex-1">
-                    <Button variant="outline" className="w-full">{t('courses.viewCourse', 'View course')}</Button>
-                  </Link>
-                  <Link to={`${course.path}#book-with-us`} className="flex-1">
-                    <Button className="w-full bg-teal-600 hover:bg-teal-700 text-white">
-                      {isDutch ? 'Boek nu' : 'Book with Us Now'}
-                    </Button>
-                  </Link>
-                </div>
+                <Link to={course.path}>
+                  <Button variant="outline" className="w-full">{t('courses.viewCourse', 'View course')}</Button>
+                </Link>
               </div>
             </div>
           ))}
