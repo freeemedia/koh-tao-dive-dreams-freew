@@ -533,13 +533,24 @@ const       BookingPage: React.FC = () => {
                   <div className="text-lg font-semibold">Accommodation request</div>
                   <div className="text-2xl font-bold">Custom quote</div>
                   <div className="text-sm text-muted-foreground mt-1">We will confirm room options and exact seasonal pricing.</div>
-                  {divingParam !== null && (
-                    <div className={`mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${
-                      divingParam === 'yes' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'
-                    }`}>
-                      {divingParam === 'yes' ? '🤿 Diving with us' : '🏠 Accommodation only'}
-                    </div>
-                  )}
+                  <div className="mt-3 space-y-1 text-sm">
+                    {itemTitle && itemTitle !== 'Resort Accommodation' && (
+                      <div className="text-slate-700"><span className="font-medium">Room:</span> {itemTitle.replace(/^Resort Accommodation\s*[-–]\s*/i, '')}</div>
+                    )}
+                    {guestCount > 0 && (
+                      <div className="text-slate-700"><span className="font-medium">Guests:</span> {guestCount}</div>
+                    )}
+                    {nightsCount > 0 && (
+                      <div className="text-slate-700"><span className="font-medium">Nights:</span> {nightsCount}</div>
+                    )}
+                    {divingParam !== null && (
+                      <div className={`mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${
+                        divingParam === 'yes' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'
+                      }`}>
+                        {divingParam === 'yes' ? '🤿 Diving with us' : '🏠 Accommodation only'}
+                      </div>
+                    )}
+                  </div>
                 </>
               )}
             </div>

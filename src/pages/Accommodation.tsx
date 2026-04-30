@@ -236,20 +236,20 @@ const Accommodation = () => {
 
 
   const handleExternalBooking = () => {
-    const url = buildTripUrl();
-    // Track affiliate click
-    trackAffiliateClick({
-      provider: 'trip',
-      destinationUrl: url,
-      placement: 'accommodation-page',
-      hotelName: 'Trip.com - Accommodation Page',
-      affiliateId: TRIP_ALLIANCE_ID || TRIP_SITE_ID || null,
-    });
-    // Google Analytics event
-    trackTripComAnalyticsEvent(url);
-    // Open in new tab
-    window.open(url, '_blank', 'noopener,noreferrer');
-    // Close the popup
+    if (bookingSource === 'agoda') {
+      window.open('https://www.divinginasia.com/agoda-hotels', '_blank', 'noopener,noreferrer');
+    } else {
+      const url = buildTripUrl();
+      trackAffiliateClick({
+        provider: 'trip',
+        destinationUrl: url,
+        placement: 'accommodation-page',
+        hotelName: 'Trip.com - Accommodation Page',
+        affiliateId: TRIP_ALLIANCE_ID || TRIP_SITE_ID || null,
+      });
+      trackTripComAnalyticsEvent(url);
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
     setShowAltAccommodationPopup(false);
   };
 
@@ -310,7 +310,7 @@ const Accommodation = () => {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => window.open('https://www.divinginasia.com/agoda-hotels', '_blank', 'noopener,noreferrer')}
+                onClick={() => openAlternativeAccommodationPopup('agoda')}
               >
                 Agoda
               </Button>
@@ -486,17 +486,20 @@ const Accommodation = () => {
       <AlertDialog open={showAltAccommodationPopup} onOpenChange={setShowAltAccommodationPopup}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Alternative Accommodation</AlertDialogTitle>
-            <AlertDialogDescription className="text-white">
-              If you choose alternative accommodation, please give us the details so we can arrange all necessary arrangements.
+            <AlertDialogTitle>Staying elsewhere?</AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-2 text-sm text-slate-700">
+                <p>No problem — but please let us know so we can arrange <strong>transport from your accommodation to our resort</strong> for your dives or courses.</p>
+                <p>You can add your accommodation details in the booking form notes.</p>
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col sm:flex-row gap-2">
             <AlertDialogCancel onClick={handleStayWithResort} className="mt-0">
-              No thanks, I'll stay with your resort
+              Actually, I'll stay at your resort
             </AlertDialogCancel>
             <AlertDialogAction onClick={handleExternalBooking}>
-              OK - Take me to Trip.com
+              OK — Take me to {bookingSource === 'agoda' ? 'Agoda' : 'Trip.com'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
