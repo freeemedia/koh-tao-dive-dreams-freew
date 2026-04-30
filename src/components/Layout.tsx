@@ -163,12 +163,16 @@ const Footer: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white transition"
-                  onClick={() => trackAffiliateClick('footer-link', 'trip.com', tripFooterUrl)}
+                  onClick={() => trackAffiliateClick({
+                    provider: 'trip',
+                    destinationUrl: tripFooterUrl,
+                    placement: 'footer-link',
+                  })}
                 >
                   Trip.com
                 </a>
               </li>
-              <li><Link to="/accommodation-booking" className="hover:text-white transition">Booking.com</Link></li>
+              <li><Link to="/agoda-hotels" className="hover:text-white transition">Agoda</Link></li>
             </ul>
           </div>
 
