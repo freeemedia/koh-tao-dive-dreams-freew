@@ -126,6 +126,7 @@ const       BookingPage: React.FC = () => {
   const initialCourseFunDiveCount = Math.min(10, Math.max(0, Number(searchParams.get('courseFunDives') || '0') || 0));
   const [courseFunDiveCount, setCourseFunDiveCount] = useState<number>(initialCourseFunDiveCount);
   const [stayWithUs, setStayWithUs] = useState<boolean>(searchParams.get('stay') === 'yes');
+  const divingParam = searchParams.get('diving'); // 'yes' | 'no' | null — passed from accommodation page
 
   const getFunDiveRate = (dives: number) => {
     if (dives >= 10) return 800;
@@ -250,6 +251,9 @@ const       BookingPage: React.FC = () => {
         stay_with_us: isCourseBooking
           ? (stayWithUs ? 'Yes - accommodation free with course' : 'No')
           : (isDiveBooking ? (stayWithUs ? 'Yes - accommodation requested with dive booking' : 'No') : 'N/A'),
+        diving_with_us: isStayBooking && divingParam !== null
+          ? (divingParam === 'yes' ? 'Yes - diving with us' : 'No - accommodation only')
+          : undefined,
         payment_mode: 'inquire',
         selected_price: baseCourseCostMajor > 0 ? baseCourseCostMajor : null,
         currency: depositCurrency || 'THB',
@@ -529,6 +533,13 @@ const       BookingPage: React.FC = () => {
                   <div className="text-lg font-semibold">Accommodation request</div>
                   <div className="text-2xl font-bold">Custom quote</div>
                   <div className="text-sm text-muted-foreground mt-1">We will confirm room options and exact seasonal pricing.</div>
+                  {divingParam !== null && (
+                    <div className={`mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${
+                      divingParam === 'yes' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'
+                    }`}>
+                      {divingParam === 'yes' ? '🤿 Diving with us' : '🏠 Accommodation only'}
+                    </div>
+                  )}
                 </>
               )}
             </div>

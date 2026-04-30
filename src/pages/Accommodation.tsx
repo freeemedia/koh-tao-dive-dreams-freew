@@ -268,7 +268,7 @@ const Accommodation = () => {
     const message = encodeURIComponent(
       `Accommodation request: ${roomLabel}. Guests: ${peopleCount}. Nights: ${nightCount}. Diving: ${isDiving ? 'Yes' : 'No'}. Details: ${accommodationDetails || 'None'}`
     );
-    navigate(`/booking?item=Resort%20Accommodation%20-%20${encodeURIComponent(roomLabel)}&type=stay&currency=THB&people=${peopleCount}&nights=${nightCount}&message=${message}`);
+    navigate(`/booking?item=Resort%20Accommodation%20-%20${encodeURIComponent(roomLabel)}&type=stay&currency=THB&people=${peopleCount}&nights=${nightCount}&diving=${isDiving ? 'yes' : 'no'}&message=${message}`);
   };
 
   return (
@@ -306,6 +306,13 @@ const Accommodation = () => {
               </Button>
               <Button type="button" variant="outline" onClick={() => openAlternativeAccommodationPopup('trip')}>
                 Trip.com
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => window.open('https://www.divinginasia.com/agoda-hotels', '_blank', 'noopener,noreferrer')}
+              >
+                Agoda
               </Button>
             </div>
 
