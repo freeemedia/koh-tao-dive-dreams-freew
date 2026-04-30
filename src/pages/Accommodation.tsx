@@ -199,7 +199,7 @@ const Accommodation = () => {
   const [peopleCount, setPeopleCount] = useState<number>(2);
   const [nightCount, setNightCount] = useState<number>(2);
   const [accommodationDetails, setAccommodationDetails] = useState<string>('');
-  const [isDiving, setIsDiving] = useState<boolean>(true);
+  const [isDiving, setIsDiving] = useState<boolean | null>(null);
 
   const openRoomGallery = (room: RoomCard) => {
     setSelectedRoomName(room.name);
@@ -266,9 +266,9 @@ const Accommodation = () => {
         ? 'Basic Room'
         : 'Bungalow';
     const message = encodeURIComponent(
-      `Accommodation request: ${roomLabel}. Guests: ${peopleCount}. Nights: ${nightCount}. Diving: ${isDiving ? 'Yes' : 'No'}. Details: ${accommodationDetails || 'None'}`
+      `Accommodation request: ${roomLabel}. Guests: ${peopleCount}. Nights: ${nightCount}. Diving: ${isDiving === true ? 'Yes' : isDiving === false ? 'No' : 'Not specified'}. Details: ${accommodationDetails || 'None'}`
     );
-    navigate(`/booking?item=Resort%20Accommodation%20-%20${encodeURIComponent(roomLabel)}&type=stay&currency=THB&people=${peopleCount}&nights=${nightCount}&diving=${isDiving ? 'yes' : 'no'}&message=${message}`);
+    navigate(`/booking?item=Resort%20Accommodation%20-%20${encodeURIComponent(roomLabel)}&type=stay&currency=THB&people=${peopleCount}&nights=${nightCount}${isDiving !== null ? `&diving=${isDiving ? 'yes' : 'no'}` : ''}&message=${message}`);
   };
 
   return (
@@ -381,6 +381,15 @@ const Accommodation = () => {
                       />
                       {labels.divingNo}
                     </label>
+                    {isDiving !== null && (
+                      <button
+                        type="button"
+                        onClick={() => setIsDiving(null)}
+                        className="text-xs text-slate-400 hover:text-slate-600 underline ml-2"
+                      >
+                        Clear
+                      </button>
+                    )}
                   </div>
                 </div>
                 <div className="md:col-span-2">
