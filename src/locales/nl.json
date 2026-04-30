@@ -112,11 +112,6 @@
         "description": "Voltooi beide cursussen en bespaar!",
         "price": "฿19,000",
         "originalPrice": "฿21,000"
-      },
-      "group": {
-        "title": "Groepskortingen",
-        "description": "Groepen van 4+ besparen 10% op alle cursussen",
-        "discount": "10% KORTING"
       }
     },
     "bookButton": "Boek Deze Cursus",

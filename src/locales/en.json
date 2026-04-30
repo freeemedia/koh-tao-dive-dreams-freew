@@ -111,11 +111,6 @@
         "description": "Complete both courses and save!",
         "price": "฿19,000",
         "originalPrice": "฿21,000"
-      },
-      "group": {
-        "title": "Group Discounts",
-        "description": "Groups of 4+ save 10% on all courses",
-        "discount": "10% OFF"
       }
     },
     "bookButton": "Book This Course",
