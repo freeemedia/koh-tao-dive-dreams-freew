@@ -119,7 +119,7 @@ export async function sendBookingNotificationEmail(payload = {}) {
         <!-- CTA -->
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr><td align="center">
-            <a href="https://www.divinginasia.com/adminpanel.html" style="display:inline-block;background:linear-gradient(135deg,#0b3d91,#1a5ed4);color:#fff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;letter-spacing:0.5px;">Open Admin Panel →</a>
+            <a href="https://lightsalmon-dinosaur-377714.hostingersite.com/ktd-dashboard/" style="display:inline-block;background:linear-gradient(135deg,#0b3d91,#1a5ed4);color:#fff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;letter-spacing:0.5px;">Open Admin Panel →</a>
           </td></tr>
         </table>
       </td></tr>
