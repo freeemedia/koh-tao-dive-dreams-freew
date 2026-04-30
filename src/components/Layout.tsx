@@ -190,8 +190,8 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <span className="block text-white font-semibold text-xs uppercase tracking-wider mb-1">{isDutch ? 'Telefoon' : 'Phone'}</span>
-                <a href="tel:+6677456789" className="block hover:text-white transition">+66 77 456 789</a>
-                <a href="tel:+66891234567" className="block hover:text-white transition">+66 89 123 4567</a>
+                <a href="tel:+31638697279" className="block hover:text-white transition">+31 6 38697279</a>
+                <a href="tel:+62081353833289" className="block hover:text-white transition">+62(0)81353833289</a>
               </li>
               <li>
                 <span className="block text-white font-semibold text-xs uppercase tracking-wider mb-1">Email</span>
