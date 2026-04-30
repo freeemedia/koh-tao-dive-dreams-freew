@@ -195,7 +195,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
   }
   // Standard/main navigation for all other users/routes
   return (
-    <nav className="fixed top-0 w-full border-b border-blue-200 bg-background/70 pt-4 shadow-sm backdrop-blur-md z-50">
+    <nav className="fixed top-0 w-full border-b border-blue-600 bg-background/70 pt-4 shadow-sm backdrop-blur-md z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20 border-solid border-0 py-2">
           <div className="flex items-center pl-6">
