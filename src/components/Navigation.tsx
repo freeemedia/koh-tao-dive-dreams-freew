@@ -195,9 +195,8 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
   }
   // Standard/main navigation for all other users/routes
   return (
-    <nav className="fixed top-0 w-full bg-background/70 backdrop-blur-md z-50 shadow-sm pt-4">
+    <nav className="fixed top-0 w-full border-b border-blue-200 bg-background/70 pt-4 shadow-sm backdrop-blur-md z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="w-full border-b border-gray-200/80" />
         <div className="flex justify-between items-center h-20 border-solid border-0 py-2">
           <div className="flex items-center pl-6">
             <img src="/images/logo.png" alt="Pro Diving Asia Logo" className="h-14 w-auto" style={{ display: 'block', marginRight: 20, marginLeft: 0 }} />
