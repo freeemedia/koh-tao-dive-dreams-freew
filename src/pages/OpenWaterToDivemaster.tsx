@@ -56,10 +56,7 @@ const DEPOSIT_THB = Math.round(PACKAGE_THB * 0.2);
 const OpenWaterToDivemaster: React.FC = () => {
   const { convertCurrency, currency } = useCurrency();
 
-  const fmt = (thb: number) => {
-    const converted = convertCurrency(thb, 'THB');
-    return `${currency} ${Math.round(converted).toLocaleString()}`;
-  };
+  const fmt = (thb: number) => convertCurrency(thb, 'THB');
 
   return (
     <>
