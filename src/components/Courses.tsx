@@ -550,47 +550,47 @@ const Courses = () => {
         <div className="bg-blue-600 rounded-xl p-8 text-white text-center">
           <h3 className="text-2xl font-bold mb-4">{t('courses.specialOffers.title')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 text-left">
-            <div className="bg-blue-700 rounded-lg p-6">
+            <div className="bg-red-600 rounded-lg p-6">
               <h4 className="font-bold text-xl mb-2">{t('courses.specialOffers.combo.title')}</h4>
               <p className="text-blue-200 mb-3">{t('courses.specialOffers.combo.description')}</p>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col items-start gap-1">
+                <span className="text-blue-300 line-through text-sm">{t('courses.specialOffers.combo.originalPrice')}</span>
                 <span className="text-2xl font-bold">{getDisplayedPrice(t('courses.specialOffers.combo.price'))}</span>
-                <span className="text-blue-300 line-through">{t('courses.specialOffers.combo.originalPrice')}</span>
               </div>
             </div>
-            <div className="bg-emerald-600 rounded-lg p-6 border-2 border-emerald-400">
+            <div className="bg-white rounded-lg p-6 border-2 border-red-200 text-gray-900">
               <h4 className="font-bold text-xl mb-2">🎓 {isDutch ? '3 Specialties Bundel!' : '3 Specialty Bundle!'}</h4>
-              <p className="text-emerald-100 mb-3">
+              <p className="text-gray-600 mb-3">
                 {isDutch 
                   ? 'Schrijf in voor drie PADI Specialty duikcursussen en betaal minder. Verken verschillende aspecten van duiken, van zeeleven herkenning tot onderwaterfotografie.'
                   : 'Enroll in three PADI Specialty Dive Courses and pay less. Explore various aspects of scuba diving, from marine life identification to underwater photography.'}
               </p>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col items-start gap-1">
+                <span className="text-gray-400 line-through text-lg">{getDisplayedPrice('฿24,000')}</span>
                 <span className="text-3xl font-bold">{getDisplayedPrice('฿18,000')}</span>
-                <span className="text-emerald-200 line-through text-lg">{getDisplayedPrice('฿24,000')}</span>
               </div>
               <a
                 href="/bookingform.html?item=3%20Specialty%20Bundle&type=course&price=18000&currency=THB"
-                className="block w-full rounded-lg bg-background py-3 text-center font-semibold text-emerald-600 no-underline hover:bg-emerald-50"
+                className="block w-full rounded-lg bg-red-600 py-3 text-center font-semibold text-white no-underline hover:bg-red-700"
               >
                 {isDutch ? 'Boek Bundel' : 'Book Bundle'}
               </a>
             </div>
 
-            <div className="bg-amber-500 rounded-lg p-6 border-2 border-amber-300 text-amber-950">
+            <div className="bg-blue-700 rounded-lg p-6 border-2 border-blue-400 text-white">
               <h4 className="font-bold text-xl mb-2">🔥 {isDutch ? 'Speciale Aanbieding' : 'Special Offer'}</h4>
               <p className="mb-3 font-medium">
                 {isDutch
                   ? 'Open Water naar Divemaster pakket met 15% korting.'
                   : 'Open Water to Divemaster package with 15% savings.'}
               </p>
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-col items-start gap-1 mb-4">
+                <span className="line-through text-blue-200">{getDisplayedPrice('฿66,800')}</span>
                 <span className="text-3xl font-extrabold">{getDisplayedPrice('฿56,780')}</span>
-                <span className="line-through text-amber-900/70">{getDisplayedPrice('฿66,800')}</span>
               </div>
               <Link
                 to="/packages/open-water-to-divemaster"
-                className="block w-full rounded-lg bg-amber-950 py-3 text-center font-semibold text-amber-100 no-underline hover:bg-black"
+                className="block w-full rounded-lg bg-white py-3 text-center font-semibold text-blue-700 no-underline hover:bg-blue-50"
               >
                 {isDutch ? 'Bekijk pakket' : 'View Package'}
               </Link>

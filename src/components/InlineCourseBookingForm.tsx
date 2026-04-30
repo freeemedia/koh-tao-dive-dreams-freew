@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
@@ -46,6 +47,8 @@ const InlineCourseBookingForm: React.FC<Props> = ({
 }) => {
   const [submitted, setSubmitted] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState('');
+  const [showAccommodationNotice, setShowAccommodationNotice] = useState(false);
+  const [pendingSubmission, setPendingSubmission] = useState<FormData | null>(null);
 
   const apiBase = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '').trim().replace(/\/+$/, '');
   const apiUrl = (path: string) => (apiBase ? `${apiBase}${path}` : path);
@@ -69,7 +72,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
 
   const { formState: { isSubmitting } } = form;
 
-  const onSubmit = async (data: FormData) => {
+  const submitBooking = async (data: FormData) => {
     try {
       const deposit = typeof depositMajor === 'number' ? depositMajor : 0;
 
@@ -172,6 +175,26 @@ const InlineCourseBookingForm: React.FC<Props> = ({
     } catch (err) {
       console.error('Booking submission error:', err);
       toast.error('Submission failed. Please try again.');
+    }
+  };
+
+  const onSubmit = async (data: FormData) => {
+    // Require explicit acknowledgment when accommodation is provided.
+    if ((data.accommodation || '').trim().length > 0) {
+      setPendingSubmission(data);
+      setShowAccommodationNotice(true);
+      return;
+    }
+
+    await submitBooking(data);
+  };
+
+  const handleAccommodationConfirm = async () => {
+    const data = pendingSubmission;
+    setShowAccommodationNotice(false);
+    setPendingSubmission(null);
+    if (data) {
+      await submitBooking(data);
     }
   };
 
@@ -337,6 +360,35 @@ const InlineCourseBookingForm: React.FC<Props> = ({
               : 'Book with Us Now'))}
         </Button>
       </form>
+
+      <Dialog open={showAccommodationNotice} onOpenChange={setShowAccommodationNotice}>
+        <DialogContent className="sm:max-w-[560px]">
+          <DialogHeader>
+            <DialogTitle>Accommodation Notice</DialogTitle>
+            <DialogDescription>
+              Accommodation must be confirmed at least 1 week in advance. If confirmation is later than that, payment for accommodation may be charged separately from the course.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-3 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setShowAccommodationNotice(false);
+                setPendingSubmission(null);
+              }}
+            >
+              Edit Booking
+            </Button>
+            <Button
+              type="button"
+              onClick={handleAccommodationConfirm}
+            >
+              I Understand, Continue
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Form>
   );
 };

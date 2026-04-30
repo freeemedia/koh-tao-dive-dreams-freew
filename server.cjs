@@ -32,7 +32,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { realtim
 
 // Stripe setup
 const Stripe = require('stripe');
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_REPLACE_ME');
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 const getJiraConfig = () => ({
   domain: process.env.JIRA_DOMAIN || 'https://divinginasia.atlassian.net',
@@ -304,33 +304,155 @@ app.post('/api/bookings', async (req, res) => {
 
 // Stripe Checkout session endpoint
 app.post('/api/create-stripe-session', async (req, res) => {
-  const { name, email, course_title, preferred_date, experience_level } = req.body;
-  if (!name || !email || !course_title) {
-    return res.status(400).json({ error: 'Missing required fields' });
+  if (!process.env.STRIPE_SECRET_KEY) {
+    return res.status(500).json({ error: 'Stripe is not configured' });
   }
-  try {
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: course_title,
-              description: `Preferred date: ${preferred_date || '-'} | Experience: ${experience_level || '-'}`,
-            },
-            unit_amount: 5000, // $50.00, change as needed
-          },
-          quantity: 1,
+
+  const {
+    name,
+    email,
+    course_title,
+    preferred_date,
+    experience_level,
+    products,
+    success_url,
+    cancel_url,
+    connected_account_id,
+    application_fee_amount,
+    currency,
+    unit_amount,
+  } = req.body || {};
+
+  if (!name || !email) {
+    return res.status(400).json({ error: 'Missing required fields: name and email' });
+  }
+
+  const allowedCurrencies = new Set([
+    'usd', 'eur', 'gbp', 'thb', 'aud', 'cad', 'nzd', 'sgd', 'hkd', 'jpy'
+  ]);
+
+  const parsePositiveInteger = (value) => {
+    const n = Number(value);
+    if (!Number.isInteger(n) || n <= 0) return null;
+    return n;
+  };
+
+  const toSafeCurrency = (value) => {
+    const normalized = String(value || '').trim().toLowerCase();
+    if (!allowedCurrencies.has(normalized)) return null;
+    return normalized;
+  };
+
+  const sanitizeLineItem = (rawProduct) => {
+    const product = rawProduct || {};
+    const quantity = parsePositiveInteger(product.quantity || 1) || 1;
+
+    if (product.price_id) {
+      return {
+        price: String(product.price_id),
+        quantity,
+      };
+    }
+
+    const itemName = String(product.name || '').trim();
+    const itemCurrency = toSafeCurrency(product.currency);
+    const itemUnitAmount = parsePositiveInteger(product.unit_amount);
+
+    if (!itemName || !itemCurrency || !itemUnitAmount) {
+      return null;
+    }
+
+    return {
+      price_data: {
+        currency: itemCurrency,
+        product_data: {
+          name: itemName,
+          description: product.description
+            ? String(product.description).slice(0, 500)
+            : undefined,
         },
-      ],
-      mode: 'payment',
-      customer_email: email,
-      success_url: 'https://www.divinginasia.com/thank-you.html',
-      cancel_url: 'https://www.divinginasia.com/booking-form.html',
-      metadata: { name, email, course_title, preferred_date, experience_level },
-    });
-    res.json({ url: session.url });
+        unit_amount: itemUnitAmount,
+      },
+      quantity,
+    };
+  };
+
+  let lineItems = [];
+
+  if (Array.isArray(products) && products.length > 0) {
+    lineItems = products.map(sanitizeLineItem).filter(Boolean);
+    if (lineItems.length === 0) {
+      return res.status(400).json({ error: 'Invalid products payload' });
+    }
+  } else {
+    // Backward compatible single-item fallback
+    const fallbackTitle = String(course_title || '').trim();
+    const fallbackCurrency = toSafeCurrency(currency || 'usd');
+    const fallbackAmount = parsePositiveInteger(unit_amount || 5000);
+
+    if (!fallbackTitle || !fallbackCurrency || !fallbackAmount) {
+      return res.status(400).json({ error: 'Missing product details' });
+    }
+
+    lineItems = [
+      {
+        price_data: {
+          currency: fallbackCurrency,
+          product_data: {
+            name: fallbackTitle,
+            description: `Preferred date: ${preferred_date || '-'} | Experience: ${experience_level || '-'}`,
+          },
+          unit_amount: fallbackAmount,
+        },
+        quantity: 1,
+      },
+    ];
+  }
+
+  const defaultSuccessUrl = 'https://www.divinginasia.com/thank-you.html';
+  const defaultCancelUrl = 'https://www.divinginasia.com/booking-form.html';
+  const safeSuccessUrl = typeof success_url === 'string' && /^https?:\/\//i.test(success_url)
+    ? success_url
+    : defaultSuccessUrl;
+  const safeCancelUrl = typeof cancel_url === 'string' && /^https?:\/\//i.test(cancel_url)
+    ? cancel_url
+    : defaultCancelUrl;
+
+  const metadata = {
+    name: String(name),
+    email: String(email),
+    course_title: String(course_title || ''),
+    preferred_date: String(preferred_date || ''),
+    experience_level: String(experience_level || ''),
+  };
+
+  const sessionPayload = {
+    payment_method_types: ['card'],
+    line_items: lineItems,
+    mode: 'payment',
+    customer_email: email,
+    success_url: safeSuccessUrl,
+    cancel_url: safeCancelUrl,
+    metadata,
+  };
+
+  const feeAmount = parsePositiveInteger(application_fee_amount);
+  if (feeAmount && connected_account_id) {
+    sessionPayload.payment_intent_data = {
+      application_fee_amount: feeAmount,
+    };
+  }
+
+  const requestOptions = connected_account_id
+    ? { stripeAccount: String(connected_account_id) }
+    : undefined;
+
+  try {
+    const session = requestOptions
+      ? await stripe.checkout.sessions.create(sessionPayload, requestOptions)
+      : await stripe.checkout.sessions.create(sessionPayload);
+
+    res.json({ id: session.id, url: session.url });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
