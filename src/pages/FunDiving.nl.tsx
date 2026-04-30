@@ -197,14 +197,6 @@ const FunDiving = () => {
                 </p>
               </div>
 
-              <DropboxGallerySection
-                folder={FUN_DIVING_DROPBOX_FOLDER}
-                title="Fun diving galerij"
-                description="Foto's van recente fun duiktrips rond Koh Tao. Voeg beelden toe aan de Dropbox-map om deze sectie bij te werken zonder de pagina aan te passen."
-                unavailableMessage="Fun diving foto's verschijnen hier zodra de Dropbox-map klaar is."
-                emptyMessage="Fun diving foto's verschijnen hier zodra er afbeeldingen aan Dropbox zijn toegevoegd."
-              />
-
               <div className="grid md:grid-cols-2 gap-8 mb-12">
                 <Card>
                   <CardHeader>
