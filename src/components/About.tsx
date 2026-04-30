@@ -22,8 +22,8 @@ const About = () => {
       ? 'Koh Tao is niet alleen een topbestemming in Thailand voor je duikvakantie, maar ook ideaal om bijna alle PADI-duikcertificaten te behalen, voor zowel beginners als ervaren duikers.'
       : 'Koh Tao is not only a top destination in Thailand for your diving holiday, but also ideal for completing almost all PADI dive certifications, for both beginners and experienced divers.',
     about_paragraph_2: isDutch
-      ? 'Levenslange certificaten die wereldwijd geldig zijn, voor een verrassend lage prijs. Behaal je PADI-duikcertificaat hier voor 9000 baht, nu inclusief 4 overnachtingen (kamer met badkamer) in de cursusprijs.'
-      : 'Lifetime certifications valid worldwide, at a surprisingly low price. Earn your PADI diving certification here for 9000 baht, now including 4 nights accommodation (room with private bathroom) in the course price.',
+      ? 'Levenslange certificaten die wereldwijd geldig zijn, voor een verrassend lage prijs. Behaal je PADI-duikcertificaat hier voor 11500 baht, nu inclusief 4 overnachtingen (kamer met badkamer) in de cursusprijs.'
+      : 'Lifetime certifications valid worldwide, at a surprisingly low price. Earn your PADI diving certification here for 11500 baht, now including 4 nights accommodation (room with private bathroom) in the course price.',
   }), [locale, isDutch]);
 
   const { content } = usePageContent({

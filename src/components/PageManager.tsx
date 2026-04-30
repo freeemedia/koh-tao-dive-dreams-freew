@@ -145,7 +145,7 @@ export const PageManager: React.FC = () => {
         about_map_alt: 'Map of Koh Tao and dive sites',
         about_title: 'From PADI Open Water certifications to PADI Divemaster internships',
         about_paragraph_1: 'Koh Tao is not only a top destination in Thailand for your diving holiday, but also ideal for completing almost all PADI dive certifications, for both beginners and experienced divers.',
-        about_paragraph_2: 'Lifetime certifications valid worldwide, at a surprisingly low price. Earn your PADI diving certification here for 9000 baht, now including 4 nights accommodation (room with private bathroom) in the course price.',
+        about_paragraph_2: 'Lifetime certifications valid worldwide, at a surprisingly low price. Earn your PADI diving certification here for 11500 baht, now including 4 nights accommodation (room with private bathroom) in the course price.',
       };
     } else if (editingPage.slug === 'open-water' && editingPage.locale === 'nl') {
       fallbackContent = {
@@ -159,7 +159,7 @@ export const PageManager: React.FC = () => {
         about_map_alt: 'Kaart van Koh Tao en duiklocaties',
         about_title: 'Van PADI Open Water-certificering tot PADI Divemaster-internships',
         about_paragraph_1: 'Koh Tao is niet alleen een topbestemming in Thailand voor je duikvakantie, maar ook ideaal om bijna alle PADI-duikcertificaten te behalen, voor zowel beginners als ervaren duikers.',
-        about_paragraph_2: 'Levenslange certificaten die wereldwijd geldig zijn, voor een verrassend lage prijs. Behaal je PADI-duikcertificaat hier voor 9000 baht, nu inclusief 4 overnachtingen (kamer met badkamer) in de cursusprijs.',
+        about_paragraph_2: 'Levenslange certificaten die wereldwijd geldig zijn, voor een verrassend lage prijs. Behaal je PADI-duikcertificaat hier voor 11500 baht, nu inclusief 4 overnachtingen (kamer met badkamer) in de cursusprijs.',
       };
     } else {
       fallbackContent = {
