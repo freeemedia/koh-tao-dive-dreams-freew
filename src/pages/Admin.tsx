@@ -60,6 +60,15 @@ const Admin = () => {
           </nav>
           <div className="flex items-center gap-2">
             <a
+              href="https://lightsalmon-dinosaur-377714.hostingersite.com/ktd-dashboard/"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-green-200 bg-green-50 px-4 py-2 text-sm font-semibold text-green-700 shadow-sm transition hover:bg-green-100"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+              KTD Dashboard
+            </a>
+            <a
               href="https://lightsalmon-dinosaur-377714.hostingersite.com/wp-admin"
               target="_blank"
               rel="noreferrer noopener"
