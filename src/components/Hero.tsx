@@ -1,5 +1,5 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import { ChevronDown, Download } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageContent } from '@/hooks/usePageContent';
 
@@ -7,29 +7,6 @@ const Hero = () => {
   const { t, i18n } = useTranslation();
   const isDutch = i18n.language.startsWith('nl');
   const locale = isDutch ? 'nl' : 'en';
-
-  const [installPrompt, setInstallPrompt] = useState<any>(null);
-  const [showBanner, setShowBanner] = useState(false);
-
-  useEffect(() => {
-    const handler = (e: Event) => {
-      e.preventDefault();
-      setInstallPrompt(e);
-      setShowBanner(true);
-    };
-    window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
-
-  const handleInstall = () => {
-    if (installPrompt) {
-      installPrompt.prompt();
-      installPrompt.userChoice.then(() => {
-        setInstallPrompt(null);
-        setShowBanner(false);
-      });
-    }
-  };
 
   const fallbackContent = useMemo(() => ({
     hero_title: t('hero.title'),
@@ -74,41 +51,6 @@ const Hero = () => {
 
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
         <ChevronDown className="h-8 w-8 text-white" />
-      </div>
-
-      {/* PWA install banner — shown when browser fires beforeinstallprompt (Android/Desktop Chrome) */}
-      {showBanner && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/30 px-5 py-3 shadow-xl">
-          <Download className="h-5 w-5 text-cyan-300 shrink-0" />
-          <span className="text-white text-sm font-medium">
-            {isDutch ? 'Installeer de app op je telefoon' : 'Install app on your phone'}
-          </span>
-          <button
-            onClick={handleInstall}
-            className="ml-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 px-4 py-1.5 text-sm font-semibold text-white transition"
-          >
-            {isDutch ? 'Installeer' : 'Install'}
-          </button>
-          <button
-            onClick={() => setShowBanner(false)}
-            className="text-white/60 hover:text-white text-xs ml-1"
-            aria-label="Dismiss"
-          >
-            ✕
-          </button>
-        </div>
-      )}
-
-      {/* iOS instruction — visible only on iPhone/iPad where beforeinstallprompt doesn't fire */}
-      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 hidden ios-install-hint">
-        <div className="flex items-center gap-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/30 px-5 py-3 shadow-xl">
-          <Download className="h-5 w-5 text-cyan-300 shrink-0" />
-          <span className="text-white text-sm">
-            {isDutch
-              ? 'Tik op Delen → "Zet op beginscherm" om de app te installeren'
-              : 'Tap Share → "Add to Home Screen" to install'}
-          </span>
-        </div>
       </div>
     </section>
   );

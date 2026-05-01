@@ -7,8 +7,70 @@ import { trackAffiliateClick } from '@/lib/affiliateTracking';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import { Facebook, Instagram, MessageCircle } from 'lucide-react';
+import { Download, Facebook, Instagram, MessageCircle } from 'lucide-react';
 import CookieConsent from './CookieConsent';
+
+const InstallBanner: React.FC = () => {
+  const { i18n } = useTranslation();
+  const isDutch = i18n.language.startsWith('nl');
+  const [installPrompt, setInstallPrompt] = React.useState<any>(null);
+  const [dismissed, setDismissed] = React.useState(
+    () => window.sessionStorage.getItem('pwa-banner-dismissed') === '1'
+  );
+  const [isIos, setIsIos] = React.useState(false);
+  const [isStandalone, setIsStandalone] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsStandalone(window.matchMedia('(display-mode: standalone)').matches);
+    setIsIos(/iphone|ipad|ipod/i.test(navigator.userAgent));
+    const handler = (e: Event) => { e.preventDefault(); setInstallPrompt(e); };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstall = () => {
+    if (installPrompt) {
+      installPrompt.prompt();
+      installPrompt.userChoice.then(() => { setInstallPrompt(null); setDismissed(true); });
+    }
+  };
+
+  const dismiss = () => {
+    window.sessionStorage.setItem('pwa-banner-dismissed', '1');
+    setDismissed(true);
+  };
+
+  if (isStandalone || dismissed) return null;
+  if (!installPrompt && !isIos) return null;
+
+  return (
+    <div className="fixed top-0 inset-x-0 z-[60] flex items-center justify-between gap-3 bg-cyan-950 border-b border-cyan-700 px-4 py-2 text-white text-sm shadow-lg">
+      <div className="flex items-center gap-2 min-w-0">
+        <Download className="h-4 w-4 text-cyan-300 shrink-0" />
+        {isIos ? (
+          <span className="truncate">
+            {isDutch ? 'Tik Delen → "Zet op beginscherm" om te installeren' : 'Tap Share → "Add to Home Screen" to install the app'}
+          </span>
+        ) : (
+          <span className="truncate">
+            {isDutch ? 'Installeer de app op je telefoon' : 'Install the app on your phone'}
+          </span>
+        )}
+      </div>
+      <div className="flex items-center gap-2 shrink-0">
+        {!isIos && (
+          <button
+            onClick={handleInstall}
+            className="rounded-md bg-cyan-500 hover:bg-cyan-400 px-3 py-1 text-xs font-semibold transition"
+          >
+            {isDutch ? 'Installeer' : 'Install'}
+          </button>
+        )}
+        <button onClick={dismiss} aria-label="Dismiss" className="text-white/50 hover:text-white text-base leading-none">✕</button>
+      </div>
+    </div>
+  );
+};
 
 const TRIP_ALLIANCE_ID = import.meta.env.VITE_TRIP_ALLIANCE_ID as string | undefined;
 const TRIP_SITE_ID = import.meta.env.VITE_TRIP_SITE_ID as string | undefined;
@@ -272,6 +334,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <InstallBanner />
       <Navigation user={user} isAdmin={isAdmin} isAdminRoute={isAdminRoute} />
       {isAdminRoute && (
         <div className="fixed top-20 right-4 z-50">
