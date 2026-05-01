@@ -128,18 +128,21 @@ const Footer: React.FC = () => {
   React.useEffect(() => {
     // Fetch all footer content for the current locale
     const fetchFooterContent = async () => {
-      const { data, error } = await supabase
-        .from('page_content')
-        .select('section_key, content_value')
-        .eq('page_slug', '#contact')
-        .eq('locale', locale)
-        .in('section_key', ['footer_line_1', 'footer_line_2']);
-      if (!error && data) {
+      try {
+        const base = import.meta.env.VITE_API_URL || '';
+        const params = new URLSearchParams({ slug: '#contact', locale });
+        const response = await fetch(`${base}/api/page-content?${params.toString()}`, { cache: 'no-store' });
+        if (!response.ok) return;
+        const payload = await response.json().catch(() => ({}));
+        const rows = Array.isArray(payload?.rows) ? payload.rows : [];
+
         const content: { [key: string]: string } = {};
-        data.forEach((row: any) => {
+        rows.forEach((row: any) => {
           content[row.section_key] = row.content_value;
         });
         setFooterContent(content);
+      } catch {
+        // Keep default footer text if remote content is unavailable.
       }
     };
     fetchFooterContent();

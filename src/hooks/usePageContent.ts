@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 
 interface PageContent {
   [key: string]: string;
@@ -15,6 +14,11 @@ interface PageContentRow {
   section_key: string;
   content_value: string | null;
   updated_at?: string | null;
+}
+
+interface PageContentApiResponse {
+  rows?: PageContentRow[];
+  source?: string;
 }
 
 const CONTENT_REFRESH_INTERVAL_MS = 15000;
@@ -82,18 +86,19 @@ export function usePageContent({ pageSlug, locale, fallbackContent }: UsePageCon
       }
 
       try {
-        if (!supabase) throw new Error('Supabase not configured');
+        const params = new URLSearchParams({ slug: pageSlug, locale });
+        const base = import.meta.env.VITE_API_URL || '';
+        const endpoint = `${base}/api/page-content?${params.toString()}`;
+        const response = await fetch(endpoint, { cache: 'no-store' });
+        if (!response.ok) {
+          const text = await response.text().catch(() => '');
+          throw new Error(`Page content API failed (${response.status}): ${text || 'unknown error'}`);
+        }
 
-        // Fetch all rows matching the page slug (handles both short and canonical slugs)
-        const { data: rows, error } = await supabase
-          .from('page_content')
-          .select('section_key, content_value, updated_at')
-          .eq('locale', locale)
-          .or(`page_slug.eq.${pageSlug},page_slug.eq./${pageSlug},page_slug.eq./courses/${pageSlug}`);
+        const payload = (await response.json().catch(() => ({}))) as PageContentApiResponse;
+        const rows = Array.isArray(payload.rows) ? payload.rows : [];
 
-        if (error) throw error;
-
-        if (mergeRowsAndSet(rows as PageContentRow[])) return;
+        if (mergeRowsAndSet(rows)) return;
 
         if (isMounted) {
           setContent(fallbackContent);
