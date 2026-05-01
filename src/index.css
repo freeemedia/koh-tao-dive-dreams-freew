@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Show iOS install hint only on iOS Safari (standalone not yet active) */
+@supports (-webkit-touch-callout: none) {
+  @media (display-mode: browser) {
+    .ios-install-hint {
+      display: flex !important;
+    }
+  }
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
 
 @layer base {
