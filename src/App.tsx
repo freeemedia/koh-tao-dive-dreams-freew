@@ -38,6 +38,7 @@ import SpecialtyDetail from './pages/SpecialtyDetail';
 
 import FunDiving from './pages/FunDiving';
 import DiveSitesPage from './pages/DiveSitesPage';
+import DiveSiteReports from './pages/DiveSiteReports';
 import SailRock from './pages/dive-sites/sail-rock';
 import ChumphonPinnacle from './pages/dive-sites/chumphon-pinnacle';
 import JapaneseGardens from './pages/dive-sites/japanese-gardens';
@@ -256,6 +257,7 @@ const App = () => (
               <Route path="/packages/open-water-to-divemaster" element={<OpenWaterToDivemaster />} />
               <Route path="/fun-diving-koh-tao" element={<FunDiving />} />
               <Route path="/koh-tao-dive-sites" element={<DiveSitesPage />} />
+              <Route path="/dive-site-reports" element={<DiveSiteReports />} />
               <Route path="/dive-sites/sail-rock" element={<SailRock />} />
               <Route path="/dive-sites/chumphon-pinnacles" element={<Navigate to="/dive-sites/chumphon-pinnacle" replace />} />
               <Route path="/dive-sites/chumphon-pinnacle" element={<ChumphonPinnacle />} />

@@ -73,6 +73,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
     beardedScorpionfish: isDutch ? 'Baardschorpioenvis' : 'Bearded scorpionfish',
     diveSitesTitle: isDutch ? 'Locaties' : 'Sites',
     diveSitesOverview: isDutch ? 'Overzicht alle duiklocaties' : 'All dive sites overview',
+    diveSiteReports: isDutch ? 'Duiklocatie rapporten' : 'Dive site reports',
     funDiveTrips: isDutch ? 'Fun Duiktrips' : 'Fun Dive Trips',
     boatSchedule: isDutch ? 'Bootschema' : 'Boat schedule',
     pricingPackages: isDutch ? 'Prijzen & pakketten' : 'Pricing & packages',
@@ -275,6 +276,14 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
                         {labels.diveSitesOverview}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/dive-site-reports"
+                        className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
+                      >
+                        {labels.diveSiteReports}
                       </Link>
                     </li>
                     <li className="pt-2 text-[11px] font-bold uppercase tracking-wider text-blue-400">
@@ -707,6 +716,9 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                   <div className="pl-4 space-y-1 bg-muted rounded-lg mx-2 py-2">
                     <Link to="/koh-tao-dive-sites" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
                       {labels.diveSitesOverview}
+                    </Link>
+                    <Link to="/dive-site-reports" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
+                      {labels.diveSiteReports}
                     </Link>
                     <div className="px-3 pt-2 text-xs font-semibold uppercase tracking-wider text-blue-600">Deep Sites</div>
                     <Link to="/dive-sites/sail-rock" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>

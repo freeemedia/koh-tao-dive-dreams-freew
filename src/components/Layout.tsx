@@ -135,6 +135,7 @@ const Footer: React.FC = () => {
             <h4 className="text-cyan-400 text-xs font-bold uppercase tracking-wider mb-4">{isDutch ? 'Duikplekken' : 'Dive Sites'}</h4>
             <ul className="space-y-2 text-sm text-gray-300">
               <li><Link to="/koh-tao-dive-sites" className="hover:text-white transition">{isDutch ? 'Overzicht' : 'Overview'}</Link></li>
+              <li><Link to="/dive-site-reports" className="hover:text-white transition">{isDutch ? 'Duiklocatie rapporten' : 'Dive Site Reports'}</Link></li>
               <li><Link to="/dive-sites/sail-rock" className="hover:text-white transition">Sail Rock</Link></li>
               <li><Link to="/dive-sites/chumphon-pinnacle" className="hover:text-white transition">Chumphon Pinnacle</Link></li>
               <li><Link to="/dive-sites/south-west-pinnacle" className="hover:text-white transition">South West Pinnacle</Link></li>

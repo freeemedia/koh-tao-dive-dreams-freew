@@ -4,8 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="agd-partner-manual-verification" />
-    <title>Diving In Asia</title>
-    <meta name="description" content="One Media Projeckt" />
+    <title>Pro Diving Asia – Koh Tao</title>
+    <meta name="description" content="Koh Tao dive courses, fun diving, dive site reports and more – Pro Diving Asia." />
+
+    <!-- PWA manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- iOS PWA support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Dive Asia" />
+    <link rel="apple-touch-icon" href="/images/logo.png" />
+
+    <!-- Theme colour for Android Chrome -->
+    <meta name="theme-color" content="#0ea5e9" />
     <meta name="author" content="divinginasia" />
 
     <meta property="og:title" content="" />
@@ -34,5 +46,12 @@
     <!-- End Google Tag Manager (noscript) -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js');
+        });
+      }
+    </script>
   </body>
 </html>

@@ -4,5 +4,6 @@
     ],
     "chat.tools.terminal.autoApprove": {
         "npx playwright": true
-    }
+    },
+    "cmake.sourceDirectory": "/Users/onemediaasia/Documents/koh-tao-dive-dreams/node_modules/bare-fs"
 }
