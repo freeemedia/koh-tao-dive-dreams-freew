@@ -223,6 +223,43 @@ async function mirrorBookingToWordPress(payload) {
   throw new Error(`WordPress mirror failed: ${details}`);
 }
 
+async function fetchBookingsFromWordPress() {
+  const canonicalWpUrl = 'https://lightsalmon-dinosaur-377714.hostingersite.com';
+  let wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
+  if (!wpUrl || /admin\.divinginasia\.com$/i.test(wpUrl)) {
+    wpUrl = canonicalWpUrl;
+  }
+
+  const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
+  if (!wpUrl || !wpApiKey) return null;
+
+  const endpoint = `${wpUrl}/wp-json/ktd/v1/bookings?nocache=${Date.now()}`;
+  const response = await fetch(endpoint, {
+    headers: {
+      'Content-Type': 'application/json',
+      'x-ktd-api-key': wpApiKey,
+      'cache-control': 'no-cache',
+    },
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    throw new Error(`WordPress GET failed (${response.status}): ${text || 'unknown error'}`);
+  }
+
+  const json = await response.json().catch(() => null);
+  const rowsRaw = Array.isArray(json?.data) ? json.data : (Array.isArray(json) ? json : []);
+
+  const rows = rowsRaw.map((row) => ({
+    ...row,
+    internal_notes: row?.internal_notes || row?.message || '',
+    message: row?.message || row?.internal_notes || '',
+  }));
+
+  return rows;
+}
+
 export default async function handler(req, res) {
   try {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -236,13 +273,23 @@ export default async function handler(req, res) {
     const supabase = getSupabaseAdmin();
 
     if (req.method === 'GET') {
+      // WordPress is primary when configured (matches migrated WP tables).
+      try {
+        const wpRows = await fetchBookingsFromWordPress();
+        if (wpRows) {
+          return res.status(200).json({ bookings: wpRows, source: 'wordpress' });
+        }
+      } catch (wpError) {
+        console.warn('WordPress bookings fetch failed, falling back to Supabase:', wpError);
+      }
+
       const { data, error } = await supabase
         .from('bookings')
         .select('*')
         .order('created_at', { ascending: false });
 
       if (error) return res.status(500).json({ error: error.message });
-      return res.status(200).json({ bookings: data || [] });
+      return res.status(200).json({ bookings: data || [], source: 'supabase' });
     }
 
     if (req.method === 'POST') {
