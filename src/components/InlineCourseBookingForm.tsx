@@ -23,7 +23,7 @@ const schema = z.object({
   preferred_date: z.string().optional(),
   experience_level: z.string().optional(),
   message: z.string().trim().max(1000).optional(),
-  paymentChoice: z.enum(['paypal', 'stripe', 'inquire']).default('inquire'),
+  paymentChoice: z.enum(['paypal', 'inquire']).default('inquire'),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -86,7 +86,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
         guest_count: data.guest_count || '1',
         preferred_date: data.preferred_date || 'N/A',
         experience_level: data.experience_level || 'N/A',
-        payment_choice: data.paymentChoice === 'paypal' ? 'paypal-deposit' : data.paymentChoice === 'stripe' ? 'stripe-custom-deposit' : 'inquire',
+        payment_choice: data.paymentChoice === 'paypal' ? 'paypal-deposit' : 'inquire',
         deposit_amount: deposit > 0 ? `฿${deposit}` : 'N/A',
         message: `Phone: ${data.phone || 'N/A'}\nNationality: ${data.nationality || 'N/A'}\nAccommodation: ${data.accommodation || 'N/A'}\nGroup Size: ${data.guest_count || '1'}\nPreferred Date: ${data.preferred_date || 'N/A'}\nExperience Level: ${data.experience_level || 'N/A'}\nPayment: ${data.paymentChoice}\n\nMessage:\n${data.message || 'N/A'}`,
       };
@@ -145,7 +145,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
               accommodation_interest: data.accommodation || '',
               message: data.message || '',
               payment_choice: data.paymentChoice,
-              payment_status: data.paymentChoice === 'paypal' ? 'deposit_paypal_redirect' : data.paymentChoice === 'stripe' ? 'deposit_stripe_redirect' : 'new_inquiry',
+              payment_status: data.paymentChoice === 'paypal' ? 'deposit_paypal_redirect' : 'new_inquiry',
               deposit_amount: deposit || undefined,
               currency: depositCurrency,
             },
@@ -162,9 +162,6 @@ const InlineCourseBookingForm: React.FC<Props> = ({
         if (data.paymentChoice === 'paypal' && deposit > 0) {
           toast.success('Booking sent! Redirecting to PayPal...');
           setTimeout(() => { window.location.href = `${paypalBase}/${deposit}THB`; }, 1500);
-        } else if (data.paymentChoice === 'stripe') {
-          toast.success('Booking sent! Redirecting to Stripe...');
-          setTimeout(() => { window.location.href = 'https://buy.stripe.com/6oUfZh41igAWcAYgKH7EQ01'; }, 1500);
         } else {
           toast.success('Booking inquiry sent! We\'ll be in touch within 24 hours.');
         }
@@ -318,13 +315,6 @@ const InlineCourseBookingForm: React.FC<Props> = ({
               <FormItem>
                 <div className="flex flex-col gap-3">
                   <label className="flex items-start gap-3 cursor-pointer">
-                    <input type="radio" className="mt-1" value="stripe" checked={field.value === 'stripe'} onChange={() => field.onChange('stripe')} />
-                    <div>
-                      <div className="font-medium text-sm">Choose your own deposit — to secure a course</div>
-                      <div className="text-xs text-muted-foreground">Pay any amount via Stripe to lock in your spot. You'll be redirected after submitting.</div>
-                    </div>
-                  </label>
-                  <label className="flex items-start gap-3 cursor-pointer">
                     <input type="radio" className="mt-1" value="paypal" checked={field.value === 'paypal'} onChange={() => field.onChange('paypal')} />
                     <div>
                       <div className="font-medium text-sm">Pay ฿{depositMajor} deposit now via PayPal</div>
@@ -353,11 +343,9 @@ const InlineCourseBookingForm: React.FC<Props> = ({
         >
           {isSubmitting
             ? 'Sending...'
-            : (form.watch('paymentChoice') === 'stripe'
-              ? 'Book Now & Choose Your Deposit via Stripe'
-              : (form.watch('paymentChoice') === 'paypal' && typeof depositMajor === 'number' && depositMajor > 0
+            : (form.watch('paymentChoice') === 'paypal' && typeof depositMajor === 'number' && depositMajor > 0
               ? `Book Now & Pay ฿${depositMajor} Deposit via PayPal`
-              : 'Book with Us Now'))}
+              : 'Book with Us Now')}
         </Button>
       </form>
 
