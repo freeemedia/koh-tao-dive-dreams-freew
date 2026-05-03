@@ -604,11 +604,11 @@ $logo_url = get_site_icon_url( 64 );
   // ── REST API helpers ────────────────────────────────────────────
   const REST_BASE = '<?php echo esc_js( get_rest_url( null, 'ktd/v1' ) ); ?>';
   const NONCE    = '<?php echo esc_js( wp_create_nonce( 'wp_rest' ) ); ?>';
+  const API_KEY  = '<?php echo esc_js( get_option( 'ktd_booking_api_key', '' ) ); ?>';
 
-  async function apiFetch(path) {
-    const res = await fetch(REST_BASE + path, {
-      headers: { 'X-WP-Nonce': NONCE }
-    });
+  async function apiFetch(path, options = {}) {
+    const headers = Object.assign({ 'X-WP-Nonce': NONCE }, API_KEY ? { 'x-ktd-api-key': API_KEY } : {}, options.headers || {});
+    const res = await fetch(REST_BASE + path, Object.assign({}, options, { headers }));
     if (!res.ok) throw new Error('HTTP ' + res.status);
     return res.json();
   }
@@ -751,7 +751,7 @@ $logo_url = get_site_icon_url( 64 );
 
     try {
       const data = await apiFetch('/bookings?per_page=200&orderby=created_at&order=desc');
-      allBookings = Array.isArray(data) ? data : (data.bookings || data.items || []);
+      allBookings = Array.isArray(data) ? data : (Array.isArray(data.data) ? data.data : (data.bookings || data.items || []));
 
       document.getElementById('bookings-loading').style.display = 'none';
       document.getElementById('activity-loading').style.display = 'none';
