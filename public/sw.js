@@ -1,4 +1,4 @@
- pconst CACHE = 'dive-asia-v2';
+const CACHE = 'dive-asia-v2';
 const PRECACHE = [
   '/',
   '/manifest.json',
