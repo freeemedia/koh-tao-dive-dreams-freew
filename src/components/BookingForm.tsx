@@ -88,12 +88,19 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
         deposit_amount: typeof depositMajor === 'number' ? `฿${depositMajor}` : 'N/A',
         message: messageBody,
       };
-      const response = await fetch(apiUrl('/api/send-booking-notification'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const responseData = await response.json().catch(() => ({}));
+      let emailOk = false;
+      let responseData: any = {};
+      try {
+        const response = await fetch(apiUrl('/api/send-booking-notification'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        responseData = await response.json().catch(() => ({}));
+        emailOk = response.ok && Boolean(responseData?.success);
+      } catch (emailErr) {
+        console.warn('Email notification API unavailable; continuing with booking save flow.', emailErr);
+      }
 
       // Calculate totals from a percentage-based deposit model.
       const deposit_amount = typeof depositMajor === 'number' ? depositMajor : 0;
@@ -142,6 +149,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
       }
 
       let wpDirectError: string | null = null;
+      let wpDirectSaved = false;
       if (wpApiBase && wpApiKey) {
         try {
           const wpRes = await fetch(`${wpApiBase}/wp-json/ktd/v1/bookings/create`, {
@@ -169,6 +177,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
               booking_source: 'website-form',
             }),
           });
+          wpDirectSaved = wpRes.ok;
           if (!wpRes.ok) {
             wpDirectError = `WP direct save failed (HTTP ${wpRes.status})`;
           }
@@ -177,14 +186,18 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
         }
       }
 
-      if (response.ok && responseData.success) {
+      const bookingSaved = wpDirectSaved || !dbError;
+
+      if (bookingSaved) {
         if (dbError) {
-          toast.warning('Email sent, but booking was not saved to WordPress. Please retry.');
+          toast.warning('Booking saved to WordPress directly, but API mirror failed.');
         }
         if (wpDirectError) {
           toast.warning(`WordPress direct save warning: ${wpDirectError}`);
         }
-        if (responseData.warning) {
+        if (!emailOk) {
+          toast.warning('Booking saved, but email notification is currently unavailable.');
+        } else if (responseData.warning) {
           toast.warning(`Booking saved, but email notification needs attention: ${responseData.warning}`);
         }
         if (dbResult?.supabase_warning) {
@@ -228,7 +241,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
         form.reset();
         onClose();
       } else {
-        const errMsg = responseData?.message || responseData?.error || `HTTP ${response.status}`;
+        const errMsg = responseData?.message || responseData?.error || 'Booking and email services unavailable';
         console.error('Booking notification error:', errMsg, responseData);
         toast.error(`Failed to send booking: ${errMsg}. Please try again.`);
       }

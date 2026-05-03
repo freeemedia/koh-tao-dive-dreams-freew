@@ -323,13 +323,23 @@ const       BookingPage: React.FC = () => {
         }
       }
 
-      const res = await fetch(apiUrl('/api/send-booking-notification'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      if (wpSaved) {
+        persisted = true;
+      }
 
-      const responseData = await res.json().catch(() => ({}));
+      let emailOk = false;
+      let responseData: any = {};
+      try {
+        const res = await fetch(apiUrl('/api/send-booking-notification'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        responseData = await res.json().catch(() => ({}));
+        emailOk = res.ok && Boolean(responseData?.success);
+      } catch (emailErr) {
+        console.warn('Booking email API unavailable; continuing with saved booking flow.', emailErr);
+      }
 
       // Store booking details for thank-you page display
       const bookingDetailsForDisplay = {
@@ -348,7 +358,7 @@ const       BookingPage: React.FC = () => {
       sessionStorage.setItem('bookingData', JSON.stringify(bookingDetailsForDisplay));
 
       // Notify user based on email API result, but booking is already persisted
-      if (res.ok && responseData.success) {
+      if (emailOk) {
         if (responseData.warning) {
           toast.warning(`Booking saved, but email notification needs attention: ${responseData.warning}`);
         } else if (wpMirrorWarning) {
@@ -404,10 +414,10 @@ const       BookingPage: React.FC = () => {
           setInquiryNotice(SKIP_PAYMENT_MESSAGE);
         }
       } else {
-        const errMsg = responseData?.message || responseData?.error || `HTTP ${res.status}`;
+        const errMsg = responseData?.message || responseData?.error || 'Email service unavailable';
         console.error('Booking notification error:', errMsg, responseData);
-        if (persisted) {
-          toast.error(`Inquiry saved, but email notification failed: ${errMsg}`);
+        if (persisted || wpSaved) {
+          toast.warning(`Inquiry saved, but email notification failed: ${errMsg}`);
           setTimeout(() => window.location.href = '/thank-you.html', 1500);
           setInquiryNotice(SKIP_PAYMENT_MESSAGE);
         } else {

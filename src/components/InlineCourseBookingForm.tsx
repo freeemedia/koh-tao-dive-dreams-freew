@@ -93,12 +93,19 @@ const InlineCourseBookingForm: React.FC<Props> = ({
         message: `Phone: ${data.phone || 'N/A'}\nNationality: ${data.nationality || 'N/A'}\nAccommodation: ${data.accommodation || 'N/A'}\nGroup Size: ${data.guest_count || '1'}\nPreferred Date: ${data.preferred_date || 'N/A'}\nExperience Level: ${data.experience_level || 'N/A'}\nPayment: ${data.paymentChoice}\n\nMessage:\n${data.message || 'N/A'}`,
       };
 
-      const res = await fetch(apiUrl('/api/send-booking-notification'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const resData = await res.json().catch(() => ({}));
+      let emailOk = false;
+      let resData: any = {};
+      try {
+        const res = await fetch(apiUrl('/api/send-booking-notification'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        resData = await res.json().catch(() => ({}));
+        emailOk = res.ok && Boolean(resData?.success);
+      } catch (emailErr) {
+        console.warn('Email notification API unavailable; continuing with booking save flow.', emailErr);
+      }
 
       let dbResult: any = null;
       let dbError: string | null = null;
@@ -137,6 +144,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
       }
 
       let wpDirectError: string | null = null;
+      let wpDirectSaved = false;
       if (wpApiBase && wpApiKey) {
         try {
           const wpRes = await fetch(`${wpApiBase}/wp-json/ktd/v1/bookings/create`, {
@@ -166,6 +174,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
               booking_source: crmSource,
             }),
           });
+          wpDirectSaved = wpRes.ok;
           if (!wpRes.ok) {
             wpDirectError = `WP direct save failed (HTTP ${wpRes.status})`;
           }
@@ -208,12 +217,17 @@ const InlineCourseBookingForm: React.FC<Props> = ({
         toast.error(`Booking not saved to WordPress: ${dbError}`);
       }
 
-      if (res.ok && resData.success) {
+      const bookingSaved = wpDirectSaved || !dbError;
+
+      if (bookingSaved) {
         if (dbError) {
-          toast.warning('Email sent, but booking was not saved to WordPress. Please retry.');
+          toast.warning('Booking saved to WordPress directly, but API mirror failed.');
         }
         if (wpDirectError) {
           toast.warning(`WordPress direct save warning: ${wpDirectError}`);
+        }
+        if (!emailOk) {
+          toast.warning('Booking saved, but email notification is currently unavailable.');
         }
         if (dbResult?.supabase_warning) {
           toast.warning(`WordPress saved. Supabase mirror warning: ${dbResult.supabase_warning}`);
@@ -229,7 +243,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
           toast.success('Booking inquiry sent! We\'ll be in touch within 24 hours.');
         }
       } else {
-        const errMsg = resData?.message || resData?.error || `HTTP ${res.status}`;
+        const errMsg = resData?.message || resData?.error || 'Booking and email services unavailable';
         toast.error(`Failed to send booking: ${errMsg}`);
       }
     } catch (err) {
