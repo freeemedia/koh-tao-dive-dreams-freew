@@ -61,6 +61,10 @@ class KTD_Booking_Manager {
             addons TEXT,
             booking_source VARCHAR(100) DEFAULT '',
             message TEXT,
+            internal_notes TEXT,
+            payment_status VARCHAR(30) DEFAULT 'unpaid',
+            payment_link_url TEXT,
+            mollie_link_id VARCHAR(100) DEFAULT '',
             raw_payload LONGTEXT,
             PRIMARY KEY  (id),
             KEY status (status),
@@ -198,7 +202,8 @@ class KTD_Booking_Manager {
         }
 
         $allowed = array('status', 'internal_notes', 'message', 'name', 'email', 'phone',
-                         'item_title', 'preferred_date', 'deposit_amount', 'total_amount', 'due_amount');
+                         'item_title', 'preferred_date', 'deposit_amount', 'total_amount', 'due_amount',
+                         'payment_status', 'payment_link_url', 'mollie_link_id');
         $updates = array();
         $formats = array();
         foreach ($allowed as $field) {
