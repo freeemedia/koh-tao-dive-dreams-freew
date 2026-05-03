@@ -76,26 +76,45 @@ const Admin = () => {
   const [bookingsError, setBookingsError] = useState<string | null>(null);
   const [bookingSearch, setBookingSearch] = useState('');
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const [editingNotes, setEditingNotes] = useState<Record<number, string>>({});
+  const [savingNotes, setSavingNotes] = useState<number | null>(null);
+
+  const patchBookingField = async (id: number, fields: Record<string, string | number>) => {
+    const proxy = buildAdminProxyRequest();
+    const res = await fetch(`/api/admin-bookings?id=${id}`, {
+      method: 'PATCH',
+      headers: { ...proxy.headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify(fields),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error || String(res.status));
+    }
+    return res.json();
+  };
 
   const patchBookingStatus = async (id: number, status: string) => {
     setUpdatingId(id);
     try {
-      const proxy = buildAdminProxyRequest();
-      const res = await fetch(`/api/admin-bookings?id=${id}`, {
-        method: 'PATCH',
-        headers: { ...proxy.headers, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status }),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        alert(`Failed to update status: ${err?.error || res.status}`);
-        return;
-      }
+      await patchBookingField(id, { status });
       setBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b));
     } catch (e) {
-      alert('Network error updating status');
+      alert(`Failed to update status: ${e instanceof Error ? e.message : e}`);
     } finally {
       setUpdatingId(null);
+    }
+  };
+
+  const saveNotes = async (id: number) => {
+    const notes = editingNotes[id] ?? (bookings.find(b => b.id === id)?.notes || '');
+    setSavingNotes(id);
+    try {
+      await patchBookingField(id, { internal_notes: notes });
+      setBookings(prev => prev.map(b => b.id === id ? { ...b, notes } : b));
+    } catch (e) {
+      alert(`Failed to save notes: ${e instanceof Error ? e.message : e}`);
+    } finally {
+      setSavingNotes(null);
     }
   };
 
@@ -267,7 +286,7 @@ const Admin = () => {
                   <table className="min-w-full divide-y divide-slate-200 text-sm">
                     <thead className="bg-slate-50">
                       <tr>
-                        {['Date', 'Name', 'Email', 'Phone', 'Item', 'Status', 'Deposit', 'Total'].map(h => (
+                        {['Date', 'Name', 'Email', 'Phone', 'Item', 'Status', 'Deposit', 'Total', 'Notes'].map(h => (
                           <th key={h} className="whitespace-nowrap px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">{h}</th>
                         ))}
                       </tr>
@@ -302,6 +321,18 @@ const Admin = () => {
                           </td>
                           <td className="px-3 py-2 text-slate-600">{b.deposit_amount ? `฿${b.deposit_amount.toLocaleString()}` : '—'}</td>
                           <td className="px-3 py-2 text-slate-600">{b.total_amount ? `฿${b.total_amount.toLocaleString()}` : '—'}</td>
+                          <td className="px-3 py-2 min-w-[180px]">
+                            <textarea
+                              rows={2}
+                              className="w-full rounded border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-700 focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-300 resize-none"
+                              placeholder="Add notes…"
+                              value={editingNotes[b.id] !== undefined ? editingNotes[b.id] : (b.notes || '')}
+                              onChange={e => setEditingNotes(prev => ({ ...prev, [b.id]: e.target.value }))}
+                              onBlur={() => { void saveNotes(b.id); }}
+                              disabled={savingNotes === b.id}
+                            />
+                            {savingNotes === b.id && <p className="mt-0.5 text-xs text-slate-400">Saving…</p>}
+                          </td>
                         </tr>
                       ))}
                     </tbody>

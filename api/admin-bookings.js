@@ -24,7 +24,7 @@ function getAllowedAdminEmails() {
 async function ensureAdmin(req, supabase) {
   const viewToken = process.env.ADMIN_BOOKINGS_VIEW_TOKEN || process.env.ADMIN_VIEW_TOKEN;
   const suppliedViewToken = req.headers['x-admin-view-token'] || req.query?.view_token;
-  if (req.method === 'GET' && viewToken && suppliedViewToken && String(suppliedViewToken) === String(viewToken)) {
+  if (viewToken && suppliedViewToken && String(suppliedViewToken) === String(viewToken)) {
     return { ok: true, mode: 'view-token' };
   }
 
