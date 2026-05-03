@@ -52,6 +52,8 @@ const InlineCourseBookingForm: React.FC<Props> = ({
   const apiBase = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '').trim().replace(/\/+$/, '');
   const apiUrl = (path: string) => (apiBase ? `${apiBase}${path}` : path);
   const paypalBase = (import.meta.env.VITE_PAYPAL_LINK || 'https://paypal.me/prodivingasia').trim().replace(/\/+$/, '');
+  const wpApiBase = (import.meta.env.VITE_WP_API_BASE || '').trim().replace(/\/+$/, '');
+  const wpApiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || '').trim();
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -74,6 +76,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
   const submitBooking = async (data: FormData) => {
     try {
       const deposit = typeof depositMajor === 'number' ? depositMajor : 0;
+      const guestCount = data.guest_count === '6' ? 6 : Number(data.guest_count || '1');
 
       const payload = {
         item_title: itemTitle,
@@ -89,7 +92,6 @@ const InlineCourseBookingForm: React.FC<Props> = ({
         deposit_amount: deposit > 0 ? `฿${deposit}` : 'N/A',
         message: `Phone: ${data.phone || 'N/A'}\nNationality: ${data.nationality || 'N/A'}\nAccommodation: ${data.accommodation || 'N/A'}\nGroup Size: ${data.guest_count || '1'}\nPreferred Date: ${data.preferred_date || 'N/A'}\nExperience Level: ${data.experience_level || 'N/A'}\nPayment: ${data.paymentChoice}\n\nMessage:\n${data.message || 'N/A'}`,
       };
-      const guestCount = data.guest_count === '6' ? 6 : Number(data.guest_count || '1');
 
       const res = await fetch(apiUrl('/api/send-booking-notification'), {
         method: 'POST',
@@ -98,7 +100,6 @@ const InlineCourseBookingForm: React.FC<Props> = ({
       });
       const resData = await res.json().catch(() => ({}));
 
-      // Persist booking through API so WordPress `ktd_bookings` is updated.
       let dbResult: any = null;
       let dbError: string | null = null;
       try {
@@ -135,14 +136,43 @@ const InlineCourseBookingForm: React.FC<Props> = ({
         dbError = err instanceof Error ? err.message : 'Booking persistence failed';
       }
 
-      if (dbError) {
-        toast.error(`Booking not saved to WordPress: ${dbError}`);
-      }
-
-      // CRM sync
-      const wpApiBase = (import.meta.env.VITE_WP_API_BASE || '').trim();
-      const wpApiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || '').trim();
+      let wpDirectError: string | null = null;
       if (wpApiBase && wpApiKey) {
+        try {
+          const wpRes = await fetch(`${wpApiBase}/wp-json/ktd/v1/bookings/create`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-ktd-api-key': wpApiKey,
+            },
+            body: JSON.stringify({
+              status: 'new',
+              booking_type: itemType,
+              item_title: itemTitle,
+              course_title: itemTitle,
+              name: data.name,
+              email: data.email,
+              phone: data.phone || '',
+              accommodation: data.accommodation || '',
+              preferred_date: data.preferred_date || '',
+              guests: Number.isFinite(guestCount) ? guestCount : 1,
+              experience_level: data.experience_level || '',
+              payment_choice: data.paymentChoice,
+              currency: depositCurrency,
+              deposit_amount: deposit,
+              total_amount: deposit > 0 ? Math.round(deposit / 0.2) : 0,
+              due_amount: deposit > 0 ? Math.round(deposit / 0.2) - deposit : 0,
+              message: data.message || '',
+              booking_source: crmSource,
+            }),
+          });
+          if (!wpRes.ok) {
+            wpDirectError = `WP direct save failed (HTTP ${wpRes.status})`;
+          }
+        } catch (err) {
+          wpDirectError = err instanceof Error ? err.message : 'WP direct save failed';
+        }
+
         queueWordPressCrmSync({
           wpApiBase,
           wpApiKey,
@@ -174,9 +204,16 @@ const InlineCourseBookingForm: React.FC<Props> = ({
         });
       }
 
+      if (dbError) {
+        toast.error(`Booking not saved to WordPress: ${dbError}`);
+      }
+
       if (res.ok && resData.success) {
         if (dbError) {
           toast.warning('Email sent, but booking was not saved to WordPress. Please retry.');
+        }
+        if (wpDirectError) {
+          toast.warning(`WordPress direct save warning: ${wpDirectError}`);
         }
         if (dbResult?.supabase_warning) {
           toast.warning(`WordPress saved. Supabase mirror warning: ${dbResult.supabase_warning}`);

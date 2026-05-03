@@ -72,6 +72,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
     setIsSubmitting(true);
     try {
       const paymentChoice = (data as any).paymentChoice || 'none';
+      const wpApiBase = (import.meta.env.VITE_WP_API_BASE || '').trim().replace(/\/+$/, '');
+      const wpApiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || '').trim();
       const messageBody = `Phone: ${data.phone || 'N/A'}\nPreferred Date: ${data.preferred_date || 'N/A'}\nExperience Level: ${data.experience_level || 'N/A'}\nPayment Option: ${paymentChoice}\n\nMessage:\n${data.message || 'N/A'}`;
 
       // Send to backend notification API
@@ -139,9 +141,48 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
         toast.error(`Booking not saved to WordPress: ${dbError}`);
       }
 
+      let wpDirectError: string | null = null;
+      if (wpApiBase && wpApiKey) {
+        try {
+          const wpRes = await fetch(`${wpApiBase}/wp-json/ktd/v1/bookings/create`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-ktd-api-key': wpApiKey,
+            },
+            body: JSON.stringify({
+              status: 'new',
+              booking_type: itemType,
+              item_title: itemTitle,
+              course_title: itemTitle,
+              name: data.name,
+              email: data.email,
+              phone: data.phone || '',
+              preferred_date: data.preferred_date || '',
+              experience_level: data.experience_level || '',
+              payment_choice: paymentChoice,
+              currency: depositCurrency || 'THB',
+              deposit_amount,
+              total_amount,
+              due_amount,
+              message: data.message || '',
+              booking_source: 'website-form',
+            }),
+          });
+          if (!wpRes.ok) {
+            wpDirectError = `WP direct save failed (HTTP ${wpRes.status})`;
+          }
+        } catch (err) {
+          wpDirectError = err instanceof Error ? err.message : 'WP direct save failed';
+        }
+      }
+
       if (response.ok && responseData.success) {
         if (dbError) {
           toast.warning('Email sent, but booking was not saved to WordPress. Please retry.');
+        }
+        if (wpDirectError) {
+          toast.warning(`WordPress direct save warning: ${wpDirectError}`);
         }
         if (responseData.warning) {
           toast.warning(`Booking saved, but email notification needs attention: ${responseData.warning}`);
@@ -151,8 +192,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
         }
 
         // Fire-and-forget CRM sync
-        const wpApiBase = (import.meta.env.VITE_WP_API_BASE || '').trim();
-        const wpApiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || '').trim();
         if (wpApiBase && wpApiKey) {
           queueWordPressCrmSync({
             wpApiBase,
