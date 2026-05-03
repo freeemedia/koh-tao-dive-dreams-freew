@@ -34,6 +34,8 @@ interface BookingFormProps {
   depositCurrency?: string;
 }
 
+const COURSE_DEPOSIT_RATE = 0.2;
+
 const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, itemTitle, depositMajor, depositCurrency }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const apiBase = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '').trim().replace(/\/+$/, '');
@@ -92,11 +94,14 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
       });
       const responseData = await response.json().catch(() => ({}));
 
-      // Calculate amounts
+      // Calculate totals from a percentage-based deposit model.
       const deposit_amount = typeof depositMajor === 'number' ? depositMajor : 0;
-      // Example: total_amount is deposit * 3, due_amount is total - deposit
-      const total_amount = deposit_amount * 3;
-      const due_amount = total_amount - deposit_amount;
+      const total_amount = deposit_amount > 0
+        ? Math.round(deposit_amount / COURSE_DEPOSIT_RATE)
+        : 0;
+      const due_amount = total_amount > 0
+        ? Math.max(total_amount - deposit_amount, 0)
+        : 0;
 
       // Insert booking into Supabase
       const { error: supaError } = await supabase.from('bookings').insert([

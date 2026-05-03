@@ -111,7 +111,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
     analytics: isDutch ? '📊 Analytics' : '📊 Analytics',
     visa: isDutch ? 'Visum' : 'Visa',
     funDivingHeading: isDutch ? 'Fun diven' : 'Fun diving',
-    funDivingKohTao: isDutch ? 'Fun diven Koh Tao' : 'Fun diving Koh Tao',
+    funDivingKohTao: isDutch ? 'Fun Diving Koh Tao' : 'Fun diving Koh Tao',
     discoverScuba: isDutch ? 'Ontdek Scuba (DSD)' : 'Discover Scuba (DSD)',
     discoverScubaDeluxe: isDutch ? 'Ontdek Scuba Deluxe' : 'Discover Scuba Deluxe',
   };

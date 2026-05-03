@@ -14,7 +14,7 @@ const FunDiving = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const locale = 'nl';
   const fallbackContent = useMemo(() => ({
-    fun_diving_hero_title: 'Fun diven op Koh Tao',
+    fun_diving_hero_title: 'Fun Diving Koh Tao',
     fun_diving_hero_subtitle: 'Beleef het beste van de onderwaterwereld van Koh Tao met onze professioneel begeleide fun duiktrips. Ontdek kleurrijke koraalriffen, ontmoet bijzonder onderwaterleven en maak onvergetelijke herinneringen.',
     fun_diving_hero_cta: 'Ga fun diven op Koh Tao',
     fun_diving_hero_cta2: 'Boek een cursus',
@@ -38,7 +38,12 @@ const FunDiving = () => {
     fun_diving_marine_tab_title: 'Ontdek de onderwaterwereld',
     // ...add more as needed for other tabs
   }), []);
-  const { content } = usePageContent({ pageSlug: 'fun-diving', locale, fallbackContent });
+  const { content: originalContent } = usePageContent({ pageSlug: 'fun-diving', locale, fallbackContent });
+  const content = {
+    ...originalContent,
+    fun_diving_hero_title: 'Fun Diving Koh Tao',
+    fun_diving_hero_subtitle: 'Beleef het beste van de onderwaterwereld van Koh Tao met onze professioneel begeleide fun duiktrips. Ontdek kleurrijke koraalriffen, ontmoet bijzonder onderwaterleven en maak onvergetelijke herinneringen.'
+  };
   const diveSites = [
     {
       name: "Sail Rock",

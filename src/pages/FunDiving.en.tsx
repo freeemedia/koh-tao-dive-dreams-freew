@@ -41,11 +41,11 @@ const FunDiving = () => {
     fun_diving_marine_tab_title: 'Discover the Underwater World',
     // ...add more as needed for other tabs
   }), []);
-  // Force Dutch subtitle regardless of content source
   const { content: originalContent } = usePageContent({ pageSlug: 'fun-diving', locale, fallbackContent });
   const content = {
     ...originalContent,
-    fun_diving_hero_subtitle: 'Beleef het beste van de onderwaterwereld van Koh Tao met onze professioneel begeleide fun duiktrips. Ontdek kleurrijke koraalriffen, ontmoet bijzonder onderwaterleven en maak onvergetelijke herinneringen.'
+    fun_diving_hero_title: 'Fun Diving Koh Tao',
+    fun_diving_hero_subtitle: "Experience the best of Koh Tao's underwater world with our professionally guided fun dive trips. Discover colorful coral reefs, encounter extraordinary marine life, and create unforgettable memories."
   };
   const diveSites = [
     {
