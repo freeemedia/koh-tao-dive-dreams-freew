@@ -82,6 +82,13 @@ class KTD_Booking_Manager {
             'permission_callback' => '__return_true',
         ));
 
+        // Also accept /bookings/create for frontend compatibility
+        register_rest_route('ktd/v1', '/bookings/create', array(
+            'methods' => WP_REST_Server::CREATABLE,
+            'callback' => array($this, 'create_booking'),
+            'permission_callback' => '__return_true',
+        ));
+
         register_rest_route('ktd/v1', '/bookings', array(
             'methods' => WP_REST_Server::READABLE,
             'callback' => array($this, 'list_bookings'),
