@@ -1,4 +1,4 @@
-const CACHE = 'dive-asia-v2';
+const CACHE = 'dive-asia-v3';
 const PRECACHE = [
   '/',
   '/manifest.json',
