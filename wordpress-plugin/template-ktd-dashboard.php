@@ -615,6 +615,9 @@ $logo_url = get_site_icon_url( 64 );
 
   // ── Load bookings ───────────────────────────────────────────────
   let allBookings = [];
+  let filtersBound = false;
+  let dashboardRefreshTimer = null;
+  let dashboardLoading = false;
 
   function statusBadge(status) {
     const s = (status || 'new').toLowerCase().replace(/[^a-z]/g, '');
@@ -741,7 +744,11 @@ $logo_url = get_site_icon_url( 64 );
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  async function loadDashboard() {
+  async function loadDashboard(options = {}) {
+    if (dashboardLoading) return;
+    dashboardLoading = true;
+    const silent = !!options.silent;
+
     try {
       const data = await apiFetch('/bookings?per_page=200&orderby=created_at&order=desc');
       allBookings = Array.isArray(data) ? data : (data.bookings || data.items || []);
@@ -750,22 +757,44 @@ $logo_url = get_site_icon_url( 64 );
       document.getElementById('activity-loading').style.display = 'none';
 
       computeStats(allBookings);
-      renderTable(allBookings);
       renderActivity(allBookings);
+      applyFilters();
 
-      // Attach filter listeners
-      document.getElementById('search-input').addEventListener('input', applyFilters);
-      document.getElementById('status-filter').addEventListener('change', applyFilters);
-      document.getElementById('type-filter').addEventListener('change', applyFilters);
+      if (!filtersBound) {
+        document.getElementById('search-input').addEventListener('input', applyFilters);
+        document.getElementById('status-filter').addEventListener('change', applyFilters);
+        document.getElementById('type-filter').addEventListener('change', applyFilters);
+        filtersBound = true;
+      }
 
     } catch (err) {
       console.error('KTD Dashboard load error:', err);
-      document.getElementById('bookings-loading').innerHTML = '<p style="color:var(--red);padding:20px;">Failed to load bookings. Check console.</p>';
-      document.getElementById('activity-loading').innerHTML = '';
+      if (!silent) {
+        document.getElementById('bookings-loading').innerHTML = '<p style="color:var(--red);padding:20px;">Failed to load bookings. Check console.</p>';
+        document.getElementById('activity-loading').innerHTML = '';
+      }
+    } finally {
+      dashboardLoading = false;
     }
   }
 
   loadDashboard();
+
+  dashboardRefreshTimer = window.setInterval(() => {
+    loadDashboard({ silent: true });
+  }, 30000);
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      loadDashboard({ silent: true });
+    }
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (dashboardRefreshTimer) {
+      clearInterval(dashboardRefreshTimer);
+    }
+  });
 })();
 </script>
 

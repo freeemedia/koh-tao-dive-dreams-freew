@@ -27,6 +27,7 @@ const FunDiveBooking: React.FC<FunDiveBookingProps> = ({ initialSite }) => {
   const [selectedSite, setSelectedSite] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [showNotice, setShowNotice] = useState(false);
+    const [submissionWarning, setSubmissionWarning] = useState<string | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   const availableSites = useMemo(() => {
@@ -109,6 +110,7 @@ const FunDiveBooking: React.FC<FunDiveBookingProps> = ({ initialSite }) => {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onSubmit={data => {
+          setSubmissionWarning(null);
           const payload = {
             name: data.name,
             email: data.email,
@@ -120,11 +122,21 @@ const FunDiveBooking: React.FC<FunDiveBookingProps> = ({ initialSite }) => {
             course_title: selectedSite || 'Fun Dive',
           };
           // Fire-and-forget — backend handles notifications.
+          // Backend saves booking and mirrors to WordPress.
           fetch('/api/bookings', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
-          }).catch(() => {});
+          })
+            .then(async (res) => {
+              const body = await res.json().catch(() => null);
+              if (body?.wp_mirror_warning) {
+                setSubmissionWarning(`Booking saved, but WordPress dashboard sync failed: ${String(body.wp_mirror_warning)}`);
+              }
+            })
+            .catch(() => {
+              setSubmissionWarning('Booking submitted, but sync check failed. Please verify in admin dashboard.');
+            });
           setModalOpen(false);
           setShowConfirmation(true);
           setSelectedSite(null);
@@ -134,6 +146,9 @@ const FunDiveBooking: React.FC<FunDiveBookingProps> = ({ initialSite }) => {
       {showConfirmation && (
         <div className="mt-8 p-5 bg-green-50 border-l-4 border-green-400 text-green-900 rounded-lg shadow text-center">
           <strong>Thank you!</strong> Your booking request has been submitted. We will contact you soon to confirm your dive.
+          {submissionWarning && (
+            <div className="mt-3 text-sm text-amber-800">{submissionWarning}</div>
+          )}
         </div>
       )}
     </div>

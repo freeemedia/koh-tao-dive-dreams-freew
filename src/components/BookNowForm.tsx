@@ -51,37 +51,44 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
       : null;
 
     // Submit via API (saves to Supabase + mirrors to WordPress)
-    // Fire-and-forget: don't wait for response, use timeout, continue regardless
-    Promise.race([
-      fetch('/api/bookings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: form.name,
-          course_title: form.course_title,
-          email: form.email,
-          phone: form.phone,
-          accommodation: form.accommodation_type,
-          preferred_date: form.arrival_date,
-          experience_level: form.diving_experience,
-          payment_choice: payNow ? 'deposit_requested' : 'pending',
-          message: form.message,
-          status: 'new',
-          booking_type: 'course',
-          item_title: form.course_title,
-          selected_price: totalAmount,
-          currency: 'THB',
-          total_amount: totalAmount,
-          deposit_amount: depositAmount,
-          due_amount: dueAmount,
-          booking_source: 'vercel-form',
+    try {
+      const result = await Promise.race([
+        fetch('/api/bookings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: form.name,
+            course_title: form.course_title,
+            email: form.email,
+            phone: form.phone,
+            accommodation: form.accommodation_type,
+            preferred_date: form.arrival_date,
+            experience_level: form.diving_experience,
+            payment_choice: payNow ? 'deposit_requested' : 'pending',
+            message: form.message,
+            status: 'new',
+            booking_type: 'course',
+            item_title: form.course_title,
+            selected_price: totalAmount,
+            currency: 'THB',
+            total_amount: totalAmount,
+            deposit_amount: depositAmount,
+            due_amount: dueAmount,
+            booking_source: 'vercel-form',
+          }),
         }),
-      }),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000)),
-    ]).catch(() => {
-      // Silently fail
-    });
-    // Done immediately; payment/thank-you proceeds
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000)),
+      ]);
+
+      if (result instanceof Response) {
+        const body = await result.json().catch(() => null);
+        if (body?.wp_mirror_warning) {
+          setError(`Booking saved, but WordPress dashboard sync failed: ${String(body.wp_mirror_warning)}`);
+        }
+      }
+    } catch {
+      setError('Booking submitted, but sync check timed out. Please verify in admin.');
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

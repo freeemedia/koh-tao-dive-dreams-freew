@@ -222,6 +222,7 @@ const       BookingPage: React.FC = () => {
       };
 
       let persisted = false;
+      let wpMirrorWarning: string | null = null;
       try {
         const dbRes = await fetch(`${import.meta.env.VITE_API_URL}/api/bookings`, {
           method: 'POST',
@@ -229,6 +230,10 @@ const       BookingPage: React.FC = () => {
           body: JSON.stringify(apiBookingPayload),
         });
         persisted = dbRes.ok;
+        const dbJson = await dbRes.json().catch(() => null);
+        if (dbRes.ok && dbJson?.wp_mirror_warning) {
+          wpMirrorWarning = String(dbJson.wp_mirror_warning);
+        }
       } catch (dbErr) {
         console.warn('Booking persistence failed; continuing with email flow.', dbErr);
       }
@@ -343,6 +348,8 @@ const       BookingPage: React.FC = () => {
       if (res.ok && responseData.success) {
         if (responseData.warning) {
           toast.warning(`Booking saved, but email notification needs attention: ${responseData.warning}`);
+        } else if (wpMirrorWarning) {
+          toast.warning(`Inquiry saved, but WordPress booking sync failed: ${wpMirrorWarning}`);
         } else if (wpApiBase && wpApiKey && !wpSaved) {
           toast.warning('Inquiry sent, but WordPress booking storage failed.');
         }
