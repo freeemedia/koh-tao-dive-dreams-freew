@@ -25,15 +25,12 @@ const Admin = () => {
           <div className="absolute right-6 top-4">
             <LanguageSwitcher />
           </div>
-          <p className="text-xs uppercase tracking-[0.2em] text-cyan-300">Legacy Tools</p>
-          <h1 className="text-3xl font-bold tracking-wide">{t('admin.dashboard_title', { defaultValue: 'Legacy Admin Tools' })}</h1>
+          <p className="text-xs uppercase tracking-[0.2em] text-cyan-300">Operations Console</p>
+          <h1 className="text-3xl font-bold tracking-wide">{t('admin.dashboard_title', { defaultValue: 'Admin Dashboard' })}</h1>
         </div>
       </header>
 
       <div className="mx-auto w-full max-w-[1400px] px-6 py-6">
-        <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 shadow-sm">
-          The real bookings back office is now WordPress. This page is kept only for legacy content and project tools.
-        </div>
         <div className="mb-6 grid gap-4 md:grid-cols-2">
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <p className="text-xs uppercase tracking-wide text-slate-500">Content</p>
@@ -63,13 +60,22 @@ const Admin = () => {
           </nav>
           <div className="flex items-center gap-2">
             <a
+              href="https://lightsalmon-dinosaur-377714.hostingersite.com/ktd-dashboard/"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-green-200 bg-green-50 px-4 py-2 text-sm font-semibold text-green-700 shadow-sm transition hover:bg-green-100"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+              KTD Dashboard
+            </a>
+            <a
               href="https://lightsalmon-dinosaur-377714.hostingersite.com/wp-admin"
               target="_blank"
               rel="noreferrer noopener"
               className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700 shadow-sm transition hover:bg-blue-100"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg>
-              WordPress bookings
+              WP Admin
             </a>
             <a
               href="/"
