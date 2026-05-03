@@ -1,0 +1,426 @@
+[
+  {
+    "title": "Diving Booking & Enquiry Form",
+    "form_fields": {
+      "fields": [
+        {
+          "index": 0,
+          "uniqElKey": "el_input_name",
+          "element": "input_name",
+          "attributes": {
+            "name": "names",
+            "data-type": "input_name",
+            "id": "ff_name",
+            "class": "ff-el-group"
+          },
+          "settings": {
+            "container_class": "",
+            "label": "Full Name",
+            "help_message": "",
+            "name_fields": {
+              "first_name": {
+                "required": "yes",
+                "placeholder": "First Name",
+                "label": "First Name",
+                "sub_title": "",
+                "visible": "yes"
+              },
+              "middle_name": {
+                "required": "no",
+                "placeholder": "Middle Name",
+                "label": "Middle Name",
+                "sub_title": "",
+                "visible": "no"
+              },
+              "last_name": {
+                "required": "yes",
+                "placeholder": "Last Name",
+                "label": "Last Name",
+                "sub_title": "",
+                "visible": "yes"
+              }
+            },
+            "label_placement": "",
+            "admin_field_label": "Full Name",
+            "validation_rules": {
+              "first_name": {
+                "required": {
+                  "value": true,
+                  "message": "First name is required"
+                }
+              },
+              "last_name": {
+                "required": {
+                  "value": true,
+                  "message": "Last name is required"
+                }
+              }
+            },
+            "conditional_logics": []
+          }
+        },
+        {
+          "index": 1,
+          "uniqElKey": "el_input_email",
+          "element": "input_email",
+          "attributes": {
+            "type": "email",
+            "name": "email",
+            "placeholder": "your@email.com",
+            "id": "ff_email",
+            "class": "ff-el-form-control"
+          },
+          "settings": {
+            "container_class": "",
+            "label": "Email Address",
+            "placeholder": "your@email.com",
+            "help_message": "",
+            "label_placement": "",
+            "admin_field_label": "Email",
+            "validation_rules": {
+              "required": {
+                "value": true,
+                "message": "Email is required"
+              },
+              "email": {
+                "value": true,
+                "message": "Please enter a valid email address"
+              }
+            },
+            "conditional_logics": []
+          }
+        },
+        {
+          "index": 2,
+          "uniqElKey": "el_phone",
+          "element": "phone",
+          "attributes": {
+            "type": "text",
+            "name": "phone_number",
+            "placeholder": "+66 123 456 789",
+            "id": "ff_phone",
+            "class": "ff-el-form-control"
+          },
+          "settings": {
+            "container_class": "",
+            "label": "Phone Number",
+            "placeholder": "+66 123 456 789",
+            "help_message": "",
+            "label_placement": "",
+            "admin_field_label": "Phone",
+            "validation_rules": {
+              "required": {
+                "value": false,
+                "message": ""
+              }
+            },
+            "conditional_logics": []
+          }
+        },
+        {
+          "index": 3,
+          "uniqElKey": "el_nationality",
+          "element": "input_text",
+          "attributes": {
+            "type": "text",
+            "name": "nationality",
+            "placeholder": "e.g. British, Dutch, Thai",
+            "id": "ff_nationality",
+            "class": "ff-el-form-control"
+          },
+          "settings": {
+            "container_class": "",
+            "label": "Nationality",
+            "placeholder": "e.g. British, Dutch, Thai",
+            "help_message": "",
+            "label_placement": "",
+            "admin_field_label": "Nationality",
+            "validation_rules": {
+              "required": {
+                "value": false,
+                "message": ""
+              }
+            },
+            "conditional_logics": []
+          }
+        },
+        {
+          "index": 4,
+          "uniqElKey": "el_select_course",
+          "element": "select",
+          "attributes": {
+            "name": "course_or_dive",
+            "id": "ff_course_or_dive",
+            "class": "ff-el-form-control"
+          },
+          "settings": {
+            "container_class": "",
+            "label": "What would you like to book?",
+            "placeholder": "Select...",
+            "help_message": "",
+            "admin_field_label": "Booking Type",
+            "label_placement": "",
+            "validation_rules": {
+              "required": {
+                "value": true,
+                "message": "Please select what you would like to book"
+              }
+            },
+            "advanced_options": [
+              { "label": "PADI Open Water Course \u2014 \u0e3f11,500", "value": "PADI Open Water Course" },
+              { "label": "PADI Advanced Open Water \u2014 \u0e3f10,500", "value": "PADI Advanced Open Water Course" },
+              { "label": "PADI Rescue Diver \u2014 \u0e3f10,000", "value": "PADI Rescue Diver Course" },
+              { "label": "PADI Divemaster \u2014 \u0e3f41,000", "value": "PADI Divemaster Course" },
+              { "label": "PADI IDC (Instructor Development Course)", "value": "PADI IDC" },
+              { "label": "PADI Scuba Diver \u2014 \u0e3f8,500", "value": "PADI Scuba Diver Course" },
+              { "label": "Discover Scuba Diving \u2014 \u0e3f2,500", "value": "Discover Scuba Diving" },
+              { "label": "Discover Scuba Deluxe \u2014 \u0e3f5,000", "value": "Discover Scuba Deluxe" },
+              { "label": "Emergency First Response \u2014 \u0e3f4,500", "value": "Emergency First Response" },
+              { "label": "PADI Wreck Diver Specialty \u2014 \u0e3f8,000", "value": "PADI Wreck Diver Specialty" },
+              { "label": "PADI Deep Diver Specialty \u2014 \u0e3f8,000", "value": "PADI Deep Diver Specialty" },
+              { "label": "PADI Night Diver Specialty \u2014 \u0e3f8,000", "value": "PADI Night Diver Specialty" },
+              { "label": "Enriched Air (Nitrox) \u2014 \u0e3f8,000", "value": "PADI Enriched Air Diver Specialty" },
+              { "label": "3 Specialty Bundle \u2014 \u0e3f18,000", "value": "3 Specialty Bundle" },
+              { "label": "Fun Dive (1 dive) \u2014 \u0e3f1,000", "value": "Fun Dive x1" },
+              { "label": "Fun Dives (2\u20139 dives) \u2014 \u0e3f900/dive", "value": "Fun Dives x2-9" },
+              { "label": "Fun Dives (10+ dives) \u2014 \u0e3f800/dive", "value": "Fun Dives x10+" },
+              { "label": "Other / Ask us", "value": "General Enquiry" }
+            ],
+            "conditional_logics": []
+          }
+        },
+        {
+          "index": 5,
+          "uniqElKey": "el_select_experience",
+          "element": "select",
+          "attributes": {
+            "name": "experience_level",
+            "id": "ff_experience",
+            "class": "ff-el-form-control"
+          },
+          "settings": {
+            "container_class": "",
+            "label": "Diving Experience Level",
+            "placeholder": "Select your experience...",
+            "help_message": "",
+            "admin_field_label": "Experience Level",
+            "label_placement": "",
+            "validation_rules": {
+              "required": {
+                "value": false,
+                "message": ""
+              }
+            },
+            "advanced_options": [
+              { "label": "No diving experience (complete beginner)", "value": "none" },
+              { "label": "Beginner (1\u201310 dives)", "value": "beginner" },
+              { "label": "Intermediate (10\u201350 dives)", "value": "intermediate" },
+              { "label": "Advanced (50+ dives)", "value": "advanced" },
+              { "label": "Professional diver", "value": "professional" }
+            ],
+            "conditional_logics": []
+          }
+        },
+        {
+          "index": 6,
+          "uniqElKey": "el_input_date",
+          "element": "input_date",
+          "attributes": {
+            "name": "preferred_date",
+            "id": "ff_preferred_date",
+            "class": "ff-el-form-control"
+          },
+          "settings": {
+            "container_class": "",
+            "label": "Preferred Start Date",
+            "placeholder": "",
+            "help_message": "Approximate date is fine \u2014 we will confirm availability.",
+            "admin_field_label": "Preferred Date",
+            "label_placement": "",
+            "date_config": {
+              "dateFormat": "Y-m-d",
+              "disableMobile": "false",
+              "minDate": "today",
+              "maxDate": ""
+            },
+            "validation_rules": {
+              "required": {
+                "value": false,
+                "message": ""
+              }
+            },
+            "conditional_logics": []
+          }
+        },
+        {
+          "index": 7,
+          "uniqElKey": "el_accommodation",
+          "element": "input_text",
+          "attributes": {
+            "type": "text",
+            "name": "accommodation",
+            "placeholder": "Hotel name, area on Koh Tao, or 'need accommodation'",
+            "id": "ff_accommodation",
+            "class": "ff-el-form-control"
+          },
+          "settings": {
+            "container_class": "",
+            "label": "Accommodation",
+            "placeholder": "Hotel name, area on Koh Tao, or 'need accommodation'",
+            "help_message": "Let us know where you're staying, or if you need us to arrange it.",
+            "admin_field_label": "Accommodation",
+            "label_placement": "",
+            "validation_rules": {
+              "required": {
+                "value": false,
+                "message": ""
+              }
+            },
+            "conditional_logics": []
+          }
+        },
+        {
+          "index": 8,
+          "uniqElKey": "el_select_group",
+          "element": "select",
+          "attributes": {
+            "name": "group_size",
+            "id": "ff_group_size",
+            "class": "ff-el-form-control"
+          },
+          "settings": {
+            "container_class": "",
+            "label": "Group Size",
+            "placeholder": "How many people?",
+            "help_message": "",
+            "admin_field_label": "Group Size",
+            "label_placement": "",
+            "validation_rules": {
+              "required": {
+                "value": false,
+                "message": ""
+              }
+            },
+            "advanced_options": [
+              { "label": "1 person (solo)", "value": "1" },
+              { "label": "2 people", "value": "2" },
+              { "label": "3 people", "value": "3" },
+              { "label": "4 people", "value": "4" },
+              { "label": "5 people", "value": "5" },
+              { "label": "6+ people (group)", "value": "6+" }
+            ],
+            "conditional_logics": []
+          }
+        },
+        {
+          "index": 9,
+          "uniqElKey": "el_select_payment",
+          "element": "select",
+          "attributes": {
+            "name": "payment_preference",
+            "id": "ff_payment",
+            "class": "ff-el-form-control"
+          },
+          "settings": {
+            "container_class": "",
+            "label": "Payment Preference",
+            "placeholder": "Select...",
+            "help_message": "",
+            "admin_field_label": "Payment Preference",
+            "label_placement": "",
+            "validation_rules": {
+              "required": {
+                "value": false,
+                "message": ""
+              }
+            },
+            "advanced_options": [
+              { "label": "Pay deposit now (PayPal)", "value": "paypal-deposit" },
+              { "label": "Inquire only \u2014 pay later / on arrival", "value": "inquire" }
+            ],
+            "conditional_logics": []
+          }
+        },
+        {
+          "index": 10,
+          "uniqElKey": "el_textarea",
+          "element": "textarea",
+          "attributes": {
+            "name": "message",
+            "placeholder": "Any questions, special requests, or extra details...",
+            "id": "ff_message",
+            "class": "ff-el-form-control",
+            "rows": 4
+          },
+          "settings": {
+            "container_class": "",
+            "label": "Message / Additional Notes",
+            "placeholder": "Any questions, special requests, or extra details...",
+            "help_message": "",
+            "admin_field_label": "Message",
+            "label_placement": "",
+            "validation_rules": {
+              "required": {
+                "value": false,
+                "message": ""
+              }
+            },
+            "conditional_logics": []
+          }
+        }
+      ],
+      "submitButton": {
+        "uniqElKey": "ff_submit",
+        "element": "button",
+        "attributes": {
+          "type": "submit"
+        },
+        "settings": {
+          "align": "left",
+          "button_style": "default",
+          "container_class": "",
+          "help_message": "",
+          "button_size": "md",
+          "button_ui": {
+            "type": "default",
+            "text": "Send Booking Enquiry",
+            "img_url": ""
+          },
+          "conditional_logics": []
+        }
+      }
+    },
+    "form_settings": {
+      "confirmation": {
+        "redirectTo": "samePage",
+        "messageToShow": "Thank you! Your booking enquiry has been received. We\u2019ll be in touch within 24 hours. \u2014 Pro Diving Asia Team",
+        "customPage": null,
+        "samePageFormBehavior": "hide_form"
+      },
+      "restrictions": {
+        "scheduleForm": {
+          "isOn": false
+        },
+        "limitNumberOfEntries": {
+          "isOn": false
+        },
+        "requireLogin": {
+          "isOn": false
+        }
+      },
+      "layout": {
+        "asteriskPlacement": "asterisk-right"
+      }
+    },
+    "notifications": [
+      {
+        "name": "Admin Notification",
+        "subject": "New Booking Enquiry: {inputs.course_or_dive}",
+        "to": "{wp.admin_email}",
+        "replyTo": "{inputs.email}",
+        "message": "<p>New booking enquiry received:</p><p><strong>Name:</strong> {inputs.names.first_name} {inputs.names.last_name}<br><strong>Email:</strong> {inputs.email}<br><strong>Phone:</strong> {inputs.phone_number}<br><strong>Nationality:</strong> {inputs.nationality}<br><strong>Booking:</strong> {inputs.course_or_dive}<br><strong>Experience:</strong> {inputs.experience_level}<br><strong>Preferred Date:</strong> {inputs.preferred_date}<br><strong>Accommodation:</strong> {inputs.accommodation}<br><strong>Group Size:</strong> {inputs.group_size}<br><strong>Payment:</strong> {inputs.payment_preference}<br><strong>Message:</strong> {inputs.message}</p>",
+        "enabled": true
+      }
+    ]
+  }
+]
