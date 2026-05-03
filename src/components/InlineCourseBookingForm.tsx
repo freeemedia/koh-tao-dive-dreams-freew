@@ -10,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
-import { supabase } from '@/lib/supabase';
 import { queueWordPressCrmSync } from '@/lib/wordpressCrmSync';
 
 const schema = z.object({
@@ -99,25 +98,46 @@ const InlineCourseBookingForm: React.FC<Props> = ({
       });
       const resData = await res.json().catch(() => ({}));
 
-      // Persist to Supabase
-      await supabase.from('bookings').insert([{
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        preferred_date: data.preferred_date,
-        experience_level: data.experience_level,
-        message: data.message,
-        payment_choice: data.paymentChoice,
-        item_type: itemType,
-        course_title: itemTitle,
-        created_at: new Date().toISOString(),
-        status: 'pending',
-        deposit_amount: deposit,
-        total_amount: deposit > 0 ? Math.round(deposit / 0.2) : 0,
-        due_amount: deposit > 0 ? Math.round(deposit / 0.2) - deposit : 0,
-      }]).then(({ error }) => {
-        if (error) console.warn('Supabase insert error:', error);
-      });
+      // Persist booking through API so WordPress `ktd_bookings` is updated.
+      let dbResult: any = null;
+      let dbError: string | null = null;
+      try {
+        const dbRes = await fetch(apiUrl('/api/bookings'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            accommodation: data.accommodation,
+            preferred_date: data.preferred_date,
+            experience_level: data.experience_level,
+            message: data.message,
+            payment_choice: data.paymentChoice,
+            item_type: itemType,
+            booking_type: itemType,
+            item_title: itemTitle,
+            course_title: itemTitle,
+            status: 'pending',
+            guests: Number.isFinite(guestCount) ? guestCount : 1,
+            deposit_amount: deposit,
+            total_amount: deposit > 0 ? Math.round(deposit / 0.2) : 0,
+            due_amount: deposit > 0 ? Math.round(deposit / 0.2) - deposit : 0,
+            booking_source: crmSource,
+            currency: depositCurrency,
+          }),
+        });
+        dbResult = await dbRes.json().catch(() => ({}));
+        if (!dbRes.ok) {
+          dbError = dbResult?.error || `HTTP ${dbRes.status}`;
+        }
+      } catch (err) {
+        dbError = err instanceof Error ? err.message : 'Booking persistence failed';
+      }
+
+      if (dbError) {
+        toast.error(`Booking not saved to WordPress: ${dbError}`);
+      }
 
       // CRM sync
       const wpApiBase = (import.meta.env.VITE_WP_API_BASE || '').trim();
@@ -155,6 +175,12 @@ const InlineCourseBookingForm: React.FC<Props> = ({
       }
 
       if (res.ok && resData.success) {
+        if (dbError) {
+          toast.warning('Email sent, but booking was not saved to WordPress. Please retry.');
+        }
+        if (dbResult?.supabase_warning) {
+          toast.warning(`WordPress saved. Supabase mirror warning: ${dbResult.supabase_warning}`);
+        }
         setSubmittedEmail(data.email);
         setSubmitted(true);
         form.reset();

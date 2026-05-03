@@ -224,15 +224,18 @@ const       BookingPage: React.FC = () => {
       let persisted = false;
       let wpMirrorWarning: string | null = null;
       try {
-        const dbRes = await fetch(`${import.meta.env.VITE_API_URL}/api/bookings`, {
+        const dbRes = await fetch(apiUrl('/api/bookings'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(apiBookingPayload),
         });
         persisted = dbRes.ok;
         const dbJson = await dbRes.json().catch(() => null);
-        if (dbRes.ok && dbJson?.wp_mirror_warning) {
-          wpMirrorWarning = String(dbJson.wp_mirror_warning);
+        if (dbRes.ok && dbJson?.supabase_warning) {
+          wpMirrorWarning = String(dbJson.supabase_warning);
+        }
+        if (!dbRes.ok && dbJson?.error) {
+          wpMirrorWarning = String(dbJson.error);
         }
       } catch (dbErr) {
         console.warn('Booking persistence failed; continuing with email flow.', dbErr);

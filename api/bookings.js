@@ -10,6 +10,14 @@ function getSupabaseAdmin() {
   return createClient(url, key);
 }
 
+function tryGetSupabaseAdmin() {
+  try {
+    return getSupabaseAdmin();
+  } catch {
+    return null;
+  }
+}
+
 function parseBody(req) {
   if (!req || req.body == null) return {};
   if (typeof req.body === 'string') {
@@ -270,8 +278,6 @@ export default async function handler(req, res) {
       return res.status(200).end();
     }
 
-    const supabase = getSupabaseAdmin();
-
     if (req.method === 'GET') {
       // WordPress is primary when configured (matches migrated WP tables).
       try {
@@ -281,6 +287,11 @@ export default async function handler(req, res) {
         }
       } catch (wpError) {
         console.warn('WordPress bookings fetch failed, falling back to Supabase:', wpError);
+      }
+
+      const supabase = tryGetSupabaseAdmin();
+      if (!supabase) {
+        return res.status(500).json({ error: 'WordPress fetch failed and Supabase is not configured.' });
       }
 
       const { data, error } = await supabase
@@ -301,25 +312,36 @@ export default async function handler(req, res) {
           ? globalThis.crypto.randomUUID()
           : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
         const payload = normalizeBookingPayload({ id: generatedId, ...rest }, { includeId: true });
-        const supabasePayload = toSupabasePayload(payload);
 
-        const { data, error } = await supabase
-          .from('bookings')
-          .insert(supabasePayload)
-          .select();
+        // WordPress is the source of truth: creation must succeed here first.
+        let wpMirrorResult = null;
+        try {
+          wpMirrorResult = await mirrorBookingToWordPress(payload);
+          if (wpMirrorResult && wpMirrorResult.ok === false) {
+            return res.status(502).json({ error: `WordPress booking create skipped: ${wpMirrorResult.reason || 'unknown reason'}` });
+          }
+        } catch (err) {
+          const message = err instanceof Error ? err.message : 'WordPress booking create failed';
+          return res.status(502).json({ error: message });
+        }
 
-        if (error) return res.status(500).json({ error: error.message });
+        let supabaseWriteWarning = null;
+        let created = null;
+        const supabase = tryGetSupabaseAdmin();
+        if (supabase) {
+          const supabasePayload = toSupabasePayload(payload);
+          const { data, error } = await supabase
+            .from('bookings')
+            .insert(supabasePayload)
+            .select();
 
-        // Keep Supabase as primary storage; report mirror failures without failing booking creation.
-        let wpMirrorWarning = null;
-        const wpMirrorResult = await mirrorBookingToWordPress(payload).catch((err) => {
-          wpMirrorWarning = err instanceof Error ? err.message : 'WordPress mirror failed';
-          console.error('WordPress mirror error:', wpMirrorWarning);
-          return null;
-        });
-        if (!wpMirrorWarning && wpMirrorResult && wpMirrorResult.ok === false) {
-          wpMirrorWarning = `WordPress mirror skipped: ${wpMirrorResult.reason || 'unknown reason'}`;
-          console.warn('WordPress mirror skipped:', wpMirrorWarning);
+          if (error) {
+            supabaseWriteWarning = error.message;
+          } else {
+            created = Array.isArray(data) ? data[0] : data;
+          }
+        } else {
+          supabaseWriteWarning = 'Supabase not configured; skipped secondary write.';
         }
 
         // Best effort email notification for new bookings.
@@ -328,20 +350,20 @@ export default async function handler(req, res) {
           item_title: payload.course_title || payload.item_title,
         }).catch(() => {});
 
-        const created = Array.isArray(data) ? data[0] : data;
-        if (wpMirrorWarning) {
-          return res.status(201).json({
-            ...created,
-            wp_mirror_warning: wpMirrorWarning,
-            wp_mirror_endpoint: wpMirrorResult?.endpoint || null,
-            wp_mirror_id: wpMirrorResult?.id || null,
-          });
-        }
-        return res.status(201).json({
-          ...created,
+        const responsePayload = {
+          ...(created || payload),
           wp_mirror_endpoint: wpMirrorResult?.endpoint || null,
           wp_mirror_id: wpMirrorResult?.id || null,
-        });
+        };
+
+        if (supabaseWriteWarning) {
+          return res.status(201).json({
+            ...responsePayload,
+            supabase_warning: supabaseWriteWarning,
+          });
+        }
+
+        return res.status(201).json(responsePayload);
       }
 
       if (Object.keys(rest).length === 0) {
@@ -351,6 +373,11 @@ export default async function handler(req, res) {
       const updates = normalizeBookingPayload(rest);
       if (Object.keys(updates).length === 0) {
         return res.status(400).json({ error: 'No valid fields to update' });
+      }
+
+      const supabase = tryGetSupabaseAdmin();
+      if (!supabase) {
+        return res.status(500).json({ error: 'Supabase is not configured for updates.' });
       }
 
       const { data, error } = await supabase
@@ -366,6 +393,11 @@ export default async function handler(req, res) {
     if (req.method === 'DELETE') {
       const id = req.query?.id || (parseBody(req) || {}).id;
       if (!id) return res.status(400).json({ error: 'Missing booking id' });
+
+      const supabase = tryGetSupabaseAdmin();
+      if (!supabase) {
+        return res.status(500).json({ error: 'Supabase is not configured for deletes.' });
+      }
 
       const { error } = await supabase
         .from('bookings')

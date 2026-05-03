@@ -10,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
-import { supabase } from '@/lib/supabase';
 import { queueWordPressCrmSync } from '@/lib/wordpressCrmSync';
 
 const bookingSchema = z.object({
@@ -103,33 +102,52 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
         ? Math.max(total_amount - deposit_amount, 0)
         : 0;
 
-      // Insert booking into Supabase
-      const { error: supaError } = await supabase.from('bookings').insert([
-        {
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          preferred_date: data.preferred_date,
-          experience_level: data.experience_level,
-          message: data.message,
-          payment_choice: paymentChoice,
-          item_type: itemType,
-          course_title: itemTitle,
-          created_at: new Date().toISOString(),
-          status: 'pending',
-          deposit_amount,
-          total_amount,
-          due_amount,
+      // Persist booking through API so WordPress `ktd_bookings` is updated.
+      let dbResult: any = null;
+      let dbError: string | null = null;
+      try {
+        const dbRes = await fetch(apiUrl('/api/bookings'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            preferred_date: data.preferred_date,
+            experience_level: data.experience_level,
+            message: data.message,
+            payment_choice: paymentChoice,
+            item_type: itemType,
+            course_title: itemTitle,
+            status: 'pending',
+            booking_type: itemType,
+            item_title: itemTitle,
+            deposit_amount,
+            total_amount,
+            due_amount,
+          }),
+        });
+        dbResult = await dbRes.json().catch(() => ({}));
+        if (!dbRes.ok) {
+          dbError = dbResult?.error || `HTTP ${dbRes.status}`;
         }
-      ]);
-      if (supaError) {
-        console.error('Supabase insert error:', supaError);
-        toast.error('Booking saved to email, but not to admin database.');
+      } catch (err) {
+        dbError = err instanceof Error ? err.message : 'Booking persistence failed';
+      }
+
+      if (dbError) {
+        toast.error(`Booking not saved to WordPress: ${dbError}`);
       }
 
       if (response.ok && responseData.success) {
+        if (dbError) {
+          toast.warning('Email sent, but booking was not saved to WordPress. Please retry.');
+        }
         if (responseData.warning) {
           toast.warning(`Booking saved, but email notification needs attention: ${responseData.warning}`);
+        }
+        if (dbResult?.supabase_warning) {
+          toast.warning(`WordPress saved. Supabase mirror warning: ${dbResult.supabase_warning}`);
         }
 
         // Fire-and-forget CRM sync
