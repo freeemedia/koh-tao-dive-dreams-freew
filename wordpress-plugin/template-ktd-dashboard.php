@@ -252,6 +252,24 @@ if ( ! current_user_can( 'manage_options' ) ) {
     .badge-confirmed{ background: rgba(16,185,129,.18); color: var(--green); }
     .badge-cancelled{ background: rgba(239,68,68,.18);  color: var(--red); }
     .badge-completed{ background: rgba(59,130,246,.18); color: var(--blue); }
+    /* Payment status badges */
+    .pay-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .pay-unpaid   { background: rgba(239,68,68,.15);   color: var(--red); }
+    .pay-invoiced { background: rgba(245,158,11,.15);  color: var(--yellow); }
+    .pay-paid     { background: rgba(16,185,129,.15);  color: var(--green); }
+    /* Invoice modal */
+    .ktd-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:1000; align-items:center; justify-content:center; }
+    .ktd-modal-overlay.open { display:flex; }
+    .ktd-modal { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:28px; width:420px; max-width:95vw; }
+    .ktd-modal h3 { font-size:16px; font-weight:700; margin-bottom:16px; }
+    .ktd-modal label { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; font-weight:600; }
+    .ktd-modal input, .ktd-modal textarea { width:100%; background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:8px 12px; font-size:13px; margin-bottom:14px; outline:none; }
+    .ktd-modal input:focus, .ktd-modal textarea:focus { border-color:var(--accent); }
+    .ktd-modal .modal-actions { display:flex; gap:10px; margin-top:4px; }
+    .ktd-modal .modal-actions button { flex:1; }
+    .ktd-modal .modal-note { font-size:11px; color:var(--muted); margin-bottom:14px; line-height:1.5; }
+    .invoice-btn { background:var(--surface2); border:1px solid var(--border); color:var(--text); border-radius:5px; padding:3px 8px; font-size:11px; cursor:pointer; transition:border-color .15s; white-space:nowrap; }
+    .invoice-btn:hover { border-color:var(--accent); color:var(--accent); }
 
     /* ── Quick actions ── */
     .quick-actions { display: flex; flex-direction: column; gap: 8px; padding: 16px; }
@@ -512,9 +530,11 @@ $logo_url = get_site_icon_url( 64 );
                       <th>Course / Activity</th>
                       <th>Date</th>
                       <th>Status</th>
+                      <th>Payment</th>
                       <th>Deposit</th>
                       <th>Total</th>
                       <th>Source</th>
+                      <th>Invoice</th>
                       <th>Notes</th>
                     </tr>
                   </thead>
@@ -711,7 +731,24 @@ $logo_url = get_site_icon_url( 64 );
           <input class="ktd-edit" data-id="${b.id}" data-field="total_amount" value="${b.total_amount||''}"
             style="width:80px;" placeholder="0" />
         </td>
+        <td>
+          ${payBadge(b.payment_status)}
+        </td>
+        <td>
+          <input class="ktd-edit" data-id="${b.id}" data-field="deposit_amount" value="${b.deposit_amount||''}"
+            style="width:80px;" placeholder="0" />
+        </td>
+        <td>
+          <input class="ktd-edit" data-id="${b.id}" data-field="total_amount" value="${b.total_amount||''}"
+            style="width:80px;" placeholder="0" />
+        </td>
         <td style="font-size:11px;color:var(--muted);">${escHtml(b.booking_source || '—')}</td>
+        <td>
+          <button class="invoice-btn" data-id="${b.id}" data-name="${escHtml(b.name||'')}" data-email="${escHtml(b.email||'')}"
+            data-total="${b.total_amount||''}" data-deposit="${b.deposit_amount||''}"
+            title="Send payment link via Mollie">💳 Invoice</button>
+          ${b.payment_link_url ? `<a href="${escHtml(b.payment_link_url)}" target="_blank" style="font-size:10px;color:var(--accent);display:block;margin-top:4px;">🔗 link</a>` : ''}
+        </td>
         <td style="min-width:160px;">
           <textarea class="ktd-notes-input" data-id="${b.id}" rows="2"
             style="width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:11px;resize:none;"
@@ -774,7 +811,92 @@ $logo_url = get_site_icon_url( 64 );
         }
       });
     });
+
+    // Invoice button → open modal
+    tbody.querySelectorAll('.invoice-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const modal = document.getElementById('invoice-modal');
+        modal.dataset.bookingId    = this.dataset.id;
+        modal.dataset.customerEmail = this.dataset.email;
+        modal.dataset.customerName  = this.dataset.name;
+        document.getElementById('inv-name').value  = this.dataset.name  || '';
+        document.getElementById('inv-email').value = this.dataset.email || '';
+        const tot = parseFloat(this.dataset.total);
+        document.getElementById('inv-amount').value = !isNaN(tot) && tot > 0
+          ? (tot / 34).toFixed(2)  // rough THB→EUR if total stored in THB
+          : '';
+        document.getElementById('inv-desc').value = `Diving in Asia — Booking #${this.dataset.id}`;
+        document.getElementById('inv-result').style.display = 'none';
+        document.getElementById('invoice-modal').classList.add('open');
+      });
+    });
   }
+
+  // Close modal on overlay click
+  document.addEventListener('click', function(e) {
+    if (e.target.id === 'invoice-modal') {
+      document.getElementById('invoice-modal').classList.remove('open');
+    }
+  });
+
+  // Send invoice
+  document.getElementById('inv-send-btn')?.addEventListener('click', async function() {
+    const modal      = document.getElementById('invoice-modal');
+    const booking_id = modal.dataset.bookingId;
+    const email      = document.getElementById('inv-email').value.trim();
+    const name       = document.getElementById('inv-name').value.trim();
+    const amount_eur = parseFloat(document.getElementById('inv-amount').value);
+    const description = document.getElementById('inv-desc').value.trim();
+    const resultEl   = document.getElementById('inv-result');
+
+    if (!email || isNaN(amount_eur) || amount_eur <= 0) {
+      resultEl.style.display = 'block';
+      resultEl.style.color   = 'var(--red)';
+      resultEl.textContent   = 'Please fill in email and a valid EUR amount.';
+      return;
+    }
+
+    this.disabled    = true;
+    this.textContent = 'Sending…';
+
+    try {
+      const resp = await fetch('https://www.divinginasia.com/api/mollie-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-view-token': '<?php echo esc_js(defined("KTD_VIEW_TOKEN") ? KTD_VIEW_TOKEN : "liveyourlifeinparadise"); ?>',
+        },
+        body: JSON.stringify({ booking_id, amount_eur, description, customer_email: email, customer_name: name }),
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.url) throw new Error(data.error || 'Failed to create payment link');
+
+      // Update local booking cache
+      const bk = allBookings.find(b => String(b.id) === String(booking_id));
+      if (bk) { bk.payment_status = 'invoiced'; bk.payment_link_url = data.url; }
+
+      // Open mailto with payment link
+      const subject = encodeURIComponent(description);
+      const body    = encodeURIComponent(
+        `Hi ${name},\n\nThank you for booking with Diving in Asia!\n\nPlease complete your payment of €${amount_eur.toFixed(2)} using the secure link below:\n\n${data.url}\n\nThis link supports iDEAL, credit card, PayPal and more.\n\nIf you have any questions, feel free to reply to this email.\n\nSee you underwater!\nThe Diving in Asia Team`
+      );
+      window.open(`mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`, '_blank');
+
+      resultEl.style.display = 'block';
+      resultEl.style.color   = 'var(--green)';
+      resultEl.innerHTML     = `✅ Payment link created! <a href="${data.url}" target="_blank" style="color:var(--accent);">Open link</a><br><small style="color:var(--muted)">Email draft opened. Paste the link if needed.</small>`;
+
+      // Refresh table row badge
+      renderBookings(allBookings);
+    } catch(err) {
+      resultEl.style.display = 'block';
+      resultEl.style.color   = 'var(--red)';
+      resultEl.textContent   = '❌ ' + err.message;
+    } finally {
+      this.disabled    = false;
+      this.textContent = '💳 Send Invoice';
+    }
+  });
 
   function renderActivity(bookings) {
     const list  = document.getElementById('activity-list');
@@ -838,6 +960,13 @@ $logo_url = get_site_icon_url( 64 );
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  function payBadge(status) {
+    const s = (status || 'unpaid').toLowerCase();
+    const labels = { unpaid: '⬜ Unpaid', invoiced: '🟡 Invoiced', paid: '✅ Paid' };
+    const cls    = { unpaid: 'pay-unpaid', invoiced: 'pay-invoiced', paid: 'pay-paid' };
+    return `<span class="pay-badge ${cls[s]||'pay-unpaid'}">${labels[s]||s}</span>`;
+  }
+
   async function loadDashboard(options = {}) {
     if (dashboardLoading) return;
     dashboardLoading = true;
@@ -891,6 +1020,27 @@ $logo_url = get_site_icon_url( 64 );
   });
 })();
 </script>
+
+<!-- Invoice / Mollie payment link modal -->
+<div class="ktd-modal-overlay" id="invoice-modal">
+  <div class="ktd-modal">
+    <h3>💳 Send Payment Invoice</h3>
+    <p class="modal-note">Creates a secure Mollie payment link (iDEAL, card, PayPal) and opens your email client with a pre-filled message.</p>
+    <label>Customer Name</label>
+    <input type="text" id="inv-name" placeholder="Jane Smith" />
+    <label>Customer Email</label>
+    <input type="email" id="inv-email" placeholder="jane@example.com" />
+    <label>Amount (EUR €)</label>
+    <input type="number" id="inv-amount" placeholder="0.00" min="0.01" step="0.01" />
+    <label>Description</label>
+    <input type="text" id="inv-desc" placeholder="Diving in Asia — Booking #123" />
+    <div id="inv-result" style="display:none;margin-bottom:12px;font-size:12px;line-height:1.6;"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="document.getElementById('invoice-modal').classList.remove('open')">Cancel</button>
+      <button class="btn-primary" id="inv-send-btn">💳 Send Invoice</button>
+    </div>
+  </div>
+</div>
 
 <?php wp_footer(); ?>
 </body>
