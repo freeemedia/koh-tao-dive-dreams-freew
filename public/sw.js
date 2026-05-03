@@ -1,4 +1,4 @@
-const CACHE = 'dive-asia-v1';
+const CACHE = 'dive-asia-v2';
 const PRECACHE = [
   '/',
   '/manifest.json',
@@ -28,14 +28,13 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== location.origin) return;
 
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const networkFetch = fetch(event.request).then((response) => {
+    fetch(event.request)
+      .then((response) => {
         if (response.ok) {
           caches.open(CACHE).then((cache) => cache.put(event.request, response.clone()));
         }
         return response;
-      });
-      return cached || networkFetch;
-    })
+      })
+      .catch(() => caches.match(event.request))
   );
 });
