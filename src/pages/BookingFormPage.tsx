@@ -22,14 +22,13 @@ const bookingSchema = z.object({
   preferred_date: z.string().trim().min(1, 'Preferred date is required'),
   experience_level: z.string().optional(),
   message: z.string().trim().max(1000).optional(),
-  paymentChoice: z.enum(['paypal', 'stripe', 'inquire']).default('inquire'),
+  paymentChoice: z.enum(['paypal', 'inquire']).default('inquire'),
 });
 
 type BookingFormData = z.infer<typeof bookingSchema>;
 
 const COURSE_DEPOSIT_RATE = 0.2;
 const SKIP_PAYMENT_MESSAGE = 'You have chosen not to pay right now, no problem! We will contact you soon to arrange bookings and payment. Thank You, Pro Diving Asia Team.';
-const STRIPE_LINK = 'https://book.stripe.com/bJe8wPfK0fwSgRecur7EQ00';
 
 const COURSE_FALLBACKS: Record<string, { item: string; price?: number; currency?: string }> = {
   'open-water': { item: 'PADI Open Water Course', price: 11500, currency: 'THB' },
@@ -250,7 +249,7 @@ const       BookingPage: React.FC = () => {
         accommodation: data.accommodation || 'N/A',
         preferred_date: data.preferred_date || 'N/A',
         experience_level: data.experience_level || 'N/A',
-        payment_choice: data.paymentChoice === 'paypal' ? 'Pay deposit via PayPal' : data.paymentChoice === 'stripe' ? 'Pay deposit via Stripe' : 'Inquire only - pay later',
+        payment_choice: data.paymentChoice === 'paypal' ? 'Pay deposit via PayPal' : 'Inquire only - pay later',
         item_title: bookingItemTitle,
         full_price: totalItemCostMajor > 0 ? `฿${totalItemCostMajor}` : (isStayBooking ? 'Quote on request' : 'N/A'),
         dive_count: isFunDiveBooking ? funDiveCount : 'N/A',
@@ -289,7 +288,7 @@ const       BookingPage: React.FC = () => {
             guests: guestCount,
             nights: nightsCount,
             experience_level: data.experience_level || '',
-            payment_choice: data.paymentChoice === 'paypal' ? 'paypal' : data.paymentChoice === 'stripe' ? 'stripe' : 'inquire',
+            payment_choice: data.paymentChoice === 'paypal' ? 'paypal' : 'inquire',
             currency: depositCurrency || 'THB',
             deposit_amount: depositAmountMajor,
             total_amount: totalAmountMajor,
@@ -354,7 +353,7 @@ const       BookingPage: React.FC = () => {
         deposit_amount: depositAmountMajor != null ? `฿${depositAmountMajor}` : 'Quote on request',
         total_amount: totalAmountMajor != null ? `฿${totalAmountMajor}` : 'Quote on request',
         balance_amount: balanceAmountMajor != null ? `฿${balanceAmountMajor}` : 'Quote on request',
-        payment_choice: data.paymentChoice === 'paypal' ? 'PayPal deposit' : data.paymentChoice === 'stripe' ? 'Stripe deposit' : 'Inquire only',
+        payment_choice: data.paymentChoice === 'paypal' ? 'PayPal deposit' : 'Inquire only',
       };
       sessionStorage.setItem('bookingData', JSON.stringify(bookingDetailsForDisplay));
 
@@ -390,9 +389,9 @@ const       BookingPage: React.FC = () => {
                 guest_count: guestCount || undefined,
                 accommodation_interest: data.accommodation || '',
                 message: messageWithSource,
-                payment_choice: data.paymentChoice === 'paypal' ? 'paypal' : data.paymentChoice === 'stripe' ? 'stripe' : 'inquire',
-                payment_mode: data.paymentChoice === 'paypal' ? 'paypal' : data.paymentChoice === 'stripe' ? 'stripe' : 'inquire',
-                payment_status: data.paymentChoice === 'paypal' ? 'deposit_paypal_redirect' : data.paymentChoice === 'stripe' ? 'deposit_stripe_redirect' : (wpSaved ? 'new_inquiry' : 'not_synced'),
+                payment_choice: data.paymentChoice === 'paypal' ? 'paypal' : 'inquire',
+                payment_mode: data.paymentChoice === 'paypal' ? 'paypal' : 'inquire',
+                payment_status: data.paymentChoice === 'paypal' ? 'deposit_paypal_redirect' : (wpSaved ? 'new_inquiry' : 'not_synced'),
                 deposit_amount: depositAmountMajor,
                 total_amount: totalAmountMajor,
                 currency: depositCurrency || 'THB',
@@ -410,8 +409,6 @@ const       BookingPage: React.FC = () => {
         if (data.paymentChoice === 'paypal' && amountMajor > 0) {
           const paypalUrl = `${paypalBase}/${amountMajor}THB`;
           setTimeout(() => { window.location.href = paypalUrl; }, 1200);
-        } else if (data.paymentChoice === 'stripe' && amountMajor > 0) {
-          setTimeout(() => { window.location.href = STRIPE_LINK; }, 1200);
         } else {
           setTimeout(() => window.location.href = '/thank-you.html', 1500);
           setInquiryNotice(SKIP_PAYMENT_MESSAGE);
@@ -822,21 +819,6 @@ const       BookingPage: React.FC = () => {
                         <input
                           type="radio"
                           className="mt-1"
-                          value="stripe"
-                          checked={field.value === 'stripe'}
-                          onChange={() => field.onChange('stripe')}
-                        />
-                        <div>
-                          <div className="font-medium">Pay deposit now via Stripe</div>
-                          <div className="text-sm text-muted-foreground">
-                            Secure your booking by paying the deposit via Stripe. Supports cards, Apple Pay, Google Pay. You'll be redirected after submitting.
-                          </div>
-                        </div>
-                      </label>
-                      <label className="flex items-start gap-3 cursor-pointer">
-                        <input
-                          type="radio"
-                          className="mt-1"
                           value="inquire"
                           checked={field.value === 'inquire'}
                           onChange={() => field.onChange('inquire')}
@@ -858,7 +840,7 @@ const       BookingPage: React.FC = () => {
             <div className="flex gap-3 pt-4">
               <Button type="button" variant="outline" onClick={() => navigate(-1)} className="flex-1">Cancel</Button>
               <Button type="submit" disabled={isSubmitting} className="flex-1 bg-primary hover:bg-primary/90">
-                {isSubmitting ? 'Sending...' : (form.watch('paymentChoice') === 'paypal' && !isStayBooking && depositMajor > 0 ? 'Submit & Pay via PayPal' : form.watch('paymentChoice') === 'stripe' && !isStayBooking && depositMajor > 0 ? 'Submit & Pay via Stripe' : 'Submit Inquiry')}
+                {isSubmitting ? 'Sending...' : (form.watch('paymentChoice') === 'paypal' && !isStayBooking && depositMajor > 0 ? 'Submit & Pay via PayPal' : 'Submit Inquiry')}
               </Button>
             </div>
           </form>
