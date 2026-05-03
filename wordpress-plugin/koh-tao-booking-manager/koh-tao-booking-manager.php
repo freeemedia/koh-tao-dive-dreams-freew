@@ -610,10 +610,78 @@ class KTD_Booking_Manager {
             return new WP_Error('ktd_insert_failed', 'Failed to save booking.', array('status' => 500));
         }
 
+        $new_booking_id = (int) $wpdb->insert_id;
+
+        // Send admin notification email for every new booking
+        $this->send_admin_new_booking_email($payload, $new_booking_id);
+
         return new WP_REST_Response(array(
             'success' => true,
-            'id' => (int) $wpdb->insert_id,
+            'id' => $new_booking_id,
         ), 201);
+    }
+
+    private function send_admin_new_booking_email(array $payload, int $booking_id) {
+        $admin_email = get_option('admin_email', 'contact@prodiving.asia');
+        // Also notify the dedicated bookings address if configured
+        $bookings_email = defined('KTD_BOOKINGS_EMAIL') ? KTD_BOOKINGS_EMAIL : 'bookings@divinginasia.com';
+        $to = array($admin_email);
+        if ($bookings_email !== $admin_email) {
+            $to[] = $bookings_email;
+        }
+
+        $name         = sanitize_text_field($payload['name'] ?? 'Unknown');
+        $email        = sanitize_email($payload['email'] ?? '');
+        $phone        = sanitize_text_field($payload['phone'] ?? 'N/A');
+        $item_title   = sanitize_text_field($payload['item_title'] ?? $payload['booking_type'] ?? 'N/A');
+        $pref_date    = sanitize_text_field($payload['preferred_date'] ?? 'N/A');
+        $experience   = sanitize_text_field($payload['experience_level'] ?? 'N/A');
+        $message      = sanitize_textarea_field($payload['message'] ?? '');
+        $deposit      = isset($payload['deposit_amount']) ? number_format((float) $payload['deposit_amount'], 2) : 'N/A';
+        $total        = isset($payload['total_amount']) ? number_format((float) $payload['total_amount'], 2) : 'N/A';
+        $payment      = sanitize_text_field($payload['payment_choice'] ?? 'N/A');
+        $source       = sanitize_text_field($payload['booking_source'] ?? 'website-form');
+
+        $subject = "New Booking #{$booking_id}: {$name} — {$item_title}";
+
+        $row = '<tr style="border-bottom:1px solid #e8edf2;">';
+        $lbl = '<td style="padding:8px 14px;font-weight:600;color:#1a3a5c;width:150px;white-space:nowrap;">';
+        $val = '<td style="padding:8px 14px;color:#374151;">';
+
+        $html = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"></head>' .
+            '<body style="margin:0;padding:0;background:#f0f4f8;font-family:\'Segoe UI\',Arial,sans-serif;">' .
+            '<table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f4f8;padding:32px 0;"><tr><td align="center">' .
+            '<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(11,61,145,.10);">' .
+
+            '<tr><td style="background:linear-gradient(135deg,#0b3d91 0%,#1a5ed4 100%);padding:24px 32px;">' .
+            '<span style="font-size:20px;font-weight:700;color:#fff;">🤿 PRO DIVING ASIA — New Booking #' . $booking_id . '</span>' .
+            '</td></tr>' .
+
+            '<tr><td style="padding:24px 32px;">' .
+            '<p style="margin:0 0 16px;font-size:15px;color:#374151;">A new booking was just submitted via the website.</p>' .
+            '<table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e8edf2;border-radius:8px;overflow:hidden;">' .
+            $row . $lbl . 'Activity</td>' . $val . esc_html($item_title) . '</td></tr>' .
+            $row . $lbl . 'Name</td>'     . $val . esc_html($name)       . '</td></tr>' .
+            $row . $lbl . 'Email</td>'    . $val . esc_html($email)      . '</td></tr>' .
+            $row . $lbl . 'Phone</td>'    . $val . esc_html($phone)      . '</td></tr>' .
+            $row . $lbl . 'Date</td>'     . $val . esc_html($pref_date)  . '</td></tr>' .
+            $row . $lbl . 'Experience</td>' . $val . esc_html($experience) . '</td></tr>' .
+            $row . $lbl . 'Deposit</td>'  . $val . '฿' . esc_html($deposit) . '</td></tr>' .
+            $row . $lbl . 'Total</td>'    . $val . '฿' . esc_html($total)   . '</td></tr>' .
+            $row . $lbl . 'Payment</td>'  . $val . esc_html($payment)   . '</td></tr>' .
+            $row . $lbl . 'Source</td>'   . $val . esc_html($source)    . '</td></tr>' .
+            ( $message !== '' ? $row . $lbl . 'Message</td>' . $val . nl2br(esc_html($message)) . '</td></tr>' : '' ) .
+            '</table>' .
+            '<p style="margin:20px 0 0;font-size:13px;color:#6b7280;">View and manage this booking in the <a href="' . admin_url('admin.php?page=ktd-booking-manager') . '" style="color:#1a5ed4;">KTD Booking Manager</a>.</p>' .
+            '</td></tr>' .
+
+            '<tr><td style="background:#f8fafc;border-top:1px solid #e8edf2;padding:16px 32px;text-align:center;">' .
+            '<p style="margin:0;color:#6b7280;font-size:12px;">Pro Diving Asia · Koh Tao, Thailand · <a href="https://www.divinginasia.com" style="color:#1a5ed4;">divinginasia.com</a></p>' .
+            '</td></tr>' .
+            '</table></td></tr></table></body></html>';
+
+        $headers = array('Content-Type: text/html; charset=UTF-8');
+        wp_mail($to, $subject, $html, $headers);
     }
 
     private function split_full_name($full_name) {

@@ -52,8 +52,8 @@ const InlineCourseBookingForm: React.FC<Props> = ({
   const apiBase = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '').trim().replace(/\/+$/, '');
   const apiUrl = (path: string) => (apiBase ? `${apiBase}${path}` : path);
   const paypalBase = (import.meta.env.VITE_PAYPAL_LINK || 'https://paypal.me/prodivingasia').trim().replace(/\/+$/, '');
-  const wpApiBase = (import.meta.env.VITE_WP_API_BASE || '').trim().replace(/\/+$/, '');
-  const wpApiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || '').trim();
+  const wpApiBase = (import.meta.env.VITE_WP_API_BASE || 'https://lightsalmon-dinosaur-377714.hostingersite.com').trim().replace(/\/+$/, '');
+  const wpApiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || '909010232893284934783734').trim();
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
