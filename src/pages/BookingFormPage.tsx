@@ -710,14 +710,165 @@ const       BookingPage: React.FC = () => {
           )}
         </div>
 
-        <div className="mt-6">
-          <iframe
-            src={`https://lightsalmon-dinosaur-377714.hostingersite.com/?fluent_forms_pages=1&preview_id=3&booking_item=${encodeURIComponent(itemTitle)}&booking_type=${itemType}`}
-            className="w-full"
-            style={{ minHeight: '700px', border: 'none' }}
-            title="Booking Form"
-          />
-        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField control={form.control} name="name" render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-2"><User className="h-4 w-4" /> Full Name *</FormLabel>
+                <FormControl><Input placeholder="John Doe" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            <FormField control={form.control} name="email" render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-2"><Mail className="h-4 w-4" /> Email *</FormLabel>
+                <FormControl><Input type="email" placeholder="john@example.com" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            <FormField control={form.control} name="phone" render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-2"><Phone className="h-4 w-4" /> Phone</FormLabel>
+                <FormControl><Input placeholder="+66 123 456 789" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            <FormField control={form.control} name="accommodation" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Accommodation Preference</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select accommodation preference" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="">No preference</SelectItem>
+                    <SelectItem value="none">No accommodation needed</SelectItem>
+                    <SelectItem value="resort">Resort accommodation</SelectItem>
+                    <SelectItem value="nearby">Nearby hotel/guesthouse</SelectItem>
+                    <SelectItem value="own">I have my own accommodation</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            <FormField control={form.control} name="preferred_date" render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-2"><Calendar className="h-4 w-4" /> Preferred Date</FormLabel>
+                <FormControl><Input type="date" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            <FormField control={form.control} name="experience_level" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Experience Level</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your experience level" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="none">No diving experience</SelectItem>
+                    <SelectItem value="beginner">Beginner (1-10 dives)</SelectItem>
+                    <SelectItem value="intermediate">Intermediate (10-50 dives)</SelectItem>
+                    <SelectItem value="advanced">Advanced (50+ dives)</SelectItem>
+                    <SelectItem value="professional">Professional diver</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            <FormField control={form.control} name="message" render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-2"><MessageSquare className="h-4 w-4" /> Message</FormLabel>
+                <FormControl><Textarea placeholder="Any special requests or questions?" rows={3} {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            {!isStayBooking && depositMajor > 0 && (
+              <div className="p-4 border rounded-lg bg-muted/20">
+                <h3 className="font-semibold mb-3">Payment Option</h3>
+                <FormField control={form.control} name="paymentChoice" render={({ field }) => (
+                  <FormItem>
+                    <div className="flex flex-col gap-3">
+                      <label className="flex items-start gap-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          className="mt-1"
+                          value="paypal"
+                          checked={field.value === 'paypal'}
+                          onChange={() => field.onChange('paypal')}
+                        />
+                        <div>
+                          <div className="font-medium">Pay deposit now via PayPal</div>
+                          <div className="text-sm text-muted-foreground">
+                            Secure your booking by paying the deposit (฿{depositMajor + totalAddons}) via PayPal. You'll be redirected after submitting.
+                          </div>
+                        </div>
+                      </label>
+                      <label className="flex items-start gap-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          className="mt-1"
+                          value="inquire"
+                          checked={field.value === 'inquire'}
+                          onChange={() => field.onChange('inquire')}
+                        />
+                        <div>
+                          <div className="font-medium">Inquire only — pay later</div>
+                          <div className="text-sm text-muted-foreground">
+                            We'll contact you to arrange payment. No money taken now.
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+              </div>
+            )}
+
+            <div className="flex gap-3 pt-4">
+              <Button type="button" variant="outline" onClick={() => navigate(-1)} className="flex-1">Cancel</Button>
+              <Button type="submit" disabled={isSubmitting} className="flex-1 bg-primary hover:bg-primary/90">
+                {isSubmitting ? 'Sending...' : (form.watch('paymentChoice') === 'paypal' && !isStayBooking && depositMajor > 0 ? 'Submit & Pay via PayPal' : 'Submit Inquiry')}
+              </Button>
+            </div>
+          </form>
+        </Form>
+
+
+
+        {inquiryNotice && (
+          <div className="mt-8 rounded-lg border-2 border-emerald-300 bg-emerald-50 p-6 space-y-4">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-emerald-900">Inquiry Received!</h2>
+              <p className="text-emerald-700 mt-1">Confirmation email sent to <strong>{form.getValues('email')}</strong></p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-white p-4 rounded-lg text-sm">
+              <div><span className="font-semibold">Name:</span> {form.getValues('name')}</div>
+              <div><span className="font-semibold">Email:</span> {form.getValues('email')}</div>
+              <div><span className="font-semibold">Course/Activity:</span> {bookingItemTitle}</div>
+              <div><span className="font-semibold">Preferred Date:</span> {form.getValues('preferred_date')}</div>
+              <div><span className="font-semibold">Accommodation:</span> {form.getValues('accommodation') || 'Not specified'}</div>
+            </div>
+
+            <div className="bg-emerald-100 p-4 rounded-lg border-l-4 border-emerald-600">
+              <p className="text-emerald-900 font-semibold mb-2">What Happens Next?</p>
+              <p className="text-emerald-800 text-sm">{inquiryNotice}</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

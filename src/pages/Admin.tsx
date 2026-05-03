@@ -1,18 +1,52 @@
 import AdminPagesManager from '../components/AdminPagesManager';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import DiveSiteReports from './DiveSiteReports';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+
+interface KtdBooking {
+  id: number;
+  booking_date: string;
+  customer_name: string;
+  customer_email: string;
+  customer_phone?: string;
+  item_title: string;
+  status: string;
+  deposit_amount?: number;
+  total_amount?: number;
+  notes?: string;
+}
 
 const Admin = () => {
   const { t } = useTranslation();
   const jiraEmbedUrl = import.meta.env.VITE_JIRA_EMBED_URL || '';
   const jiraProjectUrl = import.meta.env.VITE_JIRA_PROJECT_URL || jiraEmbedUrl || 'https://divinginasia.atlassian.net';
-  const fluentFormsUrl = 'https://lightsalmon-dinosaur-377714.hostingersite.com/?fluent_forms_pages=1&design_mode=1&preview_id=3';
   const [activeTab, setActiveTab] = useState<'bookings' | 'pages' | 'project-manager' | 'dive-reports'>('bookings');
+  const [bookings, setBookings] = useState<KtdBooking[]>([]);
+  const [bookingsLoading, setBookingsLoading] = useState(false);
+  const [bookingsError, setBookingsError] = useState<string | null>(null);
+  const [bookingSearch, setBookingSearch] = useState('');
+
+  useEffect(() => {
+    if (activeTab !== 'bookings') return;
+    setBookingsLoading(true);
+    setBookingsError(null);
+    const wpBase = (import.meta.env.VITE_WP_API_BASE || '').replace(/\/+$/, '');
+    const apiKey = import.meta.env.VITE_WP_BOOKING_API_KEY || '';
+    fetch(`${wpBase}/wp-json/ktd/v1/bookings?per_page=200`, {
+      headers: { 'X-KTD-API-Key': apiKey },
+    })
+      .then(r => r.json())
+      .then(data => {
+        const rows: KtdBooking[] = Array.isArray(data) ? data : (data.bookings || []);
+        setBookings(rows);
+      })
+      .catch(() => setBookingsError('Could not load bookings from WordPress.'))
+      .finally(() => setBookingsLoading(false));
+  }, [activeTab]);
 
   const tabs = [
-    { key: 'bookings' as const, label: t('admin.tab_bookings', { defaultValue: 'Fluent Forms' }) },
+    { key: 'bookings' as const, label: t('admin.tab_bookings', { defaultValue: 'Bookings' }) },
     { key: 'pages' as const, label: t('admin.tab_pages', { defaultValue: 'Page Content' }) },
     { key: 'project-manager' as const, label: t('admin.tab_project_manager', { defaultValue: 'Project Manager' }) },
     { key: 'dive-reports' as const, label: 'Dive Site Reports' },
@@ -36,7 +70,7 @@ const Admin = () => {
         <div className="mb-6 grid gap-4 md:grid-cols-2">
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <p className="text-xs uppercase tracking-wide text-slate-500">Bookings</p>
-            <p className="mt-2 text-xl font-semibold text-slate-900">Fluent Forms Entries</p>
+            <p className="mt-2 text-xl font-semibold text-slate-900">KTD Bookings</p>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <p className="text-xs uppercase tracking-wide text-slate-500">Content</p>
@@ -66,15 +100,6 @@ const Admin = () => {
           </nav>
           <div className="flex items-center gap-2">
             <a
-              href={fluentFormsUrl}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-green-200 bg-green-50 px-4 py-2 text-sm font-semibold text-green-700 shadow-sm transition hover:bg-green-100"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
-              Fluent Forms
-            </a>
-            <a
               href="https://lightsalmon-dinosaur-377714.hostingersite.com/wp-admin"
               target="_blank"
               rel="noreferrer noopener"
@@ -94,22 +119,83 @@ const Admin = () => {
 
         {activeTab === 'bookings' && (
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xl">
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <p className="text-sm text-slate-600">Bookings are managed via Fluent Forms.</p>
-              <a
-                href={fluentFormsUrl}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="inline-flex items-center rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-700"
-              >
-                Open in new tab
-              </a>
+            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="text-lg font-semibold text-slate-900">Bookings</h2>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  placeholder="Search name, email, item..."
+                  value={bookingSearch}
+                  onChange={e => setBookingSearch(e.target.value)}
+                  className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                <button
+                  onClick={() => {
+                    setBookingsLoading(true);
+                    setBookingsError(null);
+                    const wpBase = (import.meta.env.VITE_WP_API_BASE || '').replace(/\/+$/, '');
+                    const apiKey = import.meta.env.VITE_WP_BOOKING_API_KEY || '';
+                    fetch(`${wpBase}/wp-json/ktd/v1/bookings?per_page=200`, { headers: { 'X-KTD-API-Key': apiKey } })
+                      .then(r => r.json())
+                      .then(data => setBookings(Array.isArray(data) ? data : (data.bookings || [])))
+                      .catch(() => setBookingsError('Could not load bookings.'))
+                      .finally(() => setBookingsLoading(false));
+                  }}
+                  className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-sm font-medium hover:bg-slate-100"
+                >
+                  Refresh
+                </button>
+              </div>
             </div>
-            <iframe
-              src={fluentFormsUrl}
-              title="Fluent Forms Bookings"
-              className="h-[70vh] w-full rounded-xl border border-slate-200"
-            />
+            {bookingsLoading && <p className="py-8 text-center text-sm text-slate-500">Loading bookings...</p>}
+            {bookingsError && <p className="py-4 text-center text-sm text-red-500">{bookingsError}</p>}
+            {!bookingsLoading && !bookingsError && (() => {
+              const filtered = bookings.filter(b => {
+                if (!bookingSearch) return true;
+                const q = bookingSearch.toLowerCase();
+                return (
+                  (b.customer_name || '').toLowerCase().includes(q) ||
+                  (b.customer_email || '').toLowerCase().includes(q) ||
+                  (b.item_title || '').toLowerCase().includes(q)
+                );
+              });
+              return filtered.length === 0 ? (
+                <p className="py-8 text-center text-sm text-slate-400">No bookings found.</p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-slate-200 text-sm">
+                    <thead className="bg-slate-50">
+                      <tr>
+                        {['Date', 'Name', 'Email', 'Phone', 'Item', 'Status', 'Deposit', 'Total'].map(h => (
+                          <th key={h} className="whitespace-nowrap px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {filtered.map(b => (
+                        <tr key={b.id} className="hover:bg-slate-50">
+                          <td className="whitespace-nowrap px-3 py-2 text-slate-600">{b.booking_date ? new Date(b.booking_date).toLocaleDateString() : '—'}</td>
+                          <td className="px-3 py-2 font-medium text-slate-900">{b.customer_name || '—'}</td>
+                          <td className="px-3 py-2 text-slate-600">{b.customer_email || '—'}</td>
+                          <td className="px-3 py-2 text-slate-600">{b.customer_phone || '—'}</td>
+                          <td className="px-3 py-2 text-slate-700">{b.item_title || '—'}</td>
+                          <td className="px-3 py-2">
+                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
+                              b.status === 'confirmed' ? 'bg-green-100 text-green-700' :
+                              b.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                              b.status === 'cancelled' ? 'bg-red-100 text-red-600' :
+                              'bg-slate-100 text-slate-600'
+                            }`}>{b.status || 'new'}</span>
+                          </td>
+                          <td className="px-3 py-2 text-slate-600">{b.deposit_amount ? `฿${b.deposit_amount.toLocaleString()}` : '—'}</td>
+                          <td className="px-3 py-2 text-slate-600">{b.total_amount ? `฿${b.total_amount.toLocaleString()}` : '—'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })()}
           </div>
         )}
 
