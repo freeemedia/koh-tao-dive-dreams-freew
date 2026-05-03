@@ -508,12 +508,14 @@ $logo_url = get_site_icon_url( 64 );
                   <thead>
                     <tr>
                       <th>#</th>
-                      <th>Name</th>
+                      <th>Name / Email</th>
                       <th>Course / Activity</th>
                       <th>Date</th>
                       <th>Status</th>
                       <th>Deposit</th>
+                      <th>Total</th>
                       <th>Source</th>
+                      <th>Notes</th>
                     </tr>
                   </thead>
                   <tbody id="bookings-tbody"></tbody>
@@ -613,6 +615,16 @@ $logo_url = get_site_icon_url( 64 );
     return res.json();
   }
 
+  async function patchBooking(id, fields) {
+    const res = await fetch(REST_BASE + '/bookings/' + id, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': NONCE, ...(API_KEY ? { 'x-ktd-api-key': API_KEY } : {}) },
+      body: JSON.stringify(fields),
+    });
+    if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.message || 'HTTP ' + res.status); }
+    return res.json();
+  }
+
   // ── Load bookings ───────────────────────────────────────────────
   let allBookings = [];
   let filtersBound = false;
@@ -665,7 +677,7 @@ $logo_url = get_site_icon_url( 64 );
     empty.style.display = 'none';
 
     tbody.innerHTML = bookings.slice(0, 50).map(b => `
-      <tr>
+      <tr data-id="${b.id}">
         <td style="color:var(--muted);font-size:11px;">#${b.id}</td>
         <td>
           <div style="font-weight:600;">${escHtml(b.name || '—')}</div>
@@ -675,11 +687,56 @@ $logo_url = get_site_icon_url( 64 );
           ${escHtml(b.item_title || b.booking_type || '—')}
         </td>
         <td style="white-space:nowrap;">${fmtDate(b.preferred_date || b.created_at)}</td>
-        <td>${statusBadge(b.status)}</td>
+        <td>
+          <select class="ktd-status-select" data-id="${b.id}" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:12px;cursor:pointer;">
+            ${['new','pending','confirmed','cancelled','completed'].map(s =>
+              `<option value="${s}"${(b.status||'new')===s?' selected':''}>${s}</option>`
+            ).join('')}
+          </select>
+        </td>
         <td style="white-space:nowrap;">${fmtCurrency(b.deposit_amount)}</td>
         <td style="font-size:11px;color:var(--muted);">${escHtml(b.booking_source || '—')}</td>
+        <td style="min-width:160px;">
+          <textarea class="ktd-notes-input" data-id="${b.id}" rows="2"
+            style="width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:11px;resize:none;"
+            placeholder="Add notes…">${escHtml(b.internal_notes || b.message || '')}</textarea>
+        </td>
       </tr>
     `).join('');
+
+    // Status change handler
+    tbody.querySelectorAll('.ktd-status-select').forEach(sel => {
+      sel.addEventListener('change', async function() {
+        const id = this.dataset.id;
+        const status = this.value;
+        this.disabled = true;
+        try {
+          await patchBooking(id, { status });
+          const bk = allBookings.find(b => String(b.id) === String(id));
+          if (bk) bk.status = status;
+        } catch(e) {
+          alert('Failed to update status: ' + e.message);
+        } finally {
+          this.disabled = false;
+        }
+      });
+    });
+
+    // Notes blur handler
+    tbody.querySelectorAll('.ktd-notes-input').forEach(ta => {
+      ta.addEventListener('blur', async function() {
+        const id = this.dataset.id;
+        const notes = this.value;
+        const bk = allBookings.find(b => String(b.id) === String(id));
+        if (bk && (bk.internal_notes || '') === notes) return; // no change
+        try {
+          await patchBooking(id, { internal_notes: notes });
+          if (bk) bk.internal_notes = notes;
+        } catch(e) {
+          alert('Failed to save notes: ' + e.message);
+        }
+      });
+    });
   }
 
   function renderActivity(bookings) {
