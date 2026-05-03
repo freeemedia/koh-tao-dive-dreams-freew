@@ -42,6 +42,9 @@ class KTD_Booking_Manager {
         add_action('wp_ajax_ktd_admin_delete_page_content', array($this, 'ajax_delete_page_content'));
         add_action('wp_ajax_ktd_admin_add_page_content', array($this, 'ajax_add_page_content'));
 
+        // Configure SMTP for reliable email delivery via Hostinger
+        add_action('phpmailer_init', array($this, 'configure_smtp'));
+
         // Contact Form 7 integration
         add_action('wpcf7_mail_sent', array($this, 'handle_cf7_submission'));
 
@@ -619,6 +622,18 @@ class KTD_Booking_Manager {
             'success' => true,
             'id' => $new_booking_id,
         ), 201);
+    }
+
+    private function configure_smtp($phpmailer) {
+        $phpmailer->isSMTP();
+        $phpmailer->Host       = 'smtp.hostinger.com';
+        $phpmailer->SMTPAuth   = true;
+        $phpmailer->Port       = 587;
+        $phpmailer->Username   = 'confirmed@divinginasia.com';
+        $phpmailer->Password   = 'Md10is12usenow.';
+        $phpmailer->SMTPSecure = 'tls';
+        $phpmailer->From       = 'confirmed@divinginasia.com';
+        $phpmailer->FromName   = 'Pro Diving Asia';
     }
 
     private function send_admin_new_booking_email(array $payload, int $booking_id) {
