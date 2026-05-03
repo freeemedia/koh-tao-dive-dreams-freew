@@ -94,6 +94,15 @@ class KTD_Booking_Manager {
             'callback' => array($this, 'list_bookings'),
             'permission_callback' => array($this, 'validate_api_key'),
         ));
+
+        register_rest_route('ktd/v1', '/bookings/(?P<id>\d+)', array(
+            'methods' => 'PATCH',
+            'callback' => array($this, 'update_booking'),
+            'permission_callback' => array($this, 'validate_api_key'),
+            'args' => array(
+                'id' => array('required' => true, 'sanitize_callback' => 'absint'),
+            ),
+        ));
     }
 
     private function normalize_number($value) {
@@ -175,6 +184,46 @@ class KTD_Booking_Manager {
             'success' => true,
             'id' => (int) $wpdb->insert_id,
         ), 201);
+    }
+
+    public function update_booking($request) {
+        global $wpdb;
+        $id = absint($request['id']);
+        if (!$id) {
+            return new WP_Error('ktd_invalid_id', 'Invalid booking ID.', array('status' => 400));
+        }
+        $payload = $request->get_json_params();
+        if (!is_array($payload)) {
+            return new WP_Error('ktd_invalid_payload', 'Payload must be a JSON object.', array('status' => 400));
+        }
+
+        $allowed = array('status', 'internal_notes', 'message', 'name', 'email', 'phone',
+                         'item_title', 'preferred_date', 'deposit_amount', 'total_amount', 'due_amount');
+        $updates = array();
+        $formats = array();
+        foreach ($allowed as $field) {
+            if (!array_key_exists($field, $payload)) continue;
+            if (in_array($field, array('deposit_amount', 'total_amount', 'due_amount'), true)) {
+                $updates[$field] = $this->normalize_number($payload[$field]);
+                $formats[] = '%f';
+            } else {
+                $updates[$field] = sanitize_textarea_field((string) $payload[$field]);
+                $formats[] = '%s';
+            }
+        }
+        if (empty($updates)) {
+            return new WP_Error('ktd_no_fields', 'No valid fields to update.', array('status' => 400));
+        }
+        $updates['updated_at'] = current_time('mysql');
+        $formats[] = '%s';
+
+        $result = $wpdb->update($this->table_name, $updates, array('id' => $id), $formats, array('%d'));
+        if ($result === false) {
+            return new WP_Error('ktd_update_failed', 'Database update failed.', array('status' => 500));
+        }
+
+        $row = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$this->table_name} WHERE id = %d", $id), ARRAY_A);
+        return new WP_REST_Response(array('success' => true, 'booking' => $row), 200);
     }
 
     public function list_bookings() {
