@@ -680,21 +680,37 @@ $logo_url = get_site_icon_url( 64 );
       <tr data-id="${b.id}">
         <td style="color:var(--muted);font-size:11px;">#${b.id}</td>
         <td>
-          <div style="font-weight:600;">${escHtml(b.name || '—')}</div>
-          <div style="font-size:11px;color:var(--muted);">${escHtml(b.email || '')}</div>
+          <input class="ktd-edit" data-id="${b.id}" data-field="name" value="${escHtml(b.name||'')}"
+            style="font-weight:600;width:120px;" placeholder="Name" />
+          <input class="ktd-edit" data-id="${b.id}" data-field="email" value="${escHtml(b.email||'')}"
+            style="font-size:11px;color:var(--muted);width:140px;margin-top:3px;" placeholder="Email" />
+          <input class="ktd-edit" data-id="${b.id}" data-field="phone" value="${escHtml(b.phone||'')}"
+            style="font-size:11px;color:var(--muted);width:110px;margin-top:3px;" placeholder="Phone" />
         </td>
-        <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-          ${escHtml(b.item_title || b.booking_type || '—')}
-        </td>
-        <td style="white-space:nowrap;">${fmtDate(b.preferred_date || b.created_at)}</td>
         <td>
-          <select class="ktd-status-select" data-id="${b.id}" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:12px;cursor:pointer;">
+          <input class="ktd-edit" data-id="${b.id}" data-field="item_title" value="${escHtml(b.item_title||b.booking_type||'')}"
+            style="width:150px;" placeholder="Course / Activity" />
+        </td>
+        <td>
+          <input class="ktd-edit" data-id="${b.id}" data-field="preferred_date" value="${escHtml(b.preferred_date||'')}"
+            style="width:110px;" placeholder="YYYY-MM-DD" />
+        </td>
+        <td>
+          <select class="ktd-status-select" data-id="${b.id}"
+            style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:12px;cursor:pointer;">
             ${['new','pending','confirmed','cancelled','completed'].map(s =>
               `<option value="${s}"${(b.status||'new')===s?' selected':''}>${s}</option>`
             ).join('')}
           </select>
         </td>
-        <td style="white-space:nowrap;">${fmtCurrency(b.deposit_amount)}</td>
+        <td>
+          <input class="ktd-edit" data-id="${b.id}" data-field="deposit_amount" value="${b.deposit_amount||''}"
+            style="width:80px;" placeholder="0" />
+        </td>
+        <td>
+          <input class="ktd-edit" data-id="${b.id}" data-field="total_amount" value="${b.total_amount||''}"
+            style="width:80px;" placeholder="0" />
+        </td>
         <td style="font-size:11px;color:var(--muted);">${escHtml(b.booking_source || '—')}</td>
         <td style="min-width:160px;">
           <textarea class="ktd-notes-input" data-id="${b.id}" rows="2"
@@ -704,7 +720,28 @@ $logo_url = get_site_icon_url( 64 );
       </tr>
     `).join('');
 
-    // Status change handler
+    // Generic text/number field blur → save
+    tbody.querySelectorAll('.ktd-edit').forEach(inp => {
+      inp.style.cssText += 'background:transparent;border:1px solid transparent;border-radius:4px;color:inherit;padding:2px 4px;display:block;';
+      inp.addEventListener('focus', function() { this.style.borderColor = 'var(--accent)'; this.style.background = 'var(--surface2)'; });
+      inp.addEventListener('blur', async function() {
+        this.style.borderColor = 'transparent';
+        this.style.background = 'transparent';
+        const id    = this.dataset.id;
+        const field = this.dataset.field;
+        const val   = this.value;
+        const bk    = allBookings.find(b => String(b.id) === String(id));
+        if (bk && String(bk[field]||'') === val) return;
+        try {
+          await patchBooking(id, { [field]: val });
+          if (bk) bk[field] = val;
+        } catch(e) {
+          alert('Save failed: ' + e.message);
+        }
+      });
+    });
+
+    // Status dropdown
     tbody.querySelectorAll('.ktd-status-select').forEach(sel => {
       sel.addEventListener('change', async function() {
         const id = this.dataset.id;
@@ -722,13 +759,13 @@ $logo_url = get_site_icon_url( 64 );
       });
     });
 
-    // Notes blur handler
+    // Notes textarea
     tbody.querySelectorAll('.ktd-notes-input').forEach(ta => {
       ta.addEventListener('blur', async function() {
-        const id = this.dataset.id;
+        const id    = this.dataset.id;
         const notes = this.value;
-        const bk = allBookings.find(b => String(b.id) === String(id));
-        if (bk && (bk.internal_notes || '') === notes) return; // no change
+        const bk    = allBookings.find(b => String(b.id) === String(id));
+        if (bk && (bk.internal_notes || '') === notes) return;
         try {
           await patchBooking(id, { internal_notes: notes });
           if (bk) bk.internal_notes = notes;
