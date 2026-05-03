@@ -234,7 +234,16 @@ class KTD_Booking_Manager {
     public function list_bookings() {
         global $wpdb;
         $rows = $wpdb->get_results("SELECT * FROM {$this->table_name} ORDER BY created_at DESC LIMIT 500", ARRAY_A);
-        return new WP_REST_Response(array('success' => true, 'data' => $rows), 200);
+        if (!headers_sent()) {
+            nocache_headers();
+        }
+
+        $response = new WP_REST_Response(array('success' => true, 'data' => $rows), 200);
+        $response->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+        $response->header('Pragma', 'no-cache');
+        $response->header('Expires', 'Wed, 11 Jan 1984 05:00:00 GMT');
+
+        return $response;
     }
 
     public function register_admin_page() {

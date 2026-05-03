@@ -628,9 +628,14 @@ $logo_url = get_site_icon_url( 64 );
   const NONCE    = '<?php echo esc_js( wp_create_nonce( 'wp_rest' ) ); ?>';
   const API_KEY  = '<?php echo esc_js( get_option( 'ktd_booking_api_key', '' ) ); ?>';
 
+  function buildApiUrl(path) {
+    const separator = path.includes('?') ? '&' : '?';
+    return REST_BASE + path + separator + '_=' + Date.now();
+  }
+
   async function apiFetch(path, options = {}) {
     const headers = Object.assign({ 'X-WP-Nonce': NONCE }, API_KEY ? { 'x-ktd-api-key': API_KEY } : {}, options.headers || {});
-    const res = await fetch(REST_BASE + path, Object.assign({}, options, { headers }));
+    const res = await fetch(buildApiUrl(path), Object.assign({}, options, { headers, cache: 'no-store' }));
     if (!res.ok) throw new Error('HTTP ' + res.status);
     return res.json();
   }
@@ -745,8 +750,11 @@ $logo_url = get_site_icon_url( 64 );
         <td style="font-size:11px;color:var(--muted);">${escHtml(b.booking_source || '—')}</td>
         <td>
           <button class="invoice-btn" data-id="${b.id}" data-name="${escHtml(b.name||'')}" data-email="${escHtml(b.email||'')}"
-            data-total="${b.total_amount||''}" data-deposit="${b.deposit_amount||''}"
+            data-total="${b.total_amount||''}" data-deposit="${b.deposit_amount||''}" data-title="${escHtml(b.item_title||b.booking_type||'')}"
             title="Send payment link via Mollie">💳 Invoice</button>
+          <button class="invoice-btn paypal-inv-btn" data-id="${b.id}" data-name="${escHtml(b.name||'')}" data-email="${escHtml(b.email||'')}"
+            data-deposit="${b.deposit_amount||''}" data-title="${escHtml(b.item_title||b.booking_type||'')}"
+            title="Send PayPal payment link" style="margin-top:4px;">🅿 PayPal</button>
           ${b.payment_link_url ? `<a href="${escHtml(b.payment_link_url)}" target="_blank" style="font-size:10px;color:var(--accent);display:block;margin-top:4px;">🔗 link</a>` : ''}
         </td>
         <td style="min-width:160px;">
@@ -812,8 +820,8 @@ $logo_url = get_site_icon_url( 64 );
       });
     });
 
-    // Invoice button → open modal
-    tbody.querySelectorAll('.invoice-btn').forEach(btn => {
+    // Invoice button → open Mollie modal
+    tbody.querySelectorAll('.invoice-btn:not(.paypal-inv-btn)').forEach(btn => {
       btn.addEventListener('click', function() {
         const modal = document.getElementById('invoice-modal');
         modal.dataset.bookingId    = this.dataset.id;
@@ -837,10 +845,73 @@ $logo_url = get_site_icon_url( 64 );
     if (e.target.id === 'invoice-modal') {
       document.getElementById('invoice-modal').classList.remove('open');
     }
+    if (e.target.id === 'paypal-invoice-modal') {
+      document.getElementById('paypal-invoice-modal').classList.remove('open');
+    }
   });
 
+  // PayPal invoice button → open modal
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.paypal-inv-btn');
+    if (!btn) return;
+    const modal = document.getElementById('paypal-invoice-modal');
+    modal.dataset.bookingId = btn.dataset.id;
+    document.getElementById('pp-name').value  = btn.dataset.name  || '';
+    document.getElementById('pp-email').value = btn.dataset.email || '';
+    document.getElementById('pp-amount').value = btn.dataset.deposit ? Math.round(parseFloat(btn.dataset.deposit)) : '';
+    document.getElementById('pp-desc').value  = btn.dataset.title ? `Diving in Asia — ${btn.dataset.title}` : 'Diving in Asia — Booking Deposit';
+    document.getElementById('pp-result').style.display = 'none';
+    modal.classList.add('open');
+  });
+
+  // Send PayPal invoice
+  async function handlePaypalInvoiceSend(buttonEl) {
+    const modal      = document.getElementById('paypal-invoice-modal');
+    const booking_id = modal.dataset.bookingId;
+    const email      = document.getElementById('pp-email').value.trim();
+    const name       = document.getElementById('pp-name').value.trim();
+    const amountTHB  = parseFloat(document.getElementById('pp-amount').value);
+    const description = document.getElementById('pp-desc').value.trim();
+    const resultEl   = document.getElementById('pp-result');
+
+    if (!email || isNaN(amountTHB) || amountTHB <= 0) {
+      resultEl.style.display = 'block';
+      resultEl.style.color   = 'var(--red)';
+      resultEl.textContent   = 'Please fill in email and a valid THB amount.';
+      return;
+    }
+
+    const paypalUrl = `https://paypal.me/prodivingasia/${amountTHB}THB`;
+
+    // Update local booking cache
+    const bk = allBookings.find(b => String(b.id) === String(booking_id));
+    if (bk) { bk.payment_status = 'invoiced'; bk.payment_link_url = paypalUrl; }
+
+    // PATCH booking in WordPress
+    try {
+      await fetch('<?php echo esc_js(get_site_url()); ?>/wp-json/ktd/v1/bookings/' + booking_id, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-ktd-api-key': '<?php echo esc_js(defined("KTD_API_KEY") ? KTD_API_KEY : "909010232893284934783734"); ?>' },
+        body: JSON.stringify({ payment_status: 'invoiced', payment_link_url: paypalUrl }),
+      });
+    } catch(e) { /* non-fatal */ }
+
+    // Open mailto pre-filled
+    const subject = encodeURIComponent(description);
+    const body    = encodeURIComponent(
+      `Hi ${name},\n\nThank you for booking with Diving in Asia!\n\nPlease complete your deposit payment of ฿${amountTHB.toLocaleString()} THB using the secure PayPal link below:\n\n${paypalUrl}\n\nIf you have any questions, feel free to reply to this email.\n\nSee you underwater!\nThe Diving in Asia Team`
+    );
+    window.open(`mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`, '_blank');
+
+    resultEl.style.display = 'block';
+    resultEl.style.color   = 'var(--green)';
+    resultEl.innerHTML     = `✅ PayPal link ready! <a href="${paypalUrl}" target="_blank" style="color:var(--accent);">Open link</a><br><small style="color:var(--muted)">Email draft opened. Paste the link if needed.</small>`;
+
+    applyFilters();
+  }
+
   // Send invoice
-  document.getElementById('inv-send-btn')?.addEventListener('click', async function() {
+  async function handleMollieInvoiceSend(buttonEl) {
     const modal      = document.getElementById('invoice-modal');
     const booking_id = modal.dataset.bookingId;
     const email      = document.getElementById('inv-email').value.trim();
@@ -856,8 +927,8 @@ $logo_url = get_site_icon_url( 64 );
       return;
     }
 
-    this.disabled    = true;
-    this.textContent = 'Sending…';
+    buttonEl.disabled    = true;
+    buttonEl.textContent = 'Sending…';
 
     try {
       const resp = await fetch('https://www.divinginasia.com/api/mollie-payment', {
@@ -887,14 +958,27 @@ $logo_url = get_site_icon_url( 64 );
       resultEl.innerHTML     = `✅ Payment link created! <a href="${data.url}" target="_blank" style="color:var(--accent);">Open link</a><br><small style="color:var(--muted)">Email draft opened. Paste the link if needed.</small>`;
 
       // Refresh table row badge
-      renderBookings(allBookings);
+      applyFilters();
     } catch(err) {
       resultEl.style.display = 'block';
       resultEl.style.color   = 'var(--red)';
       resultEl.textContent   = '❌ ' + err.message;
     } finally {
-      this.disabled    = false;
-      this.textContent = '💳 Send Invoice';
+      buttonEl.disabled    = false;
+      buttonEl.textContent = '💳 Send Invoice';
+    }
+  }
+
+  document.addEventListener('click', function(e) {
+    const paypalSendBtn = e.target.closest('#pp-send-btn');
+    if (paypalSendBtn) {
+      void handlePaypalInvoiceSend(paypalSendBtn);
+      return;
+    }
+
+    const mollieSendBtn = e.target.closest('#inv-send-btn');
+    if (mollieSendBtn) {
+      void handleMollieInvoiceSend(mollieSendBtn);
     }
   });
 
@@ -1020,6 +1104,27 @@ $logo_url = get_site_icon_url( 64 );
   });
 })();
 </script>
+
+<!-- PayPal invoice modal -->
+<div class="ktd-modal-overlay" id="paypal-invoice-modal">
+  <div class="ktd-modal">
+    <h3>🅿 Send PayPal Invoice</h3>
+    <p class="modal-note">Generates a PayPal.me payment link and opens your email client with a pre-filled message.</p>
+    <label>Customer Name</label>
+    <input type="text" id="pp-name" placeholder="Jane Smith" />
+    <label>Customer Email</label>
+    <input type="email" id="pp-email" placeholder="jane@example.com" />
+    <label>Amount (THB ฿)</label>
+    <input type="number" id="pp-amount" placeholder="0" min="1" step="1" />
+    <label>Description</label>
+    <input type="text" id="pp-desc" placeholder="Diving in Asia — Booking #123" />
+    <div id="pp-result" style="display:none;margin-bottom:12px;font-size:12px;line-height:1.6;"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="document.getElementById('paypal-invoice-modal').classList.remove('open')">Cancel</button>
+      <button class="btn-primary" id="pp-send-btn">🅿 Send PayPal Invoice</button>
+    </div>
+  </div>
+</div>
 
 <!-- Invoice / Mollie payment link modal -->
 <div class="ktd-modal-overlay" id="invoice-modal">

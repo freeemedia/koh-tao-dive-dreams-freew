@@ -4,8 +4,6 @@ import { useCurrency, CurrencySelector } from '@/hooks/useCurrency';
 import InlineCourseBookingForm from '@/components/InlineCourseBookingForm';
 import Contact from '@/components/Contact';
 
-const STRIPE_LINK = 'https://book.stripe.com/bJe8wPfK0fwSgRecur7EQ00';
-
 const COURSES = [
   {
     title: 'Open Water Diver',
@@ -81,18 +79,16 @@ const OpenWaterToDivemaster: React.FC = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <a
-              href={STRIPE_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-[#635bff] hover:bg-[#4f46e5] text-white font-bold px-8 py-4 rounded-lg text-lg shadow-lg transition-colors"
+              href="#book-with-us"
+              className="inline-block bg-white text-teal-800 hover:bg-teal-50 font-bold px-8 py-4 rounded-lg text-lg shadow-lg transition-colors"
             >
-              Reserve Your Place — Pay Deposit
+              Book or Enquire Now
             </a>
             <a
-              href="#book-with-us"
+              href="#course-breakdown"
               className="inline-block bg-white/20 hover:bg-white/30 text-white font-semibold px-8 py-4 rounded-lg text-lg border border-white/40 transition-colors"
             >
-              Send an Enquiry
+              View Package Details
             </a>
           </div>
         </div>
@@ -120,7 +116,7 @@ const OpenWaterToDivemaster: React.FC = () => {
       </section>
 
       {/* Course breakdown */}
-      <section className="py-16 px-4">
+      <section className="py-16 px-4" id="course-breakdown">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">
             Your Progression Path
@@ -234,24 +230,22 @@ const OpenWaterToDivemaster: React.FC = () => {
         </div>
       </section>
 
-      {/* Stripe CTA */}
+      {/* Booking CTA */}
       <section className="bg-gray-900 text-white py-14 px-4 text-center">
         <div className="max-w-xl mx-auto">
           <h2 className="text-3xl font-bold mb-3">Ready to Start Your Journey?</h2>
           <p className="text-gray-300 mb-8">
-            Pay your deposit securely online with a credit or debit card. We'll be in touch within
-            24 hours to confirm your start date and answer any questions.
+            Send your details and we'll confirm availability, answer questions, and help you plan
+            the full package from Open Water through Divemaster.
           </p>
           <a
-            href={STRIPE_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-[#635bff] hover:bg-[#4f46e5] text-white font-bold px-10 py-4 rounded-lg text-xl shadow-lg transition-colors mb-4"
+            href="#book-with-us"
+            className="inline-block bg-teal-500 hover:bg-teal-400 text-white font-bold px-10 py-4 rounded-lg text-xl shadow-lg transition-colors mb-4"
           >
-            Pay Deposit via Stripe
+            Send Booking Request
           </a>
           <p className="text-gray-500 text-sm">
-            Powered by Stripe — secure card payments.
+            We will contact you directly to confirm dates, package details, and payment options.
           </p>
         </div>
       </section>
