@@ -29,6 +29,36 @@ function normalizeRows(rows) {
   }));
 }
 
+function applyContentFixes(rows, slug, locale) {
+  if (!Array.isArray(rows) || !rows.length) return rows || [];
+
+  const normalizedSlug = String(slug || '').replace(/^\/+/, '').toLowerCase();
+  const normalizedLocale = String(locale || '').toLowerCase();
+
+  if (normalizedSlug === 'fun-diving' && normalizedLocale.startsWith('en')) {
+    return rows.map((row) => {
+      if (row?.section_key === 'fun_diving_hero_subtitle') {
+        return {
+          ...row,
+          content_value:
+            "Experience the best of Koh Tao's underwater world with our professionally guided fun dive trips. Discover colorful coral reefs, encounter extraordinary marine life, and create unforgettable memories.",
+        };
+      }
+
+      if (row?.section_key === 'fun_diving_hero_title') {
+        return {
+          ...row,
+          content_value: 'Fun Diving Koh Tao',
+        };
+      }
+
+      return row;
+    });
+  }
+
+  return rows;
+}
+
 async function fetchFromWordPress(slug, locale) {
   const canonicalWpUrl = 'https://lightsalmon-dinosaur-377714.hostingersite.com';
   let wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
@@ -110,15 +140,15 @@ export default async function handler(req, res) {
   try {
     const wpRows = await fetchFromWordPress(slug, locale);
     if (wpRows && wpRows.length) {
-      return res.status(200).json({ rows: wpRows, source: 'wordpress' });
+      return res.status(200).json({ rows: applyContentFixes(wpRows, slug, locale), source: 'wordpress' });
     }
 
     const sbRows = await fetchFromSupabase(slug, locale);
-    return res.status(200).json({ rows: sbRows || [], source: 'supabase' });
+    return res.status(200).json({ rows: applyContentFixes(sbRows || [], slug, locale), source: 'supabase' });
   } catch (wpOrSbError) {
     try {
       const sbRows = await fetchFromSupabase(slug, locale);
-      return res.status(200).json({ rows: sbRows || [], source: 'supabase-fallback' });
+      return res.status(200).json({ rows: applyContentFixes(sbRows || [], slug, locale), source: 'supabase-fallback' });
     } catch (sbError) {
       return res.status(500).json({
         error: 'Failed to load page content',

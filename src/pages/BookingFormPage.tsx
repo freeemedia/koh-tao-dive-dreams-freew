@@ -116,8 +116,6 @@ const       BookingPage: React.FC = () => {
   const baseCourseCostMajor = Number.isFinite(parsedPrice)
     ? parsedPrice
     : (fallbackCourse?.price || (!hasDirectBookingContext && itemType === 'dive' ? 2000 : 0));
-  const parsedDeposit = Number(searchParams.get('deposit') || '0');
-  const depositFromQuery = Number.isFinite(parsedDeposit) ? parsedDeposit : 0;
   const depositCurrency = searchParams.get('currency') || fallbackCourse?.currency || 'THB';
   const isFunDiveBooking = isDiveBooking && /fun dive/i.test(itemTitle);
   const isDiscoverScubaBooking = isDiveBooking && /(discover scuba|dsd)/i.test(itemTitle);
@@ -143,7 +141,7 @@ const       BookingPage: React.FC = () => {
     : 0;
   const totalItemCostMajor = isCourseBooking ? courseCostMajor + courseFunDiveCostMajor : courseCostMajor;
   const depositFromPrice = totalItemCostMajor > 0 ? Math.round(totalItemCostMajor * COURSE_DEPOSIT_RATE) : 0;
-  const depositMajor = depositFromPrice > 0 ? depositFromPrice : depositFromQuery;
+  const depositMajor = depositFromPrice;
 
   const [selectedAddons, setSelectedAddons] = useState<Record<string, boolean>>({});
   const availableAddons = useMemo(() => {

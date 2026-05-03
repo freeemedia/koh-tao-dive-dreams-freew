@@ -12,6 +12,8 @@ const COURSE_PRICES: Record<string, number> = {
   'Fun Dive': 1800,
 };
 
+const COURSE_DEPOSIT_RATE = 0.2;
+
 const PAYPAL_BASE = 'https://paypal.me/prodivingasia';
 
 interface BookNowFormProps {
@@ -35,8 +37,7 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
   const [showThankYou, setShowThankYou] = useState(false);
 
   const coursePrice = COURSE_PRICES[form.course_title] || 0;
-  // For Fun Dive, deposit is always 360; for others, 20%
-  const deposit = form.course_title === 'Fun Dive' ? 360 : (coursePrice ? Math.round(coursePrice * 0.2) : 0);
+  const deposit = coursePrice > 0 ? Math.round(coursePrice * COURSE_DEPOSIT_RATE) : 0;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
