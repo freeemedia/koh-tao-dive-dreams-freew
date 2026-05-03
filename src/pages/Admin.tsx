@@ -17,6 +17,52 @@ interface KtdBooking {
   notes?: string;
 }
 
+const normalizeBookingRow = (row: any): KtdBooking => ({
+  id: Number(row?.id || 0),
+  booking_date: String(row?.booking_date || row?.created_at || ''),
+  customer_name: String(row?.customer_name || row?.name || ''),
+  customer_email: String(row?.customer_email || row?.email || ''),
+  customer_phone: String(row?.customer_phone || row?.phone || ''),
+  item_title: String(row?.item_title || row?.course_title || row?.booking_type || ''),
+  status: String(row?.status || 'new'),
+  deposit_amount: Number(row?.deposit_amount || 0) || 0,
+  total_amount: Number(row?.total_amount || 0) || 0,
+  notes: String(row?.notes || row?.message || ''),
+});
+
+const extractBookings = (payload: any): KtdBooking[] => {
+  const rowsRaw = Array.isArray(payload)
+    ? payload
+    : Array.isArray(payload?.data)
+      ? payload.data
+      : Array.isArray(payload?.bookings)
+        ? payload.bookings
+        : Array.isArray(payload?.items)
+          ? payload.items
+          : [];
+  return rowsRaw.map(normalizeBookingRow).filter((r) => r.id > 0 || r.customer_email || r.customer_name);
+};
+
+const buildAdminProxyRequest = () => {
+  const adminLoginToken = window.localStorage.getItem('admin_login_token') || '';
+  const viewToken = (import.meta.env.VITE_ADMIN_BOOKINGS_VIEW_TOKEN || window.localStorage.getItem('admin_view_token') || '').trim();
+  const headers: Record<string, string> = {};
+
+  if (adminLoginToken) {
+    headers['x-admin-login-token'] = adminLoginToken;
+  }
+  if (viewToken) {
+    headers['x-admin-view-token'] = viewToken;
+  }
+
+  let url = '/api/admin-bookings';
+  if (viewToken) {
+    url += `?view_token=${encodeURIComponent(viewToken)}`;
+  }
+
+  return { url, headers };
+};
+
 const Admin = () => {
   const { t } = useTranslation();
   const jiraEmbedUrl = import.meta.env.VITE_JIRA_EMBED_URL || '';
@@ -27,22 +73,61 @@ const Admin = () => {
   const [bookingsError, setBookingsError] = useState<string | null>(null);
   const [bookingSearch, setBookingSearch] = useState('');
 
-  useEffect(() => {
-    if (activeTab !== 'bookings') return;
+  const loadBookings = async () => {
     setBookingsLoading(true);
     setBookingsError(null);
-    const wpBase = (import.meta.env.VITE_WP_API_BASE || '').replace(/\/+$/, '');
-    const apiKey = import.meta.env.VITE_WP_BOOKING_API_KEY || '';
-    fetch(`${wpBase}/wp-json/ktd/v1/bookings?per_page=200`, {
-      headers: { 'X-KTD-API-Key': apiKey },
-    })
-      .then(r => r.json())
-      .then(data => {
-        const rows: KtdBooking[] = Array.isArray(data) ? data : (data.bookings || []);
-        setBookings(rows);
-      })
-      .catch(() => setBookingsError('Could not load bookings from WordPress.'))
-      .finally(() => setBookingsLoading(false));
+    try {
+      const wpBase = (import.meta.env.VITE_WP_API_BASE || '').replace(/\/+$/, '');
+      const apiKey = import.meta.env.VITE_WP_BOOKING_API_KEY || '';
+      let rows: KtdBooking[] = [];
+      let directError = '';
+
+      // 1) Try direct WordPress fetch (fastest when CORS and API key are accepted)
+      if (wpBase && apiKey) {
+        try {
+          const response = await fetch(`${wpBase}/wp-json/ktd/v1/bookings?per_page=200&nocache=${Date.now()}`, {
+            headers: { 'x-ktd-api-key': apiKey },
+            cache: 'no-store',
+          });
+          const payload = await response.json().catch(() => null);
+          if (!response.ok) {
+            throw new Error(payload?.message || `HTTP ${response.status}`);
+          }
+          rows = extractBookings(payload);
+        } catch (err) {
+          directError = err instanceof Error ? err.message : 'Direct WordPress request failed';
+        }
+      }
+
+      // 2) Fallback to same-origin admin proxy (avoids browser CORS/preflight issues)
+      if (rows.length === 0) {
+        const proxy = buildAdminProxyRequest();
+        const proxyRes = await fetch(proxy.url, {
+          headers: proxy.headers,
+          cache: 'no-store',
+        });
+        const proxyPayload = await proxyRes.json().catch(() => null);
+        if (!proxyRes.ok) {
+          const proxyMsg = proxyPayload?.error || proxyPayload?.message || `HTTP ${proxyRes.status}`;
+          const prefix = directError ? `Direct WP failed (${directError}). ` : '';
+          throw new Error(`${prefix}Proxy failed (${proxyMsg}).`);
+        }
+        rows = extractBookings(proxyPayload);
+      }
+
+      setBookings(rows);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Could not load bookings from WordPress.';
+      setBookingsError(message);
+      setBookings([]);
+    } finally {
+      setBookingsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab !== 'bookings') return;
+    void loadBookings();
   }, [activeTab]);
 
   const tabs = [
@@ -130,17 +215,7 @@ const Admin = () => {
                   className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
                 <button
-                  onClick={() => {
-                    setBookingsLoading(true);
-                    setBookingsError(null);
-                    const wpBase = (import.meta.env.VITE_WP_API_BASE || '').replace(/\/+$/, '');
-                    const apiKey = import.meta.env.VITE_WP_BOOKING_API_KEY || '';
-                    fetch(`${wpBase}/wp-json/ktd/v1/bookings?per_page=200`, { headers: { 'X-KTD-API-Key': apiKey } })
-                      .then(r => r.json())
-                      .then(data => setBookings(Array.isArray(data) ? data : (data.bookings || [])))
-                      .catch(() => setBookingsError('Could not load bookings.'))
-                      .finally(() => setBookingsLoading(false));
-                  }}
+                  onClick={() => { void loadBookings(); }}
                   className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-sm font-medium hover:bg-slate-100"
                 >
                   Refresh
