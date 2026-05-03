@@ -75,6 +75,29 @@ const Admin = () => {
   const [bookingsLoading, setBookingsLoading] = useState(false);
   const [bookingsError, setBookingsError] = useState<string | null>(null);
   const [bookingSearch, setBookingSearch] = useState('');
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
+
+  const patchBookingStatus = async (id: number, status: string) => {
+    setUpdatingId(id);
+    try {
+      const proxy = buildAdminProxyRequest();
+      const res = await fetch(`/api/admin-bookings?id=${id}`, {
+        method: 'PATCH',
+        headers: { ...proxy.headers, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        alert(`Failed to update status: ${err?.error || res.status}`);
+        return;
+      }
+      setBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b));
+    } catch (e) {
+      alert('Network error updating status');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
   const loadBookings = async () => {
     setBookingsLoading(true);
@@ -258,12 +281,24 @@ const Admin = () => {
                           <td className="px-3 py-2 text-slate-600">{b.customer_phone || '—'}</td>
                           <td className="px-3 py-2 text-slate-700">{b.item_title || '—'}</td>
                           <td className="px-3 py-2">
-                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
-                              b.status === 'confirmed' ? 'bg-green-100 text-green-700' :
-                              b.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                              b.status === 'cancelled' ? 'bg-red-100 text-red-600' :
-                              'bg-slate-100 text-slate-600'
-                            }`}>{b.status || 'new'}</span>
+                            <select
+                              aria-label="Booking status"
+                              value={b.status || 'new'}
+                              disabled={updatingId === b.id}
+                              onChange={e => { void patchBookingStatus(b.id, e.target.value); }}
+                              className={`rounded-full border px-2 py-0.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+                                b.status === 'confirmed' ? 'border-green-200 bg-green-100 text-green-700' :
+                                b.status === 'pending' ? 'border-yellow-200 bg-yellow-100 text-yellow-700' :
+                                b.status === 'cancelled' ? 'border-red-200 bg-red-100 text-red-600' :
+                                'border-slate-200 bg-slate-100 text-slate-600'
+                              } ${updatingId === b.id ? 'opacity-50 cursor-wait' : 'cursor-pointer'}`}
+                            >
+                              <option value="new">new</option>
+                              <option value="pending">pending</option>
+                              <option value="confirmed">confirmed</option>
+                              <option value="cancelled">cancelled</option>
+                              <option value="completed">completed</option>
+                            </select>
                           </td>
                           <td className="px-3 py-2 text-slate-600">{b.deposit_amount ? `฿${b.deposit_amount.toLocaleString()}` : '—'}</td>
                           <td className="px-3 py-2 text-slate-600">{b.total_amount ? `฿${b.total_amount.toLocaleString()}` : '—'}</td>
