@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -72,6 +72,14 @@ const InlineCourseBookingForm: React.FC<Props> = ({
   });
 
   const { formState: { isSubmitting } } = form;
+
+  // Prevent stale "submitted" success view when the selected item changes.
+  useEffect(() => {
+    setSubmitted(false);
+    setSubmittedEmail('');
+    setShowAccommodationNotice(false);
+    setPendingSubmission(null);
+  }, [itemTitle, itemType]);
 
   const submitBooking = async (data: FormData) => {
     try {

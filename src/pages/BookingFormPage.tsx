@@ -746,7 +746,7 @@ const       BookingPage: React.FC = () => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="">No preference</SelectItem>
+                    <SelectItem value="no_preference">No preference</SelectItem>
                     <SelectItem value="none">No accommodation needed</SelectItem>
                     <SelectItem value="resort">Resort accommodation</SelectItem>
                     <SelectItem value="nearby">Nearby hotel/guesthouse</SelectItem>
