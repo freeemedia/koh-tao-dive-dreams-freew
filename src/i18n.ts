@@ -34,8 +34,7 @@ const getInitialLanguage = (): 'en' | 'nl' => {
     // ignore storage access failures
   }
 
-  const fromNavigator = normalizeLng(window.navigator.language);
-  return fromNavigator || 'en';
+  return 'en';
 };
 
 i18n
