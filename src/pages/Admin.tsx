@@ -17,6 +17,9 @@ interface KtdBooking {
   notes?: string;
 }
 
+const DEFAULT_WP_API_BASE = 'https://lightsalmon-dinosaur-377714.hostingersite.com';
+const DEFAULT_WP_BOOKING_API_KEY = '909010232893284934783734';
+
 const normalizeBookingRow = (row: any): KtdBooking => ({
   id: Number(row?.id || 0),
   booking_date: String(row?.booking_date || row?.created_at || ''),
@@ -77,8 +80,8 @@ const Admin = () => {
     setBookingsLoading(true);
     setBookingsError(null);
     try {
-      const wpBase = (import.meta.env.VITE_WP_API_BASE || '').replace(/\/+$/, '');
-      const apiKey = import.meta.env.VITE_WP_BOOKING_API_KEY || '';
+      const wpBase = (import.meta.env.VITE_WP_API_BASE || DEFAULT_WP_API_BASE).replace(/\/+$/, '');
+      const apiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || DEFAULT_WP_BOOKING_API_KEY).trim();
       let rows: KtdBooking[] = [];
       let directError = '';
 
