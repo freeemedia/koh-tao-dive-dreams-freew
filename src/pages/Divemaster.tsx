@@ -10,7 +10,7 @@ const Divemaster: React.FC = () => {
   const isNl = i18n.language.startsWith('nl');
   
   const { currency, convertCurrency } = useCurrency();
-  const priceTHB = 41000;
+  const priceIDR = 41000;
   return (
     <>
       <CurrencySelector />
@@ -25,7 +25,7 @@ const Divemaster: React.FC = () => {
           course_overview: isNl
             ? 'Het Divemaster-programma ontwikkelt je duikleiderschapsvaardigheden, waaronder het superviseren van duikactiviteiten, assisteren van instructeurs en begeleiden van gecertificeerde duikers.'
             : 'The Divemaster program develops your dive leadership skills including supervising dive activities, assisting instructors, and guiding certified divers.',
-          price_thb: String(priceTHB),
+          price_thb: String(priceIDR),
           duration: isNl ? '2-4 weken' : '2-4 weeks',
         }}
         level="Pro Level"
@@ -63,14 +63,14 @@ const Divemaster: React.FC = () => {
           },
         ]}
         // Pass price and currency info for display in the template
-        priceTHB={priceTHB}
-        priceConverted={currency !== 'THB' ? convertCurrency(priceTHB, 'THB') : undefined}
+        priceIDR={priceIDR}
+        priceConverted={currency !== 'IDR' ? convertCurrency(priceIDR, 'IDR') : undefined}
         selectedCurrency={currency}
         galleryFolder={DIVEMASTER_DROPBOX_FOLDER}
         galleryTitle={isNl ? 'Divemaster galerij' : 'Divemaster Gallery'}
         galleryDescription={isNl
-          ? 'Foto\'s van de Divemaster-cursus en training op Koh Tao. Voeg beelden toe aan de Dropbox-map om deze sectie automatisch bij te werken.'
-          : 'Photos from the Divemaster course and training around Koh Tao. Add images to the Dropbox folder to keep this section updated automatically.'}
+          ? 'Foto\'s van de Divemaster-cursus en training rond Nusa Lembongan en Nusa Penida. Voeg beelden toe aan de Dropbox-map om deze sectie automatisch bij te werken.'
+          : 'Photos from the Divemaster course and training around Nusa Lembongan and Nusa Penida. Add images to the Dropbox folder to keep this section updated automatically.'}
         galleryUnavailableMessage={isNl
           ? 'Divemaster-foto\'s verschijnen hier zodra de Dropbox-map klaar is.'
           : 'Divemaster photos will appear here once the Dropbox folder is ready.'}

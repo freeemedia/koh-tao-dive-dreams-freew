@@ -13,14 +13,14 @@ export default function WhaleSharkAwareness() {
         <div className="mb-12">
           <h1 className="text-4xl font-bold mb-4">PADI Whaleshark Awareness Specialty (AWARE)</h1>
           <p className="text-xl text-gray-600">
-            Experience encounters with whale sharks while learning conservation and responsible diving practices.
+            Experience encounters with Mola Molas while learning conservation and responsible diving practices.
           </p>
         </div>
 
         <Card className="mb-8 p-6">
           <h2 className="text-2xl font-bold mb-4">Course Overview</h2>
           <p className="text-gray-700 mb-4">
-            Learn about whale sharks, the world's largest fish species, and how to responsibly interact with them. Understand their biology, behavior, and the importance of conservation efforts.
+            Learn about Mola Molas, the world's largest fish species, and how to responsibly interact with them. Understand their biology, behavior, and the importance of conservation efforts.
           </p>
         </Card>
 
@@ -30,9 +30,9 @@ export default function WhaleSharkAwareness() {
             <li>Whale shark biology and physiology</li>
             <li>Whale shark behavior and feeding patterns</li>
             <li>Migration and life cycle</li>
-            <li>Local whale shark populations</li>
+            <li>Local Mola Mola populations</li>
             <li>Conservation status and threats</li>
-            <li>Responsible whale shark interactions</li>
+            <li>Responsible Mola Mola interactions</li>
             <li>Photography and observation techniques</li>
           </ul>
         </Card>
@@ -55,20 +55,20 @@ export default function WhaleSharkAwareness() {
             </div>
             <div>
               <h3 className="font-semibold mb-2">Training Dives</h3>
-              <p className="text-gray-700">2 whale shark observation encounters</p>
+              <p className="text-gray-700">2 Mola Mola observation encounters</p>
             </div>
           </div>
         </Card>
 
         <Card className="mb-8 p-6 bg-blue-50">
           <h2 className="text-2xl font-bold mb-4">Pricing</h2>
-          <div className="text-3xl font-bold text-blue-600 mb-2">฿3,500</div>
+          <div className="text-3xl font-bold text-blue-600 mb-2">IDR 1,350,000</div>
           <p className="text-gray-600 text-sm">Includes training, materials, and seasonal encounters</p>
         </Card>
 
         <Card className="mb-8 p-6 bg-green-50">
           <h2 className="text-2xl font-bold mb-6">Meet the Gentle Giants</h2>
-          <p className="text-gray-700 mb-4">Experience encounters with whale sharks and learn about conservation.</p>
+          <p className="text-gray-700 mb-4">Experience encounters with Mola Molas and learn about conservation.</p>
           <Button size="lg" onClick={() => navigate('/booking?course=whaleshark&type=course')}>Book Now</Button>
         </Card>
 

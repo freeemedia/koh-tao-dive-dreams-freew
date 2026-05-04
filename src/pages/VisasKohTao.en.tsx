@@ -7,8 +7,8 @@ const VisasKohTao = () => (
       <div className="absolute inset-0 bg-[url('/images/visa.png')] bg-cover bg-center" />
       <div className="absolute inset-0 bg-black/35" />
       <div className="text-center text-white z-10 relative">
-        <h1 className="text-4xl md:text-5xl font-bold drop-shadow-lg">Visa for Koh Tao</h1>
-        <p className="mt-4 text-lg max-w-2xl mx-auto drop-shadow">Everything you need to know about Thai visa rules.</p>
+        <h1 className="text-4xl md:text-5xl font-bold drop-shadow-lg">Visa for Bali / Indonesia</h1>
+        <p className="mt-4 text-lg max-w-2xl mx-auto drop-shadow">Everything you need to know about Indonesian visa rules for Nusa Lembongan.</p>
       </div>
     </section>
 
@@ -16,12 +16,12 @@ const VisasKohTao = () => (
     <section className="bg-background rounded-lg shadow p-6 md:p-10 mb-8">
       <h2 className="text-2xl font-semibold mb-4">Visa Information</h2>
       <ul className="list-disc pl-6 mb-4">
-        <li>Most nationalities receive a 30-day visa exemption on arrival</li>
-        <li>Visa extensions are possible at the Koh Samui immigration office</li>
-        <li>Overstaying your visa may result in fines (500 THB per day)</li>
-        <li>Check current requirements on official Thai government websites</li>
+        <li>Most nationalities (60+) receive a free 30-day Visa on Arrival in Indonesia</li>
+        <li>Visa on Arrival can be extended once for an additional 30 days at an immigration office</li>
+        <li>B211A Social/Cultural Visa available for stays up to 60 days (extendable)</li>
+        <li>Check current requirements on the official Indonesian immigration website</li>
       </ul>
-      <p className="mb-4">Always carry your passport and visa while traveling in Thailand. Keep copies stored separately as backup.</p>
+      <p className="mb-4">Always carry your passport while traveling in Indonesia. Keep digital copies stored separately as backup.</p>
       <div className="flex flex-wrap gap-4 mb-4">
         <a href="/HowToGetHere" className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Travel Information</a>
         <a href="/Accommodation" className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Book Your Stay</a>

@@ -13,11 +13,11 @@ const WeatherKohTao = () => {
   const locale = i18n.language.startsWith('nl') ? 'nl' : 'en';
 
   const fallbackContent = {
-    title: locale === 'nl' ? 'Weer op Koh Tao' : 'Weather on Koh Tao',
+    title: locale === 'nl' ? 'Weer op Nusa Lembongan' : 'Weather on Nusa Lembongan',
     subtitle:
       locale === 'nl'
-        ? 'Plan je reis met inzicht in het tropische klimaat van Koh Tao.'
-        : 'Plan your trip with insight into Koh Tao\'s tropical climate.',
+        ? 'Plan je reis met inzicht in het tropische klimaat van Nusa Lembongan.'
+        : 'Plan your trip with insight into Nusa Lembongan\'s tropical climate.',
     climate_title: locale === 'nl' ? 'Klimaat & seizoenen' : 'Climate & seasons',
     climate_list:
       locale === 'nl'

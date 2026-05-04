@@ -13,26 +13,26 @@ export default function WhaleSharkAwareness() {
         <div className="mb-12">
           <h1 className="text-4xl font-bold mb-4">PADI Whaleshark Awareness Specialty (AWARE)</h1>
           <p className="text-xl text-gray-600">
-            Beleef ontmoetingen met walvishaaien terwijl je leert over natuurbescherming en verantwoord duiken.
+            Beleef ontmoetingen met Mola Mola terwijl je leert over natuurbescherming en verantwoord duiken.
           </p>
         </div>
 
         <Card className="mb-8 p-6">
           <h2 className="text-2xl font-bold mb-4">Cursusoverzicht</h2>
           <p className="text-gray-700 mb-4">
-            Leer over walvishaaien, de grootste vissoort ter wereld, en hoe je verantwoord met ze omgaat. Begrijp hun biologie, gedrag en het belang van beschermingsinspanningen.
+            Leer over Mola Mola, de grootste vissoort ter wereld, en hoe je verantwoord met ze omgaat. Begrijp hun biologie, gedrag en het belang van beschermingsinspanningen.
           </p>
         </Card>
 
         <Card className="mb-8 p-6">
           <h2 className="text-2xl font-bold mb-4">Wat je leert</h2>
           <ul className="list-disc list-inside space-y-3 text-gray-700">
-            <li>Biologie en fysiologie van walvishaaien</li>
-            <li>Gedrag en voedingspatronen van walvishaaien</li>
+            <li>Biologie en fysiologie van Mola Mola</li>
+            <li>Gedrag en voedingspatronen van Mola Mola</li>
             <li>Migratie en levenscyclus</li>
-            <li>Lokale populaties walvishaaien</li>
+            <li>Lokale populaties Mola Mola</li>
             <li>Beschermingsstatus en bedreigingen</li>
-            <li>Verantwoorde interacties met walvishaaien</li>
+            <li>Verantwoorde interacties met Mola Mola</li>
             <li>Fotografie- en observatietechnieken</li>
           </ul>
         </Card>
@@ -55,20 +55,20 @@ export default function WhaleSharkAwareness() {
             </div>
             <div>
               <h3 className="font-semibold mb-2">Trainingsduiken</h3>
-              <p className="text-gray-700">2 observatie-ontmoetingen met walvishaaien</p>
+              <p className="text-gray-700">2 observatie-ontmoetingen met Mola Mola</p>
             </div>
           </div>
         </Card>
 
         <Card className="mb-8 p-6 bg-blue-50">
           <h2 className="text-2xl font-bold mb-4">Prijs</h2>
-          <div className="text-3xl font-bold text-blue-600 mb-2">฿3,500</div>
+          <div className="text-3xl font-bold text-blue-600 mb-2">IDR 1,350,000</div>
           <p className="text-gray-600 text-sm">Inclusief training, lesmateriaal en seizoensgebonden ontmoetingen</p>
         </Card>
 
         <Card className="mb-8 p-6 bg-green-50">
           <h2 className="text-2xl font-bold mb-6">Ontmoet de vriendelijke reuzen</h2>
-          <p className="text-gray-700 mb-4">Beleef ontmoetingen met walvishaaien en leer over natuurbescherming.</p>
+          <p className="text-gray-700 mb-4">Beleef ontmoetingen met Mola Mola en leer over natuurbescherming.</p>
           <Button size="lg" onClick={() => navigate('/booking?course=whaleshark&type=course')}>Boek nu</Button>
         </Card>
 

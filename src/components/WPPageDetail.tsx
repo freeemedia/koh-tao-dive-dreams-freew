@@ -59,7 +59,7 @@ const WPPageDetail: React.FC<{ slug: string }> = ({ slug }) => {
   // Quick facts from ACF
   const quickFacts = content.acf?.quick_facts || {};
 
-  // Header image: use provided image for Japanese Gardens, else first gallery image
+  // Header image: use provided image for Toyapakeh, else first gallery image
   let headerImage = '';
   if (slug === 'japanese-gardens') {
     headerImage = '/images/japanandwins.jpg';

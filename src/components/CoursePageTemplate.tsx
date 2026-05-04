@@ -43,7 +43,7 @@ export interface CoursePageProps {
   bookingItemName?: string;
   bookingType?: 'course' | 'dive';
   // Added for currency display
-  priceTHB?: number;
+  priceIDR?: number;
   priceConverted?: string;
   selectedCurrency?: string;
   galleryFolder?: string;
@@ -144,7 +144,7 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
   const thbAmount = parseAmount(priceThb);
   const usdAmount = parseAmount(priceUsd);
   const eurAmount = parseAmount(priceEur);
-  const bookingUrl = `/booking?item=${encodeURIComponent(bookingItemName || '')}&type=${bookingType}&price=${thbAmount}&currency=THB&course=${encodeURIComponent(pageSlug || '')}`;  
+  const bookingUrl = `/booking?item=${encodeURIComponent(bookingItemName || '')}&type=${bookingType}&price=${thbAmount}&currency=IDR&course=${encodeURIComponent(pageSlug || '')}`;  
 
   const heroImageUrl = heroImage || images[0];
 
@@ -249,14 +249,14 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
                   </div>
                   <div className="space-y-1">
                     <p className="text-2xl font-bold text-sky-600">฿{thbAmount.toLocaleString(localeTag)}</p>
-                    {exchangeRates && exchangeRates.USD && exchangeRates.THB && (
+                    {exchangeRates && exchangeRates.USD && exchangeRates.IDR && (
                       <p className="text-base text-muted-foreground">
-                        ${(thbAmount / exchangeRates.THB * exchangeRates.USD).toLocaleString(localeTag, { maximumFractionDigits: 0 })} USD
+                        ${(thbAmount / exchangeRates.IDR * exchangeRates.USD).toLocaleString(localeTag, { maximumFractionDigits: 0 })} USD
                       </p>
                     )}
-                    {exchangeRates && exchangeRates.EUR && exchangeRates.THB && (
+                    {exchangeRates && exchangeRates.EUR && exchangeRates.IDR && (
                       <p className="text-base text-muted-foreground">
-                        €{(thbAmount / exchangeRates.THB * exchangeRates.EUR).toLocaleString(localeTag, { maximumFractionDigits: 0 })} EUR
+                        €{(thbAmount / exchangeRates.IDR * exchangeRates.EUR).toLocaleString(localeTag, { maximumFractionDigits: 0 })} EUR
                       </p>
                     )}
                   </div>
@@ -290,7 +290,7 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
               itemType={bookingType}
               itemTitle={bookingItemName || content.hero_title || ''}
               depositMajor={thbAmount > 0 ? Math.round(thbAmount * 0.2) : undefined}
-              depositCurrency="THB"
+              depositCurrency="IDR"
             />
           </div>
         </section>

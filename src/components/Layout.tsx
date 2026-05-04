@@ -153,11 +153,11 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-5 mb-10">
           <div>
-            <div className="text-xl font-bold text-cyan-400 mb-3">Pro Diving Asia</div>
+            <div className="text-xl font-bold text-cyan-400 mb-3">Lembongan Dive Resort</div>
             <p className="text-sm leading-relaxed text-gray-300 mb-4">
               {isDutch
-                ? 'Koh Tao\'s premium duikschool voor PADI-cursussen, fun dives en onvergetelijke onderwaterervaringen.'
-                : 'Koh Tao\'s premium dive school for PADI courses, fun dives, and unforgettable underwater experiences.'}
+                ? 'Nusa Lembongan\'s premium duikschool voor PADI-cursussen, fun dives en onvergetelijke onderwaterervaringen.'
+                : 'Nusa Lembongan\'s premium dive school for PADI courses, fun dives, and unforgettable underwater experiences.'}
             </p>
             <div className="flex items-center gap-3">
               <a
@@ -201,17 +201,17 @@ const Footer: React.FC = () => {
             <ul className="space-y-2 text-sm text-gray-300">
               <li><Link to="/koh-tao-dive-sites" className="hover:text-white transition">{isDutch ? 'Overzicht' : 'Overview'}</Link></li>
               <li><Link to="/dive-site-reports" className="hover:text-white transition">{isDutch ? 'Duiklocatie rapporten' : 'Dive Site Reports'}</Link></li>
-              <li><Link to="/dive-sites/sail-rock" className="hover:text-white transition">Sail Rock</Link></li>
-              <li><Link to="/dive-sites/chumphon-pinnacle" className="hover:text-white transition">Chumphon Pinnacle</Link></li>
+              <li><Link to="/dive-sites/sail-rock" className="hover:text-white transition">Crystal Bay</Link></li>
+              <li><Link to="/dive-sites/chumphon-pinnacle" className="hover:text-white transition">Manta Point</Link></li>
               <li><Link to="/dive-sites/south-west-pinnacle" className="hover:text-white transition">South West Pinnacle</Link></li>
-              <li><Link to="/dive-sites/japanese-gardens" className="hover:text-white transition">Japanese Gardens</Link></li>
-              <li><Link to="/dive-sites/htms-sattakut" className="hover:text-white transition">HTMS Sattakut</Link></li>
-              <li><Link to="/dive-sites/shark-island" className="hover:text-white transition">Shark Island</Link></li>
+              <li><Link to="/dive-sites/japanese-gardens" className="hover:text-white transition">Toyapakeh</Link></li>
+              <li><Link to="/dive-sites/htms-sattakut" className="hover:text-white transition">USAT Liberty Wreck</Link></li>
+              <li><Link to="/dive-sites/shark-island" className="hover:text-white transition">SD Point</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-cyan-400 text-xs font-bold uppercase tracking-wider mb-4">Koh Tao</h4>
+            <h4 className="text-cyan-400 text-xs font-bold uppercase tracking-wider mb-4">Nusa Lembongan</h4>
             <ul className="space-y-2 text-sm text-gray-300">
               <li><Link to="/Accommodation" className="hover:text-white transition">{isDutch ? 'Accommodatie' : 'Accommodation'}</Link></li>
               <li><Link to="/ThingsToDo" className="hover:text-white transition">{isDutch ? 'Dingen om te doen' : 'Things To Do'}</Link></li>
@@ -250,8 +250,8 @@ const Footer: React.FC = () => {
               <li>
                 <span className="block text-white font-semibold text-xs uppercase tracking-wider mb-1">{isDutch ? 'Locatie' : 'Location'}</span>
                 <span className="leading-relaxed">
-                  Sairee Beach, Koh Tao<br />
-                  Surat Thani 84360, Thailand
+                  Jungutbatu Beach, Nusa Lembongan<br />
+                  Sanur, Bali 84360, Indonesia
                 </span>
               </li>
               <li>
@@ -288,7 +288,7 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="border-t border-[#1a3a5c] pt-6 text-center text-xs text-gray-500 space-y-1">
-          {footerContent.footer_line_1 || `© ${new Date().getFullYear()} Pro Diving Asia — All rights reserved | Powered By One Media Asia Co, Ltd`}
+          {footerContent.footer_line_1 || `© ${new Date().getFullYear()} Lembongan Dive Resort — All rights reserved | Powered By One Media Asia Co, Ltd`}
           {footerContent.footer_line_2 && <span>{footerContent.footer_line_2}</span>}
         </div>
       </div>

@@ -49,21 +49,21 @@ const PAGE_REGISTRY: PageInfo[] = [
   { slug: 'specialty/sidemount', title: 'Sidemount Diver', category: 'specialty', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
 
   // DIVE SITES
-  { slug: 'dive-sites/sail-rock', title: 'Sail Rock', category: 'dive-site', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
-  // { slug: 'dive-sites/chumphon-pinnacle', title: 'Chumphon Pinnacle', category: 'dive-site', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
-  { slug: 'dive-sites/japanese-gardens', title: 'Japanese Gardens', category: 'dive-site', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
-  { slug: 'dive-sites/htms-sattakut', title: 'HTMS Sattakut Wreck', category: 'dive-site', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
+  { slug: 'dive-sites/sail-rock', title: 'Crystal Bay', category: 'dive-site', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
+  // { slug: 'dive-sites/chumphon-pinnacle', title: 'Manta Point', category: 'dive-site', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
+  { slug: 'dive-sites/japanese-gardens', title: 'Toyapakeh', category: 'dive-site', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
+  { slug: 'dive-sites/htms-sattakut', title: 'USAT Liberty Wreck Wreck', category: 'dive-site', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
   { slug: 'dive-sites/twins', title: 'The Twins', category: 'dive-site', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
-  { slug: 'dive-sites/shark-island', title: 'Shark Island', category: 'dive-site', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
+  { slug: 'dive-sites/shark-island', title: 'SD Point', category: 'dive-site', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
 
   // MARINE LIFE
-  { slug: 'marine-life/whale-shark', title: 'Whale Shark', category: 'marine-life', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
+  { slug: 'marine-life/whale-shark', title: 'Mola Mola', category: 'marine-life', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
   { slug: 'marine-life/green-sea-turtle', title: 'Green Sea Turtle', category: 'marine-life', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
   { slug: 'marine-life/hawksbill-turtle', title: 'Hawksbill Turtle', category: 'marine-life', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
 
   // INFO PAGES
   { slug: 'accommodation', title: 'Accommodation', category: 'info', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
-  { slug: 'koh-tao-info', title: 'Koh Tao Information', category: 'info', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
+  { slug: 'koh-tao-info', title: 'Nusa Lembongan Information', category: 'info', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
   { slug: 'how-to-get-here', title: 'How to Get Here', category: 'info', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
   { slug: 'things-to-do', title: 'Things to Do', category: 'info', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
   { slug: 'weather', title: 'Weather Information', category: 'info', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
@@ -142,9 +142,9 @@ export const PageManager: React.FC = () => {
         duration: '3-4 days',
         about_headline: 'Small island, 21 km², lush and surrounded by more than 15 dive sites.',
         about_sites_line: 'WHITE ROCK - TWINS - GREEN ROCK - CHUMPHON PINNACLE - SAIL ROCK - SOUTHWEST PINNACLE - AND MORE',
-        about_map_alt: 'Map of Koh Tao and dive sites',
+        about_map_alt: 'Map of Nusa Lembongan and dive sites',
         about_title: 'From PADI Open Water certifications to PADI Divemaster internships',
-        about_paragraph_1: 'Koh Tao is not only a top destination in Thailand for your diving holiday, but also ideal for completing almost all PADI dive certifications, for both beginners and experienced divers.',
+        about_paragraph_1: 'Nusa Lembongan is not only a top destination in Indonesia for your diving holiday, but also ideal for completing almost all PADI dive certifications, for both beginners and experienced divers.',
         about_paragraph_2: 'Lifetime certifications valid worldwide, at a surprisingly low price. Earn your PADI diving certification here for 11500 baht, now including 4 nights accommodation (room with private bathroom) in the course price.',
         about_note: 'Free accommodation with our courses can only be guaranteed if booked 7 days in advance. If our accommodation is not available, we will assist you with staying in one of our partner resorts.',
       };
@@ -157,9 +157,9 @@ export const PageManager: React.FC = () => {
         duration: '3-4 dagen',
         about_headline: 'Klein eiland, 21 km², groen en omringd door meer dan 15 duiklocaties.',
         about_sites_line: 'WHITE ROCK - TWINS - GREEN ROCK - CHUMPHON PINNACLE - SAIL ROCK - SOUTHWEST PINNACLE - EN MEER',
-        about_map_alt: 'Kaart van Koh Tao en duiklocaties',
+        about_map_alt: 'Kaart van Nusa Lembongan en duiklocaties',
         about_title: 'Van PADI Open Water-certificering tot PADI Divemaster-internships',
-        about_paragraph_1: 'Koh Tao is niet alleen een topbestemming in Thailand voor je duikvakantie, maar ook ideaal om bijna alle PADI-duikcertificaten te behalen, voor zowel beginners als ervaren duikers.',
+        about_paragraph_1: 'Nusa Lembongan is niet alleen een topbestemming in Indonesia voor je duikvakantie, maar ook ideaal om bijna alle PADI-duikcertificaten te behalen, voor zowel beginners als ervaren duikers.',
         about_paragraph_2: 'Levenslange certificaten die wereldwijd geldig zijn, voor een verrassend lage prijs. Behaal je PADI-duikcertificaat hier voor 11500 baht, nu inclusief 4 overnachtingen (kamer met badkamer) in de cursusprijs.',
         about_note: 'Gratis accommodatie bij onze cursussen kan alleen worden gegarandeerd als er minimaal 7 dagen van tevoren wordt geboekt. Als onze accommodatie niet beschikbaar is, helpen we je graag met een verblijf in een van onze partnerresorts.',
       };

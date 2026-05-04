@@ -17,8 +17,8 @@ const ProLevelCourses: React.FC = () => {
       ? 'Pro Level Cursussen & Instructor-specialties'
       : 'Pro Level Courses & Instructor Specialties',
     page_subtitle: isDutch
-      ? 'Professionele trainingsprogramma\'s en instructor-specialtycursussen op Koh Tao. Klik op een cursus voor details of informatie.'
-      : 'Professional training programs and instructor specialty courses available on Koh Tao. Click a course to view details or enquire.',
+      ? 'Professionele trainingsprogramma\'s en instructor-specialtycursussen op Nusa Lembongan. Klik op een cursus voor details of informatie.'
+      : 'Professional training programs and instructor specialty courses available on Nusa Lembongan. Click a course to view details or enquire.',
     card_description: isDutch
       ? 'Professionele ontwikkeling en specialtytraining op instructeursniveau.'
       : 'Professional development and instructor-level specialty training.',
@@ -30,8 +30,8 @@ const ProLevelCourses: React.FC = () => {
       : "Complete the form below and we'll reply with availability and pricing.",
     footer_cta: isDutch ? 'Naar boekingspagina' : 'Go to booking page',
     courses_list: isDutch
-      ? 'PADI Divemaster-cursus|/courses/divemaster\nPADI Instructor-cursus|/courses/instructor\nEFR Instructor-cursus\nPADI MSDT-programma|/courses/msdt-program\nIDC Staff Instructor\nPADI IDC-schema\nInstructor-specialties\nAWARE Fish ID\nBoot Instructor\nDeep Instructor\nDPV Instructor\nEmergency O2 Provider\nEquipment Instructor\nNight Diving Instructor\nNitrox Instructor\nSearch & Recovery\nSelf Reliant Instructor\nSidemount Instructor\nUnderwater Naturalist\nUnderwater Navigator\nWreck Instructor\nMSDT Instructor Specialty-cursussen Koh Tao - Sidemount'
-      : 'PADI Divemaster Course|/courses/divemaster\nPADI Instructor Course|/courses/instructor\nEFR Instructor Course\nPADI MSDT Program|/courses/msdt-program\nIDC Staff Instructor\nPADI IDC Schedule\nInstructor Specialties\nAWARE Fish ID\nBoat Instructor\nDeep Instructor\nDPV Instructor\nEmergency O2 Provider\nEquipment Instructor\nNight Diving Instructor\nNitrox Instructor\nSearch & Recovery\nSelf Reliant Instructor\nSidemount Instructor\nUnderwater Naturalist\nUnderwater Navigator\nWreck Instructor\nMSDT Instructor Specialty courses Koh Tao - Sidemount',
+      ? 'PADI Divemaster-cursus|/courses/divemaster\nPADI Instructor-cursus|/courses/instructor\nEFR Instructor-cursus\nPADI MSDT-programma|/courses/msdt-program\nIDC Staff Instructor\nPADI IDC-schema\nInstructor-specialties\nAWARE Fish ID\nBoot Instructor\nDeep Instructor\nDPV Instructor\nEmergency O2 Provider\nEquipment Instructor\nNight Diving Instructor\nNitrox Instructor\nSearch & Recovery\nSelf Reliant Instructor\nSidemount Instructor\nUnderwater Naturalist\nUnderwater Navigator\nWreck Instructor\nMSDT Instructor Specialty-cursussen Nusa Lembongan - Sidemount'
+      : 'PADI Divemaster Course|/courses/divemaster\nPADI Instructor Course|/courses/instructor\nEFR Instructor Course\nPADI MSDT Program|/courses/msdt-program\nIDC Staff Instructor\nPADI IDC Schedule\nInstructor Specialties\nAWARE Fish ID\nBoat Instructor\nDeep Instructor\nDPV Instructor\nEmergency O2 Provider\nEquipment Instructor\nNight Diving Instructor\nNitrox Instructor\nSearch & Recovery\nSelf Reliant Instructor\nSidemount Instructor\nUnderwater Naturalist\nUnderwater Navigator\nWreck Instructor\nMSDT Instructor Specialty courses Nusa Lembongan - Sidemount',
   };
 
   const { content } = usePageContent({

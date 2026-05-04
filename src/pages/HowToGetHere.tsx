@@ -19,7 +19,7 @@ const HowToGetHere = () => {
   const locale = i18n.language.startsWith('nl') ? 'nl' : 'en';
 
   const fallbackContent = {
-    title: locale === 'nl' ? 'Hoe kom je op Koh Tao' : 'How to get to Koh Tao',
+    title: locale === 'nl' ? 'Hoe kom je op Nusa Lembongan' : 'How to get to Nusa Lembongan',
     subtitle:
       locale === 'nl'
         ? 'Verschillende routes om dit eilandparadijs te bereiken.'
@@ -27,19 +27,19 @@ const HowToGetHere = () => {
     options_title: locale === 'nl' ? 'Reisopties' : 'Travel options',
     options_list:
       locale === 'nl'
-        ? 'Met de ferry:|Koh Tao is alleen per boot bereikbaar. Ferries vertrekken vanaf Chumphon, Surat Thani, Koh Samui en Koh Phangan. Bekende aanbieders zijn Lomprayah, Songserm en Seatran.\nMet de trein:|Reis met de trein van Bangkok naar Chumphon en stap daar over op de ferry.\nMet de bus:|Bussen vanuit Bangkok en andere steden sluiten aan op ferryterminals in Chumphon en Surat Thani.\nMet het vliegtuig:|Vlieg naar Koh Samui, Chumphon of Surat Thani en neem daarna de ferry naar Koh Tao.'
-        : 'By ferry:|Koh Tao is only accessible by boat. Ferries depart from Chumphon, Surat Thani, Koh Samui, and Koh Phangan. Popular operators include Lomprayah, Songserm, and Seatran.\nBy train:|Take a train from Bangkok to Chumphon and transfer to the ferry there.\nBy bus:|Buses from Bangkok and other cities connect to ferry terminals in Chumphon and Surat Thani.\nBy plane:|Fly to Koh Samui, Chumphon, or Surat Thani and then take a ferry to Koh Tao.',
+        ? 'Met de speedboot:|Nusa Lembongan is eenvoudig bereikbaar per speedboot vanuit Sanur (Bali). De overtocht duurt slechts 30 minuten. Vertrekken zijn er meerdere per dag.\nVanuit Kusamba:|Alternatiefhaven voor speedboten, ook circa 30-45 minuten varen.\nVanuit Padangbai:|Verder weg, maar ook boten beschikbaar vanuit dit haventje op Bali.\nVanuit Kuta/Seminyak:|Shuttle bus naar Sanur, daarna speedboot naar Lembongan.'
+        : 'By speedboat from Sanur:|The easiest way to reach Nusa Lembongan. Speedboats depart from Sanur Beach (Bali) multiple times daily. The crossing takes just 30 minutes.\nFrom Kusamba:|Alternative harbour with speedboats, approximately 30-45 minutes crossing.\nFrom Padangbai:|Further away on Bali, but boats are also available from this harbour.\nFrom Kuta/Seminyak:|Take a shuttle bus to Sanur and then board a speedboat to Lembongan.',
     cta_book_stay: locale === 'nl' ? 'Boek verblijf' : 'Book accommodation',
     cta_visa_info: locale === 'nl' ? 'Visuminformatie' : 'Visa information',
     tip:
       locale === 'nl'
-        ? 'Tip: boek ferrytickets in het hoogseizoen op tijd. De meeste ferries komen aan bij Mae Haad Pier.'
-        : 'Tip: book ferry tickets early during high season. Most ferries arrive at Mae Haad Pier.',
-    ferry_title: locale === 'nl' ? 'Ferry-opties' : 'Ferry options',
+        ? 'Tip: boek je speedboottickets vooraf in het hoogseizoen (juli-oktober). De meeste boten komen aan bij Jungutbatu Pier op Nusa Lembongan.'
+        : 'Tip: book speedboat tickets in advance during high season (July-October). Most boats arrive at Jungutbatu Pier on Nusa Lembongan.',
+    ferry_title: locale === 'nl' ? 'Speedboot-opties' : 'Speedboat options',
     ferry_options_list:
       locale === 'nl'
-        ? 'Speedboot:|1-1,5 uur, duurder maar sneller\nNachtferry:|Goedkopere optie, aankomst in de ochtend\nDagferry:|Standaardoptie met mooie uitzichten\n|Bekijk websites van operators voor schema\'s en kortingen'
-        : 'Speed boat:|1-1.5 hours, more expensive but faster\nNight ferry:|Cheaper option, arrival in the morning\nDay ferry:|Standard option with scenic views\n|Check operator websites for schedules and discounts',
+        ? 'Scoot Fast Cruises:|Populaire aanbieder, meerdere dagelijkse vaarten vanuit Sanur\nRocky Fast Cruises:|Snelle en betrouwbare speedboten\nPerama Tour:|Goedkopere optie, ook vanuit Sanur\n|Boek online of bij een agent in Sanur voor de beste prijzen'
+        : 'Scoot Fast Cruises:|Popular operator, multiple daily departures from Sanur\nRocky Fast Cruises:|Fast and reliable speedboats\nPerama Tour:|Budget-friendly option, also from Sanur\n|Book online or at an agent in Sanur for the best prices',
   };
 
   const { content } = usePageContent({

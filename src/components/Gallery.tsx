@@ -17,8 +17,8 @@ const Gallery = () => {
       ? 'Bekijk de fotografie van onze blije klanten.'
       : 'Check out the photography of our happy customers.',
     gallery_subtitle: isDutch
-      ? 'Ervaar de adembenemende schoonheid van de onderwaterwereld van Koh Tao in onze fotogalerij'
-      : 'Experience the breathtaking beauty of Koh Tao’s underwater world in our photo gallery',
+      ? 'Ervaar de adembenemende schoonheid van de onderwaterwereld van Nusa Lembongan in onze fotogalerij'
+      : 'Experience the breathtaking beauty of Nusa Lembongan’s underwater world in our photo gallery',
   }), [isDutch]);
 
   const { content } = usePageContent({
@@ -35,22 +35,22 @@ const Gallery = () => {
     },
     {
       src: "/images/htms-sattakut-wreck.jpg",
-      alt: "Diepduiken bij het HTMS Sattakut-wrak",
+      alt: "Diepduiken bij het USAT Liberty Wreck-wrak",
       category: "Wrakduiken"
     },
     {
       src: "/images/sailrock.webp",
-      alt: "Diepduiktrip bij Sail Rock, Koh Tao",
+      alt: "Diepduiktrip bij Crystal Bay, Nusa Lembongan",
       category: "Diepduiken"
     },
     {
       src: "/images/chumphon-pinnacle-top.webp",
-      alt: "Chumphon Pinnacle met scholen rifvissen",
+      alt: "Manta Point met scholen rifvissen",
       category: "Duiklocaties"
     },
     {
       src: "/images/htms-sattakut.jpg",
-      alt: "Wrakduik op de HTMS Sattakut",
+      alt: "Wrakduik op de USAT Liberty Wreck",
       category: "Duiklocaties"
     },
     {
@@ -60,12 +60,12 @@ const Gallery = () => {
     },
     {
       src: "/images/mango-bay.webp",
-      alt: "Heldere omstandigheden bij Mango Bay",
+      alt: "Heldere omstandigheden bij SD Point",
       category: "Duiklocaties"
     },
     {
       src: "/images/sharkisand.jpg",
-      alt: "Rifstructuren bij Shark Island",
+      alt: "Rifstructuren bij SD Point",
       category: "Duiklocaties"
     },
     {
@@ -80,7 +80,7 @@ const Gallery = () => {
     },
     {
       src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80",
-      alt: "Golden hour op een idyllisch Koh Tao strand",
+      alt: "Golden hour op een idyllisch Nusa Lembongan strand",
       category: "Stranden"
     },
     {
@@ -95,22 +95,22 @@ const Gallery = () => {
     },
     {
       src: "/images/viewpoints-hero.jpg",
-      alt: "Uitzichtpunt wandeling op Koh Tao",
+      alt: "Uitzichtpunt wandeling op Nusa Lembongan",
       category: "Bergwandelen"
     },
     {
       src: "/images/things-to-do.jpg",
-      alt: "Leuke activiteiten op Koh Tao",
-      category: "Koh Tao Vibes"
+      alt: "Leuke activiteiten op Nusa Lembongan",
+      category: "Nusa Lembongan Vibes"
     },
     {
       src: "/images/JunejueaBeach.jpg",
       alt: "Prachtig strand bij June Juea",
-      category: "Koh Tao Vibes"
+      category: "Nusa Lembongan Vibes"
     },
     {
       src: "https://images.unsplash.com/photo-1582967788606-a171c1080cb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      alt: "Ontmoeting met een walvishaai",
+      alt: "Ontmoeting met een Mola Mola",
       category: "Grote vissen"
     },
     {
@@ -126,22 +126,22 @@ const Gallery = () => {
     },
     {
       src: "/images/htms-sattakut-wreck.jpg",
-      alt: "Deep dive at the HTMS Sattakut wreck",
+      alt: "Deep dive at the USAT Liberty Wreck wreck",
       category: "Wreck Diving"
     },
     {
       src: "/images/sailrock.webp",
-      alt: "Deep diving trip at Sail Rock, Koh Tao",
+      alt: "Deep diving trip at Crystal Bay, Nusa Lembongan",
       category: "Deep Diving"
     },
     {
       src: "/images/chumphon-pinnacle-top.webp",
-      alt: "Chumphon Pinnacle with schools of reef fish",
+      alt: "Manta Point with schools of reef fish",
       category: "Dive Sites"
     },
     {
       src: "/images/htms-sattakut.jpg",
-      alt: "Wreck dive at HTMS Sattakut",
+      alt: "Wreck dive at USAT Liberty Wreck",
       category: "Dive Sites"
     },
     {
@@ -151,12 +151,12 @@ const Gallery = () => {
     },
     {
       src: "/images/mango-bay.webp",
-      alt: "Clear-water conditions at Mango Bay",
+      alt: "Clear-water conditions at SD Point",
       category: "Dive Sites"
     },
     {
       src: "/images/sharkisand.jpg",
-      alt: "Reef structure at Shark Island",
+      alt: "Reef structure at SD Point",
       category: "Dive Sites"
     },
     {
@@ -171,7 +171,7 @@ const Gallery = () => {
     },
     {
       src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80",
-      alt: "Golden hour at an idyllic Koh Tao beach",
+      alt: "Golden hour at an idyllic Nusa Lembongan beach",
       category: "Beaches"
     },
     {
@@ -186,18 +186,18 @@ const Gallery = () => {
     },
     {
       src: "/images/viewpoints-hero.jpg",
-      alt: "Viewpoint hike in Koh Tao",
+      alt: "Viewpoint hike in Nusa Lembongan",
       category: "Mountain Hikes"
     },
     {
       src: "/images/things-to-do.jpg",
-      alt: "Fun activities around Koh Tao",
-      category: "Koh Tao Vibes"
+      alt: "Fun activities around Nusa Lembongan",
+      category: "Nusa Lembongan Vibes"
     },
     {
       src: "/images/JunejueaBeach.jpg",
       alt: "Beautiful June Juea beach scene",
-      category: "Koh Tao Vibes"
+      category: "Nusa Lembongan Vibes"
     },
     {
       src: "https://images.unsplash.com/photo-1582967788606-a171c1080cb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",

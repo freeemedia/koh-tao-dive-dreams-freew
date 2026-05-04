@@ -169,7 +169,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
               preferred_date: data.preferred_date || '',
               experience_level: data.experience_level || '',
               payment_choice: paymentChoice,
-              currency: depositCurrency || 'THB',
+              currency: depositCurrency || 'IDR',
               deposit_amount,
               total_amount,
               due_amount,
@@ -227,7 +227,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
                 payment_choice: paymentChoice,
                 payment_status: 'new_inquiry',
                 deposit_amount: typeof depositMajor === 'number' ? depositMajor : undefined,
-                currency: depositCurrency || 'THB',
+                currency: depositCurrency || 'IDR',
               },
               tags: [
                 'website-form',

@@ -38,7 +38,7 @@ const Accommodation = () => {
 
   const fallbackLabels = isDutch
     ? {
-        heroTitle: 'Verblijf bij ons op Koh Tao',
+        heroTitle: 'Verblijf bij ons op Nusa Lembongan',
         heroSubtitle:
           'Kies uit gezellige kamers, familiekamers en bungalows op toplocaties vlak bij onze duikactiviteiten.',
         viewRooms: 'Bekijk kamers',
@@ -51,7 +51,7 @@ const Accommodation = () => {
         featuresTitle: 'Wat je kunt verwachten',
         whyStayTitle: 'Waarom bij ons verblijven?',
         whyStayBody:
-          'Je verblijft dicht bij het duikcentrum, boten en restaurants. Dat betekent minder reistijd en meer tijd om van Koh Tao te genieten.',
+          'Je verblijft dicht bij het duikcentrum, boten en restaurants. Dat betekent minder reistijd en meer tijd om van Nusa Lembongan te genieten.',
         ctaTitle: 'Klaar om je verblijf te plannen?',
         ctaBody: 'Voeg accommodatie toe aan je duiktrip en stuur direct je aanvraag.',
         ctaButton: 'Stay with us at our resort accommodation',
@@ -70,7 +70,7 @@ const Accommodation = () => {
         continueBooking: 'Ga verder naar boekingsformulier',
       }
     : {
-        heroTitle: 'Stay With Us In Koh Tao',
+        heroTitle: 'Stay With Us In Nusa Lembongan',
         heroSubtitle:
           'Choose from cozy rooms, family-friendly suites, and bungalows in great locations close to our diving operations.',
         viewRooms: 'View Rooms',
@@ -83,7 +83,7 @@ const Accommodation = () => {
         featuresTitle: 'What To Expect',
         whyStayTitle: 'Why stay with us?',
         whyStayBody:
-          'You stay close to the dive center, boats, and restaurants. Less travel time means more time enjoying Koh Tao.',
+          'You stay close to the dive center, boats, and restaurants. Less travel time means more time enjoying Nusa Lembongan.',
         ctaTitle: 'Ready to plan your stay?',
         ctaBody: 'Add accommodation to your dive trip and send your request directly.',
         ctaButton: 'Stay with us at our resort accommodation',
@@ -114,7 +114,7 @@ const Accommodation = () => {
     ? [
         {
           name: 'Familie Bungalow (tot 5 personen)',
-          price: 'THB 4,000 - 6,000 / nacht',
+          price: 'IDR 4,000 - 6,000 / nacht',
           desc: 'Ruime bungalow voor gezinnen of kleine groepen met comfortabele indeling.',
           features: ['Airco', 'Warme douche', 'Wi-Fi', 'TV', 'Tuinzicht'],
           image: '/images/accommodation/family-bungalow-1.jpeg',
@@ -126,7 +126,7 @@ const Accommodation = () => {
         },
         {
           name: 'Basic Room (2 personen)',
-          price: 'THB 1,450 - 1,650 / nacht',
+          price: 'IDR 1,450 - 1,650 / nacht',
           desc: 'Praktische en nette kamer voor koppels of duikbuddy’s die slim willen reizen.',
           features: ['Airco', 'Wi-Fi', 'Warme douche', 'Tuinzicht'],
           image: '/images/accommodation/basic-room-1.jpeg',
@@ -138,7 +138,7 @@ const Accommodation = () => {
         },
         {
           name: 'Bungalow (2 personen)',
-          price: 'THB 1,600 - 2,000 / nacht',
+          price: 'IDR 1,600 - 2,000 / nacht',
           desc: 'Rustige bungalow met meer privacy en korte toegang tot strand en centrum.',
           features: ['Airco', 'Wi-Fi', 'Tuinzicht', 'Privater gevoel'],
           image: '/images/accommodation/bungalow-1.jpeg',
@@ -152,7 +152,7 @@ const Accommodation = () => {
     : [
         {
           name: 'Family Bungalow (up to 5 guests)',
-          price: 'THB 4,000 - 6,000 / night',
+          price: 'IDR 4,000 - 6,000 / night',
           desc: 'Spacious setup for families or small groups with a comfortable layout.',
           features: ['Air conditioning', 'Hot shower', 'Wi-Fi', 'TV', 'Garden view'],
           image: '/images/accommodation/family-bungalow-1.jpeg',
@@ -164,7 +164,7 @@ const Accommodation = () => {
         },
         {
           name: 'Basic Room (2 guests)',
-          price: 'THB 1,450 - 1,650 / night',
+          price: 'IDR 1,450 - 1,650 / night',
           desc: 'Clean, practical room for couples or dive buddies who want value.',
           features: ['Air conditioning', 'Wi-Fi', 'Hot shower', 'Garden view'],
           image: '/images/accommodation/basic-room-1.jpeg',
@@ -176,7 +176,7 @@ const Accommodation = () => {
         },
         {
           name: 'Bungalow (2 guests)',
-          price: 'THB 1,600 - 2,000 / night',
+          price: 'IDR 1,600 - 2,000 / night',
           desc: 'Quiet bungalow with extra privacy and easy access to beach and town.',
           features: ['Air conditioning', 'Wi-Fi', 'Garden view', 'More privacy'],
           image: '/images/accommodation/bungalow-1.jpeg',
@@ -188,7 +188,7 @@ const Accommodation = () => {
         },
       ];
 
-  const bookingHref = '/booking?item=Resort%20Accommodation&type=stay&currency=THB';
+  const bookingHref = '/booking?item=Resort%20Accommodation&type=stay&currency=IDR';
   const [selectedRoomName, setSelectedRoomName] = useState<string>('');
   const [selectedGallery, setSelectedGallery] = useState<string[]>([]);
   const [selectedPhoto, setSelectedPhoto] = useState<string>('');
@@ -227,7 +227,7 @@ const Accommodation = () => {
   };
 
   const buildTripUrl = () => {
-    // Full affiliate deep link for Trip.com Koh Tao hotels
+    // Full affiliate deep link for Trip.com Nusa Lembongan hotels
     const allianceId = TRIP_ALLIANCE_ID || '7864578';
     const siteId = TRIP_SITE_ID || '295439656';
     // You can make trip_sub1 and trip_sub3 dynamic if needed
@@ -268,7 +268,7 @@ const Accommodation = () => {
     const message = encodeURIComponent(
       `Accommodation request: ${roomLabel}. Guests: ${peopleCount}. Nights: ${nightCount}. Diving: ${isDiving === true ? 'Yes' : isDiving === false ? 'No' : 'Not specified'}. Details: ${accommodationDetails || 'None'}`
     );
-    navigate(`/booking?item=Resort%20Accommodation%20-%20${encodeURIComponent(roomLabel)}&type=stay&currency=THB&people=${peopleCount}&nights=${nightCount}${isDiving !== null ? `&diving=${isDiving ? 'yes' : 'no'}` : ''}&message=${message}`);
+    navigate(`/booking?item=Resort%20Accommodation%20-%20${encodeURIComponent(roomLabel)}&type=stay&currency=IDR&people=${peopleCount}&nights=${nightCount}${isDiving !== null ? `&diving=${isDiving ? 'yes' : 'no'}` : ''}&message=${message}`);
   };
 
   return (

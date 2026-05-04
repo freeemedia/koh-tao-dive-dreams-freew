@@ -2,14 +2,14 @@ import React from "react";
 
 const accommodations = [
   {
-    name: "Koh Tao Resort",
-    location: "Koh Tao",
+    name: "Nusa Lembongan Resort",
+    location: "Nusa Lembongan",
     image: "/images/sample-hotel.jpg", // Replace with your image path or Contentful asset URL
     link: "https://www.agoda.com/",
   },
   {
     name: "Coral View Hotel",
-    location: "Koh Tao",
+    location: "Nusa Lembongan",
     image: "/images/sample-hotel.jpg",
     link: "https://www.agoda.com/",
   },

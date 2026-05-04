@@ -20,7 +20,7 @@ export default function FishIdentification() {
         <Card className="mb-8 p-6">
           <h2 className="text-2xl font-bold mb-4">Cursusoverzicht</h2>
           <p className="text-gray-700 mb-4">
-            Leer vissen rond Koh Tao herkennen en hun gedrag begrijpen. Deze op natuurbescherming gerichte specialty vergroot je waardering voor het zeeleven en helpt het ecosysteem te beschermen via verantwoord duiken.
+            Leer vissen rond Nusa Lembongan herkennen en hun gedrag begrijpen. Deze op natuurbescherming gerichte specialty vergroot je waardering voor het zeeleven en helpt het ecosysteem te beschermen via verantwoord duiken.
           </p>
         </Card>
 
@@ -28,7 +28,7 @@ export default function FishIdentification() {
           <h2 className="text-2xl font-bold mb-4">Wat je leert</h2>
           <ul className="list-disc list-inside space-y-3 text-gray-700">
             <li>Technieken voor visherkenning</li>
-            <li>Veelvoorkomende vissoorten rond Koh Tao</li>
+            <li>Veelvoorkomende vissoorten rond Nusa Lembongan</li>
             <li>Visgedrag en ecologie</li>
             <li>Visfamilies en kenmerken</li>
             <li>Natuurbescherming en verantwoord duiken</li>
@@ -68,7 +68,7 @@ export default function FishIdentification() {
 
         <Card className="mb-8 p-6 bg-green-50">
           <h2 className="text-2xl font-bold mb-6">Ontdek het zeeleven</h2>
-          <p className="text-gray-700 mb-4">Leer de rijke mariene biodiversiteit rond Koh Tao herkennen en waarderen.</p>
+          <p className="text-gray-700 mb-4">Leer de rijke mariene biodiversiteit rond Nusa Lembongan herkennen en waarderen.</p>
           <Button size="lg" onClick={() => navigate('/booking?course=fish-id&type=course')}>Boek nu</Button>
         </Card>
 

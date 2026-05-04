@@ -2,19 +2,19 @@ import React, { useEffect, useMemo, useState } from 'react';
 import BookingModal from './BookingModal';
 
 const DIVE_SITES = [
-  'Aow Leuk',
-  'Buoyancy World',
-  'Chumphon Pinnacle',
-  'HTMS Sattakut',
+  'Blue Corner',
+  'Mangrove Point',
+  'Manta Point',
+  'USAT Liberty Wreck',
   'Hin Ngam',
-  'Japanese Gardens',
+  'Toyapakeh',
   'Junkyard Reef',
-  'Mango Bay',
-  'Sail Rock',
-  'Shark Island',
+  'SD Point',
+  'Crystal Bay',
+  'SD Point',
   'South West Pinnacle',
   'Tanote Bay',
-  'Twins Pinnacle',
+  'Ceningan Wall',
   'White Rock',
   'Green Rock',
 ];

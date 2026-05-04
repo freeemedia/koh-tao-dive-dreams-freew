@@ -9,7 +9,7 @@ const DiscoverScubaDeluxeEn: React.FC = () => {
       fallbackContent={{
         hero_title: 'Discover Scuba Diving Deluxe',
         hero_subtitle: 'A longer, more relaxed beginner scuba experience with extra underwater time and 3 guided dives.',
-        course_overview: 'Discover Scuba Diving Deluxe is ideal if you want more than a short try dive. You begin with foundational skills in a controlled environment and then continue to multiple open water dives around Koh Tao with your instructor.',
+        course_overview: 'Discover Scuba Diving Deluxe is ideal if you want more than a short try dive. You begin with foundational skills in a controlled environment and then continue to multiple open water dives around Nusa Lembongan with your instructor.',
         price_thb: '5000',
         price_usd: '144',
         price_eur: '132',
@@ -24,7 +24,7 @@ const DiscoverScubaDeluxeEn: React.FC = () => {
           title: 'How it works',
           content: [
             'Day 1: Pool/confined skills and first open water entry',
-            'Day 2: Two guided boat dives around Koh Tao',
+            'Day 2: Two guided boat dives around Nusa Lembongan',
           ],
         },
         {

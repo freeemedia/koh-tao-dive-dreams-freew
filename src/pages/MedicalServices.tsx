@@ -13,7 +13,7 @@ const MedicalServices = () => {
   const locale = i18n.language.startsWith('nl') ? 'nl' : 'en';
 
   const fallbackContent = {
-    title: locale === 'nl' ? 'Medische zorg op Koh Tao' : 'Medical services on Koh Tao',
+    title: locale === 'nl' ? 'Medische zorg op Nusa Lembongan' : 'Medical services on Nusa Lembongan',
     subtitle:
       locale === 'nl'
         ? 'Gezondheidszorg en nooddiensten, 24/7 beschikbaar.'
@@ -21,8 +21,8 @@ const MedicalServices = () => {
     care_title: locale === 'nl' ? 'Zorg & noodgevallen' : 'Care & emergencies',
     care_list:
       locale === 'nl'
-        ? 'Meerdere klinieken en apotheken in Mae Haad en Sairee\nBasiszorg en eerste hulp beschikbaar\nNooddiensten: bel 1669\nDichtstbijzijnde ziekenhuis ligt op Koh Samui (boottransfer nodig bij ernstige gevallen)\nRecompressiekamer voor duiknoodgevallen'
-        : 'Multiple clinics and pharmacies in Mae Haad and Sairee\nBasic care and first aid available\nEmergency services: call 1669\nNearest hospital is on Koh Samui (boat transfer required for serious cases)\nRecompression chamber for diving emergencies',
+        ? 'Kleine klinieken en apotheek op Lembongan\nBasiszorg en eerste hulp beschikbaar\nNooddiensten: bel 112 of 119\nDichtstbijzijnde ziekenhuis is in Sanur/Denpasar (speedboot 30 min)\nRecompressiekamer voor duiknoodgevallen (Sanur/Bali)'
+        : 'Small clinic and pharmacy on Lembongan\nBasic care and first aid available\nEmergency services: call 112 or 119\nNearest hospital is in Sanur/Denpasar (30 min by speedboat)\nRecompression chamber for diving emergencies (Sanur/Bali)',
     insurance:
       locale === 'nl'
         ? 'Een goede reisverzekering wordt sterk aangeraden. Neem noodzakelijke medicijnen op recept zelf mee, beschikbaarheid kan beperkt zijn.'
@@ -62,7 +62,7 @@ const MedicalServices = () => {
       <h2 className="text-2xl font-semibold mb-4">{content.care_title}</h2>
       <ul className="list-disc pl-6 mb-4">
         {careItems.map((item) => (
-          <li key={item}>{item === 'Nooddiensten: bel 1669' || item === 'Emergency services: call 1669' ? <>{item.split('1669')[0]}<strong>1669</strong></> : item}</li>
+          <li key={item}>{item.includes('112') ? <>{item.split('112')[0]}<strong>112</strong>{item.split('112')[1]}</> : item}</li>
         ))}
       </ul>
       <p className="mb-4">{content.insurance}</p>

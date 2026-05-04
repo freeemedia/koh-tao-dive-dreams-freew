@@ -12,28 +12,28 @@ const ThingsToDo = () => {
   const { i18n } = useTranslation();
   const locale = i18n.language.startsWith('nl') ? 'nl' : 'en';
   const fallbackContent = {
-    title: locale === 'nl' ? 'Wat te doen op Koh Tao' : 'Things to do on Koh Tao',
+    title: locale === 'nl' ? 'Wat te doen op Nusa Lembongan' : 'Things to do on Nusa Lembongan',
     subtitle:
       locale === 'nl'
-        ? 'Ontdek avontuur, ontspanning en eilandcultuur - er is meer dan alleen duiken!'
-        : 'Discover adventure, relaxation, and island culture - there is more than just diving!',
+        ? 'Ontdek avontuur, ontspanning en Balinese eilandcultuur - er is meer dan alleen duiken!'
+        : 'Discover adventure, relaxation, and Balinese island culture - there is more than just diving!',
     activities_title: locale === 'nl' ? 'Populaire activiteiten' : 'Popular activities',
     activities_list:
       locale === 'nl'
-        ? 'Maak een snorkeltour naar verborgen baaien\nVolg een Thaise kookles\nHuur een kajak of paddleboard\nVerken de wandelroutes op het eiland\nOntspan met een massage op het strand\nDoe mee aan een yoga- of fitnessles\nGeniet van de zonsondergang bij een rooftop bar\nBezoek lokale kunstgaleries en markten'
-        : 'Take a snorkeling tour to hidden bays\nJoin a Thai cooking class\nRent a kayak or paddleboard\nExplore the island hiking trails\nRelax with a beach massage\nJoin a yoga or fitness class\nEnjoy sunset views from a rooftop bar\nVisit local art galleries and markets',
+        ? 'Maak een mangrovekanotocht langs het eiland\nBezoek het traditionele Balinese dorp Lembongan\nHuur een kajak of paddleboard op Mushroom Beach\nVerken de Blue Lagoon op Nusa Ceningan\nOntspan met een massage op het strand\nSpring van de kliffen bij Devil\'s Tear\nGeniet van de zonsondergang bij een beachbar\nDagtocht naar Nusa Penida voor spectaculaire kliffen'
+        : 'Take a mangrove kayak tour around the island\nVisit the traditional Balinese village of Lembongan\nRent a kayak or paddleboard at Mushroom Beach\nExplore the Blue Lagoon on Nusa Ceningan\nRelax with a beach massage\nJump off the cliffs at Devil\'s Tear\nEnjoy sunset views from a beachfront bar\nDay trip to Nusa Penida for spectacular cliffs and snorkeling',
     cta_fun_diving: locale === 'nl' ? 'Ga fun diven' : 'Go fun diving',
     cta_beaches: locale === 'nl' ? 'Ontdek stranden' : 'Discover beaches',
     cta_viewpoints: locale === 'nl' ? 'Uitzichtpunten' : 'Viewpoints',
     note:
       locale === 'nl'
-        ? 'Koh Tao is meer dan alleen duiken - er is genoeg te ontdekken op land en zee.'
-        : 'Koh Tao is more than just diving - there is plenty to explore on land and at sea.',
+        ? 'Nusa Lembongan is meer dan alleen duiken - er is genoeg te ontdekken op land en zee.'
+        : 'Nusa Lembongan is more than just diving - there is plenty to explore on land and at sea.',
     ideas_title: locale === 'nl' ? 'Meer ideeen nodig?' : 'Need more ideas?',
     ideas_list:
       locale === 'nl'
-        ? 'Maak een dagtrip naar Koh Nang Yuan voor snorkelen en iconische uitzichten\nProbeer rotsklimmen of boulderen voor avontuur op het land\nProef streetfood op de avondmarkt in Sairee'
-        : 'Take a day trip to Koh Nang Yuan for snorkeling and iconic views\nTry rock climbing or bouldering for land-based adventure\nTaste street food at the Sairee night market',
+        ? 'Maak een dagtrip naar Nusa Penida voor Angel\'s Billabong en Kelingking Beach\nVerhuur een scooter en rijdt rondom het eiland\nProef nasi goreng en babi guling bij een lokale warung'
+        : 'Take a day trip to Nusa Penida for Angel\'s Billabong and Kelingking Beach\nRent a scooter and drive around the whole island\nTaste nasi goreng and babi guling at a local warung',
     more_inspiration:
       locale === 'nl' ? 'Voor meer inspiratie, bekijk onze' : 'For more inspiration, check out our',
     activity_guide: locale === 'nl' ? 'gids met activiteiten' : 'activity guide',

@@ -26,11 +26,11 @@ const Contact = () => {
     if (isDutch) {
       return {
         section_title: 'Neem contact op',
-        section_subtitle: 'Klaar om de onderwaterwereld te ontdekken? Neem contact op met Bas om jouw duikavontuur op Koh Tao te boeken.',
+        section_subtitle: 'Klaar om de onderwaterwereld te ontdekken? Neem contact op met Bas om jouw duikavontuur op Nusa Lembongan te boeken.',
         details_title: 'Contactgegevens',
         location_title: 'Locatie',
-        location_line_1: 'Sairee Beach, Koh Tao',
-        location_line_2: 'Surat Thani 84360, Thailand',
+        location_line_1: 'Jungutbatu Beach, Nusa Lembongan',
+        location_line_2: 'Sanur, Bali 84360, Indonesia',
         phone_title: 'Telefoon',
         phone_line_1: '+31 6 38697279',
         phone_line_2: '+62(0)81353833289',
@@ -52,18 +52,18 @@ const Contact = () => {
         form_message_label: 'Bericht',
         form_submit_label: 'Verstuur bericht',
         form_sending_label: 'Versturen...',
-        footer_line_1: '© 2026 Pro Diving Asia. Alle rechten voorbehouden. Powered by One Media Asia @ www.onemedia.asia',
-        footer_line_2: 'Ontdek de magie onder de golven in het duikparadijs van Thailand.',
+        footer_line_1: '© 2026 Lembongan Dive Resort. Alle rechten voorbehouden. Powered by One Media Asia @ www.onemedia.asia',
+        footer_line_2: 'Ontdek de magie onder de golven in het duikparadijs van Indonesia.',
       };
     }
 
     return {
       section_title: 'Get in Touch',
-      section_subtitle: 'Ready to explore the underwater world? Contact Bas to book your diving adventure on Koh Tao.',
+      section_subtitle: 'Ready to explore the underwater world? Contact Bas to book your diving adventure on Nusa Lembongan.',
       details_title: 'Contact Details',
       location_title: 'Location',
-      location_line_1: 'Sairee Beach, Koh Tao',
-      location_line_2: 'Surat Thani 84360, Thailand',
+      location_line_1: 'Jungutbatu Beach, Nusa Lembongan',
+      location_line_2: 'Sanur, Bali 84360, Indonesia',
       phone_title: 'Phone',
       phone_line_1: '+66 77 456 789',
       phone_line_2: '+66 89 123 4567',
@@ -85,8 +85,8 @@ const Contact = () => {
       form_message_label: 'Message',
       form_submit_label: 'Send Message',
       form_sending_label: 'Sending...',
-      footer_line_1: '© 2026 Pro Diving Asia. All rights reserved. Powered by One Media Asia @ www.onemedia.asia',
-      footer_line_2: "Discover the magic beneath the waves in Thailand's diving paradise.",
+      footer_line_1: '© 2026 Lembongan Dive Resort. All rights reserved. Powered by One Media Asia @ www.onemedia.asia',
+      footer_line_2: "Discover the magic beneath the waves in Indonesia's diving paradise.",
     };
   }, [isDutch]);
 

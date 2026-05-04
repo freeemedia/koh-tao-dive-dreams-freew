@@ -4,6 +4,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 
 import en from './locales/en.json';
 import nl from './locales/nl.json';
+import ru from './locales/ru.json';
 
 const resources = {
   en: {
@@ -12,16 +13,20 @@ const resources = {
   nl: {
     translation: nl,
   },
+  ru: {
+    translation: ru,
+  },
 };
 
-const normalizeLng = (value: string | null | undefined): 'en' | 'nl' | null => {
+const normalizeLng = (value: string | null | undefined): 'en' | 'nl' | 'ru' | null => {
   const normalized = String(value || '').toLowerCase();
   if (normalized.startsWith('nl')) return 'nl';
+  if (normalized.startsWith('ru')) return 'ru';
   if (normalized.startsWith('en')) return 'en';
   return null;
 };
 
-const getInitialLanguage = (): 'en' | 'nl' => {
+const getInitialLanguage = (): 'en' | 'nl' | 'ru' => {
   if (typeof window === 'undefined') return 'en';
 
   const fromQuery = normalizeLng(new URLSearchParams(window.location.search).get('lng'));
@@ -44,7 +49,7 @@ i18n
     resources,
     lng: getInitialLanguage(),
     fallbackLng: 'en',
-    supportedLngs: ['nl', 'en'],
+    supportedLngs: ['nl', 'en', 'ru'],
     load: 'languageOnly',
     lowerCaseLng: true,
     debug: false,

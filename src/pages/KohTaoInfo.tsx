@@ -13,20 +13,20 @@ const KohTaoInfo = () => {
   const locale = i18n.language.startsWith('nl') ? 'nl' : 'en';
 
   const fallbackContent = {
-    title: locale === 'nl' ? 'Over Koh Tao' : 'About Koh Tao',
+    title: locale === 'nl' ? 'Over Nusa Lembongan' : 'About Nusa Lembongan',
     description:
       locale === 'nl'
-        ? 'Koh Tao, wat "Schildpadeiland" betekent, is een klein paradijs in de Golf van Thailand dat bekendstaat om kristalhelder water, kleurrijke koraalriffen en een ontspannen eilandsfeer. Het is een van de beste duikbestemmingen ter wereld en biedt activiteiten voor ieder type reiziger.'
-        : 'Koh Tao, which means "Turtle Island", is a small paradise in the Gulf of Thailand known for crystal-clear water, colorful coral reefs, and a laid-back island vibe. It is one of the best diving destinations in the world and offers activities for every type of traveler.',
+        ? 'Nusa Lembongan is een klein tropisch eiland voor de zuidoostkust van Bali, onderdeel van de drie Nusa eilanden samen met Nusa Penida en Nusa Ceningan. Het is wereldberoemd om zijn spectaculaire duiklocaties, kristalhelder water en ontspannen eilandsfeer.'
+        : 'Nusa Lembongan is a small tropical island off the southeast coast of Bali, part of the three Nusa islands together with Nusa Penida and Nusa Ceningan. It is world-famous for spectacular dive sites, crystal-clear waters, and a relaxed island vibe.',
     facts_list:
       locale === 'nl'
-        ? 'Locatie: 70 km uit de oostkust van Zuid-Thailand\nBeroemd om: duiken, snorkelen, mooie stranden en zeeleven\nBeste reistijd: februari t/m oktober\nPopulaire gebieden: Sairee Beach, Chalok Baan Kao, Mae Haad'
-        : 'Location: 70 km off the east coast of Southern Thailand\nFamous for: diving, snorkeling, beautiful beaches, and marine life\nBest travel season: February to October\nPopular areas: Sairee Beach, Chalok Baan Kao, Mae Haad',
+        ? 'Locatie: 11 km ten zuidoosten van Bali, Indonesie\nBeroemd om: duiken met Mola Mola & manta rays, snorkelen en rustig eilandleven\nBeste reistijd: april t/m november\nPopulaire gebieden: Jungutbatu, Mushroom Bay, Lembongan Village'
+        : 'Location: 11 km southeast of Bali, Indonesia\nFamous for: diving with Mola Mola & manta rays, snorkeling, and relaxed island life\nBest travel season: April to November\nPopular areas: Jungutbatu, Mushroom Bay, Lembongan Village',
     highlights_title: locale === 'nl' ? 'Hoogtepunten van het eiland' : 'Island highlights',
     highlights_list:
       locale === 'nl'
-        ? 'Duiklocaties en duikscholen van wereldklasse\nPrachtige uitzichtpunten en wandelroutes\nOntspannen uitgaansleven en strandbars\nVerse seafood en Thaise keuken\nVriendelijke lokale gemeenschap'
-        : 'World-class dive sites and dive schools\nBeautiful viewpoints and hiking routes\nRelaxed nightlife and beach bars\nFresh seafood and Thai cuisine\nFriendly local community',
+        ? 'Wereld klasse duiklocaties (Crystal Bay, Manta Point, Toyapakeh)\nSpectaculaire Mola Mola seizoen (jul-okt)\nOntspannen strandbars en restaurants\nVerse seafood en Balinese keuken\nEenvoudig bereikbaar met speedboot vanuit Sanur (30 min)'
+        : 'World-class dive sites (Crystal Bay, Manta Point, Toyapakeh)\nSpectacular Mola Mola season (Jul-Oct)\nRelaxed beach bars and restaurants\nFresh seafood and Balinese cuisine\nEasy access by speedboat from Sanur (30 min)',
   };
 
   const { content } = usePageContent({

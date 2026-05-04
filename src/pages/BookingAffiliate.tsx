@@ -9,18 +9,18 @@ const hotels = [
   {
     name: "Ban's Diving Resort",
     slug: "ban-s-diving-koh-tao",
-    description: "Legendary dive resort on Sairee Beach, perfect for divers of all levels. Includes dive shop, multiple pools, and beach access.",
-    location: "Sairee Beach",
+    description: "Legendary dive resort on Jungutbatu Beach, perfect for divers of all levels. Includes dive shop, multiple pools, and beach access.",
+    location: "Jungutbatu Beach",
     priceRange: "$$$",
     rating: 4.6,
     tags: ["Dive Shop On-Site", "Beach Access", "Pool", "Restaurant", "WiFi"],
     image: "/images/photo-1613853250147-2f73e55c1561.avif",
   },
   {
-    name: "Koh Tao Cabana Hotel",
+    name: "Nusa Lembongan Cabana Hotel",
     slug: "koh-tao-cabana",
-    description: "Stylish hotel in the heart of Sairee with modern rooms, rooftop pool, and vibrant atmosphere.",
-    location: "Sairee Beach",
+    description: "Stylish hotel in the heart of Jungutbatu with modern rooms, rooftop pool, and vibrant atmosphere.",
+    location: "Jungutbatu Beach",
     priceRange: "$$$",
     rating: 4.5,
     tags: ["Rooftop Pool", "Central Location", "Restaurant", "WiFi", "Bar"],
@@ -37,10 +37,10 @@ const hotels = [
     image: "/images/photo-1647825194145-2d94e259c745.avif",
   },
   {
-    name: "Koh Tao Resort",
+    name: "Nusa Lembongan Resort",
     slug: "koh-tao-resort",
     description: "Well-established resort with comfortable bungalows set in tropical gardens, a short walk to the beach.",
-    location: "Sairee Beach",
+    location: "Jungutbatu Beach",
     priceRange: "$$",
     rating: 4.3,
     tags: ["Garden", "Pool", "Restaurant", "WiFi", "Dive Packages"],
@@ -50,37 +50,37 @@ const hotels = [
     name: "Montra Resort",
     slug: "montra-resort-koh-tao",
     description: "Hilltop resort with panoramic sea views, infinity pool, and quiet retreat atmosphere.",
-    location: "Chalok Baan Kao",
+    location: "Mushroom Bay",
     priceRange: "$$$",
     rating: 4.7,
     tags: ["Sea Views", "Infinity Pool", "Quiet", "Restaurant", "WiFi"],
     image: "/images/photo-1682686580849-3e7f67df4015.avif",
   },
   {
-    name: "Crystal Dive Koh Tao",
+    name: "Crystal Dive Nusa Lembongan",
     slug: "crystal-dive-koh-tao",
     description: "One of the island's largest dive operators with on-site accommodation, ideal for getting your PADI certification.",
-    location: "Mae Haad",
+    location: "Jungutbatu",
     priceRange: "$$",
     rating: 4.4,
     tags: ["Dive School", "Pool", "Restaurant", "WiFi", "Budget-Friendly"],
     image: "/images/photo-1682687982423-295485af248a.avif",
   },
   {
-    name: "Koh Tao Hillside Resort",
+    name: "Nusa Lembongan Hillside Resort",
     slug: "koh-tao-hillside-resort",
     description: "Peaceful hilltop bungalows with stunning sunrise sea views and a relaxed jungle atmosphere.",
-    location: "Sairee",
+    location: "Jungutbatu",
     priceRange: "$$",
     rating: 4.2,
     tags: ["Hillside Views", "Bungalows", "Pool", "WiFi", "Peaceful"],
     image: "/images/photo-1682686580849-3e7f67df4015.avif",
   },
   {
-    name: "Koh Tao Coral Grand Resort",
+    name: "Nusa Lembongan Coral Grand Resort",
     slug: "koh-tao-coral-grand-resort",
     description: "Beachfront resort with beautiful coral-themed decor, multiple pools, and excellent snorkeling right off the beach.",
-    location: "Chalok Baan Kao",
+    location: "Mushroom Bay",
     priceRange: "$$$",
     rating: 4.5,
     tags: ["Beachfront", "Snorkeling", "Pool", "Restaurant", "WiFi"],
@@ -117,7 +117,7 @@ const BookingAffiliate = () => {
   };
 
   const handleSearchAll = async () => {
-    const searchUrl = `https://www.booking.com/searchresults.html?ss=Koh+Tao%2C+Thailand&dest_type=city&lang=en-gb`;
+    const searchUrl = `https://www.booking.com/searchresults.html?ss=Koh+Tao%2C+Indonesia&dest_type=city&lang=en-gb`;
     trackAffiliateClick({
       provider: 'booking',
       destinationUrl: searchUrl,
@@ -138,7 +138,7 @@ const BookingAffiliate = () => {
         }}
       >
         <div className="text-center text-white px-4 max-w-3xl">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">Where to Stay on Koh Tao</h1>
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">Where to Stay on Nusa Lembongan</h1>
           <p className="text-lg md:text-xl mb-8 text-white/90">
             Hand-picked accommodations from beach bungalows to luxury resorts — book with confidence through Booking.com
           </p>
@@ -148,7 +148,7 @@ const BookingAffiliate = () => {
             className="bg-blue-500 hover:bg-blue-600 text-white text-lg px-8 py-4"
           >
             <ExternalLink className="w-5 h-5 mr-2" />
-            Search All Koh Tao Hotels
+            Search All Nusa Lembongan Hotels
           </Button>
         </div>
       </div>
@@ -156,7 +156,7 @@ const BookingAffiliate = () => {
       {/* Hotels Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Top-Rated Koh Tao Accommodations</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Top-Rated Nusa Lembongan Accommodations</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             All bookings are made securely through Booking.com with free cancellation on most properties.
           </p>
@@ -212,7 +212,7 @@ const BookingAffiliate = () => {
         <div className="grid md:grid-cols-2 gap-6 mt-16">
           <div className="text-center p-8 bg-blue-50 rounded-2xl">
             <h3 className="text-2xl font-bold mb-3">Can't find what you're looking for?</h3>
-            <p className="text-gray-600 mb-6">Browse all available accommodations on Koh Tao with real-time prices and availability.</p>
+            <p className="text-gray-600 mb-6">Browse all available accommodations on Nusa Lembongan with real-time prices and availability.</p>
             <Button onClick={handleSearchAll} size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
               <ExternalLink className="w-4 h-4 mr-2" />
               View All Hotels on Booking.com

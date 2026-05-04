@@ -81,13 +81,13 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
     chooseDiveCenter: isDutch ? 'Een duikcentrum kiezen' : 'Choosing a dive center',
     accommodation: isDutch ? 'Accommodatie' : 'Accommodation',
     thingsToDo: isDutch ? 'Wat te doen' : 'Things to do',
-    banksKohTao: isDutch ? 'Banken op Koh Tao' : 'Banks on Koh Tao',
-    beachesKohTao: isDutch ? 'Stranden op Koh Tao' : 'Beaches on Koh Tao',
+    banksKohTao: isDutch ? 'Banken op Nusa Lembongan' : 'Banks on Nusa Lembongan',
+    beachesKohTao: isDutch ? 'Stranden op Nusa Lembongan' : 'Beaches on Nusa Lembongan',
     foodDrink: isDutch ? 'Eten & drinken' : 'Food & drink',
     howToGetHere: isDutch ? 'Hoe kom je hier' : 'How to get here',
     medicalServices: isDutch ? 'Medische zorg' : 'Medical services',
     viewpoints: isDutch ? 'Uitzichtpunten' : 'Viewpoints',
-    weatherKohTao: isDutch ? 'Weer op Koh Tao' : 'Koh Tao weather',
+    weatherKohTao: isDutch ? 'Weer op Nusa Lembongan' : 'Nusa Lembongan weather',
     // Removed duplicate keys below
     // beginnerCourses: isDutch ? 'BEGINNERS' : 'BEGINNER',
     // advancedCourses: isDutch ? 'GEVORDERD' : 'ADVANCED',
@@ -111,7 +111,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
     analytics: isDutch ? '📊 Analytics' : '📊 Analytics',
     visa: isDutch ? 'Visum' : 'Visa',
     funDivingHeading: isDutch ? 'Fun diven' : 'Fun diving',
-    funDivingKohTao: isDutch ? 'Fun Diving Koh Tao' : 'Fun diving Koh Tao',
+    funDivingKohTao: isDutch ? 'Fun Diving Nusa Lembongan' : 'Fun diving Nusa Lembongan',
     discoverScuba: isDutch ? 'Ontdek Scuba (DSD)' : 'Discover Scuba (DSD)',
     discoverScubaDeluxe: isDutch ? 'Ontdek Scuba Deluxe' : 'Discover Scuba Deluxe',
   };
@@ -201,7 +201,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20 border-solid border-0 py-2">
           <div className="flex items-center pl-6">
-            <img src="/images/logo.png" alt="Pro Diving Asia Logo" className="h-14 w-auto" style={{ display: 'block', marginRight: 20, marginLeft: 0 }} />
+            <img src="/images/logo.png" alt="Lembongan Dive Resort Logo" className="h-14 w-auto" style={{ display: 'block', marginRight: 20, marginLeft: 0 }} />
           </div>
           {/* Desktop nav */}
           <div className="hidden md:flex items-center space-x-7 text-[1.05rem] pt-4" style={{ paddingLeft: '10px' }}>
@@ -294,7 +294,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                         to="/dive-sites/sail-rock"
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
-                        Sail Rock
+                        Crystal Bay
                       </Link>
                     </li>
                     <li>
@@ -302,7 +302,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                         to="/dive-sites/chumphon-pinnacle"
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
-                        Chumphon Pinnacle
+                        Manta Point
                       </Link>
                     </li>
                     <li>
@@ -321,7 +321,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                         to="/dive-sites/japanese-gardens"
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
-                        Japanese Gardens
+                        Toyapakeh
                       </Link>
                     </li>
                     <li>
@@ -329,7 +329,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                         to="/dive-sites/htms-sattakut"
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
-                        HTMS Sattakut
+                        USAT Liberty Wreck
                       </Link>
                     </li>
                     <li>
@@ -337,7 +337,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                         to="/dive-sites/shark-island"
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
-                        Shark Island
+                        SD Point
                       </Link>
                     </li>
                     <li>
@@ -345,7 +345,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                         to="/dive-sites/mango-bay"
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
-                        Mango Bay
+                        SD Point
                       </Link>
                     </li>
                     <li>
@@ -353,7 +353,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                         to="/dive-sites/twins-pinnacle"
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
-                        Twins Pinnacle
+                        Ceningan Wall
                       </Link>
                     </li>
                     <li className="pt-2 text-[11px] font-bold uppercase tracking-wider text-blue-400">
@@ -364,7 +364,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                         to="/dive-sites/htms-sattakut"
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
-                        HTMS Sattakut
+                        USAT Liberty Wreck
                       </Link>
                     </li>
                     <li>
@@ -380,7 +380,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                         to="/dive-sites/buoyancy-world"
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
-                        Buoyancy World
+                        Mangrove Point
                       </Link>
                     </li>
                     <li className="pt-2 text-[11px] font-bold uppercase tracking-wider text-blue-400">
@@ -391,7 +391,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                         to="/dive-sites/aow-leuk"
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
-                        Aow Leuk
+                        Blue Corner
                       </Link>
                     </li>
                     <li>
@@ -722,40 +722,40 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                     </Link>
                     <div className="px-3 pt-2 text-xs font-semibold uppercase tracking-wider text-blue-600">Deep Sites</div>
                     <Link to="/dive-sites/sail-rock" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
-                      Sail Rock
+                      Crystal Bay
                     </Link>
                     <Link to="/dive-sites/chumphon-pinnacle" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
-                      Chumphon Pinnacle
+                      Manta Point
                     </Link>
                     <Link to="/dive-sites/south-west-pinnacle" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
                       South West Pinnacle
                     </Link>
                     <div className="px-3 pt-2 text-xs font-semibold uppercase tracking-wider text-blue-600">Coral Reefs</div>
                     <Link to="/dive-sites/japanese-gardens" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
-                      Japanese Gardens
+                      Toyapakeh
                     </Link>
                     <Link to="/dive-sites/shark-island" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
-                      Shark Island
+                      SD Point
                     </Link>
                     <Link to="/dive-sites/mango-bay" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
-                      Mango Bay
+                      SD Point
                     </Link>
                     <Link to="/dive-sites/twins-pinnacle" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
-                      Twins Pinnacle
+                      Ceningan Wall
                     </Link>
                     <div className="px-3 pt-2 text-xs font-semibold uppercase tracking-wider text-blue-600">Artificial Reefs</div>
                     <Link to="/dive-sites/htms-sattakut" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
-                      HTMS Sattakut
+                      USAT Liberty Wreck
                     </Link>
                     <Link to="/dive-sites/junkyard-reef" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
                       Junkyard Reef
                     </Link>
                     <Link to="/dive-sites/buoyancy-world" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
-                      Buoyancy World
+                      Mangrove Point
                     </Link>
                     <div className="px-3 pt-2 text-xs font-semibold uppercase tracking-wider text-blue-600">Beginner Sites</div>
                     <Link to="/dive-sites/aow-leuk" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
-                      Aow Leuk
+                      Blue Corner
                     </Link>
                     <Link to="/dive-sites/hin-ngam" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
                       Hin Ngam

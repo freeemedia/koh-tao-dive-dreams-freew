@@ -9,7 +9,7 @@ const COURSES = [
     title: 'Open Water Diver',
     path: '/courses/open-water',
     duration: '3–4 days',
-    priceTHB: 11500,
+    priceIDR: 11500,
     description:
       'Your first scuba certification. Learn to dive safely in confined and open water, earning the most recognised diving qualification in the world.',
   },
@@ -17,7 +17,7 @@ const COURSES = [
     title: 'Advanced Open Water',
     path: '/courses/advanced',
     duration: '2 days',
-    priceTHB: 10500,
+    priceIDR: 10500,
     description:
       'Five adventure dives including deep diving and underwater navigation. Unlock more dive sites and build real confidence underwater.',
   },
@@ -25,7 +25,7 @@ const COURSES = [
     title: 'Emergency First Response',
     path: '/courses/efr',
     duration: '1 day',
-    priceTHB: 4500,
+    priceIDR: 4500,
     description:
       'First aid and CPR training — a required prerequisite for Rescue Diver. Valuable skills for everyday life too.',
   },
@@ -33,7 +33,7 @@ const COURSES = [
     title: 'Rescue Diver',
     path: '/courses/rescue',
     duration: '3–4 days',
-    priceTHB: 10000,
+    priceIDR: 10000,
     description:
       'The most rewarding course many divers ever take. Learn to prevent and manage dive emergencies and look after fellow divers.',
   },
@@ -41,20 +41,20 @@ const COURSES = [
     title: 'Divemaster',
     path: '/courses/divemaster',
     duration: '2–4 weeks',
-    priceTHB: 41000,
+    priceIDR: 41000,
     description:
       'Your first professional-level qualification. Lead dives, assist instructors, and work in the dive industry worldwide.',
   },
 ];
 
-const TOTAL_THB = COURSES.reduce((sum, c) => sum + c.priceTHB, 0);
-const PACKAGE_THB = Math.round(TOTAL_THB * 0.85); // 15% package saving
-const DEPOSIT_THB = Math.round(PACKAGE_THB * 0.2);
+const TOTAL_IDR = COURSES.reduce((sum, c) => sum + c.priceIDR, 0);
+const PACKAGE_IDR = Math.round(TOTAL_IDR * 0.85); // 15% package saving
+const DEPOSIT_IDR = Math.round(PACKAGE_IDR * 0.2);
 
 const OpenWaterToDivemaster: React.FC = () => {
   const { convertCurrency, currency } = useCurrency();
 
-  const fmt = (thb: number) => convertCurrency(thb, 'THB');
+  const fmt = (thb: number) => convertCurrency(thb, 'IDR');
 
   return (
     <>
@@ -74,7 +74,7 @@ const OpenWaterToDivemaster: React.FC = () => {
           </h1>
           <p className="text-lg md:text-xl text-teal-100 mb-8 max-w-2xl mx-auto">
             Complete your entire diving journey in one place — from your first breath underwater to
-            professional Divemaster certification. Train with us on Koh Tao and join the dive
+            professional Divemaster certification. Train with us on Nusa Lembongan and join the dive
             industry.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -99,18 +99,18 @@ const OpenWaterToDivemaster: React.FC = () => {
         <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-6 text-center">
           <div>
             <p className="text-sm text-gray-500 uppercase tracking-wider">Individual total</p>
-            <p className="text-2xl font-bold text-gray-400 line-through">{fmt(TOTAL_THB)}</p>
+            <p className="text-2xl font-bold text-gray-400 line-through">{fmt(TOTAL_IDR)}</p>
           </div>
           <div className="text-4xl text-teal-400 hidden sm:block">→</div>
           <div>
             <p className="text-sm text-teal-700 uppercase tracking-wider font-semibold">
               Package price (save 15%)
             </p>
-            <p className="text-4xl font-extrabold text-teal-700">{fmt(PACKAGE_THB)}</p>
+            <p className="text-4xl font-extrabold text-teal-700">{fmt(PACKAGE_IDR)}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500 uppercase tracking-wider">Deposit to reserve</p>
-            <p className="text-2xl font-bold text-gray-700">{fmt(DEPOSIT_THB)}</p>
+            <p className="text-2xl font-bold text-gray-700">{fmt(DEPOSIT_IDR)}</p>
           </div>
         </div>
       </section>
@@ -122,7 +122,7 @@ const OpenWaterToDivemaster: React.FC = () => {
             Your Progression Path
           </h2>
           <p className="text-center text-gray-500 mb-10">
-            Five courses, one journey — all on Koh Tao, Thailand.
+            Five courses, one journey — all on Nusa Lembongan, Indonesia.
           </p>
 
           <div className="space-y-4">
@@ -147,7 +147,7 @@ const OpenWaterToDivemaster: React.FC = () => {
                   <p className="text-gray-600 text-sm mt-1">{course.description}</p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="text-sm font-medium text-gray-700">{fmt(course.priceTHB)}</p>
+                  <p className="text-sm font-medium text-gray-700">{fmt(course.priceIDR)}</p>
                   <p className="text-xs text-gray-400">individual</p>
                 </div>
               </div>
@@ -168,7 +168,7 @@ const OpenWaterToDivemaster: React.FC = () => {
               'EFR first aid & CPR training',
               'Divemaster internship with guided mentorship',
               'Small group sizes — personalised training',
-              'Accommodation referrals on Koh Tao',
+              'Accommodation referrals on Nusa Lembongan',
               'Fun dive discounts throughout your training',
             ].map((item) => (
               <div key={item} className="flex items-start gap-2">
@@ -260,8 +260,8 @@ const OpenWaterToDivemaster: React.FC = () => {
           <InlineCourseBookingForm
             itemType="course"
             itemTitle="Open Water to Divemaster Package"
-            depositMajor={DEPOSIT_THB}
-            depositCurrency="THB"
+            depositMajor={DEPOSIT_IDR}
+            depositCurrency="IDR"
           />
         </div>
       </section>

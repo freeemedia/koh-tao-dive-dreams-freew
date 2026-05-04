@@ -9,7 +9,7 @@ const AccommodationsPage = () => {
     {
       name: "Luxury Beachfront Resort",
       description: "Upscale resort with stunning ocean views, spa facilities, and fine dining restaurants.",
-      location: "Sairee Beach",
+      location: "Jungutbatu Beach",
       priceRange: "$$$$",
       rating: 4.8,
       amenities: ["Beach Access", "Restaurant & Bar", "Spa", "Pool", "WiFi", "Air Conditioning"],
@@ -19,7 +19,7 @@ const AccommodationsPage = () => {
     {
       name: "Mid-Range Beach Bungalows",
       description: "Comfortable bungalows just steps from the beach, family-run atmosphere, excellent value.",
-      location: "Sairee Beach",
+      location: "Jungutbatu Beach",
       priceRange: "$$$",
       rating: 4.5,
       amenities: ["Beach Access", "Restaurant", "WiFi", "Garden", "Simple Rooms"],
@@ -29,7 +29,7 @@ const AccommodationsPage = () => {
     {
       name: "Budget-Friendly Hostel",
       description: "Popular backpacker hostel with shared and private rooms, social atmosphere, great for divers.",
-      location: "Sairee Beach",
+      location: "Jungutbatu Beach",
       priceRange: "$$",
       rating: 4.2,
       amenities: ["Shared Kitchen", "Dorm Beds", "Private Rooms", "WiFi", "Common Areas"],
@@ -39,7 +39,7 @@ const AccommodationsPage = () => {
     {
       name: "Hillside Villa with Views",
       description: "Peaceful hilltop location with panoramic island views, quiet retreat for couples.",
-      location: "Chalok Baan Kao",
+      location: "Mushroom Bay",
       priceRange: "$$$",
       rating: 4.7,
       amenities: ["Mountain Views", "Pool", "Restaurant", "WiFi", "Garden"],
@@ -49,7 +49,7 @@ const AccommodationsPage = () => {
     {
       name: "Dive-Focused Bungalows",
       description: "Purpose-built accommodation for divers with equipment storage, on-site dive shop, night diving trips.",
-      location: "Sairee Beach",
+      location: "Jungutbatu Beach",
       priceRange: "$$$",
       rating: 4.6,
       amenities: ["Dive Shop", "Equipment Storage", "Restaurant", "WiFi", "Briefing Area"],
@@ -59,7 +59,7 @@ const AccommodationsPage = () => {
     {
       name: "Eco-Friendly Jungle Resort",
       description: "Sustainable accommodation nestled in tropical gardens, eco-conscious practices, tranquil environment.",
-      location: "Koh Tao Interior",
+      location: "Nusa Lembongan Interior",
       priceRange: "$$",
       rating: 4.4,
       amenities: ["Garden Setting", "WiFi", "Restaurant", "Hammocks", "Nature Trails"],
@@ -83,10 +83,10 @@ const AccommodationsPage = () => {
       <div className="bg-gradient-to-r from-blue-600 to-teal-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            Accommodation on Koh Tao
+            Accommodation on Nusa Lembongan
           </h1>
           <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-            Find the perfect place to stay during your diving adventure in Thailand's island paradise.
+            Find the perfect place to stay during your diving adventure in Indonesia's island paradise.
           </p>
         </div>
       </div>
@@ -94,9 +94,9 @@ const AccommodationsPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Introduction */}
         <div className="mb-12 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Places to Stay on Koh Tao</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">Places to Stay on Nusa Lembongan</h2>
           <p className="text-lg text-gray-700 max-w-4xl mx-auto leading-relaxed">
-            Koh Tao offers a wide range of accommodation options to suit every budget and preference. Whether you're looking for luxury beachfront resorts, 
+            Nusa Lembongan offers a wide range of accommodation options to suit every budget and preference. Whether you're looking for luxury beachfront resorts, 
             comfortable mid-range bungalows, or budget-friendly hostels, you'll find excellent options. Most accommodations are conveniently located near 
             dive shops, restaurants, and beaches.
           </p>
@@ -113,10 +113,10 @@ const AccommodationsPage = () => {
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 text-sm text-gray-700">
-                <li>• <strong>Sairee Beach</strong> - Most developed, best amenities</li>
-                <li>• <strong>Chalok Baan Kao</strong> - Quieter, scenic views</li>
+                <li>• <strong>Jungutbatu Beach</strong> - Most developed, best amenities</li>
+                <li>• <strong>Mushroom Bay</strong> - Quieter, scenic views</li>
                 <li>• <strong>Ao Leuk</strong> - Small, peaceful bay</li>
-                <li>• <strong>Mae Haad</strong> - Close to ferry dock</li>
+                <li>• <strong>Jungutbatu</strong> - Close to ferry dock</li>
               </ul>
             </CardContent>
           </Card>
@@ -147,7 +147,7 @@ const AccommodationsPage = () => {
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 text-sm text-gray-700">
-                <li>• Stay near Sairee for best dive access</li>
+                <li>• Stay near Jungutbatu for best dive access</li>
                 <li>• Many resorts have dive shops on-site</li>
                 <li>• Early morning dives best for visibility</li>
                 <li>• Book accommodation + diving packages</li>
@@ -249,7 +249,7 @@ const AccommodationsPage = () => {
 
         {/* CTA */}
         <div className="text-center mt-12">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">Ready to Dive Koh Tao?</h3>
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">Ready to Dive Nusa Lembongan?</h3>
           <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
             Book your accommodation and PADI certification course together for the ultimate diving experience.
           </p>

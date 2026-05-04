@@ -40,7 +40,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
   itemType,
   itemTitle,
   depositMajor,
-  depositCurrency = 'THB',
+  depositCurrency = 'IDR',
   crmSource = 'ktd-website',
   crmTags = [],
 }) => {
@@ -246,7 +246,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
 
         if (data.paymentChoice === 'paypal' && deposit > 0) {
           toast.success('Booking sent! Redirecting to PayPal...');
-          setTimeout(() => { window.location.href = `${paypalBase}/${deposit}THB`; }, 1500);
+          setTimeout(() => { window.location.href = `${paypalBase}/${deposit}IDR`; }, 1500);
         } else {
           toast.success('Booking inquiry sent! We\'ll be in touch within 24 hours.');
         }
@@ -332,7 +332,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
           <FormField control={form.control} name="accommodation" render={({ field }) => (
             <FormItem>
               <FormLabel className="flex items-center gap-2"><Hotel className="h-4 w-4" /> Accommodation</FormLabel>
-              <FormControl><Input placeholder="Hotel name or area on Koh Tao" {...field} /></FormControl>
+              <FormControl><Input placeholder="Hotel name or area on Nusa Lembongan" {...field} /></FormControl>
               <FormMessage />
             </FormItem>
           )} />

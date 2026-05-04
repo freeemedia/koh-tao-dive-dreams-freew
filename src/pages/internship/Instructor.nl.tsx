@@ -18,7 +18,7 @@ export default function InstructorInternship() {
         <div className="mb-12">
           <h1 className="text-4xl font-bold mb-4">PADI Instructor Internship</h1>
           <p className="text-xl text-gray-600">
-            Geavanceerd programma voor professionele ontwikkeling • Koh Tao, Thailand
+            Geavanceerd programma voor professionele ontwikkeling • Nusa Lembongan, Indonesia
           </p>
         </div>
 

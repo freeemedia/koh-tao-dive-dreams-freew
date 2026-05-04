@@ -23,8 +23,8 @@ const JapaneseGardens = () => {
 
   const fallbackContent = useMemo(() => ({
     overview: isDutch
-      ? 'Japanese Gardens is een prachtige duiklocatie bij Koh Nang Yuan, bekend om diverse koraalriffen en rijk onderwaterleven. Geschikt voor alle niveaus.'
-      : 'Japanese Gardens is a beautiful dive site near Koh Nang Yuan, known for its diverse coral reef and abundant marine life. Suitable for all levels.',
+      ? 'Toyapakeh is een prachtige duiklocatie bij Koh Nang Yuan, bekend om diverse koraalriffen en rijk onderwaterleven. Geschikt voor alle niveaus.'
+      : 'Toyapakeh is a beautiful dive site near Koh Nang Yuan, known for its diverse coral reef and abundant marine life. Suitable for all levels.',
     quick_facts_depth: '5-18m',
     quick_facts_difficulty: isDutch ? 'Beginner tot Gemiddeld' : 'Beginner to Intermediate',
     quick_facts_location: isDutch ? 'Bij Koh Nang Yuan' : 'Near Koh Nang Yuan',
@@ -47,7 +47,7 @@ const JapaneseGardens = () => {
   return (
     <>
       <DiveSiteDetail
-        name="Japanese Gardens"
+        name="Toyapakeh"
         overview={content.overview}
         quickFacts={{
           depth: content.quick_facts_depth,
@@ -60,7 +60,7 @@ const JapaneseGardens = () => {
         divingTips={toList(content.diving_tips)}
         images={galleryImages}
       />
-      <DiveSiteBookingCTA siteName="Japanese Gardens" />
+      <DiveSiteBookingCTA siteName="Toyapakeh" />
     </>
   );
 };

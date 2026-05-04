@@ -13,11 +13,11 @@ const DiveSitesPage = () => {
   const isDutch = i18n.language.startsWith('nl');
   const content = {
     nl: {
-      heroTitle: 'Duiklocaties op Koh Tao',
-      heroText: 'Ontdek meer dan 25 geweldige duiklocaties rond Koh Tao, van ondiepe koraalriffen tot diepe oceaanpinnacles. Elke plek biedt unieke onderwaterervaringen en rijk zeeleven.',
+      heroTitle: 'Duiklocaties op Nusa Lembongan',
+      heroText: 'Ontdek meer dan 25 geweldige duiklocaties rond Nusa Lembongan, van ondiepe koraalriffen tot diepe oceaanpinnacles. Elke plek biedt unieke onderwaterervaringen en rijk zeeleven.',
       bookDive: 'Boek je duik',
-      overviewTitle: 'Beste duiklocaties op Koh Tao',
-      overviewText: 'Koh Tao heeft meer dan 25 uitstekende duiklocaties met gevarieerde topografie en een overvloed aan zeeleven. Elke plek is uniek en biedt duikers van elk niveau iets anders, met genoeg variatie om ook ervaren duikers wekenlang te boeien.',
+      overviewTitle: 'Beste duiklocaties op Nusa Lembongan',
+      overviewText: 'Nusa Lembongan heeft meer dan 25 uitstekende duiklocaties met gevarieerde topografie en een overvloed aan zeeleven. Elke plek is uniek en biedt duikers van elk niveau iets anders, met genoeg variatie om ook ervaren duikers wekenlang te boeien.',
       stat1Title: '25+ locaties',
       stat1Text: 'Van ondiepe baaien tot diepe pinnacles',
       stat2Title: 'Divers zeeleven',
@@ -31,15 +31,15 @@ const DiveSitesPage = () => {
       artificialTitle: 'Kunstmatige duiklocaties',
       shallowTitle: 'Ondiepe duiklocaties voor beginners',
       depth: 'Diepte',
-      bookingTitle: 'Ontdek de onderwaterwereld van Koh Tao',
-      bookingText: 'Klaar om de geweldige duiklocaties van Koh Tao te ontdekken? Onze ervaren gidsen nemen je mee naar de beste plekken voor jouw niveau en interesses.',
+      bookingTitle: 'Ontdek de onderwaterwereld van Nusa Lembongan',
+      bookingText: 'Klaar om de geweldige duiklocaties van Nusa Lembongan te ontdekken? Onze ervaren gidsen nemen je mee naar de beste plekken voor jouw niveau en interesses.',
  ive: 'Book your dive',
       overviewTitle: 'Best dive   },
     en: {
-      heroTitle: 'Dive sites around Koh Tao',
-      heroText: 'Discover more than 25 incredible dive sites around Koh Tao, from shallow coral reefs to deep ocean pinnacles. Every site offers unique underwater experiences and rich marine life.',
-      bookD sites around Koh Tao',
-      overviewText: 'Koh Tao has over 25 excellent dive sites with varied topography and abundant marine life. Each site is unique and offers something different for every diver level, with enough variety to keep experienced divers engaged for weeks.',
+      heroTitle: 'Dive sites around Nusa Lembongan',
+      heroText: 'Discover more than 25 incredible dive sites around Nusa Lembongan, from shallow coral reefs to deep ocean pinnacles. Every site offers unique underwater experiences and rich marine life.',
+      bookD sites around Nusa Lembongan',
+      overviewText: 'Nusa Lembongan has over 25 excellent dive sites with varied topography and abundant marine life. Each site is unique and offers something different for every diver level, with enough variety to keep experienced divers engaged for weeks.',
       stat1Title: '25+ sites',
       stat1Text: 'From shallow bays to deep pinnacles',
       stat2Title: 'Diverse marine life',
@@ -53,8 +53,8 @@ const DiveSitesPage = () => {
       artificialTitle: 'Artificial dive sites',
       shallowTitle: 'Shallow dive sites for beginners',
       depth: 'Depth',
-      bookingTitle: 'Discover Koh Tao’s underwater world',
-      bookingText: 'Ready to explore Koh Tao’s amazing dive sites? Our experienced guides take you to the best spots for your level and interests.',
+      bookingTitle: 'Discover Nusa Lembongan’s underwater world',
+      bookingText: 'Ready to explore Nusa Lembongan’s amazing dive sites? Our experienced guides take you to the best spots for your level and interests.',
     },
   };
   const pageContent = isDutch ? content.nl : content.en;
@@ -79,17 +79,17 @@ const DiveSitesPage = () => {
   const deepDiveSites = isDutch
     ? [
         {
-          name: "Sail Rock",
+          name: "Crystal Bay",
           path: "/dive-sites/sail-rock",
-          description: "De belangrijkste diepe duiklocatie van Koh Tao met grote visscholen, walvishaaien en reuzenbarracuda.",
+          description: "De belangrijkste diepe duiklocatie van Nusa Lembongan met grote visscholen, Mola Mola en reuzenbarracuda.",
           depth: "18-40m",
           highlights: ["Walvishaaien", "Reuzenbarracuda", "Malabar grouper", "Zeilvis"],
           difficulty: "Gevorderd",
           location: "40 minuten offshore"
         },
         {
-          name: "Chumphon Pinnacle",
-          description: "Granieten pinnacle met uitstekende kansen op walvishaaien en grote scholen trevally.",
+          name: "Manta Point",
+          description: "Granieten pinnacle met uitstekende kansen op Mola Mola en grote scholen trevally.",
           depth: "15-30m",
           highlights: ["Walvishaaien", "Trevally-scholen", "Adelaarsroggen", "Chevron-barracuda"],
           difficulty: "Gevorderd",
@@ -97,7 +97,7 @@ const DiveSitesPage = () => {
         },
         {
           name: "South West Pinnacle",
-          description: "Diepe pinnacle, bekend om walvishaaien, brydevinvissen en grote pelagische vis.",
+          description: "Diepe pinnacle, bekend om Mola Mola, brydevinvissen en grote pelagische vis.",
           depth: "15-35m",
           highlights: ["Walvishaaien", "Brydevinvissen", "Reuzenbarracuda", "Koningsmakreel"],
           difficulty: "Gevorderd",
@@ -106,17 +106,17 @@ const DiveSitesPage = () => {
       ]
     : [
         {
-          name: "Sail Rock",
+          name: "Crystal Bay",
           path: "/dive-sites/sail-rock",
-          description: "Koh Tao’s flagship deep dive site with huge fish schools, whale sharks, and giant barracuda.",
+          description: "Nusa Lembongan’s flagship deep dive site with huge fish schools, Mola Molas, and giant barracuda.",
           depth: "18-40m",
           highlights: ["Whale sharks", "Giant barracuda", "Malabar grouper", "Sailfish"],
           difficulty: "Gevorderd",
           location: "40 minutes offshore"
         },
         {
-          name: "Chumphon Pinnacle",
-          description: "Granite pinnacle with excellent whale shark sightings and large schools of trevally.",
+          name: "Manta Point",
+          description: "Granite pinnacle with excellent Mola Mola sightings and large schools of trevally.",
           depth: "15-30m",
           highlights: ["Whale sharks", "Trevally schools", "Eagle rays", "Chevron barracuda"],
           difficulty: "Gevorderd",
@@ -124,7 +124,7 @@ const DiveSitesPage = () => {
         },
         {
           name: "South West Pinnacle",
-          description: "Deep pinnacle known for whale sharks, Bryde’s whales, and large pelagic fish.",
+          description: "Deep pinnacle known for Mola Molas, Bryde’s whales, and large pelagic fish.",
           depth: "15-35m",
           highlights: ["Whale sharks", "Bryde’s whales", "Giant barracuda", "Spanish mackerel"],
           difficulty: "Gevorderd",
@@ -135,7 +135,7 @@ const DiveSitesPage = () => {
   const coralReefSites = isDutch
     ? [
         {
-          name: "Japanese Gardens",
+          name: "Toyapakeh",
           description: "Gevarieerde koraalriffen met kleurrijk zeeleven en swim-throughs.",
           depth: "12-25m",
           highlights: ["Pink-tailed triggerfish", "Ocellated adelaarsrog", "Kleurrijk koraal", "Gemarmerde octopus"],
@@ -143,7 +143,7 @@ const DiveSitesPage = () => {
           location: "Bij Koh Nang Yuan"
         },
         {
-          name: "Shark Island",
+          name: "SD Point",
           description: "Prachtige paarse boomkoralen en gorgonen met veel zeeleven.",
           depth: "8-20m",
           highlights: ["Zeewaaiers", "Zweepkoralen", "Zwartpuntrifhaaien", "Tropische vissen"],
@@ -151,7 +151,7 @@ const DiveSitesPage = () => {
           location: "Zuidkust"
         },
         {
-          name: "Mango Bay",
+          name: "SD Point",
           description: "Ondiepe koraalriffen, ideaal voor ontspannen duiken met een gezond ecosysteem.",
           depth: "5-18m",
           highlights: ["Kleurrijk koraal", "Rifvissen", "Zeeanemonen"],
@@ -161,7 +161,7 @@ const DiveSitesPage = () => {
       ]
     : [
         {
-          name: "Japanese Gardens",
+          name: "Toyapakeh",
           description: "Varied coral reefs with colorful marine life and swim-throughs.",
           depth: "12-25m",
           highlights: ["Pink-tailed triggerfish", "Ocellated eagle ray", "Colorful coral", "Marbled octopus"],
@@ -169,7 +169,7 @@ const DiveSitesPage = () => {
           location: "Near Koh Nang Yuan"
         },
         {
-          name: "Shark Island",
+          name: "SD Point",
           description: "Beautiful purple soft corals and gorgonians with abundant marine life.",
           depth: "8-20m",
           highlights: ["Sea fans", "Whip corals", "Blacktip reef sharks", "Tropical fish"],
@@ -177,7 +177,7 @@ const DiveSitesPage = () => {
           location: "South coast"
         },
         {
-          name: "Mango Bay",
+          name: "SD Point",
           description: "Shallow coral reefs ideal for relaxed diving with a healthy ecosystem.",
           depth: "5-18m",
           highlights: ["Colorful coral", "Reef fish", "Sea anemones"],
@@ -189,7 +189,7 @@ const DiveSitesPage = () => {
   const artificialSites = isDutch
     ? [
         {
-          name: "HTMS Sattakut",
+          name: "USAT Liberty Wreck",
           description: "Voormalig Amerikaans marineschip uit WOII, geschonken door de Thaise marine en nu een bloeiend kunstmatig rif.",
           depth: "18-30m",
           highlights: ["Wrakverkenning", "Marien leven", "Swim-throughs", "Historische waarde"],
@@ -205,17 +205,17 @@ const DiveSitesPage = () => {
           location: "Westkust"
         },
         {
-          name: "Buoyancy World",
+          name: "Mangrove Point",
           description: "Betonblokken en buizen die nieuwe ecosystemen voor zeeleven vormen.",
           depth: "5-12m",
           highlights: ["Betonstructuren", "Nieuwe koraalgroei", "Klein zeeleven", "Educatief"],
           difficulty: "Beginner",
-          location: "Aow Leuk"
+          location: "Blue Corner"
         }
       ]
     : [
         {
-          name: "HTMS Sattakut",
+          name: "USAT Liberty Wreck",
           description: "Former WWII US Navy ship donated by the Thai Navy, now a thriving artificial reef.",
           depth: "18-30m",
           highlights: ["Wreck exploration", "Marine life", "Swim-throughs", "Historic value"],
@@ -231,19 +231,19 @@ const DiveSitesPage = () => {
           location: "West coast"
         },
         {
-          name: "Buoyancy World",
+          name: "Mangrove Point",
           description: "Concrete blocks and pipes that create new ecosystems for marine life.",
           depth: "5-12m",
           highlights: ["Concrete structures", "New coral growth", "Small marine life", "Educational"],
           difficulty: "Beginner",
-          location: "Aow Leuk"
+          location: "Blue Corner"
         }
       ];
 
   const shallowSites = isDutch
     ? [
         {
-          name: "Aow Leuk",
+          name: "Blue Corner",
           description: "Ondiepe baai met koraaltuinen en makkelijke duikomstandigheden.",
           depth: "3-10m",
           highlights: ["Koraaltuinen", "Tropische vissen", "Makkelijke toegang", "Trainingslocatie"],
@@ -269,7 +269,7 @@ const DiveSitesPage = () => {
       ]
     : [
         {
-          name: "Aow Leuk",
+          name: "Blue Corner",
           description: "Shallow bay with coral gardens and easy diving conditions.",
           depth: "3-10m",
           highlights: ["Coral gardens", "Tropical fish", "Easy entry", "Training site"],
@@ -573,19 +573,19 @@ const DiveSitesPage = () => {
                   <div className="flex justify-between items-center pb-2 border-b">
                     <span className="font-medium">{isDutch ? '1 Duik' : '1 Dive'}</span>
                     <span className="text-xl font-bold text-blue-600">
-                      ฿1,000 <span className="text-sm text-muted-foreground">/{isDutch ? 'duik' : 'dive'}</span>
+                      IDR 385,000 <span className="text-sm text-muted-foreground">/{isDutch ? 'duik' : 'dive'}</span>
                     </span>
                   </div>
                   <div className="flex justify-between items-center pb-2 border-b">
                     <span className="font-medium">{isDutch ? '2-9 Duiken' : '2-9 Dives'}</span>
                     <span className="text-xl font-bold text-blue-600">
-                      ฿900 <span className="text-sm text-muted-foreground">/{isDutch ? 'duik' : 'dive'}</span>
+                      IDR 345,000 <span className="text-sm text-muted-foreground">/{isDutch ? 'duik' : 'dive'}</span>
                     </span>
                   </div>
                   <div className="flex justify-between items-center pb-2 border-b bg-green-50 p-2 rounded">
                     <span className="font-medium">{isDutch ? '10+ Duiken' : '10+ Dives'}</span>
                     <span className="text-xl font-bold text-green-600">
-                      ฿800 <span className="text-sm text-muted-foreground">/{isDutch ? 'duik' : 'dive'}</span>
+                      IDR 310,000 <span className="text-sm text-muted-foreground">/{isDutch ? 'duik' : 'dive'}</span>
                     </span>
                   </div>
                 </div>
@@ -600,7 +600,7 @@ const DiveSitesPage = () => {
                 </div>
                 <Button 
                   className="w-full"
-                  onClick={() => navigate(`/booking?item=${encodeURIComponent('Fun Dive')}&type=dive&price=1800&currency=THB&dives=2`)}
+                  onClick={() => navigate(`/booking?item=${encodeURIComponent('Fun Dive')}&type=dive&price=1800&currency=IDR&dives=2`)}
                 >
                   {pageContent.bookDive}
                 </Button>
@@ -613,14 +613,14 @@ const DiveSitesPage = () => {
                   <DollarSign className="w-5 h-5 text-blue-600" />
                   <CardTitle className="text-lg">
                     <Link to="/dive-sites/sail-rock" className="hover:text-blue-600">
-                      Sail Rock Special Trip
+                      Crystal Bay Special Trip
                     </Link>
                   </CardTitle>
                 </div>
                 <CardDescription>{isDutch ? 'Volledige dagtrip premium pakket' : 'Full-day premium trip package'}</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold text-blue-600 mb-2">฿2,900</p>
+                <p className="text-3xl font-bold text-blue-600 mb-2">IDR 1,100,000</p>
                 <p className="text-sm text-muted-foreground mb-4">
                   {isDutch ? 'Volledige dag excursie (3 duiken)' : 'Full day excursion (3 dives)'}
                 </p>
@@ -632,9 +632,9 @@ const DiveSitesPage = () => {
                 </ul>
                 <Button 
                   className="w-full"
-                  onClick={() => navigate(`/booking?item=${encodeURIComponent('Sail Rock Special')}&type=dive&price=2900&currency=THB`)}
+                  onClick={() => navigate(`/booking?item=${encodeURIComponent('Crystal Bay Special')}&type=dive&price=2900&currency=IDR`)}
                 >
-                  {isDutch ? 'Boek Sail Rock' : 'Book Sail Rock'}
+                  {isDutch ? 'Boek Crystal Bay' : 'Book Crystal Bay'}
                 </Button>
               </CardContent>
             </Card>

@@ -13,7 +13,7 @@ const JapaneseGardens = () => {
         location: "Nabij Koh Nang Yuan",
         highlights: ["Roze staarttrekker", "Gevlekte adelaarsrog", "Kleurrijk koraal", "Gemarmerde octopus"],
         detailedDescription:
-          "Japanese Gardens ligt bij Koh Nang Yuan en biedt een van de meest diverse koraalrifecosystemen van Thailand. Deze duiklocatie voor gemiddeld niveau heeft een indrukwekkende variatie aan koraalformaties, van kleurrijke zachte koralen tot grote gorgonen. De site staat bekend om gezonde koraaldekking en veel onderwaterleven. De roze staarttrekker, die elders rond Koh Tao minder vaak wordt gezien, maakt deze plek extra bijzonder. Gevlekte adelaarsroggen en gemarmerde octopussen verhogen de biodiversiteit. Het onderwaterlandschap met doorgangen, kleine grotten en met koraal begroeide rotsblokken biedt ideaal leefgebied voor veel soorten.",
+          "Toyapakeh ligt bij Koh Nang Yuan en biedt een van de meest diverse koraalrifecosystemen van Indonesia. Deze duiklocatie voor gemiddeld niveau heeft een indrukwekkende variatie aan koraalformaties, van kleurrijke zachte koralen tot grote gorgonen. De site staat bekend om gezonde koraaldekking en veel onderwaterleven. De roze staarttrekker, die elders rond Nusa Lembongan minder vaak wordt gezien, maakt deze plek extra bijzonder. Gevlekte adelaarsroggen en gemarmerde octopussen verhogen de biodiversiteit. Het onderwaterlandschap met doorgangen, kleine grotten en met koraal begroeide rotsblokken biedt ideaal leefgebied voor veel soorten.",
         bestTime: "Hele jaar, beste zicht november-mei",
         current: "Licht tot matig, meestal rustig",
         visibility: "20-30m, goed helder",
@@ -43,7 +43,7 @@ const JapaneseGardens = () => {
         location: "Near Koh Nang Yuan",
         highlights: ["Pink Tailed Triggerfish", "Ocellated Eagle Rays", "Colorful Corals", "Marbled Octopus"],
         detailedDescription:
-          "Japanese Gardens is located near Koh Nang Yuan and offers one of the most diverse coral reef ecosystems in Thailand. This intermediate dive site features a stunning variety of coral formations, from colorful soft corals to massive gorgonians. The site is renowned for its healthy coral coverage and abundant marine life. Pink-tailed triggerfish, rarely seen elsewhere in Koh Tao, make this site particularly special. Ocellated eagle rays and marbled octopuses add to the biodiversity. The underwater topography includes swim-throughs, small caves, and coral-encrusted boulders that create perfect habitats for marine life.",
+          "Toyapakeh is located near Koh Nang Yuan and offers one of the most diverse coral reef ecosystems in Indonesia. This intermediate dive site features a stunning variety of coral formations, from colorful soft corals to massive gorgonians. The site is renowned for its healthy coral coverage and abundant marine life. Pink-tailed triggerfish, rarely seen elsewhere in Nusa Lembongan, make this site particularly special. Ocellated eagle rays and marbled octopuses add to the biodiversity. The underwater topography includes swim-throughs, small caves, and coral-encrusted boulders that create perfect habitats for marine life.",
         bestTime: "Year-round, best visibility November-May",
         current: "Light to moderate, generally calm",
         visibility: "20-30m, good clarity",
@@ -70,7 +70,7 @@ const JapaneseGardens = () => {
 
   return (
     {/* <DiveSiteDetail
-      name="Japanese Gardens"
+      name="Toyapakeh"
       description={content.description}
       depth="12-25m"
       difficulty={content.difficulty}
@@ -83,7 +83,7 @@ const JapaneseGardens = () => {
       marineLife={content.marineLife}
       tips={content.tips}
       images={[
-        "/images/japanandwins.jpg", // Unique main image for Japanese Gardens
+        "/images/japanandwins.jpg", // Unique main image for Toyapakeh
         "/images/photo-1613853250147-2f73e55c1561.avif",
         "/images/photo-1618865181016-a80ad83a06d3.avif",
         "/images/photo-1647825194145-2d94e259c745.avif",

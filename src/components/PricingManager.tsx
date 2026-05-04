@@ -57,7 +57,7 @@ const PricingManager: React.FC = () => {
 						<TableHeader>
 							<TableRow>
 								<TableHead>Course</TableHead>
-								<TableHead>THB</TableHead>
+								<TableHead>IDR</TableHead>
 								<TableHead>USD</TableHead>
 								<TableHead>EUR</TableHead>
 								<TableHead>Action</TableHead>

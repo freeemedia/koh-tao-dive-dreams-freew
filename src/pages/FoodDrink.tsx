@@ -13,31 +13,31 @@ const FoodDrink = () => {
   const locale = i18n.language.startsWith('nl') ? 'nl' : 'en';
 
   const fallbackContent = {
-    title: locale === 'nl' ? 'Eten & drinken op Koh Tao' : 'Food & drinks on Koh Tao',
+    title: locale === 'nl' ? 'Eten & drinken op Nusa Lembongan' : 'Food & drinks on Nusa Lembongan',
     subtitle:
       locale === 'nl'
-        ? 'Ontdek heerlijke Thaise gerechten, verse seafood en strandbars bij zonsondergang.'
-        : 'Discover delicious Thai dishes, fresh seafood, and sunset beach bars.',
+        ? 'Ontdek heerlijke Balinese gerechten, verse seafood en beachbars bij zonsondergang.'
+        : 'Discover delicious Balinese dishes, fresh seafood, and sunset beach bars.',
     highlights_title: locale === 'nl' ? 'Culinaire highlights' : 'Culinary highlights',
     highlights_list:
       locale === 'nl'
-        ? 'Groot aanbod aan Thaise en internationale restaurants\nVerse seafood bij veel plekken aan het strand\nStreetfood-kraampjes voor snelle en betaalbare maaltijden\nVeel vegetarische en vegan opties\nStrandbars en cafes voor drankjes bij zonsondergang'
-        : 'Wide range of Thai and international restaurants\nFresh seafood available at many beachfront spots\nStreet food stalls for quick and affordable meals\nMany vegetarian and vegan options\nBeach bars and cafes for sunset drinks',
+        ? 'Groot aanbod aan Balinese en internationale restaurants\nVerse seafood rechtstreeks van lokale vissers\nGezellige warungs met lokale Indonesische gerechten\nVeel vegetarische en vegan opties\nBeachbars en cafes voor drankjes bij zonsondergang'
+        : 'Wide range of Balinese and international restaurants\nFresh seafood direct from local fishermen\nCosy warungs serving local Indonesian dishes\nMany vegetarian and vegan options\nBeach bars and cafes for sunset drinks',
     intro:
       locale === 'nl'
-        ? 'Probeer lokale favorieten zoals Pad Thai, Som Tam en vers gegrilde vis. Op Koh Tao vind je alles: van eenvoudige strandtentjes tot luxe restaurants.'
-        : 'Try local favorites like Pad Thai, Som Tam, and freshly grilled fish. On Koh Tao you will find everything from simple beach shacks to upscale restaurants.',
+        ? 'Probeer lokale favorieten zoals Nasi goreng, Mie goreng en vers gegrilde vis. Op Lembongan vind je alles: van eenvoudige warungs tot beachfront restaurants.'
+        : 'Try local favorites like Nasi goreng, Mie goreng, and freshly grilled fish. On Lembongan you will find everything from simple warungs to beachfront restaurants.',
     cta_more_activities: locale === 'nl' ? 'Meer activiteiten' : 'More activities',
     cta_find_stay: locale === 'nl' ? 'Zoek verblijf' : 'Find accommodation',
     tip:
       locale === 'nl'
-        ? 'Tip: kraanwater is niet drinkbaar - koop flessenwater of vul bij waterpunten.'
-        : 'Tip: tap water is not drinkable - buy bottled water or refill at water stations.',
+        ? 'Tip: kraanwater is niet drinkbaar op Bali - koop flessenwater of gebruik een filter.'
+        : 'Tip: tap water is not safe to drink in Bali - buy bottled water or use a filter.',
     taste_title: locale === 'nl' ? 'Aanraders om te proeven' : 'Must-try dishes',
     tastes_list:
       locale === 'nl'
-        ? 'Pad Thai - gebakken rijstnoedels met garnalen of kip\nSom Tam - pittige groene papajasalade\nVerse gegrilde vis met limoen en chili\nMango sticky rice als dessert'
-        : 'Pad Thai - stir-fried rice noodles with shrimp or chicken\nSom Tam - spicy green papaya salad\nFresh grilled fish with lime and chili\nMango sticky rice for dessert',
+        ? 'Nasi goreng - gebakken rijst met ei en groenten\nMie goreng - gebakken noedels met groenten of vlees\nBabi guling - Balinees geroosterd varken\nVerse gegrilde vis met sambal en rijst\nEs campur - Indonesisch dessert met fruit en ijs'
+        : 'Nasi goreng - fried rice with egg and vegetables\nMie goreng - fried noodles with vegetables or meat\nBabi guling - Balinese spit-roasted pork\nFresh grilled fish with sambal and rice\nEs campur - Indonesian dessert with fruit and ice',
   };
 
   const { content } = usePageContent({

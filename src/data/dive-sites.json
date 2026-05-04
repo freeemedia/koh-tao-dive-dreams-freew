@@ -1,6 +1,6 @@
 {
   "chumphon-pinnacle": {
-    "name": "Chumphon Pinnacle",
+    "name": "Manta Point",
     "overview": "Your new overview content here",
     "quickFacts": {
       "depth": "15-30m",
@@ -9,7 +9,7 @@
       "best foir each product
        
       
-    "name": "Chumphon Piime": "May–September"
+    "name": "Sanur Piime": "May–September"
     },
     "whatYouCanSee": ["Whale sharks", "Trevally schools", "Eagle rays", "Chevron barracuda"],
     "marineLifeHighlights": ["test"],
@@ -17,7 +17,7 @@
     "images": ["/images/whale-shark-snorkelling-fos-sustainable-certification-medium-1.webp"]
   },
   "sail-rock": {
-    "name": "Sail Rock",
+    "name": "Crystal Bay",
     "overview": "Your new overview content here",
     "quickFacts": {
       "depth": "18-40m",
@@ -31,8 +31,8 @@
     "images": ["/images/sailrock.webp"]
   },
   "twins-pinnacle": {
-    "name": "Twins Pinnacle",
-    "overview": "Koh Tao's most popular dive site featuring three granite pinnacles with abundant marine life and perfect for all certification levels.",
+    "name": "Ceningan Wall",
+    "overview": "Lembongan's most popular dive site featuring three granite pinnacles with abundant marine life and perfect for all certification levels.",
     "quickFacts": {
       "depth": "6-18m",
       "difficulty": "Beginner to Intermediate",
@@ -77,14 +77,14 @@
       "Note: there is a stone circle around the clownfish - do not enter",
       "Great for macro photography",
       "Practice buoyancy on the arch and rock formations",
-      "Nearby Buoyancy World is designed for buoyancy practice",
+      "Nearby Mangrove Point is designed for buoyancy practice",
       "Excellent for marine awareness and identification courses",
       "Easy navigation thanks to the three pinnacles"
     ],
     "images": ["/images/twins-header.png"]
   },
   "mango-bay": {
-    "name": "Mango Bay",
+    "name": "SD Point",
     "overview": "Shallow coral reefs perfect for relaxed diving with thriving marine ecosystems.",
     "quickFacts": {
       "depth": "5-18m",
@@ -133,8 +133,8 @@
     "images": ["/images/photo-1682686580849-3e7f67df4015.avif"]
   },
   "japanese-gardens": {
-    "name": "Japanese Gardens",
-    "overview": "Japanese Gardens is a beautiful dive site near Koh Nang Yuan, known for its diverse coral reef and abundant marine life. Suitable for all levels.",
+    "name": "Toyapakeh",
+    "overview": "Toyapakeh is a beautiful dive site near Koh Nang Yuan, known for its diverse coral reef and abundant marine life. Suitable for all levels.",
     "quickFacts": {
       "depth": "5-18m",
       "difficulty": "Beginner to Intermediate",

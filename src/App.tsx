@@ -40,7 +40,7 @@ import FunDiving from './pages/FunDiving';
 import DiveSitesPage from './pages/DiveSitesPage';
 import DiveSiteReports from './pages/DiveSiteReports';
 import SailRock from './pages/dive-sites/sail-rock';
-import ChumphonPinnacle from './pages/dive-sites/chumphon-pinnacle';
+import SanurPinnacle from './pages/dive-sites/chumphon-pinnacle';
 import JapaneseGardens from './pages/dive-sites/japanese-gardens';
 import HTMSSattakut from './pages/HTMSSattakut';
 import TwinsPinnacle from './pages/dive-sites/twins-pinnacle';
@@ -260,7 +260,7 @@ const App = () => (
               <Route path="/dive-site-reports" element={<DiveSiteReports />} />
               <Route path="/dive-sites/sail-rock" element={<SailRock />} />
               <Route path="/dive-sites/chumphon-pinnacles" element={<Navigate to="/dive-sites/chumphon-pinnacle" replace />} />
-              <Route path="/dive-sites/chumphon-pinnacle" element={<ChumphonPinnacle />} />
+              <Route path="/dive-sites/chumphon-pinnacle" element={<SanurPinnacle />} />
               <Route path="/dive-sites/japanese-garden" element={<Navigate to="/dive-sites/japanese-gardens" replace />} />
               <Route path="/dive-sites/japanese-gardens" element={<JapaneseGardens />} />
               <Route path="/dive-sites/htms-sattukut" element={<Navigate to="/dive-sites/htms-sattakut" replace />} />

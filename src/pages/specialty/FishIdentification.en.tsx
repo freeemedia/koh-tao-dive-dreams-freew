@@ -20,7 +20,7 @@ export default function FishIdentification() {
         <Card className="mb-8 p-6">
           <h2 className="text-2xl font-bold mb-4">Course Overview</h2>
           <p className="text-gray-700 mb-4">
-            Learn to identify and understand the behavior of fish around Koh Tao. This conservation-focused specialty deepens your appreciation for marine life and helps protect the ecosystem through responsible diving.
+            Learn to identify and understand the behavior of fish around Nusa Lembongan. This conservation-focused specialty deepens your appreciation for marine life and helps protect the ecosystem through responsible diving.
           </p>
         </Card>
 
@@ -28,7 +28,7 @@ export default function FishIdentification() {
           <h2 className="text-2xl font-bold mb-4">What You'll Learn</h2>
           <ul className="list-disc list-inside space-y-3 text-gray-700">
             <li>Fish identification techniques</li>
-            <li>Common Koh Tao fish species</li>
+            <li>Common Nusa Lembongan fish species</li>
             <li>Fish behavior and ecology</li>
             <li>Fish families and characteristics</li>
             <li>Conservation and responsible diving</li>
@@ -83,7 +83,7 @@ export default function FishIdentification() {
               <Button 
                 variant="default" 
                 className="bg-emerald-600 hover:bg-emerald-700"
-                onClick={() => navigate('/booking?item=3%20Specialty%20Bundle&type=course&price=18000&currency=THB')}
+                onClick={() => navigate('/booking?item=3%20Specialty%20Bundle&type=course&price=18000&currency=IDR')}
               >
                 Book 3 Specialty Bundle
               </Button>
@@ -93,7 +93,7 @@ export default function FishIdentification() {
 
         <Card className="mb-8 p-6 bg-green-50">
           <h2 className="text-2xl font-bold mb-6">Discover Marine Life</h2>
-          <p className="text-gray-700 mb-4">Learn to identify and appreciate the rich marine biodiversity around Koh Tao.</p>
+          <p className="text-gray-700 mb-4">Learn to identify and appreciate the rich marine biodiversity around Nusa Lembongan.</p>
           <Button size="lg" onClick={() => navigate('/booking?course=fish-id&type=course')}>Book Now</Button>
         </Card>
 

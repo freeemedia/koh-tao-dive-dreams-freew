@@ -18,11 +18,11 @@ const BuoyancyWorld = () => {
   const fallbackContent = useMemo(
     () => ({
       overview: isDutch
-        ? 'Buoyancy World is een kunstmatig rif en onderwater-speeltuin bij Koh Tao, vlakbij de populaire duikstek Twins. Het werd in 2009 aangelegd door lokale duikscholen en natuurbeschermers om een leuke trainingsplek te bieden en de druk op natuurlijke riffen te verlichten. Je vindt er betonnen kubussen, piramides, hoepels en zelfs een modelskelet van een haai. Perfect om drijfvermogen, trim en navigatie te oefenen. Je ziet vaak jonge rifvissen, blennies, gobies en koraal dat zich op de structuren vestigt.'
-        : 'Buoyancy World is an artificial reef and underwater playground near Koh Tao, close to the popular dive site Twins. Created in 2009 by local dive schools and conservation groups, it provides a fun training area for divers and relieves pressure on natural reefs. The site features sunken concrete cubes, pyramids, hoops, and even a model shark skeleton, all designed for practicing buoyancy, trim, and navigation. You’ll often see juvenile reef fish, blennies, gobies, and coral growing on the structures.',
+        ? 'Mangrove Point is een kunstmatig rif en onderwater-speeltuin bij Nusa Lembongan, vlakbij de populaire duikstek Twins. Het werd in 2009 aangelegd door lokale duikscholen en natuurbeschermers om een leuke trainingsplek te bieden en de druk op natuurlijke riffen te verlichten. Je vindt er betonnen kubussen, piramides, hoepels en zelfs een modelskelet van een haai. Perfect om drijfvermogen, trim en navigatie te oefenen. Je ziet vaak jonge rifvissen, blennies, gobies en koraal dat zich op de structuren vestigt.'
+        : 'Mangrove Point is an artificial reef and underwater playground near Nusa Lembongan, close to the popular dive site Twins. Created in 2009 by local dive schools and conservation groups, it provides a fun training area for divers and relieves pressure on natural reefs. The site features sunken concrete cubes, pyramids, hoops, and even a model shark skeleton, all designed for practicing buoyancy, trim, and navigation. You’ll often see juvenile reef fish, blennies, gobies, and coral growing on the structures.',
       quick_facts_depth: '5-12m',
       quick_facts_difficulty: isDutch ? 'Beginner' : 'Beginner',
-      quick_facts_location: 'Near Twins, Koh Tao',
+      quick_facts_location: 'Near Twins, Nusa Lembongan',
       quick_facts_best_time: isDutch ? 'Hele jaar, rustig in kalm weer' : 'Year-round, calm in settled weather',
       what_you_can_see: isDutch
         ? 'Betonnen kubussen en piramides\nHoepels en trainingsobjecten\nKunstmatige haai\nNieuwe koraalgroei\nJonge rifvissen'
@@ -43,7 +43,7 @@ const BuoyancyWorld = () => {
   return (
     <>
       <DiveSiteDetail
-        name="Buoyancy World"
+        name="Mangrove Point"
         overview={content.overview}
         quickFacts={{
           depth: content.quick_facts_depth,
@@ -56,7 +56,7 @@ const BuoyancyWorld = () => {
         divingTips={toList(content.diving_tips)}
         images={toList(content.images)}
       />
-      <DiveSiteBookingCTA siteName="Buoyancy World" />
+      <DiveSiteBookingCTA siteName="Mangrove Point" />
     </>
   );
 };

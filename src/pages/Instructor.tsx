@@ -10,25 +10,25 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { usePageContent } from '@/hooks/usePageContent';
 
-const SUPPORTED_CURRENCIES = ['THB', 'USD', 'EUR'] as const;
+const SUPPORTED_CURRENCIES = ['IDR', 'USD', 'EUR'] as const;
 type Currency = typeof SUPPORTED_CURRENCIES[number];
 const IDC_DROPBOX_FOLDER = 'instructor';
 
 const Instructor: React.FC = () => {
   const [showBookNow, setShowBookNow] = useState(false);
   // Currency state
-  const [currency, setCurrency] = useState<Currency>('THB');
-  const [exchangeRates, setExchangeRates] = useState<{ [key: string]: number }>({ THB: 1, USD: 1, EUR: 1 });
+  const [currency, setCurrency] = useState<Currency>('IDR');
+  const [exchangeRates, setExchangeRates] = useState<{ [key: string]: number }>({ IDR: 1, USD: 1, EUR: 1 });
 
   // Fetch exchange rates on mount
   useEffect(() => {
     const fetchRates = async () => {
       try {
-        const res = await fetch(`https://openexchangerates.org/api/latest.json?app_id=${import.meta.env.VITE_OPENEXCHANGERATES_API_KEY}&symbols=THB,USD,EUR`);
+        const res = await fetch(`https://openexchangerates.org/api/latest.json?app_id=${import.meta.env.VITE_OPENEXCHANGERATES_API_KEY}&symbols=IDR,USD,EUR`);
         const data = await res.json();
         if (data && data.rates) {
           setExchangeRates({
-            THB: data.rates.THB || 1,
+            IDR: data.rates.IDR || 1,
             USD: data.rates.USD || 1,
             EUR: data.rates.EUR || 1,
           });
@@ -41,11 +41,11 @@ const Instructor: React.FC = () => {
   }, []);
 
   // Currency conversion helper
-  const convertCurrency = (amount: number | null | undefined, from: string = 'THB') => {
+  const convertCurrency = (amount: number | null | undefined, from: string = 'IDR') => {
     if (!amount || !exchangeRates[from] || !exchangeRates[currency]) return '-';
-    const thbAmount = from === 'THB' ? amount : (amount / exchangeRates[from]) * exchangeRates['THB'];
-    const converted = (thbAmount / exchangeRates['THB']) * exchangeRates[currency];
-    const symbol = currency === 'THB' ? '฿' : currency === 'USD' ? '$' : '€';
+    const thbAmount = from === 'IDR' ? amount : (amount / exchangeRates[from]) * exchangeRates['IDR'];
+    const converted = (thbAmount / exchangeRates['IDR']) * exchangeRates[currency];
+    const symbol = currency === 'IDR' ? '฿' : currency === 'USD' ? '$' : '€';
     return `${symbol}${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`;
   };
   const navigate = useNavigate();
@@ -83,7 +83,7 @@ const Instructor: React.FC = () => {
         ? 'IDC-materialen en PADI-registratie\nPraktijklessen en mentoring\nExamenvoorbereiding en examenkosten (waar van toepassing)'
         : 'IDC materials and PADI registration\nPractical teaching sessions and mentoring\nExam preparation and exam fees (where applicable)',
       faq_title: 'FAQ',
-      faq_1_q: isDutch ? 'Hoe schrijf ik me in voor de IDC op Koh Tao?' : 'How do I enrol in the IDC on Koh Tao?',
+      faq_1_q: isDutch ? 'Hoe schrijf ik me in voor de IDC op Nusa Lembongan?' : 'How do I enrol in the IDC on Nusa Lembongan?',
       faq_1_a: isDutch
         ? 'Neem contact met ons op voor cursusdata, planning en het aanmeldproces. We begeleiden je stap voor stap van vereisten tot inschrijving.'
         : 'Contact us for course dates, schedule options and the application process. We can guide you step-by-step from prerequisites to enrollment.',
@@ -99,10 +99,10 @@ const Instructor: React.FC = () => {
       faq_3_a: isDutch
         ? 'Absoluut. Na je instructeurscertificering kun je verder doorgroeien met pro-level trajecten zoals MSDT en meer, afhankelijk van je ervaring en doelen.'
         : 'Absolutely. After instructor certification, you can continue with pro-level development such as MSDT and beyond, depending on your experience and goals.',
-      faq_4_q: isDutch ? 'Waarom Koh Tao kiezen voor een IDC?' : 'Why choose Koh Tao for an IDC?',
+      faq_4_q: isDutch ? 'Waarom Nusa Lembongan kiezen voor een IDC?' : 'Why choose Nusa Lembongan for an IDC?',
       faq_4_a: isDutch
-        ? 'Koh Tao combineert uitstekende duiklocaties, ervaren instructeurs, lagere kosten van levensonderhoud en een sterke duikcommunity. Daardoor is het een van de beste plekken om een duikcarriere op te bouwen.'
-        : 'Koh Tao combines excellent dive sites, experienced instructors, affordable living costs and a strong dive community, making it one of the best places to build a dive career.',
+        ? 'Nusa Lembongan combineert uitstekende duiklocaties, ervaren instructeurs, lagere kosten van levensonderhoud en een sterke duikcommunity. Daardoor is het een van de beste plekken om een duikcarriere op te bouwen.'
+        : 'Nusa Lembongan combines excellent dive sites, experienced instructors, affordable living costs and a strong dive community, making it one of the best places to build a dive career.',
       sidebar_title: isDutch ? 'Cursusdetails' : 'Course Details',
       sidebar_badge: isDutch ? 'Pro Niveau' : 'Pro Level',
       sidebar_subtitle: isDutch
@@ -132,10 +132,10 @@ const Instructor: React.FC = () => {
     fallbackContent,
   });
 
-  const basePriceTHB = Number(String(content.price_thb || '68900').replace(/[^\d.-]/g, '')) || 68900;
+  const basePriceIDR = Number(String(content.price_thb || '68900').replace(/[^\d.-]/g, '')) || 68900;
   const bookingUrl = `/booking?item=${encodeURIComponent(
     content.hero_title || 'PADI Open Water Scuba Instructor'
-  )}&type=course&price=${convertCurrency(basePriceTHB, 'THB').replace(/[^\d.]/g, '')}&currency=${currency}`;
+  )}&type=course&price=${convertCurrency(basePriceIDR, 'IDR').replace(/[^\d.]/g, '')}&currency=${currency}`;
 
   return (
     <div className="min-h-screen bg-background">

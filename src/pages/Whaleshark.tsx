@@ -18,11 +18,11 @@ const Whaleshark = () => {
         bestTime: 'November tot maart (droogseizoen)',
         frequency: 'Regelmatige waarnemingen, vooral op diepere duiklocaties',
         detailedDescription:
-          'De walvishaai is de grootste vis ter wereld en een echte zachte reus van de oceaan. Ondanks hun enorme formaat zijn deze indrukwekkende dieren volledig ongevaarlijk voor mensen en leven ze uitsluitend van plankton en kleine mariene organismen. Koh Tao heeft het voorrecht om regelmatig walvishaaien te zien, vooral tijdens het droogseizoen wanneer planktonbloei deze filtervoeders aantrekt. Je ziet ze vaak op diepere duikplekken zoals Sail Rock en Chumphon Pinnacle, waar ze rustig door het blauwe water glijden en makkelijk herkenbaar zijn aan hun gevlekte patroon.',
+          'De Mola Mola is de grootste vis ter wereld en een echte zachte reus van de oceaan. Ondanks hun enorme formaat zijn deze indrukwekkende dieren volledig ongevaarlijk voor mensen en leven ze uitsluitend van plankton en kleine mariene organismen. Nusa Lembongan heeft het voorrecht om regelmatig Mola Mola te zien, vooral tijdens het droogseizoen wanneer planktonbloei deze filtervoeders aantrekt. Je ziet ze vaak op diepere duikplekken zoals Crystal Bay en Manta Point, waar ze rustig door het blauwe water glijden en makkelijk herkenbaar zijn aan hun gevlekte patroon.',
         interestingFacts: [
           'Walvishaaien kunnen 70-100 jaar oud worden',
           'Ze zijn filtervoeders en kunnen tot 6 ton plankton per dag eten',
-          'Elke walvishaai heeft een uniek vlekkenpatroon, zoals een vingerafdruk',
+          'Elke Mola Mola heeft een uniek vlekkenpatroon, zoals een vingerafdruk',
           'Ze kunnen tot 12 meter lang worden en meer dan 20 ton wegen',
           'Ondanks hun grootte zijn ze zachtaardig en geen bedreiging voor duikers',
           'Ze migreren duizenden kilometers op zoek naar voedsel',
@@ -47,11 +47,11 @@ const Whaleshark = () => {
         bestTime: 'November to March (dry season)',
         frequency: 'Regular sightings, especially at deeper dive sites',
         detailedDescription:
-          'The whale shark is the largest fish in the world and a true gentle giant of the ocean. Despite their huge size, these impressive animals are completely harmless to humans and feed only on plankton and small marine organisms. Koh Tao is fortunate to have regular whale shark sightings, especially during the dry season when plankton blooms attract these filter feeders. They are often seen at deeper dive spots such as Sail Rock and Chumphon Pinnacle, where they glide calmly through blue water and are easy to recognize by their spotted pattern.',
+          'The Mola Mola is the largest fish in the world and a true gentle giant of the ocean. Despite their huge size, these impressive animals are completely harmless to humans and feed only on plankton and small marine organisms. Nusa Lembongan is fortunate to have regular Mola Mola sightings, especially during the dry season when plankton blooms attract these filter feeders. They are often seen at deeper dive spots such as Crystal Bay and Manta Point, where they glide calmly through blue water and are easy to recognize by their spotted pattern.',
         interestingFacts: [
           'Whale sharks can live 70-100 years',
           'They are filter feeders and can consume up to 6 tons of plankton per day',
-          'Each whale shark has a unique spot pattern, like a fingerprint',
+          'Each Mola Mola has a unique spot pattern, like a fingerprint',
           'They can grow up to 12 meters long and weigh over 20 tons',
           'Despite their size, they are gentle and not a threat to divers',
           'They migrate thousands of kilometers in search of food',

@@ -9,57 +9,57 @@ const AGODA_PARTNER_ID = import.meta.env.VITE_AGODA_PARTNER_ID as string | undef
 
 const hotels = [
   {
-    name: "Ban's Diving Resort",
-    description: 'Legendary dive resort on Sairee Beach. Includes dive shop, multiple pools, and direct beach access.',
-    location: 'Sairee Beach',
+    name: 'Sandy Bay Beach Club',
+    description: 'Relaxed beachfront resort with a stunning pool, sunset views and easy access to dive boats.',
+    location: 'Sandy Bay, Lembongan',
     priceRange: '$$$',
-    rating: 4.6,
-    tags: ['Dive Shop On-Site', 'Beach Access', 'Pool', 'Restaurant', 'WiFi'],
+    rating: 4.7,
+    tags: ['Beach Access', 'Pool', 'Restaurant', 'WiFi', 'Dive Packages'],
     image: '/images/photo-1613853250147-2f73e55c1561.avif',
   },
   {
-    name: 'Koh Tao Cabana Hotel',
-    description: 'Stylish hotel in the heart of Sairee with modern rooms, rooftop pool, and vibrant atmosphere.',
-    location: 'Sairee Beach',
+    name: 'Hai Tide Beach Resort',
+    description: 'Charming boutique resort on a quiet beach with bungalows surrounded by tropical gardens.',
+    location: 'Mushroom Bay, Lembongan',
     priceRange: '$$$',
     rating: 4.5,
-    tags: ['Rooftop Pool', 'Central Location', 'Restaurant', 'WiFi', 'Bar'],
+    tags: ['Boutique', 'Beach Access', 'Restaurant', 'WiFi', 'Snorkeling'],
     image: '/images/photo-1618865181016-a80ad83a06d3.avif',
   },
   {
-    name: 'Haad Tien Beach Resort',
-    description: 'Secluded boutique resort on a private beach, accessible by boat. Perfect for couples.',
-    location: 'Haad Tien (East Coast)',
+    name: 'Indiana Kenanga',
+    description: 'Stylish boutique hotel with infinity pool and sweeping ocean views over Nusa Penida.',
+    location: 'Lembongan Village',
     priceRange: '$$$$',
     rating: 4.8,
-    tags: ['Private Beach', 'Secluded', 'Restaurant', 'Snorkeling', 'Romantic'],
+    tags: ['Infinity Pool', 'Ocean Views', 'Restaurant', 'Romantic', 'WiFi'],
     image: '/images/photo-1647825194145-2d94e259c745.avif',
   },
   {
-    name: 'Koh Tao Resort',
-    description: 'Comfortable bungalows set in tropical gardens, a short walk to the beach.',
-    location: 'Sairee Beach',
-    priceRange: '$$',
-    rating: 4.3,
-    tags: ['Garden', 'Pool', 'Restaurant', 'WiFi', 'Dive Packages'],
+    name: 'Lembongan Beach Club & Resort',
+    description: 'Full-service beachfront resort with multiple pools, dive centre, and water sports.',
+    location: 'Jungutbatu Beach',
+    priceRange: '$$$',
+    rating: 4.4,
+    tags: ['Pool', 'Dive Centre', 'Beach', 'Restaurant', 'Water Sports'],
     image: '/images/photo-1659518893171-b15e20a8e201.avif',
   },
   {
-    name: 'Montra Resort',
-    description: 'Hilltop resort with panoramic sea views, infinity pool, and quiet retreat atmosphere.',
-    location: 'Chalok Baan Kao',
-    priceRange: '$$$',
-    rating: 4.7,
-    tags: ['Sea Views', 'Infinity Pool', 'Quiet', 'Restaurant', 'WiFi'],
+    name: 'Mushroom Beach Bungalows',
+    description: 'Budget-friendly bungalows steps from the beach, perfect for divers on a multi-day trip.',
+    location: 'Mushroom Beach',
+    priceRange: '$$',
+    rating: 4.2,
+    tags: ['Budget-Friendly', 'Beach Access', 'WiFi', 'Chill Vibe'],
     image: '/images/photo-1682686580849-3e7f67df4015.avif',
   },
   {
-    name: 'Crystal Dive Koh Tao',
-    description: "One of the island's largest dive operators with on-site accommodation. Great for PADI certification.",
-    location: 'Mae Haad',
-    priceRange: '$$',
-    rating: 4.4,
-    tags: ['Dive School', 'Pool', 'Restaurant', 'WiFi', 'Budget-Friendly'],
+    name: 'Batu Karang Lembongan Resort',
+    description: 'Luxury clifftop resort with panoramic ocean views and an award-winning spa.',
+    location: 'Jungutbatu Cliff',
+    priceRange: '$$$$',
+    rating: 4.9,
+    tags: ['Luxury', 'Spa', 'Ocean Views', 'Pool', 'Restaurant'],
     image: '/images/photo-1682687982423-295485af248a.avif',
   },
 ];
@@ -129,9 +129,9 @@ const AgodaHotels = () => {
           <div className="inline-block bg-emerald-500 text-white text-sm font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wide">
             Agoda
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">Where to Stay on Koh Tao</h1>
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">Where to Stay on Nusa Lembongan</h1>
           <p className="text-lg md:text-xl mb-8 text-white/90">
-            Compare hotels and resorts on Agoda for your Koh Tao stay.
+            Compare hotels and resorts on Agoda for your Lembongan stay.
           </p>
           <Button
             onClick={handleSearchAll}
@@ -139,14 +139,14 @@ const AgodaHotels = () => {
             className="bg-emerald-500 hover:bg-emerald-600 text-white text-lg px-8 py-4"
           >
             <ExternalLink className="w-5 h-5 mr-2" />
-            Search All Koh Tao Hotels
+            Search All Lembongan Hotels
           </Button>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Top-Rated Koh Tao Accommodations</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Top-Rated Lembongan Accommodations</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Browse popular places to stay and compare prices on Agoda.
           </p>

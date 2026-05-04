@@ -8,7 +8,7 @@ const DiscoverScubaEn: React.FC = () => {
       locale="en"
       fallbackContent={{
         hero_title: 'Discover Scuba Diving (DSD)',
-        hero_subtitle: 'Explore the thrill of breathing underwater with no certification required. This beginner program is the perfect first dive experience on Koh Tao.',
+        hero_subtitle: 'Explore the thrill of breathing underwater with no certification required. This beginner program is the perfect first dive experience on Nusa Lembongan.',
         course_overview: 'Discover Scuba Diving is designed for non-certified divers who want to safely experience real scuba diving with a professional instructor. You start with a simple briefing and essential skills in confined water, then continue to shallow open water for your first dive.',
         price_thb: '2500',
         price_usd: '72',

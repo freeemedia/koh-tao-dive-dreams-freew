@@ -14,18 +14,18 @@ const FunDiving = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const locale = 'nl';
   const fallbackContent = useMemo(() => ({
-    fun_diving_hero_title: 'Fun Diving Koh Tao',
-    fun_diving_hero_subtitle: 'Beleef het beste van de onderwaterwereld van Koh Tao met onze professioneel begeleide fun duiktrips. Ontdek kleurrijke koraalriffen, ontmoet bijzonder onderwaterleven en maak onvergetelijke herinneringen.',
-    fun_diving_hero_cta: 'Ga fun diven op Koh Tao',
+    fun_diving_hero_title: 'Fun Diving Nusa Lembongan',
+    fun_diving_hero_subtitle: 'Beleef het beste van de onderwaterwereld van Nusa Lembongan met onze professioneel begeleide fun duiktrips. Ontdek kleurrijke koraalriffen, ontmoet bijzonder onderwaterleven en maak onvergetelijke herinneringen.',
+    fun_diving_hero_cta: 'Ga fun diven op Nusa Lembongan',
     fun_diving_hero_cta2: 'Boek een cursus',
     fun_diving_overview_title: 'Van adembenemende scheepswrakken tot exotisch onderwaterleven',
-    fun_diving_overview_body: "Koh Tao heeft alles voor fun duiken! We zijn trots op het bieden van een persoonlijke, ontspannen en plezierige duikervaring. We tonen je de mooiste onderwaterwereld afgestemd op jouw trainingsniveau en ervaring, zodat je duiken perfect aansluiten bij je specifieke interesses.",
+    fun_diving_overview_body: "Nusa Lembongan heeft alles voor fun duiken! We zijn trots op het bieden van een persoonlijke, ontspannen en plezierige duikervaring. We tonen je de mooiste onderwaterwereld afgestemd op jouw trainingsniveau en ervaring, zodat je duiken perfect aansluiten bij je specifieke interesses.",
     fun_diving_world_class_title: 'Wereldklasse duiklocaties',
-    fun_diving_world_class_body: 'Onder het turquoise water rond Koh Tao ligt een wereld van kleurrijke koraalriffen, bruisend onderwaterleven van macro-wezens tot schildpadden en als je geluk hebt, de majestueuze walvishaai. Met meer dan 25 fascinerende duiklocaties is er eindeloze diversiteit.',
+    fun_diving_world_class_body: 'Onder het turquoise water rond Nusa Lembongan ligt een wereld van kleurrijke koraalriffen, bruisend onderwaterleven van macro-wezens tot schildpadden en als je geluk hebt, de majestueuze Mola Mola. Met meer dan 25 fascinerende duiklocaties is er eindeloze diversiteit.',
     fun_diving_expert_title: 'Expert duikprofessionals',
     fun_diving_expert_body: 'Ons duikteam bestaat uit ervaren en zeer deskundige duikprofessionals die zich volledig hebben verdiept in de lokale rifecologie en duiklocaties. Hun expertise zorgt voor een veilige en verrijkende duikervaring.',
     fun_diving_marine_life_title: 'Divers onderwaterleven',
-    fun_diving_marine_life_body: 'Van enorme walvishaaien en sierlijke zeeschildpadden tot kleurrijke rifvissen en fascinerend macro-leven, de wateren van Koh Tao herbergen een ongelooflijke variëteit aan mariene soorten. Elke duik brengt nieuwe ontdekkingen en onvergetelijke ontmoetingen.',
+    fun_diving_marine_life_body: 'Van enorme Mola Mola en sierlijke zeeschildpadden tot kleurrijke rifvissen en fascinerend macro-leven, de wateren van Nusa Lembongan herbergen een ongelooflijke variëteit aan mariene soorten. Elke duik brengt nieuwe ontdekkingen en onvergetelijke ontmoetingen.',
     fun_diving_flexible_title: 'Flexibel schema',
     fun_diving_flexible_body: 'We organiseren twee duiktrips per dag - ochtend en middag - op onze ruime, aangepaste duikboten. Na een spannende dag duiken kun je ontspannen met verfrissende drankjes en je ongelooflijke onderwaterervaringen delen tijdens een prachtige zonsondergang.',
     fun_diving_ready_title: 'Klaar om te verkennen?',
@@ -33,7 +33,7 @@ const FunDiving = () => {
     fun_diving_ready_cta1: 'Bekijk prijzen & schema',
     fun_diving_ready_cta2: 'Ontdek duiklocaties',
     fun_diving_trips_title: "Trips & programma's",
-    fun_diving_sites_title: 'Beste fun duiktrips op Koh Tao',
+    fun_diving_sites_title: 'Beste fun duiktrips op Nusa Lembongan',
     fun_diving_all_sites_title: 'Alle duiklocaties',
     fun_diving_marine_tab_title: 'Ontdek de onderwaterwereld',
     // ...add more as needed for other tabs
@@ -41,33 +41,33 @@ const FunDiving = () => {
   const { content: originalContent } = usePageContent({ pageSlug: 'fun-diving', locale, fallbackContent });
   const content = {
     ...originalContent,
-    fun_diving_hero_title: 'Fun Diving Koh Tao',
-    fun_diving_hero_subtitle: 'Beleef het beste van de onderwaterwereld van Koh Tao met onze professioneel begeleide fun duiktrips. Ontdek kleurrijke koraalriffen, ontmoet bijzonder onderwaterleven en maak onvergetelijke herinneringen.'
+    fun_diving_hero_title: 'Fun Diving Nusa Lembongan',
+    fun_diving_hero_subtitle: 'Beleef het beste van de onderwaterwereld van Nusa Lembongan met onze professioneel begeleide fun duiktrips. Ontdek kleurrijke koraalriffen, ontmoet bijzonder onderwaterleven en maak onvergetelijke herinneringen.'
   };
   const diveSites = [
     {
-      name: "Sail Rock",
+      name: "Crystal Bay",
       path: '/dive-sites/sail-rock',
-      description: "Top diepduiklocatie met grote visscholen, walvishaaien en reuzenbarracuda.",
+      description: "Top diepduiklocatie met grote visscholen, Mola Mola en reuzenbarracuda.",
       depth: "18-40m",
       highlights: ["Walvishaaien", "Reuzenbarracuda", "Malabar tandbaars"]
     },
     {
-      name: "Chumphon Pinnacles",
+      name: "Manta Points",
       path: '/dive-sites/chumphon-pinnacle',
-      description: "Granieten rotspieken met uitstekende kans op walvishaaien en grote scholen trevally.",
+      description: "Granieten rotspieken met uitstekende kans op Mola Mola en grote scholen trevally.",
       depth: "15-30m",
       highlights: ["Walvishaaien", "Scholen trevally", "Adelaarsroggen"]
     },
     {
-      name: "Japanese Gardens",
+      name: "Toyapakeh",
       path: '/dive-sites/japanese-gardens',
       description: "Divers koraalrif met kleurrijk onderwaterleven en doorgangen.",
       depth: "12-25m",
       highlights: ["Roze staarttrekker", "Gevlekte adelaarsrog", "Kleurrijk koraal"]
     },
     {
-      name: "Mango Bay",
+      name: "SD Point",
       path: '/dive-sites/mango-bay',
       description: "Ondiepe koraalriffen, perfect voor ontspannen duiken met veel onderwaterleven.",
       depth: "5-18m",
@@ -76,17 +76,17 @@ const FunDiving = () => {
   ];
 
   const allDiveSites = [
-    { name: 'Sail Rock', path: '/dive-sites/sail-rock' },
-    { name: 'Chumphon Pinnacle', path: '/dive-sites/chumphon-pinnacle' },
-    { name: 'Japanese Gardens', path: '/dive-sites/japanese-gardens' },
-    { name: 'HTMS Sattakut', path: '/dive-sites/htms-sattakut' },
-    { name: 'Twins Pinnacle', path: '/dive-sites/twins-pinnacle' },
-    { name: 'Shark Island', path: '/dive-sites/shark-island' },
-    { name: 'Mango Bay', path: '/dive-sites/mango-bay' },
+    { name: 'Crystal Bay', path: '/dive-sites/sail-rock' },
+    { name: 'Manta Point', path: '/dive-sites/chumphon-pinnacle' },
+    { name: 'Toyapakeh', path: '/dive-sites/japanese-gardens' },
+    { name: 'USAT Liberty Wreck', path: '/dive-sites/htms-sattakut' },
+    { name: 'Ceningan Wall', path: '/dive-sites/twins-pinnacle' },
+    { name: 'SD Point', path: '/dive-sites/shark-island' },
+    { name: 'SD Point', path: '/dive-sites/mango-bay' },
   ];
 
   const marineLife = [
-    { name: "Walvishaaien", description: "Zachte reuzen die vaak te zien zijn bij Sail Rock en Chumphon Pinnacle" },
+    { name: "Walvishaaien", description: "Zachte reuzen die vaak te zien zijn bij Crystal Bay en Manta Point" },
     { name: "Rifinktvis", description: "Kleurrijke koppotigen die vaak in dieper water worden gezien" },
     { name: "Gemarmerde octopus", description: "Kleine maar fascinerende dieren in macro-omgevingen" },
     { name: "Diverse rifvissen", description: "Kleurrijke scholen en unieke rifsoorten" }
@@ -295,7 +295,7 @@ const FunDiving = () => {
                       <li>Premium uitrusting</li>
                       <li>Maximaal 4 duikers per gids</li>
                     </ul>
-                          <Button variant="secondary" onClick={() => { navigate(`/booking?item=${encodeURIComponent('Fun Dive')}&type=dive&price=1800&currency=THB&dives=2`); }}>Info / Boeken</Button>
+                          <Button variant="secondary" onClick={() => { navigate(`/booking?item=${encodeURIComponent('Fun Dive')}&type=dive&price=1800&currency=IDR&dives=2`); }}>Info / Boeken</Button>
                   </CardContent>
                 </Card>
 
@@ -318,7 +318,7 @@ const FunDiving = () => {
                       <Button variant="outline" asChild>
                         <Link to="/courses/discover-scuba">Bekijk programma</Link>
                       </Button>
-                      <Button variant="secondary" onClick={() => { navigate(`/booking?item=${encodeURIComponent('Discover Scuba')}&type=dive&price=2500&currency=THB`); }}>Info / Boeken</Button>
+                      <Button variant="secondary" onClick={() => { navigate(`/booking?item=${encodeURIComponent('Discover Scuba')}&type=dive&price=2500&currency=IDR`); }}>Info / Boeken</Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -326,19 +326,19 @@ const FunDiving = () => {
                 <Card className="overflow-hidden">
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle>Sail Rock-special</CardTitle>
+                      <CardTitle>Crystal Bay-special</CardTitle>
                       <Badge>Hele dag</Badge>
                     </div>
                     <CardDescription>Duur: Hele dag — 3 duiken met lunch</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="mb-3">Een volledige offshore dagtrip naar Sail Rock en omliggende pinnacles — kans op grote pelagische soorten.</p>
+                    <p className="mb-3">Een volledige offshore dagtrip naar Crystal Bay en omliggende pinnacles — kans op grote pelagische soorten.</p>
                     <ul className="list-disc pl-5 text-sm mb-4">
                       <li>Ontbijt & lunch inbegrepen</li>
                       <li>Ervaren gidsen en briefings</li>
-                      <li>Ophalen en terugbrengen op Koh Tao</li>
+                      <li>Ophalen en terugbrengen op Nusa Lembongan</li>
                     </ul>
-                    <Button variant="secondary" onClick={() => { navigate(`/booking?item=${encodeURIComponent('Sail Rock Special')}&type=dive&price=2900&currency=THB`); }}>Info / Boeken</Button>
+                    <Button variant="secondary" onClick={() => { navigate(`/booking?item=${encodeURIComponent('Crystal Bay Special')}&type=dive&price=2900&currency=IDR`); }}>Info / Boeken</Button>
                   </CardContent>
                 </Card>
               </div>
@@ -466,7 +466,7 @@ const FunDiving = () => {
                           <Clock className="w-5 h-5 text-blue-600" />
                           <CardTitle className="text-lg">
                             <Link to="/dive-sites/sail-rock" className="hover:text-blue-600 underline-offset-4 hover:underline">
-                              Sail Rock-special
+                              Crystal Bay-special
                             </Link>
                           </CardTitle>
                         </div>
@@ -498,11 +498,11 @@ const FunDiving = () => {
                           </div>
                           <div className="flex justify-between items-center pb-2 border-b">
                             <span className="font-medium">2-9 duiken</span>
-                            <span className="text-xl font-bold text-blue-600">฿900 <span className="text-sm text-muted-foreground">/duik</span></span>
+                            <span className="text-xl font-bold text-blue-600">IDR 345,000 <span className="text-sm text-muted-foreground">/duik</span></span>
                           </div>
                           <div className="flex justify-between items-center pb-2 border-b bg-green-50 p-2 rounded">
                             <span className="font-medium">10+ duiken</span>
-                            <span className="text-xl font-bold text-green-600">฿800 <span className="text-sm text-muted-foreground">/duik</span></span>
+                            <span className="text-xl font-bold text-green-600">IDR 310,000 <span className="text-sm text-muted-foreground">/duik</span></span>
                           </div>
                         </div>
                         <div className="bg-background p-4 rounded-lg">
@@ -527,7 +527,7 @@ const FunDiving = () => {
                       <CardHeader>
                         <div className="flex items-center gap-2">
                           <DollarSign className="w-5 h-5 text-green-600" />
-                          <CardTitle className="text-lg">Sail Rock-specialtrip</CardTitle>
+                          <CardTitle className="text-lg">Crystal Bay-specialtrip</CardTitle>
                         </div>
                       </CardHeader>
                       <CardContent>
@@ -537,11 +537,11 @@ const FunDiving = () => {
                           <li>• Ontbijt & lunch inbegrepen</li>
                           <li>• Premium uitrusting</li>
                           <li>• Expert gids</li>
-                          <li>• Kans op walvishaaien</li>
+                          <li>• Kans op Mola Mola</li>
                         </ul>
                         <div className="mt-4">
                           <Link to="/dive-sites/sail-rock" className="text-sm font-medium text-blue-600 hover:underline underline-offset-4">
-                            Bekijk Sail Rock-details
+                            Bekijk Crystal Bay-details
                           </Link>
                         </div>
                       </CardContent>
@@ -617,16 +617,16 @@ const FunDiving = () => {
             <div className="max-w-4xl mx-auto">
               <h2 className="text-4xl font-bold text-center mb-4">Veelgestelde vragen</h2>
               <p className="text-center text-muted-foreground mb-12">
-                Alles wat je moet weten voordat je met ons gaat duiken op Koh Tao
+                Alles wat je moet weten voordat je met ons gaat duiken op Nusa Lembongan
               </p>
               <div className="space-y-4">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">Moet ik een gecertificeerde duiker zijn om fun duiken op Koh Tao te doen?</CardTitle>
+                    <CardTitle className="text-lg">Moet ik een gecertificeerde duiker zijn om fun duiken op Nusa Lembongan te doen?</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Ja, je moet een gecertificeerde duiker zijn om deel te nemen aan fun duiken. Koh Tao biedt
+                      Ja, je moet een gecertificeerde duiker zijn om deel te nemen aan fun duiken. Nusa Lembongan biedt
                       duiken voor alle certificeringsniveaus, dus of je nu Open Water-gecertificeerd bent of
                       geavanceerde training hebt, er zijn geschikte duiklocaties voor jou. Als je nog niet
                       gecertificeerd bent, bekijk dan onze{' '}
@@ -637,11 +637,11 @@ const FunDiving = () => {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">Wat kan ik verwachten tijdens een fun duik op Koh Tao?</CardTitle>
+                    <CardTitle className="text-lg">Wat kan ik verwachten tijdens een fun duik op Nusa Lembongan?</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Een typische fun duik op Koh Tao omvat een begeleide duik met een gecertificeerde
+                      Een typische fun duik op Nusa Lembongan omvat een begeleide duik met een gecertificeerde
                       duikprofessional, die je meeneemt om het diverse onderwaterleven, koraalriffen en
                       onderwaterlandschappen te verkennen die het eiland beroemd maken. We organiseren twee
                       duiktrips per dag - ochtend en middag - op onze ruime, aangepaste duikboten.
@@ -651,11 +651,11 @@ const FunDiving = () => {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">Hoe diep duiken we tijdens fun duiken op Koh Tao?</CardTitle>
+                    <CardTitle className="text-lg">Hoe diep duiken we tijdens fun duiken op Nusa Lembongan?</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Duiklocaties op Koh Tao zijn geschikt voor verschillende vaardigheidsniveaus. Dieptes
+                      Duiklocaties op Nusa Lembongan zijn geschikt voor verschillende vaardigheidsniveaus. Dieptes
                       variëren, maar veel duiklocaties zijn geschikt voor Open Water-duikers en variëren van
                       12 meter (40 voet) tot 18 meter (60 voet). Voor meer ervaren duikers zijn er diepere
                       locaties beschikbaar van 30 tot 40 meter.
@@ -683,9 +683,9 @@ const FunDiving = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Onder het turquoise water rond Koh Tao ligt een wereld van kleurrijke koraalriffen,
+                      Onder het turquoise water rond Nusa Lembongan ligt een wereld van kleurrijke koraalriffen,
                       bruisend onderwaterleven van macro-wezens tot zeeschildpadden en als je geluk hebt,
-                      de majestueuze walvishaai. Met meer dan 25 fascinerende duiklocaties is er veel te zien,
+                      de majestueuze Mola Mola. Met meer dan 25 fascinerende duiklocaties is er veel te zien,
                       waaronder barracuda's, grondels, trekervissen, inktvissen, octopussen en een verbluffende
                       variëteit aan tropische rifvissen.
                     </p>
@@ -765,7 +765,7 @@ const FunDiving = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground">
-                      Kwaliteitsuitrusting en ervaren gidsen kunnen 100-200 THB extra per duik kosten.
+                      Kwaliteitsuitrusting en ervaren gidsen kunnen 100-200 IDR extra per duik kosten.
                     </p>
                   </CardContent>
                 </Card>
@@ -791,7 +791,7 @@ const FunDiving = () => {
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-4xl font-bold mb-8">Boek jouw fun diving-avontuur</h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Klaar om de geweldige onderwaterwereld van Koh Tao te ontdekken? Neem contact op voor een boekingsaanvraag of gebruik het formulier hieronder om direct te boeken.
+                Klaar om de geweldige onderwaterwereld van Nusa Lembongan te ontdekken? Neem contact op voor een boekingsaanvraag of gebruik het formulier hieronder om direct te boeken.
               </p>
                 <div className="mb-4 flex flex-col items-center gap-2">
                   <Link to="/fun-diving-koh-tao#world-class-dive-sites" className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">Fun Dive-informatie</Link>

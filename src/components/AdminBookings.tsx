@@ -199,19 +199,19 @@ const AdminBookings: React.FC = () => {
   const [assigneeDrafts, setAssigneeDrafts] = useState<Record<string, string>>({});
 
   // Currency state
-  const [currency, setCurrency] = useState<'THB' | 'USD' | 'EUR'>('THB');
-  const [exchangeRates, setExchangeRates] = useState<{ [key: string]: number }>({ THB: 1, USD: 1, EUR: 1 });
+  const [currency, setCurrency] = useState<'IDR' | 'USD' | 'EUR'>('IDR');
+  const [exchangeRates, setExchangeRates] = useState<{ [key: string]: number }>({ IDR: 1, USD: 1, EUR: 1 });
 
   // Fetch exchange rates on mount
   useEffect(() => {
     const fetchRates = async () => {
       try {
         const apiKey = import.meta.env.VITE_OPENEXCHANGERATES_API_KEY || '';
-        const res = await fetch(`https://openexchangerates.org/api/latest.json?app_id=${apiKey}&symbols=THB,USD,EUR`);
+        const res = await fetch(`https://openexchangerates.org/api/latest.json?app_id=${apiKey}&symbols=IDR,USD,EUR`);
         const data = await res.json();
         if (data && data.rates) {
           setExchangeRates({
-            THB: data.rates.THB || 1,
+            IDR: data.rates.IDR || 1,
             USD: data.rates.USD || 1,
             EUR: data.rates.EUR || 1,
           });
@@ -224,11 +224,11 @@ const AdminBookings: React.FC = () => {
   }, []);
 
   // Currency conversion helper
-  const convertCurrency = (amount: number | null | undefined, from: string = 'THB') => {
+  const convertCurrency = (amount: number | null | undefined, from: string = 'IDR') => {
     if (!amount || !exchangeRates[from] || !exchangeRates[currency]) return '-';
-    // Convert from base (THB) to USD, EUR, etc.
-    const thbAmount = from === 'THB' ? amount : (amount / exchangeRates[from]) * exchangeRates['THB'];
-    const converted = (thbAmount / exchangeRates['THB']) * exchangeRates[currency];
+    // Convert from base (IDR) to USD, EUR, etc.
+    const thbAmount = from === 'IDR' ? amount : (amount / exchangeRates[from]) * exchangeRates['IDR'];
+    const converted = (thbAmount / exchangeRates['IDR']) * exchangeRates[currency];
     return `${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`;
   };
 
@@ -364,7 +364,7 @@ const AdminBookings: React.FC = () => {
     // Add account_id and site_id as query parameters for commission tracking
     const accountId = '7864578';
     const siteId = '295439656';
-    return `${paypalLink}/${amount}THB?account_id=${accountId}&site_id=${siteId}`;
+    return `${paypalLink}/${amount}IDR?account_id=${accountId}&site_id=${siteId}`;
   };
 
   useEffect(() => {
@@ -486,7 +486,7 @@ const AdminBookings: React.FC = () => {
   const openWhatsApp = (booking: Booking) => {
     const phone = normalizePhoneForWhatsApp(booking.phone);
     if (!phone) return;
-    const text = encodeURIComponent(`Hi ${booking.name}, this is Koh Tao Dive Dreams regarding your booking for ${booking.course_title}${booking.preferred_date ? ` on ${booking.preferred_date}` : ''}.`);
+    const text = encodeURIComponent(`Hi ${booking.name}, this is Lembongan Dive Resort regarding your booking for ${booking.course_title}${booking.preferred_date ? ` on ${booking.preferred_date}` : ''}.`);
     window.open(`https://wa.me/${phone}?text=${text}`, '_blank', 'noopener,noreferrer');
   };
 
@@ -494,7 +494,7 @@ const AdminBookings: React.FC = () => {
     const amount = getBookingValue(booking);
     const subject = encodeURIComponent(`Invoice for ${booking.course_title} booking`);
     const body = encodeURIComponent(
-      `Hello ${booking.name},\n\nPlease find your booking invoice details:\nCourse: ${booking.course_title}\nDate: ${booking.preferred_date || '-'}\nAmount: ${amount || '-'} THB\nStatus: ${booking.status}\n\nThank you.`
+      `Hello ${booking.name},\n\nPlease find your booking invoice details:\nCourse: ${booking.course_title}\nDate: ${booking.preferred_date || '-'}\nAmount: ${amount || '-'} IDR\nStatus: ${booking.status}\n\nThank you.`
     );
     window.open(`mailto:${booking.email}?subject=${subject}&body=${body}`);
   };

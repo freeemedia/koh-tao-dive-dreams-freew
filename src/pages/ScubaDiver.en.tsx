@@ -17,7 +17,7 @@ const ScubaDiverEn: React.FC = () => {
         section_2_title: 'Course structure',
         section_2_content: "The course includes classroom sessions, confined water training, and open water dives. You'll complete 2 open water dives in waters no deeper than 12 meters (40 feet), making it accessible for most people.",
         section_3_title: 'Why choose Scuba Diver?',
-        section_3_content: 'Shorter commitment than full Open Water course\nPerfect introduction to scuba diving\nCan be upgraded to Open Water certification\nFun and relaxed learning environment\nExplore beautiful Koh Tao reefs',
+        section_3_content: 'Shorter commitment than full Open Water course\nPerfect introduction to scuba diving\nCan be upgraded to Open Water certification\nFun and relaxed learning environment\nExplore beautiful Nusa Lembongan reefs',
       }}
       heroImage="/images/scubadiver-hero.png"
       level="Entry Level"

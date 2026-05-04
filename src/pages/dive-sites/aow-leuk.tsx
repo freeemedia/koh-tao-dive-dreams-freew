@@ -18,8 +18,8 @@ const AowLeuk = () => {
   const fallbackContent = useMemo(
     () => ({
       overview: isDutch
-        ? 'Aow Leuk is een beschutte baai met helder water, zachte hellingen en gezonde koraaltuinen. Het is een van de beste locaties op Koh Tao voor beginners, snorkelaars en ontspannen trainingsduiken.'
-        : 'Aow Leuk is a sheltered bay with clear water, gentle slopes and healthy coral gardens. It is one of Koh Tao\'s best sites for beginners, snorkelers and relaxed training dives.',
+        ? 'Blue Corner is een beschutte baai met helder water, zachte hellingen en gezonde koraaltuinen. Het is een van de beste locaties op Nusa Lembongan voor beginners, snorkelaars en ontspannen trainingsduiken.'
+        : 'Blue Corner is a sheltered bay with clear water, gentle slopes and healthy coral gardens. It is one of Nusa Lembongan\'s best sites for beginners, snorkelers and relaxed training dives.',
       quick_facts_depth: '3-10m',
       quick_facts_difficulty: isDutch ? 'Beginner' : 'Beginner',
       quick_facts_location: isDutch ? 'Westkust' : 'West coast',
@@ -42,7 +42,7 @@ const AowLeuk = () => {
   return (
     <>
       <DiveSiteDetail
-        name="Aow Leuk"
+        name="Blue Corner"
         overview={content.overview}
         quickFacts={{
           depth: content.quick_facts_depth,
@@ -55,7 +55,7 @@ const AowLeuk = () => {
         divingTips={toList(content.diving_tips)}
         images={toList(content.images)}
       />
-      <DiveSiteBookingCTA siteName="Aow Leuk" />
+      <DiveSiteBookingCTA siteName="Blue Corner" />
     </>
   );
 };

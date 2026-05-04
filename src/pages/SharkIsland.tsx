@@ -17,7 +17,7 @@ const SharkIsland = () => {
   const fallbackContent = useMemo(() => (isDutch
     ? {
         overview:
-          "Shark Island ligt aan de zuidkust van Koh Tao en staat bekend om spectaculaire koraalformaties en hoge biodiversiteit. Je vindt hier prachtige paarse zachte boomkoralen en kleurrijke gorgonen, waaronder grote zeewaaiers en dynamische zweepkoralen die meebewegen met de stroming. Zwartpuntrifhaaien worden hier regelmatig gezien terwijl ze langs het rif trekken - daar dankt de site haar naam aan. Het onderwaterlandschap met met koraal bedekte rotsblokken en zandstroken creëert gevarieerde habitats. Door de kleur en het vaak goede zicht is dit een favoriete plek voor onderwaterfotografie.",
+          "SD Point ligt aan de zuidkust van Nusa Lembongan en staat bekend om spectaculaire koraalformaties en hoge biodiversiteit. Je vindt hier prachtige paarse zachte boomkoralen en kleurrijke gorgonen, waaronder grote zeewaaiers en dynamische zweepkoralen die meebewegen met de stroming. Zwartpuntrifhaaien worden hier regelmatig gezien terwijl ze langs het rif trekken - daar dankt de site haar naam aan. Het onderwaterlandschap met met koraal bedekte rotsblokken en zandstroken creëert gevarieerde habitats. Door de kleur en het vaak goede zicht is dit een favoriete plek voor onderwaterfotografie.",
         quick_facts_depth: '8-20m',
         quick_facts_difficulty: 'Beginner-gemiddeld',
         quick_facts_location: 'Zuidkust',
@@ -31,7 +31,7 @@ const SharkIsland = () => {
       }
     : {
         overview:
-          "Shark Island is located on Koh Tao's south coast and is renowned for its spectacular coral formations and marine biodiversity. The site features beautiful soft purple tree corals, vibrant gorgonians including sea fans and dynamic sea whips that sway gracefully in the current. Black-tip reef sharks are commonly sighted cruising the reef, giving the site its name. The underwater landscape includes coral-encrusted boulders and sandy patches, creating diverse habitats for marine life. This site is particularly popular with underwater photographers due to its colorful subjects and excellent visibility.",
+          "SD Point is located on Nusa Lembongan's south coast and is renowned for its spectacular coral formations and marine biodiversity. The site features beautiful soft purple tree corals, vibrant gorgonians including sea fans and dynamic sea whips that sway gracefully in the current. Black-tip reef sharks are commonly sighted cruising the reef, giving the site its name. The underwater landscape includes coral-encrusted boulders and sandy patches, creating diverse habitats for marine life. This site is particularly popular with underwater photographers due to its colorful subjects and excellent visibility.",
         quick_facts_depth: '8-20m',
         quick_facts_difficulty: 'Beginner-Intermediate',
         quick_facts_location: 'South coast',
@@ -48,7 +48,7 @@ const SharkIsland = () => {
 
   return (
     <DiveSiteDetail
-      name="Shark Island"
+      name="SD Point"
       overview={content.overview}
       quickFacts={{
         depth: content.quick_facts_depth,

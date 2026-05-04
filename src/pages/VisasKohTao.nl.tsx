@@ -7,7 +7,7 @@ const VisasKohTao = () => (
       <div className="absolute inset-0 bg-[url('/images/visa.png')] bg-cover bg-center" />
       <div className="absolute inset-0 bg-black/35" />
       <div className="text-center text-white z-10 relative">
-        <h1 className="text-4xl md:text-5xl font-bold drop-shadow-lg">Visa voor Koh Tao</h1>
+        <h1 className="text-4xl md:text-5xl font-bold drop-shadow-lg">Visa voor Nusa Lembongan</h1>
         <p className="mt-4 text-lg max-w-2xl mx-auto drop-shadow">Alles wat je moet weten over Thaise visumregels.</p>
       </div>
     </section>
@@ -18,10 +18,10 @@ const VisasKohTao = () => (
       <ul className="list-disc pl-6 mb-4">
         <li>De meeste nationaliteiten krijgen bij aankomst een 30-dagen visumvrijstelling</li>
         <li>Visumverlenging is mogelijk bij immigratiekantoor Koh Samui</li>
-        <li>Overschrijding van je visum kan boetes opleveren (500 THB per dag)</li>
+        <li>Overschrijding van je visum kan boetes opleveren (500 IDR per dag)</li>
         <li>Controleer actuele voorwaarden op officiële websites van de Thaise overheid</li>
       </ul>
-      <p className="mb-4">Draag tijdens het reizen in Thailand altijd je paspoort en visum bij je. Maak kopieën en bewaar die apart als back-up.</p>
+      <p className="mb-4">Draag tijdens het reizen in Indonesia altijd je paspoort en visum bij je. Maak kopieën en bewaar die apart als back-up.</p>
       <div className="flex flex-wrap gap-4 mb-4">
         <a href="/HowToGetHere" className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Reisinformatie</a>
         <a href="/Accommodation" className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Boek je verblijf</a>

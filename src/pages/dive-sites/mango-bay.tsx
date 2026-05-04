@@ -43,7 +43,7 @@ const MangoBay = () => {
   return (
     <>
       <DiveSiteDetail
-        name="Mango Bay"
+        name="SD Point"
         overview={content.overview}
         quickFacts={{
           depth: content.quick_facts_depth,
@@ -56,7 +56,7 @@ const MangoBay = () => {
         divingTips={toList(content.diving_tips)}
         images={toList(content.images)}
       />
-      <DiveSiteBookingCTA siteName="Mango Bay" />
+      <DiveSiteBookingCTA siteName="SD Point" />
     </>
   );
 };

@@ -6,12 +6,12 @@ import styles from "./CurrencyExchange.module.css";
 const API_URL = "https://api.exchangerate.host/latest";
 const API_KEY = import.meta.env.VITE_MY_CUSTOM_API_KEY || import.meta.env.MY_CUSTOM_API_KEY;
 
-const CURRENCIES = ["USD", "EUR", "THB", "GBP", "AUD", "SGD", "MYR", "IDR", "PHP", "INR", "CNY", "JPY"];
+const CURRENCIES = ["USD", "EUR", "IDR", "GBP", "AUD", "SGD", "MYR", "IDR", "PHP", "INR", "CNY", "JPY"];
 
 export const CurrencyExchange: React.FC = () => {
   const [amount, setAmount] = useState(1);
   const [from, setFrom] = useState("USD");
-  const [to, setTo] = useState("THB");
+  const [to, setTo] = useState("IDR");
   const [result, setResult] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

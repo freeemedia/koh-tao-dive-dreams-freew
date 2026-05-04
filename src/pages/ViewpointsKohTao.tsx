@@ -19,7 +19,7 @@ const ViewpointsKohTao = () => {
   const locale = i18n.language.startsWith('nl') ? 'nl' : 'en';
 
   const fallbackContent = {
-    title: locale === 'nl' ? 'Uitzichtpunten op Koh Tao' : 'Viewpoints on Koh Tao',
+    title: locale === 'nl' ? 'Uitzichtpunten op Nusa Lembongan' : 'Viewpoints on Nusa Lembongan',
     subtitle:
       locale === 'nl'
         ? 'Adembenemende panorama\'s en onvergetelijke fotomomenten.'
@@ -27,8 +27,8 @@ const ViewpointsKohTao = () => {
     section_title: locale === 'nl' ? 'Uitzichtpunten op het eiland' : 'Island viewpoints',
     points_list:
       locale === 'nl'
-        ? 'John-Suwan Viewpoint:|Panoramisch uitzicht over Chalok Baan Kao en Shark Bay.\nFraggle Rock:|Uitzicht over Sairee Beach en de westkust.\nLove Koh Tao Viewpoint:|Perfect voor zonsopkomst en foto\'s.\nMango Viewpoint:|Weids uitzicht over het noorden van het eiland.'
-        : 'John-Suwan Viewpoint:|Panoramic views over Chalok Baan Kao and Shark Bay.\nFraggle Rock:|Views over Sairee Beach and the west coast.\nLove Koh Tao Viewpoint:|Perfect for sunrise and photos.\nMango Viewpoint:|Wide views over the north of the island.',
+        ? 'John-Suwan Viewpoint:|Panoramisch uitzicht over Mushroom Bay en Shark Bay.\nFraggle Rock:|Uitzicht over Jungutbatu Beach en de westkust.\nLove Nusa Lembongan Viewpoint:|Perfect voor zonsopkomst en foto\'s.\nMango Viewpoint:|Weids uitzicht over het noorden van het eiland.'
+        : 'John-Suwan Viewpoint:|Panoramic views over Mushroom Bay and Shark Bay.\nFraggle Rock:|Views over Jungutbatu Beach and the west coast.\nLove Nusa Lembongan Viewpoint:|Perfect for sunrise and photos.\nMango Viewpoint:|Wide views over the north of the island.',
     note:
       locale === 'nl'
         ? 'Voor de meeste uitzichtpunten is een korte wandeling nodig. Neem water, zonbescherming en een camera mee!'

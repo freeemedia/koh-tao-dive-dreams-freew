@@ -9,7 +9,7 @@ const DiscoverScubaDeluxeNl: React.FC = () => {
       fallbackContent={{
         hero_title: 'Discover Scuba Diving Deluxe',
         hero_subtitle: 'Een uitgebreidere en rustigere beginnerservaring met extra onderwatertijd en 3 begeleide duiken.',
-        course_overview: 'Discover Scuba Diving Deluxe is perfect als je meer wilt dan alleen een korte proefduik. Je start met basisvaardigheden in een gecontroleerde omgeving en gaat daarna op meerdere buitenwaterduiken rond Koh Tao.',
+        course_overview: 'Discover Scuba Diving Deluxe is perfect als je meer wilt dan alleen een korte proefduik. Je start met basisvaardigheden in een gecontroleerde omgeving en gaat daarna op meerdere buitenwaterduiken rond Nusa Lembongan.',
         price_thb: '5000',
         price_usd: '144',
         price_eur: '132',
@@ -24,7 +24,7 @@ const DiscoverScubaDeluxeNl: React.FC = () => {
           title: 'Hoe werkt het?',
           content: [
             'Dag 1: Zwembad/skills en eerste buitenwaterduik',
-            'Dag 2: Twee begeleide bootduiken rond Koh Tao',
+            'Dag 2: Twee begeleide bootduiken rond Nusa Lembongan',
           ],
         },
         {

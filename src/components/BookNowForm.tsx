@@ -70,7 +70,7 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
             booking_type: 'course',
             item_title: form.course_title,
             selected_price: totalAmount,
-            currency: 'THB',
+            currency: 'IDR',
             total_amount: totalAmount,
             deposit_amount: depositAmount,
             due_amount: dueAmount,
@@ -102,7 +102,7 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
     sendToSupabaseAndEmail(true);
     // Redirect after 500ms to let API fire
     setTimeout(() => {
-      window.location.href = `${PAYPAL_BASE}/${deposit}THB`;
+      window.location.href = `${PAYPAL_BASE}/${deposit}IDR`;
     }, 500);
   };
 
@@ -170,8 +170,8 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
             </div>
             {form.course_title && coursePrice > 0 && (
               <div style={{ background: '#f0f8ff', borderRadius: 6, padding: '1rem', marginBottom: 8 }}>
-                <div><strong>Course Price:</strong> {coursePrice.toLocaleString()} THB</div>
-                <div><strong>Deposit (20%):</strong> {deposit.toLocaleString()} THB</div>
+                <div><strong>Course Price:</strong> {coursePrice.toLocaleString()} IDR</div>
+                <div><strong>Deposit (20%):</strong> {deposit.toLocaleString()} IDR</div>
                 <div style={{ fontSize: '0.95em', color: '#555', marginTop: 4 }}>You can pay the deposit now to secure your spot, or choose to pay later.</div>
               </div>
             )}
@@ -224,7 +224,7 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
           {showPayOptions && form.course_title && coursePrice > 0 && (
             <div style={{ marginTop: 24, background: '#f8f8f8', borderRadius: 8, padding: 24, textAlign: 'center', boxShadow: '0 1px 6px #0001' }}>
               <h3 style={{ marginBottom: 12 }}>Secure Your Spot</h3>
-              <div style={{ marginBottom: 8 }}>Pay a <strong>20% deposit ({deposit.toLocaleString()} THB)</strong> now via PayPal to confirm your booking, or choose to pay later.</div>
+              <div style={{ marginBottom: 8 }}>Pay a <strong>20% deposit ({deposit.toLocaleString()} IDR)</strong> now via PayPal to confirm your booking, or choose to pay later.</div>
               <div style={{ display: 'flex', gap: 16, justifyContent: 'center', marginTop: 16 }}>
                 <button onClick={handlePayNow} disabled={loading} style={{ background: '#0070ba', color: '#fff', border: 'none', borderRadius: 4, padding: '0.75rem 1.5rem', fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}>
                   {loading ? 'Processing...' : 'Pay Now (PayPal)'}

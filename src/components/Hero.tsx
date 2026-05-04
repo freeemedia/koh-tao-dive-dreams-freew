@@ -27,7 +27,7 @@ const Hero = () => {
 
   return (
     <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/images/whale-shark-snorkelling-fos-sustainable-certification-medium-1.webp')] bg-cover bg-center bg-no-repeat">
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('https://lembonngannwatersports.lovable.app/assets/hero-lembongan-C3W83fkC.jpg')" }}>
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-blue-900/20 to-blue-900/35"></div>
       </div>
 

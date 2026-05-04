@@ -18,8 +18,8 @@ const TwinsPinnacle = () => {
   const fallbackContent = useMemo(
     () => ({
       overview: isDutch
-        ? 'Twins Pinnacle is de populairste duiksite van Koh Tao, met drie granieten pinnacles, rijk onderwaterleven en geschikt voor alle brevetniveaus.'
-        : 'Twins Pinnacle is the most popular dive site on Koh Tao, featuring three granite pinnacles, abundant marine life, and suitable for all certification levels.',
+        ? 'Ceningan Wall is de populairste duiksite van Nusa Lembongan, met drie granieten pinnacles, rijk onderwaterleven en geschikt voor alle brevetniveaus.'
+        : 'Ceningan Wall is the most popular dive site on Nusa Lembongan, featuring three granite pinnacles, abundant marine life, and suitable for all certification levels.',
       quick_facts_depth: '6-18m',
       quick_facts_difficulty: isDutch ? 'Beginner tot Gemiddeld' : 'Beginner to Intermediate',
       quick_facts_location: isDutch ? 'Westkust van Koh Nang Yuan' : 'West coast of Koh Nang Yuan',
@@ -31,8 +31,8 @@ const TwinsPinnacle = () => {
         ? 'Drie granieten pinnacles\nBogen en rotsformaties\nRijk onderwaterleven\nPerfect voor training\nRustige omstandigheden\nAnemonen met clownfish'
         : 'Three granite pinnacles\nArch and rock formations\nRich marine life\nPerfect for training\nCalm conditions\nAnemones with clownfish',
       diving_tips: isDutch
-        ? 'Perfect voor Open Water en trainingsduiken\nVerken eerst de diepere westelijke pinnacle\nNavigeer naar de middelste pinnacle en bekijk de boog aan de noordkant\nKijk onder overhangen bij de ondiepe pinnacle\nMis de beroemde clownfish met Sebae-anemoon niet\nLet op: er is een steencirkel rond de clownfish - niet binnengaan\nGeweldig voor macrofotografie\nOefen drijfvermogen bij de bogen en rotsformaties\nBuoyancy World in de buurt is gewijd aan drijfvermogen\nUitstekend voor mariene bewustwording\nEenvoudige navigatie dankzij drie pieken'
-        : 'Perfect for Open Water divers and training dives\nExplore the deeper west pinnacle first\nNavigate to the middle pinnacle and check the arch on the north side\nLook under overhangs at the shallow pinnacle\nDon’t miss the famous clownfish with Sebae anemone\nNote: there is a stone circle around the clownfish - do not enter\nGreat for macro photography\nPractice buoyancy on the arch and rock formations\nNearby Buoyancy World is dedicated to buoyancy skills\nExcellent for marine awareness\nEasy navigation thanks to the three peaks',
+        ? 'Perfect voor Open Water en trainingsduiken\nVerken eerst de diepere westelijke pinnacle\nNavigeer naar de middelste pinnacle en bekijk de boog aan de noordkant\nKijk onder overhangen bij de ondiepe pinnacle\nMis de beroemde clownfish met Sebae-anemoon niet\nLet op: er is een steencirkel rond de clownfish - niet binnengaan\nGeweldig voor macrofotografie\nOefen drijfvermogen bij de bogen en rotsformaties\nMangrove Point in de buurt is gewijd aan drijfvermogen\nUitstekend voor mariene bewustwording\nEenvoudige navigatie dankzij drie pieken'
+        : 'Perfect for Open Water divers and training dives\nExplore the deeper west pinnacle first\nNavigate to the middle pinnacle and check the arch on the north side\nLook under overhangs at the shallow pinnacle\nDon’t miss the famous clownfish with Sebae anemone\nNote: there is a stone circle around the clownfish - do not enter\nGreat for macro photography\nPractice buoyancy on the arch and rock formations\nNearby Mangrove Point is dedicated to buoyancy skills\nExcellent for marine awareness\nEasy navigation thanks to the three peaks',
       images: '/images/twins-header.png',
     }),
     [isDutch]
@@ -43,7 +43,7 @@ const TwinsPinnacle = () => {
   return (
     <>
       <DiveSiteDetail
-        name="Twins Pinnacle"
+        name="Ceningan Wall"
         overview={content.overview}
         quickFacts={{
           depth: content.quick_facts_depth,
@@ -56,7 +56,7 @@ const TwinsPinnacle = () => {
         divingTips={toList(content.diving_tips)}
         images={toList(content.images)}
       />
-      <DiveSiteBookingCTA siteName="Twins Pinnacle" />
+      <DiveSiteBookingCTA siteName="Ceningan Wall" />
     </>
   );
 };

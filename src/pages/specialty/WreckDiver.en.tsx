@@ -27,7 +27,7 @@ export default function WreckDiver() {
             Learn to safely dive a shipwreck and become a certified PADI Wreck Diver. This course teaches you how to explore sunken wrecks with proper planning, organization, procedures, and techniques for safe and exciting wreck diving.
           </p>
           <p className="text-gray-700 mb-4">
-            You'll receive training on the HTMS Sattakut, a real wreck on Koh Tao that's perfect for learning wreck diving skills. During your training, you'll gradually build confidence and ability to become a competent wreck diver specialist.
+            You'll receive training on the USAT Liberty Wreck, a real wreck on Nusa Lembongan that's perfect for learning wreck diving skills. During your training, you'll gradually build confidence and ability to become a competent wreck diver specialist.
           </p>
         </Card>
 
@@ -64,7 +64,7 @@ export default function WreckDiver() {
             </div>
             <div>
               <h3 className="font-semibold mb-1">Training Dives</h3>
-              <p>4 wreck dives at HTMS Sattakut</p>
+              <p>4 wreck dives at USAT Liberty Wreck</p>
             </div>
             <div>
               <h3 className="font-semibold mb-1">Course Includes</h3>
@@ -127,7 +127,7 @@ export default function WreckDiver() {
               <Button 
                 variant="default" 
                 className="bg-emerald-600 hover:bg-emerald-700"
-                onClick={() => navigate('/booking?item=3%20Specialty%20Bundle&type=course&price=18000&currency=THB')}
+                onClick={() => navigate('/booking?item=3%20Specialty%20Bundle&type=course&price=18000&currency=IDR')}
               >
                 Book 3 Specialty Bundle
               </Button>
@@ -143,8 +143,8 @@ export default function WreckDiver() {
 
         <Card className="mb-8 p-6 bg-green-50">
           <h2 className="text-2xl font-bold mb-6">Ready to Explore Wrecks?</h2>
-          <p className="text-gray-700 mb-4">Discover the history and mysteries of underwater wrecks with our experienced instructors on Koh Tao.</p>
-          <Button size="lg" onClick={() => navigate('/booking?course=wreck-diver&item=PADI%20Wreck%20Diver%20Specialty&type=course&price=8000&currency=THB')}>Book Your Wreck Course Now</Button>
+          <p className="text-gray-700 mb-4">Discover the history and mysteries of underwater wrecks with our experienced instructors on Nusa Lembongan.</p>
+          <Button size="lg" onClick={() => navigate('/booking?course=wreck-diver&item=PADI%20Wreck%20Diver%20Specialty&type=course&price=8000&currency=IDR')}>Book Your Wreck Course Now</Button>
         </Card>
 
         <div className="mt-12">

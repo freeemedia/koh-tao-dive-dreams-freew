@@ -18,7 +18,7 @@ const BeardedScorpionFish = () => {
         bestTime: 'Hele jaar, actiever in de nacht',
         frequency: 'Niet heel algemeen, vraagt nauwkeurige observatie en ervaren gidsen',
         detailedDescription:
-          'De baardschorpioenvis is een van de lastigst te vinden vissen in de wateren rond Koh Tao en een echte vermommingsspecialist. Hij lijkt vaak perfect op omliggend koraal, spons en rifstructuur en blijft lange tijd stil liggen tot een prooi binnen bereik komt. Het vinden van deze cryptische roofvis vraagt geduld, goed kijkwerk en een ervaren gids. De giftige stekels dienen als bescherming tegen predatoren.',
+          'De baardschorpioenvis is een van de lastigst te vinden vissen in de wateren rond Nusa Lembongan en een echte vermommingsspecialist. Hij lijkt vaak perfect op omliggend koraal, spons en rifstructuur en blijft lange tijd stil liggen tot een prooi binnen bereik komt. Het vinden van deze cryptische roofvis vraagt geduld, goed kijkwerk en een ervaren gids. De giftige stekels dienen als bescherming tegen predatoren.',
         interestingFacts: [
           'Baardschorpioenvissen hebben giftige stekels voor verdediging',
           'Ze zijn zo cryptisch dat ze dagenlang op dezelfde plek kunnen blijven',
@@ -48,7 +48,7 @@ const BeardedScorpionFish = () => {
         bestTime: 'Year-round, more active at night',
         frequency: 'Not very common; requires careful observation and experienced guides',
         detailedDescription:
-          'The bearded scorpionfish is one of the hardest fish to spot in Koh Tao waters and a true disguise specialist. It often blends perfectly with surrounding coral, sponge, and reef structure and remains still for long periods until prey comes within range. Finding this cryptic predator requires patience, careful observation, and an experienced guide. Its venomous spines provide protection against predators.',
+          'The bearded scorpionfish is one of the hardest fish to spot in Nusa Lembongan waters and a true disguise specialist. It often blends perfectly with surrounding coral, sponge, and reef structure and remains still for long periods until prey comes within range. Finding this cryptic predator requires patience, careful observation, and an experienced guide. Its venomous spines provide protection against predators.',
         interestingFacts: [
           'Bearded scorpionfish have venomous defensive spines',
           'They are so cryptic they can stay in the same spot for days',

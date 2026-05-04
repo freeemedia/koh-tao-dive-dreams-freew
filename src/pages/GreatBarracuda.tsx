@@ -19,7 +19,7 @@ const GreatBarracuda = () => {
         bestTime: 'Hele jaar',
         frequency: 'Veelvoorkomend op diepere duiksites',
         detailedDescription:
-          'De grote barracuda is een van de meest indrukwekkende roofvissen in de wateren rond Koh Tao, met een strak zilverkleurig lichaam en opvallende rijen scherpe tanden. Deze krachtige jagers kunnen in korte sprints snelheden tot 40 km/u halen. Hoewel ze intimiderend ogen, zijn barracuda\'s doorgaans niet agressief naar duikers tenzij ze worden geprovoceerd. Je ziet ze vaak op diepere locaties zoals Sail Rock en Chumphon Pinnacle, waar ze in scholen rond granieten formaties jagen. Hun aanwezigheid wijst op een gezond ecosysteem met voldoende prooisoorten.',
+          'De grote barracuda is een van de meest indrukwekkende roofvissen in de wateren rond Nusa Lembongan, met een strak zilverkleurig lichaam en opvallende rijen scherpe tanden. Deze krachtige jagers kunnen in korte sprints snelheden tot 40 km/u halen. Hoewel ze intimiderend ogen, zijn barracuda\'s doorgaans niet agressief naar duikers tenzij ze worden geprovoceerd. Je ziet ze vaak op diepere locaties zoals Crystal Bay en Manta Point, waar ze in scholen rond granieten formaties jagen. Hun aanwezigheid wijst op een gezond ecosysteem met voldoende prooisoorten.',
         interestingFacts: [
           "Barracuda's kunnen snelheden tot 40 km/u halen",
           'Ze hebben twee rijen messcherpe tanden',
@@ -49,7 +49,7 @@ const GreatBarracuda = () => {
         bestTime: 'Year-round',
         frequency: 'Common at deeper dive sites',
         detailedDescription:
-          'The great barracuda is one of the most impressive predatory fish in Koh Tao waters, with a sleek silver body and striking rows of sharp teeth. These powerful hunters can reach sprint speeds of up to 40 km/h. Although they look intimidating, barracudas are generally not aggressive toward divers unless provoked. They are often seen at deeper locations such as Sail Rock and Chumphon Pinnacle, where they hunt in schools around granite formations. Their presence indicates a healthy ecosystem with abundant prey.',
+          'The great barracuda is one of the most impressive predatory fish in Nusa Lembongan waters, with a sleek silver body and striking rows of sharp teeth. These powerful hunters can reach sprint speeds of up to 40 km/h. Although they look intimidating, barracudas are generally not aggressive toward divers unless provoked. They are often seen at deeper locations such as Crystal Bay and Manta Point, where they hunt in schools around granite formations. Their presence indicates a healthy ecosystem with abundant prey.',
         interestingFacts: [
           'Barracudas can reach speeds up to 40 km/h',
           'They have two rows of razor-sharp teeth',

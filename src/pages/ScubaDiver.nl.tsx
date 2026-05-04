@@ -17,7 +17,7 @@ const ScubaDiverNl: React.FC = () => {
         section_2_title: 'Cursusopbouw',
         section_2_content: 'De cursus bestaat uit theorielessen, training in beschut water en buitenwaterduiken. Je maakt 2 buitenwaterduiken in water tot maximaal 12 meter (40 voet), waardoor de cursus voor de meeste mensen toegankelijk is.',
         section_3_title: 'Waarom kiezen voor Scuba Diver?',
-        section_3_content: 'Kortere cursus dan de volledige Open Water-cursus\nPerfecte introductie tot duiken\nOp te waarderen naar Open Water-certificering\nLeuke en ontspannen leeromgeving\nVerken de prachtige riffen van Koh Tao',
+        section_3_content: 'Kortere cursus dan de volledige Open Water-cursus\nPerfecte introductie tot duiken\nOp te waarderen naar Open Water-certificering\nLeuke en ontspannen leeromgeving\nVerken de prachtige riffen van Nusa Lembongan',
       }}
       heroImage="/images/scubadiver-hero.png"
       level="Instapniveau"

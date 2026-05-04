@@ -19,7 +19,7 @@ const MalabarGrouper = () => {
         bestTime: 'Hele jaar',
         frequency: 'Veelvoorkomend op diepere duiklocaties',
         detailedDescription:
-          'De Malabar tandbaars is een van de grootste en meest indrukwekkende tandbaarssoorten op de diepere duiksites van Koh Tao. Deze krachtige roofvis kan prooien snel uit koraalspleten trekken door sterke zuigkracht. Ze zijn relatief schuw en trekken zich vaak terug in grotten wanneer duikers naderen, maar met geduld zijn mooie waarnemingen mogelijk. Door hun formaat en jachtgedrag zijn ze een hoogtepunt van diep rifduiken.',
+          'De Malabar tandbaars is een van de grootste en meest indrukwekkende tandbaarssoorten op de diepere duiksites van Nusa Lembongan. Deze krachtige roofvis kan prooien snel uit koraalspleten trekken door sterke zuigkracht. Ze zijn relatief schuw en trekken zich vaak terug in grotten wanneer duikers naderen, maar met geduld zijn mooie waarnemingen mogelijk. Door hun formaat en jachtgedrag zijn ze een hoogtepunt van diep rifduiken.',
         interestingFacts: [
           'Malabar tandbaarzen kunnen tot 100 kg wegen en 2,3 meter lang worden',
           'Ze gebruiken zuigvoeding om prooi snel uit koraalspleten te halen',
@@ -49,7 +49,7 @@ const MalabarGrouper = () => {
         bestTime: 'Year-round',
         frequency: 'Common at deeper dive sites',
         detailedDescription:
-          'The Malabar grouper is one of the largest and most impressive grouper species on Koh Tao’s deeper dive sites. This powerful predator can pull prey from coral crevices using strong suction. They are relatively shy and often retreat into caves as divers approach, but patient observation can be very rewarding. Their size and hunting behavior make them a highlight of deep reef dives.',
+          'The Malabar grouper is one of the largest and most impressive grouper species on Nusa Lembongan’s deeper dive sites. This powerful predator can pull prey from coral crevices using strong suction. They are relatively shy and often retreat into caves as divers approach, but patient observation can be very rewarding. Their size and hunting behavior make them a highlight of deep reef dives.',
         interestingFacts: [
           'Malabar groupers can weigh up to 100 kg and grow to 2.3 meters',
           'They use suction feeding to extract prey from coral crevices',

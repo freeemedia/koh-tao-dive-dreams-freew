@@ -105,9 +105,9 @@ const Courses = () => {
     course_discover_scuba_level: isDutch ? 'Beginner' : 'Beginner',
     course_discover_scuba_duration: isDutch ? '1 dag' : '1 day',
     course_discover_scuba_max_depth: '12m',
-    course_discover_scuba_price: '฿2,500',
-    course_discover_scuba_price_usd: '72',
-    course_discover_scuba_price_eur: '66',
+    course_discover_scuba_price: 'IDR 550,000',
+    course_discover_scuba_price_usd: '34',
+    course_discover_scuba_price_eur: '31',
     course_discover_scuba_description: isDutch
       ? 'Geen brevet nodig. De ideale eerste stap om veilig kennis te maken met duiken.'
       : 'No certification required. The perfect first step to experience scuba diving safely.',
@@ -123,15 +123,15 @@ const Courses = () => {
     course_discover_scuba_deluxe_level: isDutch ? 'Beginner' : 'Beginner',
     course_discover_scuba_deluxe_duration: isDutch ? '1-2 dagen' : '1-2 days',
     course_discover_scuba_deluxe_max_depth: '12m',
-    course_discover_scuba_deluxe_price: '฿5,000',
-    course_discover_scuba_deluxe_price_usd: '144',
-    course_discover_scuba_deluxe_price_eur: '132',
+    course_discover_scuba_deluxe_price: 'IDR 950,000',
+    course_discover_scuba_deluxe_price_usd: '58',
+    course_discover_scuba_deluxe_price_eur: '53',
     course_discover_scuba_deluxe_description: isDutch
       ? 'Uitgebreide DSD met 3 duiken voor meer onderwatertijd en een relaxter tempo.'
       : 'Extended DSD with 3 dives for more underwater time and a more relaxed pace.',
     course_discover_scuba_deluxe_full_description: isDutch
-      ? 'DSD Deluxe bevat zwembad/confined training plus een kustduik en twee bootduiken rond Koh Tao. Perfect als je meer ervaring wilt voordat je beslist over Open Water.'
-      : 'DSD Deluxe includes confined training plus one shore dive and two boat dives around Koh Tao. Ideal if you want more experience before deciding on Open Water.',
+      ? 'DSD Deluxe bevat zwembad/confined training plus een kustduik en twee bootduiken rond Nusa Lembongan. Perfect als je meer ervaring wilt voordat je beslist over Open Water.'
+      : 'DSD Deluxe includes confined training plus one shore dive and two boat dives around Nusa Lembongan. Ideal if you want more experience before deciding on Open Water.',
     course_discover_scuba_deluxe_includes: (isDutch
       ? ['3 begeleide duiken', 'Alle uitrusting inbegrepen', 'Gecertificeerde instructeur', 'Kleine groepen (max 4)']
       : ['3 guided dives', 'All equipment included', 'Certified instructor', 'Small groups (max 4)']).join('\n'),
@@ -150,7 +150,7 @@ const Courses = () => {
   };
 
   const localeTag = isDutch ? 'nl-NL' : 'en-US';
-  const formatCurrency = (amount: number, currency: 'THB' | 'USD' | 'EUR') =>
+  const formatCurrency = (amount: number, currency: 'IDR' | 'USD' | 'EUR') =>
     new Intl.NumberFormat(localeTag, {
       style: 'currency',
       currency,
@@ -169,7 +169,7 @@ const Courses = () => {
       .map((item) => item.trim())
       .filter(Boolean);
 
-  // Helper to get THB price as number from price string (e.g., '฿2,500')
+  // Helper to get IDR price as number from price string (e.g., 'IDR 950,000')
   const getThbPrice = (price: string) => {
     const digits = String(price || '').replace(/[^\d.]/g, '').replace(/,/g, '');
     return digits ? Number(digits) : 0;
@@ -177,7 +177,7 @@ const Courses = () => {
 
   const getDisplayedPrice = (priceLabel: string) => {
     const thbAmount = getThbPrice(priceLabel);
-    return formatCurrency(thbAmount, 'THB');
+    return formatCurrency(thbAmount, 'IDR');
   };
 
   const parseCurrencyAmount = (value: string) => {
@@ -229,7 +229,7 @@ const Courses = () => {
   const sanitizeForeignPrice = (rawValue: string, fallbackValue: number) => {
     const parsed = parseCurrencyAmount(rawValue);
 
-    // Guard against accidental THB values pasted into USD/EUR fields (e.g. 11,000).
+    // Guard against accidental IDR values pasted into USD/EUR fields (e.g. 11,000).
     if (!parsed || parsed >= 2000) {
       return fallbackValue;
     }
@@ -256,7 +256,7 @@ const Courses = () => {
       courseImages: parseCommaSeparatedList(homeContent.course_open_water_images),
       icon: "🤿",
       depositMajor: 2000,
-      depositCurrency: 'THB'
+      depositCurrency: 'IDR'
     },
     {
       key: 'advanced',
@@ -274,7 +274,7 @@ const Courses = () => {
       courseImages: parseCommaSeparatedList(homeContent.course_advanced_images),
       icon: "🌊",
       depositMajor: 2500,
-      depositCurrency: 'THB'
+      depositCurrency: 'IDR'
     },
     {
       key: 'efr',
@@ -292,7 +292,7 @@ const Courses = () => {
       courseImages: parseCommaSeparatedList(homeContent.course_efr_images),
       icon: "🏥",
       depositMajor: 500,
-      depositCurrency: 'THB'
+      depositCurrency: 'IDR'
     },
     {
       key: 'rescue',
@@ -310,7 +310,7 @@ const Courses = () => {
       courseImages: parseCommaSeparatedList(homeContent.course_rescue_images),
       icon: "🚨",
       depositMajor: 3000,
-      depositCurrency: 'THB'
+      depositCurrency: 'IDR'
     },
     {
       key: 'divemaster',
@@ -328,7 +328,7 @@ const Courses = () => {
       courseImages: parseCommaSeparatedList(homeContent.course_divemaster_images),
       icon: "👨‍🏫",
       depositMajor: 5000,
-      depositCurrency: 'THB'
+      depositCurrency: 'IDR'
     },
     {
       key: 'instructor',
@@ -346,7 +346,7 @@ const Courses = () => {
       courseImages: parseCommaSeparatedList(homeContent.course_instructor_images),
       icon: "🎓",
       depositMajor: 10000,
-      depositCurrency: 'THB'
+      depositCurrency: 'IDR'
     },
     {
       key: 'discoverScuba',
@@ -364,7 +364,7 @@ const Courses = () => {
       courseImages: parseCommaSeparatedList(homeContent.course_discover_scuba_images),
       icon: '🐠',
       depositMajor: 1000,
-      depositCurrency: 'THB',
+      depositCurrency: 'IDR',
       bookingType: 'dive'
     },
     {
@@ -383,7 +383,7 @@ const Courses = () => {
       courseImages: parseCommaSeparatedList(homeContent.course_discover_scuba_deluxe_images),
       icon: '🌊',
       depositMajor: 1500,
-      depositCurrency: 'THB',
+      depositCurrency: 'IDR',
       bookingType: 'dive'
     }
   ];
@@ -433,14 +433,14 @@ const Courses = () => {
                   </div>
                   <div className="w-full rounded-lg border border-blue-200 bg-blue-50/70 p-3 sm:w-auto sm:min-w-[220px] sm:p-4">
                     <div className="text-2xl font-bold leading-none text-blue-700 sm:text-3xl">{getDisplayedPrice(course.price)}</div>
-                    <div className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-blue-700">THB</div>
+                    <div className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-blue-700">IDR</div>
                     <div className="mt-2 space-y-1">
                       <div className="flex items-center justify-between rounded bg-white px-2 py-1 text-xs text-gray-700">
                         <span className="font-semibold">EUR</span>
                         <span>
-                          {exchangeRates && exchangeRates.EUR && exchangeRates.THB
+                          {exchangeRates && exchangeRates.EUR && exchangeRates.IDR
                             ? formatCurrency(
-                                Math.round((parsePriceMajor(course.price) / exchangeRates.THB) * exchangeRates.EUR),
+                                Math.round((parsePriceMajor(course.price) / exchangeRates.IDR) * exchangeRates.EUR),
                                 'EUR'
                               )
                             : formatCurrency(
@@ -456,9 +456,9 @@ const Courses = () => {
                       <div className="flex items-center justify-between rounded bg-white px-2 py-1 text-xs text-gray-700">
                         <span className="font-semibold">USD</span>
                         <span>
-                          {exchangeRates && exchangeRates.USD && exchangeRates.THB
+                          {exchangeRates && exchangeRates.USD && exchangeRates.IDR
                             ? formatCurrency(
-                                Math.round((parsePriceMajor(course.price) / exchangeRates.THB) * exchangeRates.USD),
+                                Math.round((parsePriceMajor(course.price) / exchangeRates.IDR) * exchangeRates.USD),
                                 'USD'
                               )
                             : formatCurrency(
@@ -561,7 +561,7 @@ const Courses = () => {
                 </div>
                 <p className="text-xs text-blue-100 mb-3">10% deposit: {getDisplayedPrice('฿1,900')}</p>
                 <a
-                  href="/bookingform.html?item=Open%20Water%20%2B%20Advanced&type=course&price=19000&currency=THB&deposit=1900"
+                  href="/bookingform.html?item=Open%20Water%20%2B%20Advanced&type=course&price=19000&currency=IDR&deposit=1900"
                   className="block w-full rounded-lg bg-white py-3 text-center font-semibold text-red-700 no-underline hover:bg-red-50"
                 >
                   {isDutch ? 'Boek Combo' : 'Book Combo'}
@@ -583,7 +583,7 @@ const Courses = () => {
                 <p className="text-xs text-gray-500 mb-3">10% deposit: {getDisplayedPrice('฿1,800')}</p>
               </div>
               <a
-                href="/bookingform.html?item=3%20Specialty%20Bundle&type=course&price=18000&currency=THB"
+                href="/bookingform.html?item=3%20Specialty%20Bundle&type=course&price=18000&currency=IDR"
                 className="block w-full rounded-lg bg-red-600 py-3 text-center font-semibold text-white no-underline hover:bg-red-700"
               >
                 {isDutch ? 'Boek Bundel' : 'Book Bundle'}

@@ -46,7 +46,7 @@ const UI_TEXT = {
     step1: "What's your diving experience?",
     step2: 'What interests you about diving? (Select any)',
     step3: 'What do you hope to achieve?',
-    placeholder: "e.g., I want to explore Koh Tao's famous dive sites and maybe see whale sharks...",
+    placeholder: "e.g., I want to explore Lembongan's dive sites and maybe see Manta rays or a Mola Mola...",
     back: 'Back',
     continue: 'Continue',
     loading: 'Getting Recommendation...',
@@ -63,7 +63,7 @@ const UI_TEXT = {
     step1: 'Wat is je duikervaring?',
     step2: 'Wat interesseert je aan duiken? (Kies er een of meer)',
     step3: 'Wat wil je graag bereiken?',
-    placeholder: 'bijv. Ik wil de bekende duiklocaties van Koh Tao verkennen en misschien walvishaaien zien...',
+    placeholder: 'bijv. Ik wil de duiklocaties van Lembongan verkennen en misschien Manta rays of een Mola Mola zien...',
     back: 'Terug',
     continue: 'Verder',
     loading: 'Advies wordt opgehaald...',
@@ -109,24 +109,24 @@ const CourseRecommender = () => {
       
       if (experience === "never" || experience === "try-dive") {
         recommendation = isDutch
-          ? 'Op basis van je ervaring raad ik je aan te starten met de **Open Water Diver** cursus! Dit is de basiscertificering waarmee je alle essentiele vaardigheden voor veilig duiken leert. Je leert alles van materiaalgebruik tot onderwaternavigatie en je verkent de prachtige koraalriffen van Koh Tao. De cursus duurt 3-4 dagen en kost ฿11,000. Perfect voor beginners en de start van een hele nieuwe onderwaterwereld!'
-          : "Based on your experience, I recommend starting with the **Open Water Diver** course! This is the foundational certification that will teach you the essential skills for safe diving. You'll learn everything from basic equipment use to underwater navigation, and you'll get to explore Koh Tao's beautiful coral reefs. The course takes 3-4 days and costs ฿11,000. It's perfect for beginners and will open up a whole new world underwater!";
+          ? 'Op basis van je ervaring raad ik je aan te starten met de **Open Water Diver** cursus! Dit is de basiscertificering waarmee je alle essentiele vaardigheden voor veilig duiken leert. Je leert alles van materiaalgebruik tot onderwaternavigatie en je verkent de spectaculaire riffen van Nusa Lembongan en Nusa Penida. De cursus duurt 3-4 dagen. Perfect voor beginners en de start van een hele nieuwe onderwaterwereld!'
+          : "Based on your experience, I recommend starting with the **Open Water Diver** course! This is the foundational certification that will teach you the essential skills for safe diving. You'll learn everything from basic equipment use to underwater navigation, and you'll get to explore Lembongan's incredible coral reefs and dive with manta rays. The course takes 3-4 days. It's perfect for beginners and will open up a whole new world underwater!";
       } else if (experience === "open-water") {
         recommendation = isDutch
-          ? 'Met je Open Water-certificering ben je klaar voor de **Advanced Open Water** cursus! Dit intermediate niveau brengt je vaardigheden naar een hoger niveau met 5 adventure dives, waaronder diepduiken en navigatie. Je verkent diepere duiklocaties rond Koh Tao en bouwt meer vertrouwen op. De 2-daagse cursus kost ฿10,000 en bereidt je voor op meer geavanceerde duikervaringen.'
-          : "With your Open Water certification, you're ready for the **Advanced Open Water** course! This intermediate level will take your skills to the next level with 5 adventure dives including deep diving and navigation. You'll explore deeper sites around Koh Tao and gain more confidence. The 2-day course costs ฿10,000 and will prepare you for more advanced diving experiences.";
+          ? 'Met je Open Water-certificering ben je klaar voor de **Advanced Open Water** cursus! Dit intermediate niveau brengt je vaardigheden naar een hoger niveau met 5 adventure dives, waaronder diepduiken en navigatie. Je verkent diepere duiklocaties rond Nusa Lembongan en Nusa Penida en bouwt meer vertrouwen op. De 2-daagse cursus bereidt je voor op meer geavanceerde duikervaringen.'
+          : "With your Open Water certification, you're ready for the **Advanced Open Water** course! This intermediate level will take your skills to the next level with 5 adventure dives including deep diving and navigation. You'll explore deeper sites around Nusa Lembongan and Nusa Penida and gain more confidence. The 2-day course will prepare you for more advanced diving experiences.";
       } else if (experience === "advanced") {
         recommendation = isDutch
-          ? 'Als Advanced Open Water-duiker is de **Rescue Diver** cursus een uitstekende volgende stap! Deze geavanceerde certificering focust op noodrespons en probleemoplossing onder water. Je leert duiknoodsituaties beheersen en andere duikers helpen. De cursus duurt 2-3 dagen, kost ฿10,000 en is essentieel voor serieuze duikers of als je een carriere in de duikwereld overweegt.'
-          : "As an Advanced Open Water diver, the **Rescue Diver** course would be an excellent next step! This advanced certification focuses on emergency response and problem-solving underwater. You'll learn how to handle dive emergencies and assist other divers. The 2-3 day course costs ฿10,000 and is essential for serious divers or those considering a career in diving.";
+          ? 'Als Advanced Open Water-duiker is de **Rescue Diver** cursus een uitstekende volgende stap! Deze geavanceerde certificering focust op noodrespons en probleemoplossing onder water. Je leert duiknoodsituaties beheersen en andere duikers helpen. De cursus duurt 2-3 dagen en is essentieel voor serieuze duikers of als je een carriere in de duikwereld overweegt.'
+          : "As an Advanced Open Water diver, the **Rescue Diver** course would be an excellent next step! This advanced certification focuses on emergency response and problem-solving underwater. You'll learn how to handle dive emergencies and assist other divers. The 2-3 day course is essential for serious divers or those considering a career in diving.";
       } else if (experience === "rescue") {
         recommendation = isDutch
-          ? 'Met je Rescue Diver-certificering kan de **Divemaster** cursus interessant zijn als je een carriere in de duikwereld overweegt! Deze professionele certificering duurt 4-6 weken en kost ฿41,000. Je leert andere duikers begeleiden en werken in de duikindustrie. Duik je vooral voor je plezier? Dan kun je doorgaan met specialties of lekker recreatief blijven duiken.'
-          : "With your Rescue Diver certification, you might be interested in the **Divemaster** course if you're considering a career in diving! This professional-level certification takes 4-6 weeks and costs ฿41,000. It will prepare you to guide other divers and work in the dive industry. If you're just diving for fun, you can continue with specialty courses or just enjoy recreational diving!";
+          ? 'Met je Rescue Diver-certificering kan de **Divemaster** cursus interessant zijn als je een carriere in de duikwereld overweegt! Deze professionele certificering bereid je voor om andere duikers te begeleiden en te werken in de duikindustrie. Duik je vooral voor je plezier? Dan kun je doorgaan met specialties of lekker recreatief blijven duiken rond de spectaculaire Nusa eilanden.'
+          : "With your Rescue Diver certification, you might be interested in the **Divemaster** course if you're considering a career in diving! This professional-level certification will prepare you to guide other divers and work in the dive industry. If you're just diving for fun, you can continue with specialty courses or just enjoy recreational diving around the spectacular Nusa islands!";
       } else {
         recommendation = isDutch
-          ? 'Ik raad aan te starten met de **Open Water Diver** cursus voor je basiscertificering. Daarmee leg je het fundament voor veilig en leuk duiken in het geweldige water rond Koh Tao!'
-          : "I'd recommend starting with the **Open Water Diver** course to get your basic certification. This will give you the foundation you need for safe and enjoyable diving in Koh Tao's amazing waters!";
+          ? 'Ik raad aan te starten met de **Open Water Diver** cursus voor je basiscertificering. Daarmee leg je het fundament voor veilig en leuk duiken in het geweldige water rond Nusa Lembongan!'
+          : "I'd recommend starting with the **Open Water Diver** course to get your basic certification. This will give you the foundation you need for safe and enjoyable diving in Lembongan's amazing waters!";
       }
       
       setRecommendation(recommendation);

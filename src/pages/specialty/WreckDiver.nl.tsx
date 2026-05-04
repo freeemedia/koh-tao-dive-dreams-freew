@@ -27,7 +27,7 @@ export default function WreckDiver() {
             Leer veilig op een scheepswrak duiken en word gecertificeerd PADI Wreck Diver. Deze cursus leert je hoe je gezonken wrakken verkent met goede planning, organisatie, procedures en technieken voor veilig en spannend wrakduiken.
           </p>
           <p className="text-gray-700 mb-4">
-            Je krijgt training op de HTMS Sattakut, een echt wrak bij Koh Tao dat perfect is om wrakduikvaardigheden te leren. Tijdens je training bouw je stap voor stap vertrouwen en bekwaamheid op tot een competente wrakspecialist.
+            Je krijgt training op de USAT Liberty Wreck, een echt wrak bij Nusa Lembongan dat perfect is om wrakduikvaardigheden te leren. Tijdens je training bouw je stap voor stap vertrouwen en bekwaamheid op tot een competente wrakspecialist.
           </p>
         </Card>
 
@@ -64,7 +64,7 @@ export default function WreckDiver() {
             </div>
             <div>
               <h3 className="font-semibold mb-1">Trainingsduiken</h3>
-              <p>4 wrakduiken op de HTMS Sattakut</p>
+              <p>4 wrakduiken op de USAT Liberty Wreck</p>
             </div>
             <div>
               <h3 className="font-semibold mb-1">Inbegrepen in de cursus</h3>
@@ -118,8 +118,8 @@ export default function WreckDiver() {
 
         <Card className="mb-8 p-6 bg-green-50">
           <h2 className="text-2xl font-bold mb-6">Klaar om wrakken te verkennen?</h2>
-          <p className="text-gray-700 mb-4">Ontdek de geschiedenis en mysteries van onderwaterwrakken met onze ervaren instructeurs op Koh Tao.</p>
-          <Button size="lg" onClick={() => navigate('/booking?course=wreck-diver&item=PADI%20Wreck%20Diver%20Specialty&type=course&price=8000&currency=THB')}>Boek nu je wrakkencursus</Button>
+          <p className="text-gray-700 mb-4">Ontdek de geschiedenis en mysteries van onderwaterwrakken met onze ervaren instructeurs op Nusa Lembongan.</p>
+          <Button size="lg" onClick={() => navigate('/booking?course=wreck-diver&item=PADI%20Wreck%20Diver%20Specialty&type=course&price=8000&currency=IDR')}>Boek nu je wrakkencursus</Button>
         </Card>
 
         <div className="mt-12">

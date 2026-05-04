@@ -19,7 +19,7 @@ const Cephalopods = () => {
         bestTime: 'Hele jaar, actiever bij zonsopkomst en zonsondergang',
         frequency: 'Regelmatige waarnemingen met geduld en macrolens',
         detailedDescription:
-          'Koppotigen behoren tot de meest fascinerende ongewervelden in de wateren van Koh Tao. Met hun hoge intelligentie, probleemoplossend vermogen en directe camouflage horen ze bij de meest geavanceerde ongewervelde dieren op aarde. Hun vermogen om binnen milliseconden kleur, patroon en textuur te veranderen is indrukwekkend om te zien. Zowel octopussen als inktvissen zijn favoriete onderwerpen voor duikers en macrofotografen en bieden eindeloze mogelijkheden voor observatie en fotografie.',
+          'Koppotigen behoren tot de meest fascinerende ongewervelden in de wateren van Nusa Lembongan. Met hun hoge intelligentie, probleemoplossend vermogen en directe camouflage horen ze bij de meest geavanceerde ongewervelde dieren op aarde. Hun vermogen om binnen milliseconden kleur, patroon en textuur te veranderen is indrukwekkend om te zien. Zowel octopussen als inktvissen zijn favoriete onderwerpen voor duikers en macrofotografen en bieden eindeloze mogelijkheden voor observatie en fotografie.',
         interestingFacts: [
           'Koppotigen hebben drie harten: twee voor de kieuwen en één voor het lichaam',
           'Hun bloed is blauw door koperhoudend hemocyanine in plaats van ijzerhoudend hemoglobine',
@@ -49,7 +49,7 @@ const Cephalopods = () => {
         bestTime: 'Year-round, more active at sunrise and sunset',
         frequency: 'Regular sightings with patience and a macro lens',
         detailedDescription:
-          'Cephalopods are among the most fascinating invertebrates in Koh Tao waters. With their high intelligence, problem-solving ability, and instant camouflage, they are among the most advanced invertebrates on Earth. Their ability to change color, pattern, and texture within milliseconds is remarkable to observe. Both octopuses and squids are favorite subjects for divers and macro photographers, offering endless opportunities for observation and photography.',
+          'Cephalopods are among the most fascinating invertebrates in Nusa Lembongan waters. With their high intelligence, problem-solving ability, and instant camouflage, they are among the most advanced invertebrates on Earth. Their ability to change color, pattern, and texture within milliseconds is remarkable to observe. Both octopuses and squids are favorite subjects for divers and macro photographers, offering endless opportunities for observation and photography.',
         interestingFacts: [
           'Cephalopods have three hearts: two for the gills and one for the body',
           'Their blood is blue due to copper-based hemocyanin rather than iron-based hemoglobin',

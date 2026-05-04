@@ -18,7 +18,7 @@ const SailRock = () => {
   const fallbackContent = useMemo(() => (isDutch
     ? {
         overview:
-          "Dé top-diepduiklocatie van Koh Tao met grote visscholen, walvishaaien en reuzenbarracuda's. Sail Rock wordt algemeen beschouwd als de beste duiksite in de Golf van Thailand. Deze imposante granieten rotspiek ligt op ongeveer 40 minuten varen van Koh Tao en stijgt op vanuit diepblauw water tot circa 18 meter onder het oppervlak. De site is beroemd om de 'Chimney': een verticale doorgang die een natuurlijke stroming creëert en grote pelagische vissen aantrekt. Walvishaaien worden hier regelmatig gezien, samen met enorme scholen snappers, fusiliers en chevron-barracuda's. Ook adelaarsroggen en zeilvissen verschijnen hier vaak, wat het een spectaculaire diepduikervaring maakt.",
+          "Dé top-diepduiklocatie van Nusa Lembongan met grote visscholen, Mola Mola en reuzenbarracuda's. Crystal Bay wordt algemeen beschouwd als de beste duiksite in de Golf van Indonesia. Deze imposante granieten rotspiek ligt op ongeveer 40 minuten varen van Nusa Lembongan en stijgt op vanuit diepblauw water tot circa 18 meter onder het oppervlak. De site is beroemd om de 'Chimney': een verticale doorgang die een natuurlijke stroming creëert en grote pelagische vissen aantrekt. Walvishaaien worden hier regelmatig gezien, samen met enorme scholen snappers, fusiliers en chevron-barracuda's. Ook adelaarsroggen en zeilvissen verschijnen hier vaak, wat het een spectaculaire diepduikervaring maakt.",
         quick_facts_depth: '18-40m',
         quick_facts_difficulty: 'Gevorderd',
         quick_facts_location: '40 minuten uit de kust',
@@ -33,7 +33,7 @@ const SailRock = () => {
       }
     : {
         overview:
-          "Koh Tao's premier deep dive site featuring large schools of fish, whalesharks, and giant barracuda. Sail Rock is widely regarded as the Gulf of Thailand's premier scuba diving site. Located 40 minutes offshore, this impressive granite pinnacle rises from the deep blue ocean to within 18 meters of the surface. The site is famous for its 'Chimney' - a distinctive vertical swim-through that creates a natural vortex attracting large pelagic fish. Whalesharks are frequently sighted cruising the depths, and the site hosts massive schools of snapper, fusiliers, and chevron barracuda. Eagle rays and sailfish are also common visitors, making this a truly spectacular deep diving experience.",
+          "Nusa Lembongan's premier deep dive site featuring large schools of fish, whalesharks, and giant barracuda. Crystal Bay is widely regarded as the Gulf of Indonesia's premier scuba diving site. Located 40 minutes offshore, this impressive granite pinnacle rises from the deep blue ocean to within 18 meters of the surface. The site is famous for its 'Chimney' - a distinctive vertical swim-through that creates a natural vortex attracting large pelagic fish. Whalesharks are frequently sighted cruising the depths, and the site hosts massive schools of snapper, fusiliers, and chevron barracuda. Eagle rays and sailfish are also common visitors, making this a truly spectacular deep diving experience.",
         quick_facts_depth: '18-40m',
         quick_facts_difficulty: 'Advanced',
         quick_facts_location: '40 minutes offshore',
@@ -52,7 +52,7 @@ const SailRock = () => {
   return (
     <>
       <DiveSiteDetail
-        name="Sail Rock"
+        name="Crystal Bay"
         overview={content.overview}
         quickFacts={{
           depth: content.quick_facts_depth,
@@ -65,7 +65,7 @@ const SailRock = () => {
         divingTips={toList(content.diving_tips)}
         images={toList(content.images)}
       />
-      <DiveSiteBookingCTA siteName="Sail Rock" />
+      <DiveSiteBookingCTA siteName="Crystal Bay" />
     </>
   );
 };

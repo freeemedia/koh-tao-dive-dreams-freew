@@ -93,7 +93,7 @@ export default function SelfReliantDiver() {
               <Button 
                 variant="default" 
                 className="bg-emerald-600 hover:bg-emerald-700"
-                onClick={() => navigate('/booking?item=3%20Specialty%20Bundle&type=course&price=18000&currency=THB')}
+                onClick={() => navigate('/booking?item=3%20Specialty%20Bundle&type=course&price=18000&currency=IDR')}
               >
                 Book 3 Specialty Bundle
               </Button>

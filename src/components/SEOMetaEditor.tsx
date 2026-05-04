@@ -196,7 +196,7 @@ export const SEOMetaEditor: React.FC<SEOMetaEditorProps> = ({ pageSlug, onClose 
                   id="meta_title"
                   value={seoData.meta_title}
                   onChange={(e) => handleChange('meta_title', e.target.value)}
-                  placeholder="e.g., PADI Open Water Course - Koh Tao Dive Dreams"
+                  placeholder="e.g., PADI Open Water Course - Nusa Lembongan Dive Dreams"
                   maxLength={60}
                 />
                 <p className="text-xs text-muted-foreground">

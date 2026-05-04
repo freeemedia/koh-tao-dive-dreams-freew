@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-const SUPPORTED_CURRENCIES = ['THB', 'USD', 'EUR'] as const;
+const SUPPORTED_CURRENCIES = ['IDR', 'USD', 'EUR'] as const;
 export type Currency = typeof SUPPORTED_CURRENCIES[number];
 
 interface CurrencyContextProps {
@@ -13,10 +13,10 @@ interface CurrencyContextProps {
 const CurrencyContext = createContext<CurrencyContextProps | undefined>(undefined);
 
 // Approximate fallback rates (USD base): update periodically if no API key is set
-const FALLBACK_RATES = { THB: 34.0, USD: 1.0, EUR: 0.93 };
+const FALLBACK_RATES = { IDR: 34.0, USD: 1.0, EUR: 0.93 };
 
 export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currency, setCurrency] = useState<Currency>('THB');
+  const [currency, setCurrency] = useState<Currency>('IDR');
   const [exchangeRates, setExchangeRates] = useState<{ [key: string]: number }>(FALLBACK_RATES);
 
   useEffect(() => {
@@ -24,11 +24,11 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       const apiKey = import.meta.env.VITE_OPENEXCHANGERATES_API_KEY;
       if (!apiKey) return; // use fallback rates
       try {
-        const res = await fetch(`https://openexchangerates.org/api/latest.json?app_id=${apiKey}&symbols=THB,USD,EUR`);
+        const res = await fetch(`https://openexchangerates.org/api/latest.json?app_id=${apiKey}&symbols=IDR,USD,EUR`);
         const data = await res.json();
-        if (data && data.rates && data.rates.THB && data.rates.USD && data.rates.EUR) {
+        if (data && data.rates && data.rates.IDR && data.rates.USD && data.rates.EUR) {
           setExchangeRates({
-            THB: data.rates.THB,
+            IDR: data.rates.IDR,
             USD: data.rates.USD,
             EUR: data.rates.EUR,
           });
@@ -40,11 +40,11 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     fetchRates();
   }, []);
 
-  const convertCurrency = (amount: number | null | undefined, from: string = 'THB') => {
+  const convertCurrency = (amount: number | null | undefined, from: string = 'IDR') => {
     if (!amount || !exchangeRates[from] || !exchangeRates[currency]) return '-';
-    const thbAmount = from === 'THB' ? amount : (amount / exchangeRates[from]) * exchangeRates['THB'];
-    const converted = (thbAmount / exchangeRates['THB']) * exchangeRates[currency];
-    const symbol = currency === 'THB' ? '฿' : currency === 'USD' ? '$' : '€';
+    const thbAmount = from === 'IDR' ? amount : (amount / exchangeRates[from]) * exchangeRates['IDR'];
+    const converted = (thbAmount / exchangeRates['IDR']) * exchangeRates[currency];
+    const symbol = currency === 'IDR' ? '฿' : currency === 'USD' ? '$' : '€';
     return `${symbol}${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`;
   };
 

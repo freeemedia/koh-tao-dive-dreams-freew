@@ -10,21 +10,21 @@ const SPECIALTIES: Record<string, any> = {
     overview: 'Learn to identify common reef fish and contribute to citizen science projects.',
     duration: '1 day',
     depositMajor: 800,
-    depositCurrency: 'THB',
+    depositCurrency: 'IDR',
   },
   'nitrox-instructor': {
     title: 'Nitrox Instructor',
     overview: 'Teach enriched air nitrox to students and manage nitrox diving safely.',
     duration: '3-4 days',
     depositMajor: 2500,
-    depositCurrency: 'THB',
+    depositCurrency: 'IDR',
   },
   'deep-instructor': {
     title: 'Deep Instructor',
     overview: 'Instructor-level deep diving techniques and risk management for deeper dives.',
     duration: '2 days',
     depositMajor: 2000,
-    depositCurrency: 'THB',
+    depositCurrency: 'IDR',
   },
 };
 

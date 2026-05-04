@@ -22,8 +22,8 @@ export default function DivemasterInternship() {
   const { currency, convertCurrency, exchangeRates } = useCurrency();
 
   const formatThb = (amount: number) => `฿${amount.toLocaleString('nl-NL')}`;
-  const ratePerThb = currency !== 'THB' && exchangeRates.THB && exchangeRates[currency]
-    ? (exchangeRates[currency] / exchangeRates.THB).toFixed(3)
+  const ratePerThb = currency !== 'IDR' && exchangeRates.IDR && exchangeRates[currency]
+    ? (exchangeRates[currency] / exchangeRates.IDR).toFixed(3)
     : null;
 
   return (
@@ -34,12 +34,12 @@ export default function DivemasterInternship() {
         <div className="mb-12">
           <h1 className="text-4xl font-bold mb-4">PADI Divemaster Internship</h1>
           <p className="text-xl text-gray-600">
-            All-inclusive programma voor professionele ontwikkeling • Koh Tao, Thailand
+            All-inclusive programma voor professionele ontwikkeling • Nusa Lembongan, Indonesia
           </p>
         </div>
 
         <Card className="mb-8 p-6">
-          <h2 className="text-2xl font-bold mb-4">All-inclusive Koh Tao PADI Divemaster Internship</h2>
+          <h2 className="text-2xl font-bold mb-4">All-inclusive Nusa Lembongan PADI Divemaster Internship</h2>
           <p className="text-gray-700 mb-4">
             Ons Divemaster Internship-programma geeft je de kans om je eerste professionele duikcertificering te behalen, terwijl je samenwerkt met een van de meest ervaren teams voor professionele ontwikkeling in de duikwereld.
           </p>
@@ -159,16 +159,16 @@ export default function DivemasterInternship() {
                 <span className="text-gray-700">{pkg.label}</span>
                 <div className="text-right">
                   <div className="text-2xl font-bold text-blue-600">{formatThb(pkg.amount)}</div>
-                  {currency !== 'THB' ? (
-                    <div className="text-sm text-gray-600">{convertCurrency(pkg.amount, 'THB')}</div>
+                  {currency !== 'IDR' ? (
+                    <div className="text-sm text-gray-600">{convertCurrency(pkg.amount, 'IDR')}</div>
                   ) : null}
                 </div>
               </div>
             ))}
           </div>
-          {currency !== 'THB' ? (
+          {currency !== 'IDR' ? (
             <p className="mt-4 text-sm text-gray-600">
-              Geschatte koers: 1 THB = {ratePerThb} {currency}. De uiteindelijke koers van je bank of kaart kan afwijken.
+              Geschatte koers: 1 IDR = {ratePerThb} {currency}. De uiteindelijke koers van je bank of kaart kan afwijken.
             </p>
           ) : null}
         </Card>
@@ -191,7 +191,7 @@ export default function DivemasterInternship() {
         </Card>
 
         <Card className="mb-8 p-6">
-          <h2 className="text-2xl font-bold mb-4">Leefkosten op Koh Tao</h2>
+          <h2 className="text-2xl font-bold mb-4">Leefkosten op Nusa Lembongan</h2>
           <p className="text-gray-700 mb-4">
             Het internship-pakket dekt alle training, PADI-materialen, certificeringskosten en uitrusting. Extra kosten zijn onder andere accommodatie, eten, telefoon, activiteiten en algemene leefkosten.
           </p>
@@ -199,7 +199,7 @@ export default function DivemasterInternship() {
             <p className="text-gray-700 font-semibold">Geschat maandbudget:</p>
             <p className="text-gray-700 text-lg">
               {formatThb(25000)} per maand (comfortabel leven)
-              {currency !== 'THB' ? ` · ${convertCurrency(25000, 'THB')}` : ''}
+              {currency !== 'IDR' ? ` · ${convertCurrency(25000, 'IDR')}` : ''}
             </p>
             <p className="text-sm text-gray-600 mt-2">
               Dit dekt eten, accommodatie, scooterhuur en sociale activiteiten.
@@ -220,7 +220,7 @@ export default function DivemasterInternship() {
             </li>
             <li className="flex items-start">
               <span className="text-blue-600 mr-3 font-bold">✓</span>
-              <span>Flexibele planning om het mooie Koh Tao te verkennen</span>
+              <span>Flexibele planning om het mooie Nusa Lembongan te verkennen</span>
             </li>
             <li className="flex items-start">
               <span className="text-blue-600 mr-3 font-bold">✓</span>

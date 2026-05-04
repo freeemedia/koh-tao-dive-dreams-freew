@@ -17,18 +17,18 @@ const FunDiving = () => {
   const { setShowBookNow, BookNowModalComponent } = useBookNowModal();
   const locale = 'en';
   const fallbackContent = useMemo(() => ({
-    fun_diving_hero_title: 'Fun Diving Koh Tao',
-    fun_diving_hero_subtitle: "Experience the best of Koh Tao's underwater world with our professionally guided fun dive trips. Discover colorful coral reefs, meet amazing marine life, and make unforgettable memories.",
-    fun_diving_hero_cta: 'Go Fun Diving Koh Tao',
+    fun_diving_hero_title: 'Fun Diving Nusa Lembongan',
+    fun_diving_hero_subtitle: "Experience the best of Lembongan's underwater world with our professionally guided fun dive trips. Discover colorful coral reefs, meet amazing marine life, and make unforgettable memories.",
+    fun_diving_hero_cta: 'Go Fun Diving Nusa Lembongan',
     fun_diving_hero_cta2: 'Book a Course',
     fun_diving_overview_title: 'From Breathtaking Shipwrecks to Exotic Marine Life',
-    fun_diving_overview_body: "Koh Tao's fun dives have it all! We take pride in offering you a personalized, relaxed, and enjoyable fun diving experience. We're dedicated to showcasing the finest underwater marvels tailored to your level of training and experience, ensuring your dives align with your specific interests.",
+    fun_diving_overview_body: "Lembongan's fun dives have it all! We take pride in offering you a personalized, relaxed, and enjoyable fun diving experience. We're dedicated to showcasing the finest underwater marvels tailored to your level of training and experience, ensuring your dives align with your specific interests.",
     fun_diving_world_class_title: 'World-Class Dive Sites',
-    fun_diving_world_class_body: "Beneath the turquoise water surrounding Koh Tao lies a world of colorful coral reefs, teeming marine life from macro creatures to turtles and if you're lucky, the majestic whale shark. With over 25 captivating dive sites, there's boundless diversity to explore.",
+    fun_diving_world_class_body: "Beneath the turquoise water surrounding Nusa Lembongan lies a world of colorful coral reefs, teeming marine life from macro creatures to turtles and if you're lucky, the majestic Mola Mola. With over 25 captivating dive sites, there's boundless diversity to explore.",
     fun_diving_expert_title: 'Expert Dive Professionals',
     fun_diving_expert_body: 'Our dive team comprises seasoned and highly knowledgeable dive professionals who have immersed themselves in the local reef ecology and dive sites. Their expertise ensures a safe and enriching diving experience for you.',
     fun_diving_marine_life_title: 'Diverse Marine Life',
-    fun_diving_marine_life_body: "From massive whale sharks and graceful sea turtles to colorful reef fish and fascinating macro life, Koh Tao's waters host an incredible variety of marine species. Every dive brings new discoveries and unforgettable encounters.",
+    fun_diving_marine_life_body: "From massive Mola Molas and graceful sea turtles to colorful reef fish and fascinating macro life, Lembongan's waters host an incredible variety of marine species. Every dive brings new discoveries and unforgettable encounters.",
     fun_diving_flexible_title: 'Flexible Schedule',
     fun_diving_flexible_body: 'We run two dive trips a day - morning and afternoon - on our spacious customized dive boats. After an exhilarating day of diving, unwind with refreshing drinks and share your incredible underwater experiences over a stunning sunset.',
     fun_diving_ready_title: 'Ready to Explore?',
@@ -36,7 +36,7 @@ const FunDiving = () => {
     fun_diving_ready_cta1: 'View Pricing & Schedule',
     fun_diving_ready_cta2: 'Explore Dive Sites',
     fun_diving_trips_title: 'Trips & Programs',
-    fun_diving_sites_title: 'Best Koh Tao Fun Diving Trips',
+    fun_diving_sites_title: 'Best Nusa Lembongan Fun Diving Trips',
     fun_diving_all_sites_title: 'All Dive Sites',
     fun_diving_marine_tab_title: 'Discover the Underwater World',
     // ...add more as needed for other tabs
@@ -44,33 +44,33 @@ const FunDiving = () => {
   const { content: originalContent } = usePageContent({ pageSlug: 'fun-diving', locale, fallbackContent });
   const content = {
     ...originalContent,
-    fun_diving_hero_title: 'Fun Diving Koh Tao',
-    fun_diving_hero_subtitle: "Experience the best of Koh Tao's underwater world with our professionally guided fun dive trips. Discover colorful coral reefs, encounter extraordinary marine life, and create unforgettable memories."
+    fun_diving_hero_title: 'Fun Diving Nusa Lembongan',
+    fun_diving_hero_subtitle: "Experience the best of Lembongan's underwater world with our professionally guided fun dive trips. Discover colorful coral reefs, encounter extraordinary marine life, and create unforgettable memories."
   };
   const diveSites = [
     {
-      name: "Sail Rock",
+      name: "Crystal Bay",
       path: '/dive-sites/sail-rock',
-      description: "Top deep-dive site with huge fish schools, whale sharks, and giant barracuda.",
+      description: "Top deep-dive site with huge fish schools, Mola Molas, and giant barracuda.",
       depth: "18-40m",
-      highlights: ["Whale Sharks", "Giant Barracuda", "Malabar Grouper"]
+      highlights: ["Mola Molas", "Giant Barracuda", "Malabar Grouper"]
     },
     {
-      name: "Chumphon Pinnacles",
+      name: "Manta Points",
       path: '/dive-sites/chumphon-pinnacle',
-      description: "Granite pinnacles with excellent chances of whale sharks and large trevally schools.",
+      description: "Granite pinnacles with excellent chances of Mola Molas and large trevally schools.",
       depth: "15-30m",
-      highlights: ["Whale Sharks", "Trevally Schools", "Eagle Rays"]
+      highlights: ["Mola Molas", "Trevally Schools", "Eagle Rays"]
     },
     {
-      name: "Japanese Gardens",
+      name: "Toyapakeh",
       path: '/dive-sites/japanese-gardens',
       description: "Diverse coral reef with colorful marine life and swim-throughs.",
       depth: "12-25m",
       highlights: ["Pinktail Triggerfish", "Spotted Eagle Ray", "Colorful Coral"]
     },
     {
-      name: "Mango Bay",
+      name: "SD Point",
       path: '/dive-sites/mango-bay',
       description: "Shallow coral reefs, perfect for relaxed dives packed with marine life.",
       depth: "5-18m",
@@ -79,17 +79,17 @@ const FunDiving = () => {
   ];
 
   const allDiveSites = [
-    { name: 'Sail Rock', path: '/dive-sites/sail-rock' },
-    { name: 'Chumphon Pinnacle', path: '/dive-sites/chumphon-pinnacle' },
-    { name: 'Japanese Gardens', path: '/dive-sites/japanese-gardens' },
-    { name: 'HTMS Sattakut', path: '/dive-sites/htms-sattakut' },
-    { name: 'Twins Pinnacle', path: '/dive-sites/twins-pinnacle' },
-    { name: 'Shark Island', path: '/dive-sites/shark-island' },
-    { name: 'Mango Bay', path: '/dive-sites/mango-bay' },
+    { name: 'Crystal Bay', path: '/dive-sites/sail-rock' },
+    { name: 'Manta Point', path: '/dive-sites/chumphon-pinnacle' },
+    { name: 'Toyapakeh', path: '/dive-sites/japanese-gardens' },
+    { name: 'USAT Liberty Wreck', path: '/dive-sites/htms-sattakut' },
+    { name: 'Ceningan Wall', path: '/dive-sites/twins-pinnacle' },
+    { name: 'SD Point', path: '/dive-sites/shark-island' },
+    { name: 'SD Point', path: '/dive-sites/mango-bay' },
   ];
 
   const marineLife = [
-    { name: "Whale Sharks", description: "Gentle giants often spotted around Sail Rock and Chumphon Pinnacle" },
+    { name: "Mola Molas", description: "Gentle giants often spotted around Crystal Bay and Manta Point" },
     { name: "Reef Cuttlefish", description: "Colorful cephalopods commonly seen in deeper water" },
     { name: "Marbled Octopus", description: "Small but fascinating animals in macro habitats" },
     { name: "Reef Fish Variety", description: "Colorful schools and unique reef species" }
@@ -322,17 +322,17 @@ const FunDiving = () => {
                 <Card className="overflow-hidden">
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle>Sail Rock Special</CardTitle>
+                      <CardTitle>Crystal Bay Special</CardTitle>
                       <Badge>Full Day</Badge>
                     </div>
                     <CardDescription>Duration: Full day — 3 dives with lunch</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="mb-3">A full day offshore trip to Sail Rock and surrounding pinnacles — chances for large pelagics.</p>
+                    <p className="mb-3">A full day offshore trip to Crystal Bay and surrounding pinnacles — chances for large pelagics.</p>
                     <ul className="list-disc pl-5 text-sm mb-4">
                       <li>Breakfast & lunch provided</li>
                       <li>Experienced guides and briefings</li>
-                      <li>Pickup & return to Koh Tao</li>
+                      <li>Pickup & return to Nusa Lembongan</li>
                     </ul>
                     <Button variant="secondary" onClick={() => setShowBookNow(true)}>Inquire / Book</Button>
                   </CardContent>
@@ -473,7 +473,7 @@ const FunDiving = () => {
                           <Clock className="w-5 h-5 text-purple-600" />
                           <CardTitle className="text-lg">
                             <Link to="/dive-sites/sail-rock" className="hover:text-blue-600 underline-offset-4 hover:underline">
-                              Sail Rock Special
+                              Crystal Bay Special
                             </Link>
                           </CardTitle>
                         </div>
@@ -482,7 +482,7 @@ const FunDiving = () => {
                         <p className="font-semibold mb-2">Wednesday & Saturday: 6:30 AM</p>
                         <p className="text-sm text-muted-foreground">3 dives - Full day with meals</p>
                         <p className="text-sm text-muted-foreground mt-2">
-                          Our premium trip to Koh Tao's most famous dive site
+                          Our premium trip to Lembongan's most famous dive site
                         </p>
                       </CardContent>
                     </Card>
@@ -504,15 +504,15 @@ const FunDiving = () => {
                         <div className="space-y-3 mb-4">
                           <div className="flex justify-between items-center pb-2 border-b">
                             <span className="font-medium">1 Dive</span>
-                            <span className="text-xl font-bold text-blue-600">฿1,000 <span className="text-sm text-muted-foreground">/dive</span></span>
+                            <span className="text-xl font-bold text-blue-600">IDR 385,000 <span className="text-sm text-muted-foreground">/dive</span></span>
                           </div>
                           <div className="flex justify-between items-center pb-2 border-b">
                             <span className="font-medium">2-9 Dives</span>
-                            <span className="text-xl font-bold text-blue-600">฿900 <span className="text-sm text-muted-foreground">/dive</span></span>
+                            <span className="text-xl font-bold text-blue-600">IDR 345,000 <span className="text-sm text-muted-foreground">/dive</span></span>
                           </div>
                           <div className="flex justify-between items-center pb-2 border-b bg-green-50 p-2 rounded">
                             <span className="font-medium">10+ Dives</span>
-                            <span className="text-xl font-bold text-green-600">฿800 <span className="text-sm text-muted-foreground">/dive</span></span>
+                            <span className="text-xl font-bold text-green-600">IDR 310,000 <span className="text-sm text-muted-foreground">/dive</span></span>
                           </div>
                         </div>
                         <div className="bg-background p-4 rounded-lg">
@@ -537,11 +537,11 @@ const FunDiving = () => {
                       <CardHeader>
                         <div className="flex items-center gap-2">
                           <DollarSign className="w-5 h-5 text-green-600" />
-                          <CardTitle className="text-lg">Sail Rock Special Trip</CardTitle>
+                          <CardTitle className="text-lg">Crystal Bay Special Trip</CardTitle>
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-2xl font-bold text-green-600">฿2,900</p>
+                        <p className="text-2xl font-bold text-green-600">IDR 1,100,000</p>
                         <p className="text-sm text-muted-foreground">full day excursion (3 dives)</p>
                         <ul className="mt-4 space-y-2 text-sm">
                           <li>• Breakfast & lunch included</li>
@@ -551,7 +551,7 @@ const FunDiving = () => {
                         </ul>
                         <div className="mt-4">
                           <Link to="/dive-sites/sail-rock" className="text-sm font-medium text-blue-600 hover:underline underline-offset-4">
-                            View Sail Rock details
+                            View Crystal Bay details
                           </Link>
                         </div>
                       </CardContent>
@@ -627,16 +627,16 @@ const FunDiving = () => {
             <div className="max-w-4xl mx-auto">
               <h2 className="text-4xl font-bold text-center mb-4">Frequently Asked Questions</h2>
               <p className="text-center text-muted-foreground mb-12">
-                Everything you need to know before diving with us on Koh Tao
+                Everything you need to know before diving with us on Nusa Lembongan
               </p>
               <div className="space-y-4">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">Do I need to be a certified diver to go fun diving on Koh Tao?</CardTitle>
+                    <CardTitle className="text-lg">Do I need to be a certified diver to go fun diving on Nusa Lembongan?</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Yes, you need to be a certified diver to participate in fun diving. Koh Tao offers diving
+                      Yes, you need to be a certified diver to participate in fun diving. Nusa Lembongan offers diving
                       for all certification levels, so whether you're Open Water certified or have advanced training,
                       there are dive sites suitable for you. If you're not certified yet, check out our{' '}
                       <Link to="/courses" className="text-blue-600 hover:underline">PADI certification courses</Link>.
@@ -646,11 +646,11 @@ const FunDiving = () => {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">What can I expect during a fun dive on Koh Tao?</CardTitle>
+                    <CardTitle className="text-lg">What can I expect during a fun dive on Nusa Lembongan?</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      A typical fun dive on Koh Tao includes a guided dive with a certified dive professional,
+                      A typical fun dive on Nusa Lembongan includes a guided dive with a certified dive professional,
                       who will lead you to explore the diverse marine life, coral reefs, and underwater landscapes
                       that make the island famous. We run two dive trips a day - morning and afternoon - on our
                       spacious customized dive boats where we adventure out to explore the coral reefs.
@@ -660,11 +660,11 @@ const FunDiving = () => {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">How deep will we dive during fun diving on Koh Tao?</CardTitle>
+                    <CardTitle className="text-lg">How deep will we dive during fun diving on Nusa Lembongan?</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Dive sites on Koh Tao cater to various skill levels. Depths can vary, but many dive sites
+                      Dive sites on Nusa Lembongan cater to various skill levels. Depths can vary, but many dive sites
                       are suitable for Open Water Divers and range from 12 meters (40 feet) to 18 meters (60 feet).
                       For more experienced divers, there are deeper sites available from 30 to 40 meters.
                     </p>
@@ -691,9 +691,9 @@ const FunDiving = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Beneath the turquoise water surrounding Koh Tao lies a world of colorful coral reefs,
+                      Beneath the turquoise water surrounding Nusa Lembongan lies a world of colorful coral reefs,
                       teeming marine life from macro creatures to sea turtles, and if you're lucky, the majestic
-                      whale shark. With over 25 captivating dive sites, there's plenty to see including barracuda,
+                      Mola Mola. With over 25 captivating dive sites, there's plenty to see including barracuda,
                       groupers, triggerfish, cuttlefish, octopus, and a stunning variety of tropical reef fish.
                     </p>
                   </CardContent>
@@ -774,7 +774,7 @@ const FunDiving = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground">
-                      Quality diving equipment and experienced guides may cost 100-200 THB extra per dive.
+                      Quality diving equipment and experienced guides may cost 100-200 IDR extra per dive.
                     </p>
                   </CardContent>
                 </Card>
@@ -800,7 +800,7 @@ const FunDiving = () => {
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-4xl font-bold mb-8">Book Your Fun Diving Adventure</h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Ready to discover Koh Tao’s incredible underwater world? Get in touch to enquire, or use the form below to send your booking request directly.
+                Ready to discover Nusa Lembongan’s incredible underwater world? Get in touch to enquire, or use the form below to send your booking request directly.
               </p>
                 <div className="mb-4 flex flex-col items-center gap-2">
                   <Link to="/fun-diving-koh-tao#world-class-dive-sites" className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">Fun Dive Info</Link>

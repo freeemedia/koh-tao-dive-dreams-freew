@@ -55,7 +55,7 @@ const MSDTProgram: React.FC = () => {
 
   const bookingUrl = `/booking?item=${encodeURIComponent(
     content.hero_title || 'PADI Master Scuba Diver Trainer (MSDT) Program'
-  )}&type=course&currency=THB`;
+  )}&type=course&currency=IDR`;
 
   const contactRef = useRef<HTMLDivElement>(null);
   const handleContactScroll = () => {

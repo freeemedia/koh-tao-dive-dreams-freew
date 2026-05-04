@@ -28,45 +28,45 @@ const bookingSchema = z.object({
 type BookingFormData = z.infer<typeof bookingSchema>;
 
 const COURSE_DEPOSIT_RATE = 0.2;
-const SKIP_PAYMENT_MESSAGE = 'You have chosen not to pay right now, no problem! We will contact you soon to arrange bookings and payment. Thank You, Pro Diving Asia Team.';
+const SKIP_PAYMENT_MESSAGE = 'You have chosen not to pay right now, no problem! We will contact you soon to arrange bookings and payment. Thank You, Lembongan Dive Resort Team.';
 
 const COURSE_FALLBACKS: Record<string, { item: string; price?: number; currency?: string }> = {
-  'open-water': { item: 'PADI Open Water Course', price: 11500, currency: 'THB' },
-  'advanced': { item: 'PADI Advanced Open Water Course', price: 10500, currency: 'THB' },
-  'advanced-open-water': { item: 'PADI Advanced Open Water Course', price: 10500, currency: 'THB' },
-  'rescue': { item: 'PADI Rescue Diver Course', price: 10000, currency: 'THB' },
-  'rescue-diver': { item: 'PADI Rescue Diver Course', price: 10000, currency: 'THB' },
-  'divemaster': { item: 'PADI Divemaster Course', price: 41000, currency: 'THB' },
-  'idc': { item: 'PADI IDC (Instructor Development Course)', currency: 'THB' },
-  'scuba-diver': { item: 'PADI Scuba Diver Course', price: 8500, currency: 'THB' },
-  'discover-scuba': { item: 'Discover Scuba Diving', price: 2500, currency: 'THB' },
-  'discover-scuba-deluxe': { item: 'Discover Scuba Deluxe', price: 5000, currency: 'THB' },
-  'efr': { item: 'Emergency First Response', price: 4500, currency: 'THB' },
-  'wreck-diver': { item: 'PADI Wreck Diver Specialty', price: 8000, currency: 'THB' },
-  'deep-diver': { item: 'PADI Deep Diver Specialty', price: 8000, currency: 'THB' },
-  'self-reliant': { item: 'PADI Self-Reliant Diver Specialty', price: 8000, currency: 'THB' },
-  'sidemount': { item: 'PADI Sidemount Diver Specialty', price: 8000, currency: 'THB' },
-  'night-diver': { item: 'PADI Night Diver Specialty', price: 8000, currency: 'THB' },
-  'peak-buoyancy': { item: 'PADI Peak Performance Buoyancy', price: 8000, currency: 'THB' },
-  'navigator': { item: 'PADI Underwater Navigator Specialty', price: 3000, currency: 'THB' },
-  'enriched-air': { item: 'PADI Enriched Air Diver Specialty', price: 8000, currency: 'THB' },
-  'emergency-o2': { item: 'Emergency Oxygen Provider', price: 8000, currency: 'THB' },
-  'dpv': { item: 'PADI DPV Diver Specialty', price: 4200, currency: 'THB' },
-  'search-recovery': { item: 'PADI Search & Recovery Specialty', price: 8000, currency: 'THB' },
-  'coral-watch': { item: 'Coral Watch Specialty', price: 2300, currency: 'THB' },
-  'sea-turtle': { item: 'Sea Turtle Awareness Specialty', price: 2200, currency: 'THB' },
-  'fish-id': { item: 'Fish Identification Specialty', price: 8000, currency: 'THB' },
-  'dive-against-debris': { item: 'Dive Against Debris Specialty', price: 8000, currency: 'THB' },
-  'shark-conservation': { item: 'Shark Conservation Specialty', price: 2500, currency: 'THB' },
-  'whaleshark': { item: 'Whale Shark Awareness Specialty', price: 3500, currency: 'THB' },
-  'underwater-naturalist': { item: 'PADI Underwater Naturalist Specialty', price: 3500, currency: 'THB' },
-  'adaptive-support': { item: 'Adaptive Support Diver Specialty', price: 4000, currency: 'THB' },
-  'current-diver': { item: 'PADI Current Diver Specialty', currency: 'THB' },
-  'photography': { item: 'PADI Underwater Photography Specialty', price: 8000, currency: 'THB' },
-  'equipment-specialist': { item: 'PADI Equipment Specialist', currency: 'THB' },
-  'boat-diver': { item: 'PADI Boat Diver Specialty', currency: 'THB' },
-  'divemaster-internship': { item: 'PADI Divemaster Internship', currency: 'THB' },
-  'instructor-internship': { item: 'PADI Instructor Internship', currency: 'THB' },
+  'open-water': { item: 'PADI Open Water Course', price: 11500, currency: 'IDR' },
+  'advanced': { item: 'PADI Advanced Open Water Course', price: 10500, currency: 'IDR' },
+  'advanced-open-water': { item: 'PADI Advanced Open Water Course', price: 10500, currency: 'IDR' },
+  'rescue': { item: 'PADI Rescue Diver Course', price: 10000, currency: 'IDR' },
+  'rescue-diver': { item: 'PADI Rescue Diver Course', price: 10000, currency: 'IDR' },
+  'divemaster': { item: 'PADI Divemaster Course', price: 41000, currency: 'IDR' },
+  'idc': { item: 'PADI IDC (Instructor Development Course)', currency: 'IDR' },
+  'scuba-diver': { item: 'PADI Scuba Diver Course', price: 8500, currency: 'IDR' },
+  'discover-scuba': { item: 'Discover Scuba Diving', price: 2500, currency: 'IDR' },
+  'discover-scuba-deluxe': { item: 'Discover Scuba Deluxe', price: 5000, currency: 'IDR' },
+  'efr': { item: 'Emergency First Response', price: 4500, currency: 'IDR' },
+  'wreck-diver': { item: 'PADI Wreck Diver Specialty', price: 8000, currency: 'IDR' },
+  'deep-diver': { item: 'PADI Deep Diver Specialty', price: 8000, currency: 'IDR' },
+  'self-reliant': { item: 'PADI Self-Reliant Diver Specialty', price: 8000, currency: 'IDR' },
+  'sidemount': { item: 'PADI Sidemount Diver Specialty', price: 8000, currency: 'IDR' },
+  'night-diver': { item: 'PADI Night Diver Specialty', price: 8000, currency: 'IDR' },
+  'peak-buoyancy': { item: 'PADI Peak Performance Buoyancy', price: 8000, currency: 'IDR' },
+  'navigator': { item: 'PADI Underwater Navigator Specialty', price: 3000, currency: 'IDR' },
+  'enriched-air': { item: 'PADI Enriched Air Diver Specialty', price: 8000, currency: 'IDR' },
+  'emergency-o2': { item: 'Emergency Oxygen Provider', price: 8000, currency: 'IDR' },
+  'dpv': { item: 'PADI DPV Diver Specialty', price: 4200, currency: 'IDR' },
+  'search-recovery': { item: 'PADI Search & Recovery Specialty', price: 8000, currency: 'IDR' },
+  'coral-watch': { item: 'Coral Watch Specialty', price: 2300, currency: 'IDR' },
+  'sea-turtle': { item: 'Sea Turtle Awareness Specialty', price: 2200, currency: 'IDR' },
+  'fish-id': { item: 'Fish Identification Specialty', price: 8000, currency: 'IDR' },
+  'dive-against-debris': { item: 'Dive Against Debris Specialty', price: 8000, currency: 'IDR' },
+  'shark-conservation': { item: 'Shark Conservation Specialty', price: 2500, currency: 'IDR' },
+  'whaleshark': { item: 'Mola Mola Awareness Specialty', price: 3500, currency: 'IDR' },
+  'underwater-naturalist': { item: 'PADI Underwater Naturalist Specialty', price: 3500, currency: 'IDR' },
+  'adaptive-support': { item: 'Adaptive Support Diver Specialty', price: 4000, currency: 'IDR' },
+  'current-diver': { item: 'PADI Current Diver Specialty', currency: 'IDR' },
+  'photography': { item: 'PADI Underwater Photography Specialty', price: 8000, currency: 'IDR' },
+  'equipment-specialist': { item: 'PADI Equipment Specialist', currency: 'IDR' },
+  'boat-diver': { item: 'PADI Boat Diver Specialty', currency: 'IDR' },
+  'divemaster-internship': { item: 'PADI Divemaster Internship', currency: 'IDR' },
+  'instructor-internship': { item: 'PADI Instructor Internship', currency: 'IDR' },
 };
 
 const ADDONS = [
@@ -116,7 +116,7 @@ const       BookingPage: React.FC = () => {
   const baseCourseCostMajor = Number.isFinite(parsedPrice)
     ? parsedPrice
     : (fallbackCourse?.price || (!hasDirectBookingContext && itemType === 'dive' ? 2000 : 0));
-  const depositCurrency = searchParams.get('currency') || fallbackCourse?.currency || 'THB';
+  const depositCurrency = searchParams.get('currency') || fallbackCourse?.currency || 'IDR';
   const isFunDiveBooking = isDiveBooking && /fun dive/i.test(itemTitle);
   const isDiscoverScubaBooking = isDiveBooking && /(discover scuba|dsd)/i.test(itemTitle);
 
@@ -263,7 +263,7 @@ const       BookingPage: React.FC = () => {
           : undefined,
         payment_mode: 'inquire',
         selected_price: baseCourseCostMajor > 0 ? baseCourseCostMajor : null,
-        currency: depositCurrency || 'THB',
+        currency: depositCurrency || 'IDR',
         deposit_amount: depositAmountMajor,
         total_amount: totalAmountMajor,
         due_amount: balanceAmountMajor,
@@ -289,7 +289,7 @@ const       BookingPage: React.FC = () => {
             nights: nightsCount,
             experience_level: data.experience_level || '',
             payment_choice: data.paymentChoice === 'paypal' ? 'paypal' : 'inquire',
-            currency: depositCurrency || 'THB',
+            currency: depositCurrency || 'IDR',
             deposit_amount: depositAmountMajor,
             total_amount: totalAmountMajor,
             due_amount: balanceAmountMajor,
@@ -394,7 +394,7 @@ const       BookingPage: React.FC = () => {
                 payment_status: data.paymentChoice === 'paypal' ? 'deposit_paypal_redirect' : (wpSaved ? 'new_inquiry' : 'not_synced'),
                 deposit_amount: depositAmountMajor,
                 total_amount: totalAmountMajor,
-                currency: depositCurrency || 'THB',
+                currency: depositCurrency || 'IDR',
               },
               tags: [
                 'website-form',
@@ -407,7 +407,7 @@ const       BookingPage: React.FC = () => {
         }
 
         if (data.paymentChoice === 'paypal' && amountMajor > 0) {
-          const paypalUrl = `${paypalBase}/${amountMajor}THB`;
+          const paypalUrl = `${paypalBase}/${amountMajor}IDR`;
           setTimeout(() => { window.location.href = paypalUrl; }, 1200);
         } else {
           setTimeout(() => window.location.href = '/thank-you.html', 1500);
@@ -488,7 +488,7 @@ const       BookingPage: React.FC = () => {
                       key={label}
                       type="button"
                       className="text-left px-3 py-2 rounded bg-white/10 hover:bg-white/20 border border-white/30 text-white text-sm font-medium transition"
-                      onClick={() => { window.location.href = `/booking?item=${encodeURIComponent(item || label)}&type=course${price ? `&price=${price}` : ''}${price ? '&currency=THB' : ''}${slug ? `&course=${slug}` : ''}&source=${encodeURIComponent(bookingSource)}`; }}
+                      onClick={() => { window.location.href = `/booking?item=${encodeURIComponent(item || label)}&type=course${price ? `&price=${price}` : ''}${price ? '&currency=IDR' : ''}${slug ? `&course=${slug}` : ''}&source=${encodeURIComponent(bookingSource)}`; }}
                     >
                       {label}{price ? ` — ฿${price.toLocaleString()}` : ''}
                     </button>
@@ -517,7 +517,7 @@ const       BookingPage: React.FC = () => {
                 <Button 
                   variant="default"
                   className="bg-emerald-600 hover:bg-emerald-700"
-                  onClick={() => window.location.href = '/booking?item=3%20Specialty%20Bundle&type=course&price=18000&currency=THB'}
+                  onClick={() => window.location.href = '/booking?item=3%20Specialty%20Bundle&type=course&price=18000&currency=IDR'}
                 >
                   Book 3 Specialty Bundle
                 </Button>
@@ -592,7 +592,7 @@ const       BookingPage: React.FC = () => {
                   setStayWithUs(true);
                   return;
                 }
-                navigate('/booking?item=Resort%20Accommodation&type=stay&currency=THB');
+                navigate('/booking?item=Resort%20Accommodation&type=stay&currency=IDR');
               }}
             >
               Stay with us at our resort accommodation
@@ -622,7 +622,7 @@ const       BookingPage: React.FC = () => {
               ))}
             </div>
             <p className="text-sm text-muted-foreground mb-3">
-              Pricing: 1 dive = ฿1,000, 2-9 dives = ฿900 per dive, 10+ dives = ฿800 per dive.
+              Pricing: 1 dive = IDR 385,000, 2-9 dives = IDR 345,000 per dive, 10+ dives = IDR 310,000 per dive.
               Selected add-on: {courseFunDiveCount} dives{courseFunDiveCount > 0 ? ` (฿${courseFunDiveCostMajor})` : ''}.
             </p>
 
@@ -668,7 +668,7 @@ const       BookingPage: React.FC = () => {
               ))}
             </div>
             <p className="text-sm text-muted-foreground">
-              Pricing: 1 dive = ฿1,000, 2-9 dives = ฿900 per dive, 10+ dives = ฿800 per dive.
+              Pricing: 1 dive = IDR 385,000, 2-9 dives = IDR 345,000 per dive, 10+ dives = IDR 310,000 per dive.
               Current rate: ฿{getFunDiveRate(funDiveCount)} per dive.
             </p>
           </div>

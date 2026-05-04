@@ -66,7 +66,7 @@ const Account = () => {
     },
     {
       title: 'Marine Life Identification Guide',
-      description: 'Comprehensive guide to Koh Tao marine species',
+      description: 'Comprehensive guide to Nusa Lembongan marine species',
       downloadUrl: '/downloads/marine-life-guide.pdf',
       type: 'PDF'
     },
@@ -95,7 +95,7 @@ const Account = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">My Account</h1>
-            <p className="text-muted-foreground">Welcome back to Koh Tao Dive Dreams</p>
+            <p className="text-muted-foreground">Welcome back to Lembongan Dive Resort</p>
           </div>
           <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-2">
             <LogOut className="h-4 w-4" />

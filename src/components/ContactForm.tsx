@@ -17,7 +17,7 @@ export default function ContactForm() {
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           access_key: 'b42b4f7a-b0b3-4ba9-8197-cf5abe9f09e6',
-          subject: 'New Contact Message - Koh Tao Dive Dreams',
+          subject: 'New Contact Message - Lembongan Dive Resort',
           from_name: form.name,
           email: form.email,
           message: form.message,

@@ -24,16 +24,16 @@ const parseSiteList = (value: string) => {
 };
 
 const SITE_PATHS: Record<string, string> = {
-  'Sail Rock': '/dive-sites/sail-rock',
-  'Chumphon Pinnacle': '/dive-sites/chumphon-pinnacle',
+  'Crystal Bay': '/dive-sites/sail-rock',
+  'Manta Point': '/dive-sites/chumphon-pinnacle',
   'South West Pinnacle': '/dive-sites/south-west-pinnacle',
-  'Japanese Gardens': '/dive-sites/japanese-gardens',
-  'Shark Island': '/dive-sites/shark-island',
-  'Mango Bay': '/dive-sites/mango-bay',
-  'HTMS Sattakut': '/dive-sites/htms-sattakut',
+  'Toyapakeh': '/dive-sites/japanese-gardens',
+  'SD Point': '/dive-sites/shark-island',
+  'SD Point': '/dive-sites/mango-bay',
+  'USAT Liberty Wreck': '/dive-sites/htms-sattakut',
   'Junkyard Reef': '/dive-sites/junkyard-reef',
-  'Buoyancy World': '/dive-sites/buoyancy-world',
-  'Aow Leuk': '/dive-sites/aow-leuk',
+  'Mangrove Point': '/dive-sites/buoyancy-world',
+  'Blue Corner': '/dive-sites/aow-leuk',
   'Hin Ngam': '/dive-sites/hin-ngam',
   'Tanote Bay': '/dive-sites/tanote-bay',
 };
@@ -46,11 +46,11 @@ const DiveSitesPage = () => {
   const locale = isDutch ? 'nl' : 'en';
 
   const fallbackContent = isDutch ? {
-    hero_title: 'Duiklocaties op Koh Tao',
-    hero_text: 'Ontdek meer dan 25 geweldige duiklocaties rond Koh Tao, van ondiepe koraalriffen tot diepe oceaanpinnacles. Elke plek biedt unieke onderwaterervaringen en rijk zeeleven.',
+    hero_title: 'Duiklocaties op Nusa Lembongan',
+    hero_text: 'Ontdek meer dan 25 geweldige duiklocaties rond Nusa Lembongan, van ondiepe koraalriffen tot diepe oceaanpinnacles. Elke plek biedt unieke onderwaterervaringen en rijk zeeleven.',
     book_dive: 'Boek je duik',
-    overview_title: 'Beste duiklocaties op Koh Tao',
-    overview_text: 'Koh Tao heeft meer dan 25 uitstekende duiklocaties met gevarieerde topografie en een overvloed aan zeeleven. Elke plek is uniek en biedt duikers van elk niveau iets anders, met genoeg variatie om ook ervaren duikers wekenlang te boeien.',
+    overview_title: 'Beste duiklocaties op Nusa Lembongan',
+    overview_text: 'Nusa Lembongan heeft meer dan 25 uitstekende duiklocaties met gevarieerde topografie en een overvloed aan zeeleven. Elke plek is uniek en biedt duikers van elk niveau iets anders, met genoeg variatie om ook ervaren duikers wekenlang te boeien.',
     stat1_title: '25+ locaties',
     stat1_text: 'Van ondiepe baaien tot diepe pinnacles',
     stat2_title: 'Divers zeeleven',
@@ -60,22 +60,22 @@ const DiveSitesPage = () => {
     stat4_title: 'Alle niveaus',
     stat4_text: 'Locaties voor beginners tot gevorderde duikers',
     deep_title: 'Diepe duiklocaties voor gevorderde duikers',
-    deep_sites: 'Sail Rock|/dive-sites/sail-rock|De belangrijkste diepe duiklocatie van Koh Tao met grote visscholen, walvishaaien en reuzenbarracuda.|18-40m|Walvishaaien,Reuzenbarracuda,Malabar grouper,Zeilvis|Gevorderd|40 minuten offshore\nChumphon Pinnacle|/dive-sites/chumphon-pinnacle|Granieten pinnacle met uitstekende kansen op walvishaaien en grote scholen trevally.|15-30m|Walvishaaien,Trevally-scholen,Adelaarsroggen,Chevron-barracuda|Gevorderd|30 minuten offshore\nSouth West Pinnacle|/dive-sites/south-west-pinnacle|Diepe pinnacle, bekend om walvishaaien, brydevinvissen en grote pelagische vis.|15-35m|Walvishaaien,Brydevinvissen,Reuzenbarracuda,Koningsmakreel|Gevorderd|30-40 minuten offshore',
+    deep_sites: 'Crystal Bay|/dive-sites/sail-rock|De belangrijkste diepe duiklocatie van Nusa Lembongan met grote visscholen, Mola Mola en reuzenbarracuda.|18-40m|Walvishaaien,Reuzenbarracuda,Malabar grouper,Zeilvis|Gevorderd|40 minuten offshore\nManta Point|/dive-sites/chumphon-pinnacle|Granieten pinnacle met uitstekende kansen op Mola Mola en grote scholen trevally.|15-30m|Walvishaaien,Trevally-scholen,Adelaarsroggen,Chevron-barracuda|Gevorderd|30 minuten offshore\nSouth West Pinnacle|/dive-sites/south-west-pinnacle|Diepe pinnacle, bekend om Mola Mola, brydevinvissen en grote pelagische vis.|15-35m|Walvishaaien,Brydevinvissen,Reuzenbarracuda,Koningsmakreel|Gevorderd|30-40 minuten offshore',
     coral_title: 'Prachtige koraalrif-locaties',
-    coral_sites: 'Japanese Gardens||Gevarieerde koraalriffen met kleurrijk zeeleven en swim-throughs.|12-25m|Pink-tailed triggerfish,Ocellated adelaarsrog,Kleurrijk koraal,Gemarmerde octopus|Gemiddeld|Bij Koh Nang Yuan\nShark Island||Prachtige paarse boomkoralen en gorgonen met veel zeeleven.|8-20m|Zeewaaiers,Zweepkoralen,Zwartpuntrifhaaien,Tropische vissen|Beginner-Gemiddeld|Zuidkust\nMango Bay||Ondiepe koraalriffen, ideaal voor ontspannen duiken met een gezond ecosysteem.|5-18m|Kleurrijk koraal,Rifvissen,Zeeanemonen|Beginner|Baai aan westkust',
+    coral_sites: 'Toyapakeh||Gevarieerde koraalriffen met kleurrijk zeeleven en swim-throughs.|12-25m|Pink-tailed triggerfish,Ocellated adelaarsrog,Kleurrijk koraal,Gemarmerde octopus|Gemiddeld|Bij Koh Nang Yuan\nSD Point||Prachtige paarse boomkoralen en gorgonen met veel zeeleven.|8-20m|Zeewaaiers,Zweepkoralen,Zwartpuntrifhaaien,Tropische vissen|Beginner-Gemiddeld|Zuidkust\nSD Point||Ondiepe koraalriffen, ideaal voor ontspannen duiken met een gezond ecosysteem.|5-18m|Kleurrijk koraal,Rifvissen,Zeeanemonen|Beginner|Baai aan westkust',
     artificial_title: 'Kunstmatige duiklocaties',
-    artificial_sites: 'HTMS Sattakut||Voormalig Amerikaans marineschip uit WOII, geschonken door de Thaise marine en nu een bloeiend kunstmatig rif.|18-30m|Wrakverkenning,Marien leven,Swim-throughs,Historische waarde|Gevorderd|Tussen de eilanden\nJunkyard Reef||Kunstmatige stalen structuren met gezond koraal en divers zeeleven.|8-15m|Kunstmatige structuren,Gezond koraal,Diverse vissoorten,Natuurproject|Beginner-Gemiddeld|Westkust\nBuoyancy World||Betonblokken en buizen die nieuwe ecosystemen voor zeeleven vormen.|5-12m|Betonstructuren,Nieuwe koraalgroei,Klein zeeleven,Educatief|Beginner|Aow Leuk',
+    artificial_sites: 'USAT Liberty Wreck||Voormalig Amerikaans marineschip uit WOII, geschonken door de Thaise marine en nu een bloeiend kunstmatig rif.|18-30m|Wrakverkenning,Marien leven,Swim-throughs,Historische waarde|Gevorderd|Tussen de eilanden\nJunkyard Reef||Kunstmatige stalen structuren met gezond koraal en divers zeeleven.|8-15m|Kunstmatige structuren,Gezond koraal,Diverse vissoorten,Natuurproject|Beginner-Gemiddeld|Westkust\nMangrove Point||Betonblokken en buizen die nieuwe ecosystemen voor zeeleven vormen.|5-12m|Betonstructuren,Nieuwe koraalgroei,Klein zeeleven,Educatief|Beginner|Blue Corner',
     shallow_title: 'Ondiepe duiklocaties voor beginners',
-    shallow_sites: 'Aow Leuk||Ondiepe baai met koraaltuinen en makkelijke duikomstandigheden.|3-10m|Koraaltuinen,Tropische vissen,Makkelijke toegang,Trainingslocatie|Beginner|Westkust\nHin Ngam||Ondiep rif met kunstmatige structuren en veel zeeleven.|5-12m|Kunstmatige riffen,Kleurrijke vissen,Veilig duiken,Fotografie|Beginner|Westkust\nTanote Bay||Duiklocatie aan de oostkant met macrokansen en kleurrijk rifleven.|8-15m|Hengelaarsvis,Pijpvis,Macrofotografie,Kleurrijk rif|Gemiddeld|Oostkust',
+    shallow_sites: 'Blue Corner||Ondiepe baai met koraaltuinen en makkelijke duikomstandigheden.|3-10m|Koraaltuinen,Tropische vissen,Makkelijke toegang,Trainingslocatie|Beginner|Westkust\nHin Ngam||Ondiep rif met kunstmatige structuren en veel zeeleven.|5-12m|Kunstmatige riffen,Kleurrijke vissen,Veilig duiken,Fotografie|Beginner|Westkust\nTanote Bay||Duiklocatie aan de oostkant met macrokansen en kleurrijk rifleven.|8-15m|Hengelaarsvis,Pijpvis,Macrofotografie,Kleurrijk rif|Gemiddeld|Oostkust',
     depth_label: 'Diepte',
-    booking_title: 'Ontdek de onderwaterwereld van Koh Tao',
-    booking_text: 'Klaar om de geweldige duiklocaties van Koh Tao te ontdekken? Onze ervaren gidsen nemen je mee naar de beste plekken voor jouw niveau en interesses.',
+    booking_title: 'Ontdek de onderwaterwereld van Nusa Lembongan',
+    booking_text: 'Klaar om de geweldige duiklocaties van Nusa Lembongan te ontdekken? Onze ervaren gidsen nemen je mee naar de beste plekken voor jouw niveau en interesses.',
   } : {
-    hero_title: 'Dive sites around Koh Tao',
-    hero_text: 'Discover more than 25 incredible dive sites around Koh Tao, from shallow coral reefs to deep ocean pinnacles. Every site offers unique underwater experiences and rich marine life.',
+    hero_title: 'Dive sites around Nusa Lembongan',
+    hero_text: 'Discover more than 25 incredible dive sites around Nusa Lembongan, from shallow coral reefs to deep ocean pinnacles. Every site offers unique underwater experiences and rich marine life.',
     book_dive: 'Book your dive',
-    overview_title: 'Best dive sites around Koh Tao',
-    overview_text: 'Koh Tao has over 25 excellent dive sites with varied topography and abundant marine life. Each site is unique and offers something different for every diver level, with enough variety to keep experienced divers engaged for weeks.',
+    overview_title: 'Best dive sites around Nusa Lembongan',
+    overview_text: 'Nusa Lembongan has over 25 excellent dive sites with varied topography and abundant marine life. Each site is unique and offers something different for every diver level, with enough variety to keep experienced divers engaged for weeks.',
     stat1_title: '25+ sites',
     stat1_text: 'From shallow bays to deep pinnacles',
     stat2_title: 'Diverse marine life',
@@ -85,16 +85,16 @@ const DiveSitesPage = () => {
     stat4_title: 'All levels',
     stat4_text: 'Sites for beginners through advanced divers',
     deep_title: 'Deep dive sites for advanced divers',
-    deep_sites: "Sail Rock|/dive-sites/sail-rock|Koh Tao's flagship deep dive site with huge fish schools, whale sharks, and giant barracuda.|18-40m|Whale sharks,Giant barracuda,Malabar grouper,Sailfish|Gevorderd|40 minutes offshore\nChumphon Pinnacle|/dive-sites/chumphon-pinnacle|Granite pinnacle with excellent whale shark sightings and large schools of trevally.|15-30m|Whale sharks,Trevally schools,Eagle rays,Chevron barracuda|Gevorderd|30 minutes offshore\nSouth West Pinnacle|/dive-sites/south-west-pinnacle|Deep pinnacle known for whale sharks, Bryde's whales, and large pelagic fish.|15-35m|Whale sharks,Bryde's whales,Giant barracuda,Spanish mackerel|Gevorderd|30-40 minutes offshore",
+    deep_sites: "Crystal Bay|/dive-sites/sail-rock|Nusa Lembongan's flagship deep dive site with huge fish schools, Mola Molas, and giant barracuda.|18-40m|Whale sharks,Giant barracuda,Malabar grouper,Sailfish|Gevorderd|40 minutes offshore\nManta Point|/dive-sites/chumphon-pinnacle|Granite pinnacle with excellent Mola Mola sightings and large schools of trevally.|15-30m|Whale sharks,Trevally schools,Eagle rays,Chevron barracuda|Gevorderd|30 minutes offshore\nSouth West Pinnacle|/dive-sites/south-west-pinnacle|Deep pinnacle known for Mola Molas, Bryde's whales, and large pelagic fish.|15-35m|Whale sharks,Bryde's whales,Giant barracuda,Spanish mackerel|Gevorderd|30-40 minutes offshore",
     coral_title: 'Beautiful coral reef sites',
-    coral_sites: 'Japanese Gardens||Varied coral reefs with colorful marine life and swim-throughs.|12-25m|Pink-tailed triggerfish,Ocellated eagle ray,Colorful coral,Marbled octopus|Gemiddeld|Near Koh Nang Yuan\nShark Island||Beautiful purple soft corals and gorgonians with abundant marine life.|8-20m|Sea fans,Whip corals,Blacktip reef sharks,Tropical fish|Beginner-Gemiddeld|South coast\nMango Bay||Shallow coral reefs ideal for relaxed diving with a healthy ecosystem.|5-18m|Colorful coral,Reef fish,Sea anemones|Beginner|Bay on west coast',
+    coral_sites: 'Toyapakeh||Varied coral reefs with colorful marine life and swim-throughs.|12-25m|Pink-tailed triggerfish,Ocellated eagle ray,Colorful coral,Marbled octopus|Gemiddeld|Near Koh Nang Yuan\nSD Point||Beautiful purple soft corals and gorgonians with abundant marine life.|8-20m|Sea fans,Whip corals,Blacktip reef sharks,Tropical fish|Beginner-Gemiddeld|South coast\nSD Point||Shallow coral reefs ideal for relaxed diving with a healthy ecosystem.|5-18m|Colorful coral,Reef fish,Sea anemones|Beginner|Bay on west coast',
     artificial_title: 'Artificial dive sites',
-    artificial_sites: 'HTMS Sattakut||Former WWII US Navy ship donated by the Thai Navy, now a thriving artificial reef.|18-30m|Wreck exploration,Marine life,Swim-throughs,Historic value|Gevorderd|Between the islands\nJunkyard Reef||Artificial steel structures with healthy coral growth and diverse marine life.|8-15m|Artificial structures,Healthy coral,Diverse fish species,Conservation project|Beginner-Gemiddeld|West coast\nBuoyancy World||Concrete blocks and pipes that create new ecosystems for marine life.|5-12m|Concrete structures,New coral growth,Small marine life,Educational|Beginner|Aow Leuk',
+    artificial_sites: 'USAT Liberty Wreck||Former WWII US Navy ship donated by the Thai Navy, now a thriving artificial reef.|18-30m|Wreck exploration,Marine life,Swim-throughs,Historic value|Gevorderd|Between the islands\nJunkyard Reef||Artificial steel structures with healthy coral growth and diverse marine life.|8-15m|Artificial structures,Healthy coral,Diverse fish species,Conservation project|Beginner-Gemiddeld|West coast\nMangrove Point||Concrete blocks and pipes that create new ecosystems for marine life.|5-12m|Concrete structures,New coral growth,Small marine life,Educational|Beginner|Blue Corner',
     shallow_title: 'Shallow dive sites for beginners',
-    shallow_sites: 'Aow Leuk||Shallow bay with coral gardens and easy diving conditions.|3-10m|Coral gardens,Tropical fish,Easy entry,Training site|Beginner|West coast\nHin Ngam||Shallow reef with artificial structures and abundant marine life.|5-12m|Artificial reefs,Colorful fish,Safe diving,Photography|Beginner|West coast\nTanote Bay||East-coast dive site with macro opportunities and colorful reef life.|8-15m|Frogfish,Pipefish,Macro photography,Colorful reef|Gemiddeld|East coast',
+    shallow_sites: 'Blue Corner||Shallow bay with coral gardens and easy diving conditions.|3-10m|Coral gardens,Tropical fish,Easy entry,Training site|Beginner|West coast\nHin Ngam||Shallow reef with artificial structures and abundant marine life.|5-12m|Artificial reefs,Colorful fish,Safe diving,Photography|Beginner|West coast\nTanote Bay||East-coast dive site with macro opportunities and colorful reef life.|8-15m|Frogfish,Pipefish,Macro photography,Colorful reef|Gemiddeld|East coast',
     depth_label: 'Depth',
-    booking_title: 'Discover Koh Tao\u2019s underwater world',
-    booking_text: 'Ready to explore Koh Tao\u2019s amazing dive sites? Our experienced guides take you to the best spots for your level and interests.',
+    booking_title: 'Discover Nusa Lembongan\u2019s underwater world',
+    booking_text: 'Ready to explore Nusa Lembongan\u2019s amazing dive sites? Our experienced guides take you to the best spots for your level and interests.',
   };
 
   const { content: pageContent } = usePageContent({ pageSlug: 'koh-tao-dive-sites', locale, fallbackContent });
@@ -313,19 +313,19 @@ const DiveSitesPage = () => {
                   <div className="flex justify-between items-center pb-2 border-b">
                     <span className="font-medium">{isDutch ? '1 Duik' : '1 Dive'}</span>
                     <span className="text-xl font-bold text-blue-600">
-                      ฿1,000 <span className="text-sm text-muted-foreground">/{isDutch ? 'duik' : 'dive'}</span>
+                      IDR 385,000 <span className="text-sm text-muted-foreground">/{isDutch ? 'duik' : 'dive'}</span>
                     </span>
                   </div>
                   <div className="flex justify-between items-center pb-2 border-b">
                     <span className="font-medium">{isDutch ? '2-9 Duiken' : '2-9 Dives'}</span>
                     <span className="text-xl font-bold text-blue-600">
-                      ฿900 <span className="text-sm text-muted-foreground">/{isDutch ? 'duik' : 'dive'}</span>
+                      IDR 345,000 <span className="text-sm text-muted-foreground">/{isDutch ? 'duik' : 'dive'}</span>
                     </span>
                   </div>
                   <div className="flex justify-between items-center pb-2 border-b bg-green-50 p-2 rounded">
                     <span className="font-medium">{isDutch ? '10+ Duiken' : '10+ Dives'}</span>
                     <span className="text-xl font-bold text-green-600">
-                      ฿800 <span className="text-sm text-muted-foreground">/{isDutch ? 'duik' : 'dive'}</span>
+                      IDR 310,000 <span className="text-sm text-muted-foreground">/{isDutch ? 'duik' : 'dive'}</span>
                     </span>
                   </div>
                 </div>
@@ -340,7 +340,7 @@ const DiveSitesPage = () => {
                 </div>
                 <Button 
                   className="w-full"
-                  onClick={() => navigate(`/booking?item=${encodeURIComponent('Fun Dive')}&type=dive&price=1800&currency=THB&dives=2`)}
+                  onClick={() => navigate(`/booking?item=${encodeURIComponent('Fun Dive')}&type=dive&price=1800&currency=IDR&dives=2`)}
                 >
                   {pageContent.book_dive}
                 </Button>
@@ -353,14 +353,14 @@ const DiveSitesPage = () => {
                   <DollarSign className="w-5 h-5 text-blue-600" />
                   <CardTitle className="text-lg">
                     <Link to="/dive-sites/sail-rock" className="hover:text-blue-600">
-                      Sail Rock Special Trip
+                      Crystal Bay Special Trip
                     </Link>
                   </CardTitle>
                 </div>
                 <CardDescription>{isDutch ? 'Volledige dagtrip premium pakket' : 'Full-day premium trip package'}</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold text-blue-600 mb-2">฿2,900</p>
+                <p className="text-3xl font-bold text-blue-600 mb-2">IDR 1,100,000</p>
                 <p className="text-sm text-muted-foreground mb-4">
                   {isDutch ? 'Volledige dag excursie (3 duiken)' : 'Full day excursion (3 dives)'}
                 </p>
@@ -372,9 +372,9 @@ const DiveSitesPage = () => {
                 </ul>
                 <Button 
                   className="w-full"
-                  onClick={() => navigate(`/booking?item=${encodeURIComponent('Sail Rock Special')}&type=dive&price=2900&currency=THB`)}
+                  onClick={() => navigate(`/booking?item=${encodeURIComponent('Crystal Bay Special')}&type=dive&price=2900&currency=IDR`)}
                 >
-                  {isDutch ? 'Boek Sail Rock' : 'Book Sail Rock'}
+                  {isDutch ? 'Boek Crystal Bay' : 'Book Crystal Bay'}
                 </Button>
               </CardContent>
             </Card>
