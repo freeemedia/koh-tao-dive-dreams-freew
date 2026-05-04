@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pro Diving Booking / Inquiry</title>
+  <link rel="icon" href="/images/logo.png" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #e0f7fa 0%, #f8f8f8 100%);
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .booking-container {
+      background: #fff;
+      max-width: 420px;
+      width: 100%;
+      margin: 2rem;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px #0070ba22;
+      padding: 2.5rem 2rem 2rem 2rem;
+      text-align: center;
+    }
+    .logo {
+      max-width: 120px;
+      margin-bottom: 1.5rem;
+      filter: drop-shadow(0 2px 8px #0070ba33);
+    }
+    h1 {
+      color: #009688;
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+      letter-spacing: 1px;
+    }
+    .subtitle {
+      color: #555;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    input, select, textarea {
+      padding: 0.7em 1em;
+      border: 1px solid #b2dfdb;
+      border-radius: 6px;
+      font-size: 1rem;
+      background: #f8f8f8;
+      transition: border 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border: 1.5px solid #009688;
+      outline: none;
+      background: #e0f2f1;
+    }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      font-size: 1rem;
+      color: #00796b;
+      margin-bottom: 0.5em;
+    }
+    button {
+      background: #009688;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.9em 0;
+      font-size: 1.1em;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 1px 4px #00968822;
+      transition: background 0.2s;
+      margin-top: 0.5em;
+    }
+    button:hover {
+      background: #00796b;
+    }
+    .success-message {
+      color: #009688;
+      background: #e0f7fa;
+      border-radius: 8px;
+      padding: 1em;
+      margin-top: 1em;
+      font-size: 1.1em;
+      display: none;
+    }
+    .error-message {
+      color: #c62828;
+      background: #ffebee;
+      border-radius: 8px;
+      padding: 1em;
+      margin-top: 1em;
+      font-size: 1.1em;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="booking-container">
+    <img src="/images/logo.png" alt="Pro Diving Logo" class="logo" />
+    <h1>Pro Diving</h1>
+    <div class="subtitle">Booking / Inquiry Form</div>
+    <form id="bookingForm">
+      <input type="text" name="name" placeholder="Name" required />
+      <input type="email" name="email" placeholder="Email" required />
+      <input type="tel" name="phone" placeholder="Phone" required />
+      <input type="text" name="course" id="courseField" placeholder="Course / Package" required />
+      <input type="date" name="date" placeholder="Preferred Date" required />
+      <div class="checkbox-row">
+        <input type="checkbox" id="experience" name="experience" />
+        <label for="experience">Experience Level</label>
+      </div>
+      <select name="level" required>
+        <option value="">Select Experience Level...</option>
+        <option value="Beginner">Beginner</option>
+        <option value="Intermediate">Intermediate</option>
+        <option value="Advanced">Advanced</option>
+      </select>
+      <textarea name="comments" rows="3" placeholder="Comments / Questions"></textarea>
+      <button type="submit">Send Booking</button>
+    </form>
+    <div class="success-message" id="successMsg">Thank you! Your enquiry has been sent.</div>
+    <div class="error-message" id="errorMsg">Sorry, there was a problem sending your enquiry. Please try again.</div>
+  </div>
+  <script>
+    // Prefill form fields from URL params
+    const params = new URLSearchParams(window.location.search);
+    if(params.get('item')) {
+      document.getElementById('courseField').value = decodeURIComponent(params.get('item'));
+    }
+    // Web3Forms integration
+    const form = document.getElementById('bookingForm');
+    const successMsg = document.getElementById('successMsg');
+    const errorMsg = document.getElementById('errorMsg');
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      successMsg.style.display = 'none';
+      errorMsg.style.display = 'none';
+      const formData = new FormData(form);
+      // Use your actual Web3Forms access key
+      formData.append('access_key', 'e4c4edf6-6e35-456a-87da-b32b961b449a');
+      try {
+        const response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: formData
+        });
+        const result = await response.json();
+        if(result.success) {
+          successMsg.style.display = 'block';
+          form.reset();
+        } else {
+          errorMsg.style.display = 'block';
+        }
+      } catch (err) {
+        errorMsg.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

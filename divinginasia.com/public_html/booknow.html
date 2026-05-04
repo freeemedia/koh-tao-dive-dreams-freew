@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking / Inquiry Form (Web3Forms)</title>
+  <style>
+    body { font-family: sans-serif; background: #f8f8f8; }
+    .form-container { max-width: 400px; margin: 2rem auto; background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+    label { display: block; margin-top: 1rem; font-weight: bold; }
+    input, select, textarea { width: 100%; padding: 0.5rem; margin-top: 0.25rem; border: 1px solid #ccc; border-radius: 4px; }
+    button { margin-top: 1.5rem; padding: 0.75rem 1.5rem; background: #0070ba; color: #fff; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; }
+    button:hover { background: #005fa3; }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <div style="text-align:center; margin-bottom:1rem;">
+      <img src="/images/logo.png" alt="Diving In Asia Logo" style="max-width:180px; height:auto;"/>
+    </div>
+    <h2>Booking / Inquiry Form</h2>
+    <form action="https://api.web3forms.com/submit" method="POST">
+      <input type="hidden" name="access_key" value="e4c4edf6-6e35-456a-87da-b32b961b449a">
+      <input type="hidden" name="subject" value="New Booking Inquiry from Website">
+      <input type="hidden" name="redirect" value="https://www.divinginasia.com/thank-you.html">
+
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="course_title">Course</label>
+      <select id="course_title" name="course_title" required>
+        <option value="">Select...</option>
+        <option value="Open Water">Open Water</option>
+        <option value="Advanced Open Water">Advanced Open Water</option>
+        <option value="Rescue Diver">Rescue Diver</option>
+        <option value="Divemaster">Divemaster</option>
+        <option value="Fun Dive">Fun Dive</option>
+      </select>
+
+
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="phone">Phone</label>
+      <input type="text" id="phone" name="phone">
+
+      <label for="accommodation_type">Accommodation Type</label>
+      <select id="accommodation_type" name="accommodation_type">
+        <option value="">Select...</option>
+        <option value="standard">Standard Room</option>
+        <option value="deluxe">Deluxe Room</option>
+        <option value="suite">Suite</option>
+        <option value="other">Other / Not sure</option>
+      </select>
+
+      <label for="arrival_date">Arrival Date</label>
+      <input type="date" id="arrival_date" name="arrival_date">
+
+      <label for="diving_experience">Diving Experience</label>
+      <select id="diving_experience" name="diving_experience">
+        <option value="">Select...</option>
+        <option value="none">No diving experience</option>
+        <option value="beginner">Beginner (1-10 dives)</option>
+        <option value="intermediate">Intermediate (10-50 dives)</option>
+        <option value="advanced">Advanced (50+ dives)</option>
+        <option value="professional">Professional diver</option>
+      </select>
+
+
+
+
+      <label for="message">Comments / Questions</label>
+      <textarea id="message" name="message" rows="3" placeholder="Let us know any special requests, questions, or details..."></textarea>
+
+      <button type="submit">Submit Booking</button>
+      <div style="text-align:center; margin-top:2rem; color:#555; font-size:1rem;">
+        — Diving In Asia Team —
+      </div>
+    </form>
+  </div>
+</body>
+</html>

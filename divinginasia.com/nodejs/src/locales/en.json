@@ -1,0 +1,229 @@
+{
+  "nav": {
+    "home": "Home",
+    "courses": "Courses",
+    "diveSites": "Dive Sites",
+    "marineLife": "Marine Life",
+    "gallery": "Gallery",
+    "contact": "Contact",
+    "admin": "Admin"
+  },
+  "hero": {
+    "title": "Discover the Magic of Koh Tao",
+    "subtitle": "Experience world-class diving in Thailand's premier island destination",
+    "cta": "Book Your Adventure"
+  },
+  "about": {
+    "title": "Why Choose Koh Tao for Diving?",
+    "subtitle": "Known as the diving capital of Thailand, Koh Tao offers some of the world's most accessible and diverse underwater experiences",
+    "sectionTitle": "Underwater Paradise Awaits",
+    "description1": "Koh Tao is a small island in the Gulf of Thailand renowned for its incredible diving opportunities. With warm waters year-round, excellent visibility, and abundant marine life, it's the perfect place for both beginners and experienced divers.",
+    "description2": "Our crystal-clear waters host vibrant coral reefs, schools of tropical fish, and a wide variety of marine life. The island's compact size means short boat rides to multiple dive sites, maximizing your underwater time.",
+    "features": [
+      "Water temperature: 26-29°C year-round",
+      "Visibility: 15-25 meters",
+      "Suitable for all certification levels",
+      "Marine protected areas"
+    ],
+    "stats": {
+      "certifications": "PADI Certifications",
+      "divers": "Happy Divers",
+      "sites": "Dive Sites",
+      "experience": "Years Experience"
+    }
+  },
+  "courses": {
+    "title": "PADI Dive Courses",
+    "subtitle": "From beginner to professional, we offer comprehensive PADI certification courses with experienced instructors in small groups",
+    "openWater": {
+      "title": "Open Water Diver",
+      "level": "Beginner",
+      "duration": "3-4 days",
+      "maxDepth": "18m",
+      "price": "฿9,500",
+      "description": "Your first step into the underwater world. Learn basic diving skills and theory.",
+      "fullDescription": "Take a simple 4 days of your time and learn how to dive, how to get confidence and control underwater and receive a certification valid for the rest of your life, all around the globe.\n\nThe \"Open Water Course\", considered as the 1st level of PADI, is perfectly built for whoever wants to know what all the basics of scuba diving are.\n\nStep by step, you'll get to know and understand why so many of us fell in love with it and made it a career. Some theory, some preparation in the pool, just to get used to it, and a lot of time in open sea, that's what it is.\n\nDuring a minimum of 4 dives, your instructor will show you, teach you and tell you all about diving. By the time he'll be signing your certification, you'll be ready to join the big world of divers, crazy people, same as we are, travelling, working and simply waking up in the morning just to jump back in and get back to this unbelievable aquatic life.\n\nAs Open Water diver, your depth limit will be 18 meters, valid everywhere around the world and good for the rest of your life.\n\nMaterial, all included in the course, is available in multiple languages. Personal advice: if English is not your 1st language but you are still comfortable with it, get everything done in English. If you do fall in love with it…on your future dives, English will always be the one you'll find on any diving destination.\n\nThe course is not only based on theory or skills, some of your dives will be simply swimming around, looking at things and breathing underwater. Probably the best feeling…like being in space, but underwater!",
+      "includes": ["4 open water dives", "Theory & pool sessions", "PADI certification", "Equipment rental"],
+      "whatsNext": "Fell in love with it? What's next? The Advanced Open Water course awaits!",
+      "courseImages": ["photo-1659518893171-b15e20a8e201.avif", "photo-1682686580849-3e7f67df4015.avif", "photo-1682687982423-295485af248a.avif"]
+    },
+    "advanced": {
+      "title": "Advanced Open Water",
+      "level": "Intermediate",
+      "duration": "2 days",
+      "maxDepth": "30m",
+      "price": "฿8,500",
+      "description": "Expand your diving skills with 5 adventure dives including deep and navigation.",
+      "fullDescription": "Second level, done with the Open Water and time to get more into details, into practical stuff, into different techniques…well then it's time for the Advanced course.\n\nWithin 2 days, or more, complete 5 adventure dives and get certified. The main reason why people get to do the \"Advanced\" is to be allowed to dive up to 30 meters deep, which is a very good reason, but that's not it, the course offers also plenty of other options and advantages.\n\nThe Advanced course includes 16 different options of dives from which you will have to choose five. Considering your location, some of the options can differ from those offered in cold countries and warm countries. One thing for sure, 2 of the 5 dives are mandatory: the Deep and the Navigation dives.\n\nOn the deep dive, your instructor will be taking you to a depth of 30 meters and test you regarding the \"nitrogen narcosis\" effect on your brain. Some people get knocked; some people start acting foolish and others pretend (!!) not to feel anything. This dive will certainly be a good laugh and of course will allow you to reach such depth on any further dives.\n\nDuring the Navigation dive, you'll be learning more about underwater orientation. Using both natural reference and compass, your instructor might ask you to find back the boat for him…hum…let's see if you'll manage! There will be also some distance calculation using both fin kick and time. Same as the deep…it usually ends up in a good laugh!\n\nFor the other 3 dives, you'll have the chance to choose in between all the options. What we usually recommend our students is to take the \"Peak Performance Buoyancy\" dive, which consists in breathing skills, different fin kicks and hovering exercise. Many people also go for the \"Night Dive\", experiencing the aquatic life in dark, using a torch to light on the rabbit fish getting hypnotized and attacked by the giant Barracuda hanging around you! You'll get to choose either the \"Underwater Photography\", the \"Multi-Level and Computer diving\", the \"Fish Identification\" or the Naturalist dive.\n\nAlmost like fun diving, over a minimum of 2 days, you can get your certification and be now ready for any diving location. Being an Open Water Diver brings you the diving world, but being an Advanced diver opens all the possible doors!\n\nIf any of you plan to go diving in the Similan Islands or in Sipadan Islands for example, the \"Advanced\" level will be required for most of the dive sites. Keep this in mind and get it done!",
+      "includes": ["5 adventure dives", "Deep dive training", "Navigation skills", "Specialty previews"],
+      "courseImages": ["photo-1647825194145-2d94e259c745.avif", "photo-1618865181016-a80ad83a06d3.avif", "photo-1613853250147-2f73e55c1561.avif"]
+    },
+    "efr": {
+      "title": "Emergency First Responder",
+      "level": "Certification",
+      "duration": "1 day",
+      "maxDepth": "N/A",
+      "price": "฿4,500",
+      "description": "Learn primary and secondary care emergency response skills. Prerequisite for Rescue Diver.",
+      "fullDescription": "The E.F.R. course is the PADI version of what many learned in school, at work or by interest.\n\nThe Primary care and secondary care in case of emergency or accident. Someone choking, unconscious, in shock, injured with serious bleeding or simply unresponsive, do you remember what to do in such situations?\n\nNot necessarily related to diving, the EFR course is a prerequisite before enrolling into the Rescue Course. If you did a similar course from a recognized association in the past year, as long as you have proof, you'll be able to start your Rescue Diver level straight away. But if not, an EFR course will be necessary.\n\nAnd you know what? Why not?! Such formation does not only have something to do with diving incidents, but can also be useful in your daily life.\n\nDo you remember or do you know what to do with someone having a heart attack, someone having a stroke or with a severe airway obstruction? What about if you have to do chest compressions, did you know that it's now 30 compressions to 2 rescue breaths for both kids and adults? What about if you find your friend with a very rapid pulse and clammy skin, do you remember what it could be?\n\nThe Emergency First Responder course will cover all that. Some of you will only need to refresh their skills and others will practice it for the 1st time, doesn't matter, as long as you realize how important this knowledge can be.\n\nOne day in the classroom with your instructor, talking, demonstrating, practicing and responding to different scenarios and here you are, certified as an Emergency First Responder.\n\nYour certification will be valid for 2 years before having to simply refresh the notions.\n\nIf you did such a course during the last year and plan to come and do your \"Rescue Course\", please bring proof or your card.",
+      "includes": ["Primary care training", "Secondary care training", "CPR techniques", "AED training"],
+      "icon": "🏥",
+      "courseImages": ["photo-1659518893171-b15e20a8e201.avif", "photo-1682687982423-295485af248a.avif"]
+    },
+    "rescue": {
+      "title": "Rescue Diver",
+      "level": "Advanced",
+      "duration": "2-3 days",
+      "maxDepth": "30m",
+      "price": "฿9,500",
+      "description": "Learn to prevent and manage problems in the water, and become a more confident diver.",
+      "fullDescription": "During any diving course and recreational, \"safety\" is probably a word that will come back very often during your briefing. Being responsible, safe and clever diver means a lot. Becoming a rescue diver is learning what safety really is, how to react in a rescue situation, both at the surface and underwater. Giving you such a confidence underwater, the \"rescue course\" will make you a safe diver, no doubt.\n\nConduct over 2 to 3 days, here comes the time to realise how good it can be to know how to handle a diver in panic at the surface, missing, unconscious at 9 meters deep or simply tired at the surface asking for help to get back to the boat or the shore.\n\nPractice, academic presentation including emergency procedures, oxygen use and all the other aspect and example of accident or diving injury, open water session and many scenarios are part on this intense course. Everybody that went through that course said the same; it is probably the most exiting and serious course of all. It will make you a better diver controlling yourself enough to be able to control another diver in need of help.\n\nStrange to think those 2 to 3 days will give you such confidence, but it does! No better way to understand safety, going for the rescue course is adding a big point on your experience.\n\nRemember that in certain places of the world, people will let you dive on your own with your buddy. How do you think it feel to know that you know exactly what to do in case of emergency? I guess it probably feels very good!",
+      "includes": ["Rescue scenarios", "Emergency training", "Problem solving", "Leadership skills"],
+      "courseImages": ["photo-1682686580849-3e7f67df4015.avif", "photo-1647825194145-2d94e259c745.avif"]
+    },
+    "divemaster": {
+      "title": "Divemaster",
+      "level": "Professional",
+      "duration": "2-6 weeks",
+      "maxDepth": "40m",
+      "price": "฿32,000",
+      "description": "Become a diving professional and start your career in the diving industry.",
+      "fullDescription": "Oh…thinking of becoming a Dive Master might mean you are thinking of a dive career! Being a Dive Master means you can start working as a professional, start leading people and basically earning money for doing what you like. Sounds brilliant, doesn't it!\n\nSome of the things you will be able to do as a PADI Dive Master:\n• Work in a dive centre or a live-aboard\n• Assist an Instructor during courses\n• Lead certified divers on their fun dives\n• Conduct a scuba review for certified divers that haven't been diving for a while\n\nTake a bit of time off and join us for a couple of weeks on Koh Tao…couple of weeks which will probably turn up to be couple of months, as most of those who came to do their training never left and went even further in their career!\n\nThe Dive Master training is about 2 to 3 weeks. Unless you decide to do an Internship program, which can stretch your formation up to 6 to 8 weeks. Not only will you have unlimited diving during the time of your course, but you'll also get the chance to get involved in the diving industry.\n\nConsidered as the first \"pro level\", we'll teach you the inside as well as the outside of the diving world. How things work in a dive centre, how to lead dives with certified divers, how to assist an instructor on courses and how to take action in the daily activities of a dive shop.\n\nThe course is split in 2 segments: theory and practice. The theory is based on 8 exams: PADI Dive Master conducted Programs, Supervising Student Divers in training, Supervising Activities for Certified Divers, Physics, Physiology, Equipment, Decompression Theory and the RDP, and Skills and Environment.\n\nFor the practical part, you'll have to assist on courses, on guided dives with certified divers, you'll have to work on an emergency assistance plan, on the map of a dive site and on your underwater skills.\n\nDuring your training you will receive lectures from instructors and Course Directors to help you out with the \"knowledge development\" section. The theory is actually very interesting and it will give you a totally different view of what divers go through and learn during their courses or career.\n\nNot only a course, you'll find out that our DMTs are also quite active and you'll get to share a lot of time with them during our famous DMT BBQ and all those nights out which they have together with the rest of the team from the dive shop.\n\nBasically, it's not just a training, but it's a great opportunity to meet a lot of other people that fell in love with the diving community and it's also loads of fun, 100% guaranteed!",
+      "includes": ["Leadership training", "Teaching assistance", "Dive guide skills", "Professional certification", "Unlimited diving during course"],
+      "courseImages": ["photo-1659518893171-b15e20a8e201.avif", "photo-1618865181016-a80ad83a06d3.avif", "photo-1682686580849-3e7f67df4015.avif"]
+    },
+    "instructor": {
+      "title": "IDC - Instructor Development Course",
+      "level": "Career",
+      "duration": "14 days",
+      "maxDepth": "40m",
+      "price": "Contact us",
+      "description": "Become a PADI Instructor and start teaching others to dive. The ultimate step in your diving career.",
+      "fullDescription": "Ok, now we're really talking serious! Here's a major step into the diving world; becoming an instructor, teaching your students what you've learned, what you've experienced, what to do to be a good diver…and then signing them off, proud of what you've done, proud that you made them brilliant divers!\n\nThis is what diving instructors do every day, sharing their passion and transmitting it to others. They offer their knowledge, sit by the sea the time of a drink, talking about what went right, what could be better, what should their student change and what they did good! With an active status of Instructor, you'll be able to teach all courses from Open Water up to Dive Master.\n\nHere is a kind of career that makes people jealous, but hey…we all make our choice, don't we!? There is an IDC starting every month. To begin your \"IDC\", you need to be already certified as a Dive Master (or the equivalent), have at least 60 logged dives and be 18 years old. Also very important, you must have been certified as a diver (Open Water or equivalent) for at least 6 months.\n\nOur 2 Course Directors, Mark and Darius, both \"Platinum Course Directors\" will take you on a 14-day adventure, during which they will prepare you for the big day, the Instructor Examination. With many years of experience behind them, they probably stopped counting the certifications. Lectures and presentations are just natural for them, normal when you've been teaching IDCs since 1997!\n\nFirst 4 days will be more of a preparation for the course. The Course Director will go through some theory and confined skills with the candidate and figure out what you are good at or what they will have to work on and focus more with you during the following days.\n\nThen the real IDC starts, another 10 days of hard work. Academic presentations, PADI general standards and procedures exams, theory exams, Open Water Presentation for each level (Open Water, Advanced, Rescue and Dive Master), confined presentation, just to name some of the stuff which will need to be done. Everybody agrees on how intense the course is, but everybody also agrees on how well those 2 Course Directors prepare their candidates for the big day. Well, let's just be honest, none of their students ever failed!\n\nThe way you'll get prepared, is the way the Examiner will need to see you on the official last 3 days of evaluation: a professional instructor who deserves to get the best score on each presentation!\n\nIf you think of becoming an Instructor, keep in mind that another good way to prepare yourself for an IDC is to assist on many different courses before starting the training. The best for you is to come a month earlier to be able to assist, for free, different instructors. Also, during this month, you'll be able to join on fun diving, also for free!\n\nYou need to get your own material (diving encyclopaedia, instructor manual, slates, etc.) by simply getting the \"IDC pack\", everything you'll need is in it. This is something that you can sort out once you get here, much better than carrying it all the way to the Island…save your kilos for clothes, because you might end up getting a job and staying here much longer than you thought!\n\nThe big day, the last 3 days during which a PADI examiner will come to the Island and evaluate your skills, your presentation and your ability to teach.\n\nAfter 14 days of getting trained, evaluated and prepared by your 2 Course Directors, on the 1st day of the I.E., your Course Directors will take you to the examiner, like parents would bring their kids to the first day of school, ready to let you go into the big world!!\n\nFrom that moment, you'll be in the hands of a PADI examiner that travelled to Koh Tao especially for you, to see what you've learned, to see if really, you are ready to instruct.\n\nDon't get us wrong, the examiners are not big and scary (!!), but just normal people who want to make sure that, yes, the way you've been prepared is how PADI wants to be represented through people like you in their future diving career.\n\nThe I.E. will go on for 3 days, involving more academic presentation, skills demonstration, open water presentation as well as written exam on the first day. If your Course Director brings you to the IE, it's because they already know that YOU are ready…so no need for any stress!!\n\nThe 3 days will fly and without even realizing it, you'll be already done, sitting in a bar with all the candidates, celebrating your victory, your new status as a PADI diving instructor.\n\nBy the way, the IE party is a \"must\", one of the best monthly events on Koh Tao!!!\n\n**Please note: to begin your IDC you need at least 60 logged dives, but to enter the IE, you will need 100 dives.",
+      "includes": ["14-day intensive training", "Platinum Course Directors", "Academic presentations", "Skills development", "IE preparation", "IDC pack available"],
+      "icon": "🎓",
+      "courseImages": ["photo-1647825194145-2d94e259c745.avif", "photo-1659518893171-b15e20a8e201.avif"]
+    },
+    "specialOffers": {
+      "title": "Special Offers",
+      "combo": {
+        "title": "Open Water + Advanced",
+        "description": "Complete both courses and save!",
+        "price": "฿16,500",
+        "originalPrice": "฿18,000"
+      },
+      "group": {
+        "title": "Group Discounts",
+        "description": "Groups of 4+ save 10% on all courses",
+        "discount": "10% OFF"
+      }
+    },
+    "bookButton": "Book This Course",
+    "perPerson": "per person",
+    "duration": "Duration",
+    "maxDepth": "Max depth",
+    "courseIncludes": "Course includes",
+    "readMore": "Read more about this course"
+  },
+  "diveSites": {
+    "title": "World-Class Dive Sites",
+    "subtitle": "Explore Koh Tao's most spectacular underwater locations, each offering unique marine encounters and breathtaking coral formations",
+    "sites": {
+      "sailRock": {
+        "name": "Sail Rock",
+        "depth": "8-40m",
+        "level": "Advanced",
+        "highlights": ["Whale sharks", "Bull sharks", "Vertical swim-through"],
+        "description": "The pinnacle dive site in the Gulf of Thailand, famous for whale shark encounters."
+      },
+      "chumphon": {
+        "name": "Chumphon Pinnacle",
+        "depth": "14-32m",
+        "level": "Intermediate",
+        "highlights": ["Barracudas", "Trevally", "Coral gardens"],
+        "description": "Underwater seamount covered in colorful soft corals and bustling with marine life."
+      },
+      "southwest": {
+        "name": "Southwest Pinnacle",
+        "depth": "14-33m",
+        "level": "Intermediate",
+        "highlights": ["Whale sharks", "Giant groupers", "Coral formations"],
+        "description": "A submerged pinnacle offering excellent chances of big fish encounters."
+      },
+      "sharkIsland": {
+        "name": "Shark Island",
+        "depth": "5-18m",
+        "level": "Beginner",
+        "highlights": ["Reef sharks", "Moray eels", "Easy diving"],
+        "description": "Perfect for beginners with gentle currents and abundant marine life."
+      },
+      "whiteRock": {
+        "name": "White Rock",
+        "depth": "8-22m",
+        "level": "Beginner",
+        "highlights": ["Coral gardens", "Tropical fish", "Photography"],
+        "description": "Beautiful coral formations and diverse marine life in shallow, calm waters."
+      },
+      "greenRock": {
+        "name": "Green Rock",
+        "depth": "6-18m",
+        "level": "Beginner",
+        "highlights": ["Angelfish", "Butterflyfish", "Colorful reef"],
+        "description": "Known for vibrant reef fish communities and colorful coral formations."
+      }
+    },
+    "bookButton": "Book This Dive",
+    "depth": "Depth",
+    "highlights": "Highlights"
+  },
+  "gallery": {
+    "title": "Photo Gallery",
+    "subtitle": "Experience the beauty of Koh Tao underwater"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Ready to start your diving adventure?",
+    "form": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "subject": "Subject",
+      "message": "Message",
+      "submit": "Send Message"
+    },
+      "info": {
+      "title": "Get In Touch",
+      "address": "Koh Tao, Thailand",
+      "email": "contact@divinginasia.com",
+      "phone": "+66 XX XXX XXXX"
+    }
+  },
+  "booking": {
+    "title": "Book Your Course",
+    "form": {
+      "name": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "course": "Select Course",
+      "date": "Preferred Date",
+      "experience": "Experience Level",
+      "message": "Additional Message",
+      "submit": "Submit Booking"
+    },
+    "experienceLevels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    }
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "bookings": "Booking Inquiries",
+    "noBookings": "No booking inquiries yet.",
+    "delete": "Delete",
+    "confirmDelete": "Are you sure you want to delete this booking?"
+  },
+  "footer": {
+    "copyright": "© 2024 Pro Diving Asia All rights reserved."
+  }
+}

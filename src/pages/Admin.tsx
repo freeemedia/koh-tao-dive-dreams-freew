@@ -195,7 +195,7 @@ const Admin = () => {
             {import.meta.env.VITE_SITE_NAME || 'Lembongan Watersports'} — Operations Console
           </p>
           <h1 className="text-3xl font-bold tracking-wide">{t('admin.dashboard_title', { defaultValue: 'Admin Dashboard' })}</h1>
-          <p className="text-xs text-slate-400">{import.meta.env.VITE_SITE_DOMAIN || 'lembonganwatersports.com'}</p>
+          <p className="text-xs text-slate-400">{import.meta.env.VITE_SITE_DOMAIN || 'onemediaasia.tech'}</p>
         </div>
       </header>
 

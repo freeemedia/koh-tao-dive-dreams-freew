@@ -1,0 +1,231 @@
+{
+  "nav": {
+    "home": "Home",
+    "courses": "Cursussen",
+    "diveSites": "Duiklocaties",
+    "marineLife": "Marieleven",
+    "gallery": "Galerij",
+    "contact": "Contact",
+    "admin": "Admin"
+  },
+  "hero": {
+    "title": "Ontdek de Magie van Koh Tao",
+    "subtitle": "Ervaar wereldklasse duiken op Thailand's premier eilandbestemming",
+    "cta": "Boek Je Avontuur"
+  },
+  "about": {
+    "title": "Waarom Koh Tao kiezen voor duiken",
+    "subtitle": "Bekend als de duikhoofdstad van Thailand, Koh Tao biedt enkele van 's werelds meest toegankelijke en diverse onderwater ervaringen",
+    "sectionTitle": "Onderwater Paradijs Wacht",
+    "description1": "Koh Tao, wat \"Schildpadeiland\" betekent, is een klein eiland in de Golf van Thailand dat beroemd is om zijn ongelooflijke duikmogelijkheden. Met warm water het hele jaar door, uitstekende zichtbaarheid en overvloedig zeeleven, is het de perfecte plek voor zowel beginners als ervaren duikers.",
+    "description2": "Onze kristalheldere wateren herbergen levendige koraalriffen, scholen tropische vissen, walvishaaien en als je geluk hebt, groene zeeschildpadden. De compacte grootte van het eiland betekent korte boottochten naar meerdere duiklocaties, waardoor je onderwatertijd wordt gemaximaliseerd.",
+    "features": [
+      "Watertemperatuur: 26-29°C het hele jaar door",
+      "Zichtbaarheid: 15-25 meter",
+      "Geschikt voor alle certificeringsniveaus",
+      "Beschermde mariene gebieden"
+    ],
+    "stats": {
+      "certifications": "PADI Certificeringen",
+      "divers": "Gelukkige Duikers",
+      "sites": "Duiklocaties",
+      "experience": "Jaren Ervaring"
+    }
+  },
+  "courses": {
+    "title": "PADI Duikcursussen",
+    "subtitle": "Van beginner tot professional, we bieden uitgebreide PADI certificeringscursussen met ervaren instructeurs in kleine groepen",
+    "openWater": {
+      "title": "Open Water Diver",
+      "level": "Beginner",
+      "duration": "3-4 dagen",
+      "maxDepth": "18m",
+      "price": "฿9,500",
+      "description": "Je eerste stap in de onderwaterwereld. Leer basis duikvaardigheden en theorie.",
+      "fullDescription": "Neem vier dagen de tijd om te leren duiken, vertrouwen en controle onder water te krijgen en ontvang een certificaat dat wereldwijd en levenslang geldig is.\n\nDe \"Open Water Course\", beschouwd als het eerste PADI-niveau, is perfect opgebouwd voor iedereen die de basis van sportduiken wil leren.\n\nStap voor stap leer je waarom zoveel mensen verliefd zijn geworden op duiken en er soms een carrière van maakten. Wat theorie, wat voorbereiding in het zwembad om eraan te wennen, en veel tijd op zee — dat is het.\n\nTijdens minimaal vier duiken laat je instructeur je alle vaardigheden zien, leert en begeleidt hij je. Zodra hij je certificaat heeft ondertekend, ben je klaar om deel te nemen aan de grote wereld van duikers: reizigers, professionals of gewoon mensen die elke kans grijpen om weer te duiken.\n\nAls Open Water Diver is je dieptegrens 18 meter, geldig overal ter wereld en voor de rest van je leven.\n\nMateriaal is inbegrepen en beschikbaar in meerdere talen. Persoonlijk advies: als Engels niet je moedertaal is maar je er comfortabel mee bent, doe dan de cursus in het Engels. Kom je later op andere plekken duiken, dan zul je vaak Engels gebruiken.\n\nDe cursus bestaat niet alleen uit theorie en vaardigheden; sommige duiken zijn gewoon rondzwemmen, kijken en onder water ademen. Waarschijnlijk het beste gevoel… alsof je in de ruimte bent, maar dan onder water!",
+      "includes": ["4 open water duiken", "Theorie & zwembadsessies", "PADI certificering", "Materiaal verhuur"],
+      "whatsNext": "Verliefd geworden op duiken? Wat nu? De Advanced Open Water-cursus wacht!",
+      "courseImages": ["photo-1659518893171-b15e20a8e201.avif", "photo-1682686580849-3e7f67df4015.avif", "photo-1682687982423-295485af248a.avif"]
+    },
+    "advanced": {
+      "title": "Advanced Open Water",
+      "level": "Gevorderd",
+      "duration": "2 dagen",
+      "maxDepth": "30m",
+      "price": "฿8,500",
+      "description": "Vergroot je duikvaardigheden met 5 avontuurlijke duiken inclusief diep en navigatie.",
+      "fullDescription": "Het tweede niveau, nadat je Open Water hebt afgerond, om dieper in details, praktische vaardigheden en verschillende technieken te duiken — tijd voor de Advanced-cursus.\n\nBinnen 2 dagen (of meer) voltooi je 5 avontuurlijke duiken en ontvang je certificering. De belangrijkste reden waarom mensen de \"Advanced\" doen, is dat je dan tot 30 meter diepte mag duiken, maar daarnaast biedt de cursus veel extra mogelijkheden en voordelen.\n\nDe Advanced-cursus bevat 16 duikopties waaruit je er vijf kiest. Afhankelijk van je locatie kunnen sommige opties afwijken van die in koude gebieden. Eén ding is zeker: twee van de vijf duiken zijn verplicht: de Diepduik en de Navigatie.\n\nTijdens de diepduik neemt je instructeur je mee naar 30 meter en test je op het \"stikstofnarcose\"-effect. Sommige mensen merken het sterk, anderen minder — het is vaak een ervaring op zich. Deze duik is leerzaam en vaak ook een bron van plezier, en stelt je in staat later veilig naar die diepte te duiken.\n\nTijdens de Navigatieduik leer je oriëntatie onder water: gebruik van natuurlijke referenties en kompas. Je instructeur kan je vragen de boot terug te vinden — uitdaging geaccepteerd! Er komen ook afstandsberekeningen aan de orde met zwemslagen en tijd. Net als bij de diepduik leidt het vaak tot veel plezier.\n\nVoor de overige drie duiken kies je uit de opties. Onze aanbeveling is vaak de \"Peak Performance Buoyancy\"-duik voor betere controle en houding. Veel mensen kiezen ook voor de \"Night Dive\" om het onderwaterleven 's nachts te ervaren met een duiklamp. Andere opties zijn \"Onderwaterfotografie\", \"Multi-Level en Computerduiken\", \"Visidentificatie\" of de Naturalist-duik.\n\nBijna als funduiken: in minimaal 2 dagen behaal je je certificaat en ben je klaar voor veel meer duiksituaties. Open Water brengt je de onderwaterwereld, Advanced opent veel extra deuren.\n\nAls je van plan bent te duiken bij bijvoorbeeld de Similan- of Sipadan-eilanden, is het Advanced-niveau vaak vereist. Houd dat in gedachten en doe het!",
+      "includes": ["5 avontuurlijke duiken", "Diep duik training", "Navigatie vaardigheden", "Specialiteit previews"],
+      "courseImages": ["photo-1647825194145-2d94e259c745.avif", "photo-1618865181016-a80ad83a06d3.avif", "photo-1613853250147-2f73e55c1561.avif"]
+    },
+
+    "efr": {
+      "title": "Emergency First Responder",
+      "level": "Certificatie",
+      "duration": "1 dag",
+      "maxDepth": "N/A",
+      "price": "฿4,500",
+      "description": "Leer primaire en secundaire zorg noodhulpvaardigheden. Voorwaarde voor Rescue Diver.",
+      "fullDescription": "De E.F.R.-cursus is de PADI-versie van wat velen op school, op het werk of uit interesse hebben geleerd.\n\nHet behandelt primaire en secundaire zorg bij noodsituaties of ongevallen. Iemand die stikt, bewusteloos is, in shock verkeert, ernstig bloedt of niet reageert — weet jij wat je moet doen in zulke situaties?\n\nNiet per se gerelateerd aan duiken, is de EFR een vereiste voordat je aan de Rescue Course kunt deelnemen. Als je dezelfde cursus bij een erkende organisatie in het afgelopen jaar hebt gevolgd en bewijs kunt tonen, kun je direct aan de Rescue Diver beginnen. Zo niet, dan is EFR noodzakelijk.\n\nEn weet je wat? Waarom niet! Deze opleiding is niet alleen nuttig bij duikongevallen, maar ook in het dagelijks leven.\n\nWeet je wat je moet doen bij een hartaanval, een beroerte of een ernstige luchtwegobstructie? Wist je dat de huidige richtlijn 30 compressies op 2 beademingen is voor zowel kinderen als volwassenen?\n\nDe Emergency First Responder-cursus behandelt dit allemaal. Sommigen moeten alleen hun vaardigheden opfrissen, anderen oefenen het voor het eerst — in beide gevallen besef je hoe belangrijk deze kennis is.\n\nÉén dag in de klas met je instructeur: praten, demonstreren, oefenen en reageren op verschillende scenario's — en je bent gecertificeerd als Emergency First Responder.\n\nJe certificaat is 2 jaar geldig waarna een eenvoudige opfrissing nodig is.\n\nAls je deze cursus in het afgelopen jaar hebt gevolgd en van plan bent de Rescue Course te doen, neem dan bewijs of je kaart mee.",
+      "includes": ["Primaire zorg training", "Secundaire zorg training", "Reanimatietechnieken", "AED training"],
+      "icon": "🏥",
+      "courseImages": ["photo-1659518893171-b15e20a8e201.avif", "photo-1682687982423-295485af248a.avif"]
+    },
+    "rescue": {
+      "title": "Rescue Diver",
+      "level": "Expert",
+      "duration": "2-3 dagen",
+      "maxDepth": "30m",
+      "price": "฿9,500",
+      "description": "Leer problemen in het water te voorkomen en beheren, en word een zelfverzekerdere duiker.",
+      "fullDescription": "Tijdens elke duikopleiding en recreatieve briefing valt het woord \"veiligheid\" vaak. Verantwoordelijk, veilig en slim duiken betekent veel. Een Rescue Diver worden is leren wat veiligheid echt betekent en hoe je moet handelen bij een reddingssituatie, zowel aan het oppervlak als onder water. Het \"rescue course\" geeft je veel zelfvertrouwen onder water en maakt je zonder twijfel een veiliger duiker.\n\nGedurende 2 tot 3 dagen ontdek je hoe waardevol het is om te weten hoe je omgaat met een paniekerige duiker aan de oppervlakte, iemand die vermist is, bewusteloos op 9 meter diepte, of gewoon uitgeput aan het oppervlak en hulp nodig heeft om terug naar de boot of de kust te komen.\n\nPraktijk, theoretische presentaties met noodprocedures, zuurstofgebruik en alle andere aspecten en voorbeelden van ongevallen of duikongevallen, openwater sessies en vele scenario's maken deel uit van deze intensieve cursus. Iedereen die de cursus heeft gevolgd zegt hetzelfde: het is waarschijnlijk de meest spannende en serieuze cursus van allemaal. Het maakt je een betere duiker die zichzelf voldoende kan beheersen om een andere duiker in nood te kunnen helpen.\n\nHet klinkt misschien vreemd dat 2 à 3 dagen zoveel vertrouwen geven, maar dat is zo! Er is geen betere manier om veiligheid te begrijpen — de Rescue Course voegt een grote meerwaarde toe aan je ervaring.\n\nOnthoud dat op sommige plaatsen in de wereld men je met alleen een buddy vrij kan laten duiken. Hoe zou het voelen om precies te weten wat te doen in een noodgeval? Waarschijnlijk heel goed!",
+      "includes": ["Redding scenario's", "Nood training", "Probleemoplossing", "Leiderschapsvaardigheden"],
+      "courseImages": ["photo-1682686580849-3e7f67df4015.avif", "photo-1647825194145-2d94e259c745.avif"]
+    },
+    "divemaster": {
+      "title": "Divemaster",
+      "level": "Professioneel",
+      "duration": "4-6 weken",
+      "maxDepth": "40m",
+      "price": "฿32,000",
+      "description": "Word een duikprofessional en begin je carrière in de duikindustrie.",
+      "fullDescription": "Oh…als je eraan denkt Dive Master te worden, overweeg je misschien een duikcarrière! Als Dive Master kun je als professional gaan werken, mensen leiden en geld verdienen met iets wat je graag doet. Klinkt geweldig, toch?\n\nEnkele dingen die je als PADI Dive Master kunt doen:\n• Werken in een duikcentrum of op een live-aboard\n• Assisteren van een instructeur tijdens cursussen\n• Gecertificeerde duikers begeleiden op hun funduiken\n• Een opfriscursus geven aan gecertificeerde duikers die een tijd niet hebben gedoken\n\nNeem wat tijd en doe mee voor een paar weken op Koh Tao — die paar weken worden vaak maanden, want velen die hier komen voor training blijven en gaan verder in hun carrière!\n\nDe Dive Master-training duurt ongeveer 2 à 3 weken, tenzij je kiest voor een stageprogramma dat je opleiding kan verlengen tot 6 à 8 weken. Tijdens de cursus heb je onbeperkt duiken en de kans om betrokken te raken bij de duikindustrie.\n\nGezien als het eerste \"pro-niveau\" leren we je zowel de binnen- als de buitenkant van de duikwereld: hoe een duikcentrum werkt, hoe je duiken leidt met gecertificeerde duikers, hoe je een instructeur assisteert en hoe je actie onderneemt in de dagelijkse taken van een duikwinkel.\n\nDe cursus is opgesplitst in theorie en praktijk. De theorie omvat meerdere onderwerpen en examens zoals programma's, toezicht op studenten, fysica, fysiologie, materiaal, decompressietheorie en vaardigheden en omgeving.\n\nVoor het praktische deel moet je assisteren bij cursussen en begeleide duiken, werken aan een noodhulpplan, werken met kaarten van duikplaatsen en je onderwatervaardigheden verbeteren.\n\nTijdens je training krijg je lezingen van instructeurs en Course Directors voor het \"knowledge development\"-gedeelte. De theorie is interessant en geeft je een heel nieuw perspectief op wat duikers leren tijdens cursussen of in hun loopbaan.\n\nHet is niet alleen een cursus: onze DMT's zijn actief en je deelt veel tijd met hen tijdens evenementen zoals de DMT BBQ en avonden uit met het duikteam.\n\nKortom, het is niet alleen training maar een geweldige kans om veel andere mensen te ontmoeten die verliefd zijn op de duikcommunity, en het is ook ontzettend leuk, gegarandeerd!",
+      "includes": ["Leiderschapstraining", "Onderwijsassistentie", "Duikgids vaardigheden", "Professionele certificering"],
+      "courseImages": ["photo-1659518893171-b15e20a8e201.avif", "photo-1618865181016-a80ad83a06d3.avif", "photo-1682686580849-3e7f67df4015.avif"]
+    },
+
+    "instructor": {
+      "title": "IDC - Instructor Development Course",
+      "level": "Carrière",
+      "duration": "14 dagen",
+      "maxDepth": "40m",
+      "price": "Neem contact op",
+      "description": "Word een PADI Instructeur en begin anderen te leren duiken. De ultieme stap in je duikcarrière.",
+      "fullDescription": "Oké, nu wordt het echt serieus! Dit is een grote stap in de duikwereld: instructeur worden, je studenten leren wat jij hebt geleerd, wat je hebt meegemaakt, wat ze moeten doen om een goede duiker te zijn… en ze vervolgens afmelden, trots op wat je hebt gedaan, trots dat je briljante duikers van ze hebt gemaakt!\n\nDit is wat duikinstructeurs elke dag doen: hun passie delen en doorgeven aan anderen. Ze bieden hun kennis aan, zitten aan zee met een drankje en praten over wat goed ging, wat beter kan, wat hun student moet veranderen en wat ze goed deden! Met een actieve status als Instructeur kun je alle cursussen geven van Open Water tot Dive Master.\n\nOnze 2 Course Directors, Mark en Darius, beiden \"Platinum Course Directors\", nemen je mee op een 14-daags avontuur waarin ze je voorbereiden op de grote dag: het Instructeur Examen. Met jarenlange ervaring achter de rug zijn ze waarschijnlijk gestopt met het tellen van certificeringen. Lezingen en presentaties zijn voor hen heel natuurlijk, logisch als je sinds 1997 IDC's geeft!\n\nDe eerste 4 dagen zijn meer een voorbereiding op de cursus. De Course Director gaat theorie en beperkte vaardigheden door met de kandidaat en bepaalt waar je goed in bent en waar ze meer aandacht aan moeten besteden.\n\nDan begint de echte IDC: nog 10 dagen hard werken. Academische presentaties, PADI-standaarden en procedure-examens, theorie-examens, Open Water Presentatie voor elk niveau (Open Water, Advanced, Rescue en Dive Master), beperkte presentatie, om maar een paar dingen te noemen. Iedereen is het erover eens hoe intensief de cursus is, maar ook hoe goed deze 2 Course Directors hun kandidaten voorbereiden. Laten we eerlijk zijn: geen van hun studenten is ooit gezakt!\n\nDe manier waarop je wordt voorbereid, is de manier waarop de Examinator je wil zien tijdens de laatste 3 dagen: een professionele instructeur die de beste score verdient op elke presentatie!\n\nAls je eraan denkt Instructeur te worden, onthoud dan dat een goede manier om je voor te bereiden op een IDC is om bij veel verschillende cursussen te assisteren voordat je met de training begint. Het beste is om een maand eerder te komen om gratis te assisteren bij verschillende instructeurs. Tijdens deze maand kun je ook gratis meedoen aan funduiken!\n\nJe hebt je eigen materiaal nodig (duikencyclopedie, instructeurshandleiding, leitjes, enz.) — koop gewoon het \"IDC pack\", alles wat je nodig hebt zit erin. Dit kun je het beste ter plaatse regelen, beter dan alles meeslepen naar het eiland… bewaar je kilo's voor kleding, want je zou uiteindelijk een baan kunnen krijgen en veel langer kunnen blijven dan gedacht!\n\nDe grote dag: de laatste 3 dagen waarin een PADI-examinator naar het eiland komt om je vaardigheden, presentatie en bekwaamheid om les te geven te beoordelen.\n\nMaak je geen zorgen, de examinatoren zijn niet groot en eng (!!) — het zijn gewone mensen die willen zorgen dat je op de manier bent voorbereid zoals PADI vertegenwoordigd wil worden door mensen als jij.\n\nHet IE duurt 3 dagen met academische presentaties, vaardighedendemonstraties, openwater presentatie en een schriftelijk examen op de eerste dag. Als je Course Director je naar het IE brengt, is dat omdat ze al weten dat JIJ klaar bent… dus geen stress!!\n\nDe 3 dagen vliegen voorbij en voor je het weet zit je in een bar met alle kandidaten, je overwinning te vieren, je nieuwe status als PADI-duikinstructeur.\n\nTrouwens, het IE-feest is een \"must\", een van de beste maandelijkse evenementen op Koh Tao!!!\n\n**Let op: om aan je IDC te beginnen heb je minimaal 60 gelogde duiken nodig, maar voor het IE heb je 100 duiken nodig.",
+      "includes": ["14-daagse intensieve training", "Platinum Course Directors", "Academische presentaties", "Vaardigheidsontwikkeling", "IE voorbereiding", "IDC pack beschikbaar"],
+      "icon": "🎓",
+      "courseImages": ["photo-1647825194145-2d94e259c745.avif", "photo-1659518893171-b15e20a8e201.avif"]
+    },
+    "specialOffers": {
+      "title": "Speciale Aanbiedingen",
+      "combo": {
+        "title": "Open Water + Advanced",
+        "description": "Voltooi beide cursussen en bespaar!",
+        "price": "฿16,500",
+        "originalPrice": "฿18,000"
+      },
+      "group": {
+        "title": "Groepskortingen",
+        "description": "Groepen van 4+ besparen 10% op alle cursussen",
+        "discount": "10% KORTING"
+      }
+    },
+    "bookButton": "Boek Deze Cursus",
+    "perPerson": "per persoon",
+    "duration": "Duur",
+    "maxDepth": "Max diepte",
+    "courseIncludes": "Cursus omvat",
+    "readMore": "Lees meer over deze cursus"
+  },
+  "diveSites": {
+    "title": "Duiklocaties van Wereldklasse",
+    "subtitle": "Verken Koh Tao's meest spectaculaire onderwaterlocaties, elk met unieke mariene ontmoetingen en adembenemende koraalformaties",
+    "bookButton": "Boek Deze Duik",
+    "depth": "Diepte",
+    "highlights": "Hoogtepunten",
+    "sites": {
+      "sailRock": {
+        "name": "Sail Rock",
+        "depth": "8-40m",
+        "level": "Gevorderd",
+        "highlights": ["Walvishaaien", "Stierenhaai", "Verticale zwemtunnel"],
+        "description": "De meest iconische duiklocatie in de Golf van Thailand, beroemd om walvishaaienontmoetingen."
+      },
+      "chumphon": {
+        "name": "Chumphon Pinnacle",
+        "depth": "14-32m",
+        "level": "Gemiddeld",
+        "highlights": ["Barracuda's", "Horsmakrelen", "Koraaltuinen"],
+        "description": "Een onderwater naald bedekt met kleurrijke zachte koralen en vol met zeeleven."
+      },
+      "southwest": {
+        "name": "Southwest Pinnacle",
+        "depth": "14-33m",
+        "level": "Gemiddeld",
+        "highlights": ["Walvishaaien", "Reuzegroeperen", "Koraalformaties"],
+        "description": "Een ondergedompelde naald met uitstekende kansen op grote visontmoetingen."
+      },
+      "sharkIsland": {
+        "name": "Shark Island",
+        "depth": "5-18m",
+        "level": "Beginner",
+        "highlights": ["Rifhaaien", "Murene", "Eenvoudig duiken"],
+        "description": "Perfect voor beginners met zachte stromingen en overvloedig zeeleven."
+      },
+      "whiteRock": {
+        "name": "White Rock",
+        "depth": "8-22m",
+        "level": "Beginner",
+        "highlights": ["Koraaltuinen", "Tropische vissen", "Fotografie"],
+        "description": "Prachtige koraalformaties en divers zeeleven in ondiep, rustig water."
+      },
+      "greenRock": {
+        "name": "Green Rock",
+        "depth": "6-18m",
+        "level": "Beginner",
+        "highlights": ["Engelsvissen", "Vlindervis", "Kleurrijk rif"],
+        "description": "Bekend om levendige rifvisgemeenschappen en kleurrijke koraalformaties."
+      }
+    }
+  },
+  "gallery": {
+    "title": "Fotogalerij",
+    "subtitle": "Ervaar de schoonheid van Koh Tao onderwater"
+  },
+  "contact": {
+    "title": "Neem Contact Op",
+    "subtitle": "Klaar om je duikavontuur te beginnen?",
+    "form": {
+      "firstName": "Voornaam",
+      "lastName": "Achternaam",
+      "email": "E-mail",
+      "subject": "Onderwerp",
+      "message": "Bericht",
+      "submit": "Verstuur Bericht"
+    },
+    "info": {
+      "title": "Neem Contact Op",
+      "address": "Koh Tao, Thailand",
+      "email": "info@kohtoadivedreams.com",
+      "phone": "+66 XX XXX XXXX"
+    }
+  },
+  "booking": {
+    "title": "Boek Je Cursus",
+    "form": {
+      "name": "Volledige Naam",
+      "email": "E-mail",
+      "phone": "Telefoon",
+      "course": "Selecteer Cursus",
+      "date": "Voorkeursdatum",
+      "experience": "Ervaringsniveau",
+      "message": "Extra Bericht",
+      "submit": "Verstuur Boeking"
+    },
+    "experienceLevels": {
+      "beginner": "Beginner",
+      "intermediate": "Gevorderd",
+      "advanced": "Expert"
+    }
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "bookings": "Boekingsaanvragen",
+    "noBookings": "Nog geen boekingsaanvragen.",
+    "delete": "Verwijderen",
+    "confirmDelete": "Weet je zeker dat je deze boeking wilt verwijderen?"
+  },
+  "footer": {
+    "copyright": "© 2024 Koh Tao Dive Dreams. Alle rechten voorbehouden."
+  }
+}

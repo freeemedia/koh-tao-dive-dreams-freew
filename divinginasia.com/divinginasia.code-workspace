@@ -1,0 +1,11 @@
+{
+  "folders": [
+    {
+      "name": "divinginasia.com",
+      "path": "nodejs"
+    }
+  ],
+  "settings": {
+    "editor.formatOnSave": true
+  }
+}
