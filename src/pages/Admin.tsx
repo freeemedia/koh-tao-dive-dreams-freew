@@ -191,8 +191,11 @@ const Admin = () => {
           <div className="absolute right-6 top-4">
             <LanguageSwitcher />
           </div>
-          <p className="text-xs uppercase tracking-[0.2em] text-cyan-300">Operations Console</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-cyan-300">
+            {import.meta.env.VITE_SITE_NAME || 'Lembongan Dive Resort'} — Operations Console
+          </p>
           <h1 className="text-3xl font-bold tracking-wide">{t('admin.dashboard_title', { defaultValue: 'Admin Dashboard' })}</h1>
+          <p className="text-xs text-slate-400">{import.meta.env.VITE_SITE_DOMAIN || 'lembongandiveresort.com'}</p>
         </div>
       </header>
 
@@ -200,7 +203,7 @@ const Admin = () => {
         <div className="mb-6 grid gap-4 md:grid-cols-2">
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <p className="text-xs uppercase tracking-wide text-slate-500">Bookings</p>
-            <p className="mt-2 text-xl font-semibold text-slate-900">KTD Bookings</p>
+            <p className="mt-2 text-xl font-semibold text-slate-900">{import.meta.env.VITE_SITE_NAME || 'Lembongan'} Bookings</p>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <p className="text-xs uppercase tracking-wide text-slate-500">Content</p>
@@ -230,13 +233,13 @@ const Admin = () => {
           </nav>
           <div className="flex items-center gap-2">
             <a
-              href="https://lightsalmon-dinosaur-377714.hostingersite.com/wp-admin"
+              href={`${(import.meta.env.VITE_WP_API_BASE || '').replace(/\/+$/, '')}/wp-admin`}
               target="_blank"
               rel="noreferrer noopener"
               className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700 shadow-sm transition hover:bg-blue-100"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z"/></svg>
-              WP Admin
+              WP Admin ({import.meta.env.VITE_SITE_NAME || 'Lembongan'})
             </a>
             <a
               href="/"
