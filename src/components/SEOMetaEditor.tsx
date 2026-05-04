@@ -225,7 +225,7 @@ export const SEOMetaEditor: React.FC<SEOMetaEditorProps> = ({ pageSlug, onClose 
                   id="meta_keywords"
                   value={seoData.meta_keywords}
                   onChange={(e) => handleChange('meta_keywords', e.target.value)}
-                  placeholder="scuba diving, padi course, koh tao"
+                  placeholder="scuba diving, padi course, nusa lembongan"
                 />
               </div>
 

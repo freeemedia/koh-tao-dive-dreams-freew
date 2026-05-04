@@ -45,7 +45,7 @@ const Instructor: React.FC = () => {
     if (!amount || !exchangeRates[from] || !exchangeRates[currency]) return '-';
     const thbAmount = from === 'IDR' ? amount : (amount / exchangeRates[from]) * exchangeRates['IDR'];
     const converted = (thbAmount / exchangeRates['IDR']) * exchangeRates[currency];
-    const symbol = currency === 'IDR' ? '฿' : currency === 'USD' ? '$' : '€';
+    const symbol = currency === 'IDR' ? 'Rp' : currency === 'USD' ? '$' : '€';
     return `${symbol}${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`;
   };
   const navigate = useNavigate();

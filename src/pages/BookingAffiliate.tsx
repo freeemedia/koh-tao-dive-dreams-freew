@@ -8,7 +8,7 @@ import { ExternalLink, Star, MapPin, Wifi, UtensilsCrossed, Waves, DollarSign } 
 const hotels = [
   {
     name: "Ban's Diving Resort",
-    slug: "ban-s-diving-koh-tao",
+    slug: "villa-mathis-lembongan",
     description: "Legendary dive resort on Jungutbatu Beach, perfect for divers of all levels. Includes dive shop, multiple pools, and beach access.",
     location: "Jungutbatu Beach",
     priceRange: "$$$",
@@ -18,7 +18,7 @@ const hotels = [
   },
   {
     name: "Nusa Lembongan Cabana Hotel",
-    slug: "koh-tao-cabana",
+    slug: "mahana-de-mer-lembongan",
     description: "Stylish hotel in the heart of Jungutbatu with modern rooms, rooftop pool, and vibrant atmosphere.",
     location: "Jungutbatu Beach",
     priceRange: "$$$",
@@ -28,7 +28,7 @@ const hotels = [
   },
   {
     name: "Haad Tien Beach Resort",
-    slug: "haad-tien-beach-resort-koh-tao",
+    slug: "hai-tide-lembongan",
     description: "Secluded boutique resort on a private beach, accessible by boat. Perfect for couples seeking tranquility.",
     location: "Haad Tien (East Coast)",
     priceRange: "$$$$",
@@ -38,7 +38,7 @@ const hotels = [
   },
   {
     name: "Nusa Lembongan Resort",
-    slug: "koh-tao-resort",
+    slug: "nusa-lembongan-resort",
     description: "Well-established resort with comfortable bungalows set in tropical gardens, a short walk to the beach.",
     location: "Jungutbatu Beach",
     priceRange: "$$",
@@ -48,7 +48,7 @@ const hotels = [
   },
   {
     name: "Montra Resort",
-    slug: "montra-resort-koh-tao",
+    slug: "indiana-kenanga-lembongan",
     description: "Hilltop resort with panoramic sea views, infinity pool, and quiet retreat atmosphere.",
     location: "Mushroom Bay",
     priceRange: "$$$",
@@ -58,7 +58,7 @@ const hotels = [
   },
   {
     name: "Crystal Dive Nusa Lembongan",
-    slug: "crystal-dive-koh-tao",
+    slug: "lembongan-beach-club",
     description: "One of the island's largest dive operators with on-site accommodation, ideal for getting your PADI certification.",
     location: "Jungutbatu",
     priceRange: "$$",
@@ -68,7 +68,7 @@ const hotels = [
   },
   {
     name: "Nusa Lembongan Hillside Resort",
-    slug: "koh-tao-hillside-resort",
+    slug: "two-seasons-lembongan",
     description: "Peaceful hilltop bungalows with stunning sunrise sea views and a relaxed jungle atmosphere.",
     location: "Jungutbatu",
     priceRange: "$$",
@@ -78,7 +78,7 @@ const hotels = [
   },
   {
     name: "Nusa Lembongan Coral Grand Resort",
-    slug: "koh-tao-coral-grand-resort",
+    slug: "batu-karang-lembongan",
     description: "Beachfront resort with beautiful coral-themed decor, multiple pools, and excellent snorkeling right off the beach.",
     location: "Mushroom Bay",
     priceRange: "$$$",

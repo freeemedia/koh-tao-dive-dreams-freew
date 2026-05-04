@@ -197,7 +197,7 @@ const MarineLifePage = () => {
                 {pageContent.cta_courses}
               </Button>
             </Link>
-            <Link to="/fun-diving-koh-tao">
+            <Link to="/fun-diving-nusa-lembongan">
               <Button size="lg" variant="outline">
                 {pageContent.cta_fun_dives}
               </Button>

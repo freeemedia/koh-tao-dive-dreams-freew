@@ -76,7 +76,7 @@ const TRIP_ALLIANCE_ID = import.meta.env.VITE_TRIP_ALLIANCE_ID as string | undef
 const TRIP_SITE_ID = import.meta.env.VITE_TRIP_SITE_ID as string | undefined;
 const WHATSAPP_LINK = 'https://wa.me/66612345678';
 const FACEBOOK_LINK = 'https://www.facebook.com/divegoprobybas/';
-const INSTAGRAM_LINK = 'https://www.instagram.com/pro_diving_asia/';
+const INSTAGRAM_LINK = 'https://www.instagram.com/lembongandiveresort/';
 
 const trackBookingWidgetClick = (source: 'left-widget' | 'mobile-sticky') => {
   try {
@@ -191,7 +191,7 @@ const Footer: React.FC = () => {
               <li><Link to="/courses/advanced" className="hover:text-white transition">Advanced</Link></li>
               <li><Link to="/courses/rescue" className="hover:text-white transition">Rescue Diver</Link></li>
               <li><Link to="/courses/divemaster" className="hover:text-white transition">Divemaster</Link></li>
-              <li><Link to="/fun-diving-koh-tao" className="hover:text-white transition">{isDutch ? 'Fun Diving' : 'Fun Diving'}</Link></li>
+              <li><Link to="/fun-diving-nusa-lembongan" className="hover:text-white transition">{isDutch ? 'Fun Diving' : 'Fun Diving'}</Link></li>
               <li><Link to="/marine-life" className="hover:text-white transition">{isDutch ? 'Mariene Fauna' : 'Marine Life'}</Link></li>
             </ul>
           </div>
@@ -199,7 +199,7 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="text-cyan-400 text-xs font-bold uppercase tracking-wider mb-4">{isDutch ? 'Duikplekken' : 'Dive Sites'}</h4>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link to="/koh-tao-dive-sites" className="hover:text-white transition">{isDutch ? 'Overzicht' : 'Overview'}</Link></li>
+              <li><Link to="/nusa-lembongan-dive-sites" className="hover:text-white transition">{isDutch ? 'Overzicht' : 'Overview'}</Link></li>
               <li><Link to="/dive-site-reports" className="hover:text-white transition">{isDutch ? 'Duiklocatie rapporten' : 'Dive Site Reports'}</Link></li>
               <li><Link to="/dive-sites/sail-rock" className="hover:text-white transition">Crystal Bay</Link></li>
               <li><Link to="/dive-sites/chumphon-pinnacle" className="hover:text-white transition">Manta Point</Link></li>

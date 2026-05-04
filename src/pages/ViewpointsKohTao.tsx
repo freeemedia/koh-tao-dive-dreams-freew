@@ -43,7 +43,7 @@ const ViewpointsKohTao = () => {
   };
 
   const { content } = usePageContent({
-    pageSlug: 'viewpoints-koh-tao',
+    pageSlug: 'viewpoints-nusa-lembongan',
     locale,
     fallbackContent,
   });

@@ -276,7 +276,7 @@ const MarineLifeDetail: React.FC<MarineLifeDetailProps> = ({
                     {labels.allMarineLife}
                   </Button>
                 </Link>
-                <Link to="/koh-tao-dive-sites">
+                <Link to="/nusa-lembongan-dive-sites">
                   <Button variant="outline" className="w-full justify-start">
                     {labels.diveSites}
                   </Button>

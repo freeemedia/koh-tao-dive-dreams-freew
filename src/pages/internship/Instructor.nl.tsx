@@ -173,15 +173,15 @@ export default function InstructorInternship() {
           <div className="space-y-3">
             <div className="flex justify-between items-center pb-3 border-b">
               <span className="text-gray-700">Geen divemaster (alle cursussen)</span>
-              <span className="text-2xl font-bold text-blue-600">฿129,500</span>
+              <span className="text-2xl font-bold text-blue-600">IDR 50,500,000</span>
             </div>
             <div className="flex justify-between items-center pb-3 border-b">
               <span className="text-gray-700">Al PADI Divemaster</span>
-              <span className="text-2xl font-bold text-blue-600">฿79,500</span>
+              <span className="text-2xl font-bold text-blue-600">IDR 31,000,000</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-700">Al Assistant Instructor</span>
-              <span className="text-2xl font-bold text-blue-600">฿59,500</span>
+              <span className="text-2xl font-bold text-blue-600">IDR 23,200,000</span>
             </div>
           </div>
         </Card>

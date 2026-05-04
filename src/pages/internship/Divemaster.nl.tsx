@@ -21,7 +21,7 @@ export default function DivemasterInternship() {
   };
   const { currency, convertCurrency, exchangeRates } = useCurrency();
 
-  const formatThb = (amount: number) => `฿${amount.toLocaleString('nl-NL')}`;
+  const formatIdr = (amount: number) => `IDR ${amount.toLocaleString('nl-NL')}`;
   const ratePerThb = currency !== 'IDR' && exchangeRates.IDR && exchangeRates[currency]
     ? (exchangeRates[currency] / exchangeRates.IDR).toFixed(3)
     : null;
@@ -158,7 +158,7 @@ export default function DivemasterInternship() {
               >
                 <span className="text-gray-700">{pkg.label}</span>
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-blue-600">{formatThb(pkg.amount)}</div>
+                  <div className="text-2xl font-bold text-blue-600">{formatIdr(pkg.amount)}</div>
                   {currency !== 'IDR' ? (
                     <div className="text-sm text-gray-600">{convertCurrency(pkg.amount, 'IDR')}</div>
                   ) : null}
@@ -198,7 +198,7 @@ export default function DivemasterInternship() {
           <div className="bg-muted p-4 rounded">
             <p className="text-gray-700 font-semibold">Geschat maandbudget:</p>
             <p className="text-gray-700 text-lg">
-              {formatThb(25000)} per maand (comfortabel leven)
+              {formatIdr(25000)} per maand (comfortabel leven)
               {currency !== 'IDR' ? ` · ${convertCurrency(25000, 'IDR')}` : ''}
             </p>
             <p className="text-sm text-gray-600 mt-2">

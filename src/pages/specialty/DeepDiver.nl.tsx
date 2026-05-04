@@ -80,7 +80,7 @@ export default function DeepDiver() {
         {/* Prijs */}
         <Card className="mb-8 p-6 bg-blue-50">
           <h2 className="text-2xl font-bold mb-4">Prijs</h2>
-          <div className="text-3xl font-bold text-blue-600 mb-2">฿8,000</div>
+          <div className="text-3xl font-bold text-blue-600 mb-2">IDR 3,100,000</div>
           <p className="text-gray-600 text-sm">Inclusief alle training, lesmateriaal en 4 trainingsduiken</p>
         </Card>
 

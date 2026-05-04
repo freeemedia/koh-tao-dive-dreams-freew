@@ -37,7 +37,7 @@ const WeatherKohTao = () => {
   };
 
   const { content } = usePageContent({
-    pageSlug: 'weather-koh-tao',
+    pageSlug: 'weather-nusa-lembongan',
     locale,
     fallbackContent,
   });
@@ -68,7 +68,7 @@ const WeatherKohTao = () => {
       <p className="mb-4">{content.paragraph}</p>
       <div className="flex flex-wrap gap-4 mb-4">
         <a href="/ThingsToDo" className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">{content.cta_plan_activities}</a>
-        <a href="/fun-diving-koh-tao" className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">{content.cta_go_diving}</a>
+        <a href="/fun-diving-nusa-lembongan" className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">{content.cta_go_diving}</a>
       </div>
     </section>
 

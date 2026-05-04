@@ -87,7 +87,7 @@ const       BookingPage: React.FC = () => {
     ? (apiBaseRaw.startsWith('http://') || apiBaseRaw.startsWith('https://')
         ? apiBaseRaw
         : `https://${apiBaseRaw}`)
-    : 'https://koh-tao-dive-dreams-mocha.vercel.app';
+    : 'https://lembongandiveresort.com';
   const apiBase = apiBaseNormalized.replace(/\/+$/, '');
   const apiUrl = (path: string) => `${apiBase}${path}`;
   const courseSlug = (searchParams.get('course') || '').trim();
@@ -251,10 +251,10 @@ const       BookingPage: React.FC = () => {
         experience_level: data.experience_level || 'N/A',
         payment_choice: data.paymentChoice === 'paypal' ? 'Pay deposit via PayPal' : 'Inquire only - pay later',
         item_title: bookingItemTitle,
-        full_price: totalItemCostMajor > 0 ? `฿${totalItemCostMajor}` : (isStayBooking ? 'Quote on request' : 'N/A'),
+        full_price: totalItemCostMajor > 0 ? `IDR ${totalItemCostMajor}` : (isStayBooking ? 'Quote on request' : 'N/A'),
         dive_count: isFunDiveBooking ? funDiveCount : 'N/A',
         course_fun_dive_count: isCourseBooking ? courseFunDiveCount : 'N/A',
-        course_fun_dive_cost: isCourseBooking && courseFunDiveCostMajor > 0 ? `฿${courseFunDiveCostMajor}` : 'N/A',
+        course_fun_dive_cost: isCourseBooking && courseFunDiveCostMajor > 0 ? `IDR ${courseFunDiveCostMajor}` : 'N/A',
         stay_with_us: isCourseBooking
           ? (stayWithUs ? 'Yes - accommodation free with course' : 'No')
           : (isDiveBooking ? (stayWithUs ? 'Yes - accommodation requested with dive booking' : 'No') : 'N/A'),
@@ -350,9 +350,9 @@ const       BookingPage: React.FC = () => {
         accommodation: data.accommodation || 'N/A',
         preferred_date: data.preferred_date || 'N/A',
         experience_level: data.experience_level || 'N/A',
-        deposit_amount: depositAmountMajor != null ? `฿${depositAmountMajor}` : 'Quote on request',
-        total_amount: totalAmountMajor != null ? `฿${totalAmountMajor}` : 'Quote on request',
-        balance_amount: balanceAmountMajor != null ? `฿${balanceAmountMajor}` : 'Quote on request',
+        deposit_amount: depositAmountMajor != null ? `IDR ${depositAmountMajor}` : 'Quote on request',
+        total_amount: totalAmountMajor != null ? `IDR ${totalAmountMajor}` : 'Quote on request',
+        balance_amount: balanceAmountMajor != null ? `IDR ${balanceAmountMajor}` : 'Quote on request',
         payment_choice: data.paymentChoice === 'paypal' ? 'PayPal deposit' : 'Inquire only',
       };
       sessionStorage.setItem('bookingData', JSON.stringify(bookingDetailsForDisplay));
@@ -490,7 +490,7 @@ const       BookingPage: React.FC = () => {
                       className="text-left px-3 py-2 rounded bg-white/10 hover:bg-white/20 border border-white/30 text-white text-sm font-medium transition"
                       onClick={() => { window.location.href = `/booking?item=${encodeURIComponent(item || label)}&type=course${price ? `&price=${price}` : ''}${price ? '&currency=IDR' : ''}${slug ? `&course=${slug}` : ''}&source=${encodeURIComponent(bookingSource)}`; }}
                     >
-                      {label}{price ? ` — ฿${price.toLocaleString()}` : ''}
+                      {label}{price ? ` — IDR ${price.toLocaleString()}` : ''}
                     </button>
                   ))}
                 </div>
@@ -505,13 +505,13 @@ const       BookingPage: React.FC = () => {
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 text-4xl">🎓</div>
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-emerald-900 mb-2">3 Specialty Bundle - Save ฿6,000!</h3>
+                <h3 className="text-xl font-bold text-emerald-900 mb-2">3 Specialty Bundle - Save IDR 2,300,000!</h3>
                 <p className="text-emerald-800 mb-3">
                   Enroll in three PADI Specialty Dive Courses and pay less. It's a unique opportunity to explore various aspects of scuba diving, from marine life identification to underwater photography.
                 </p>
                 <div className="flex items-center gap-4 mb-3">
-                  <span className="text-3xl font-bold text-emerald-900">฿18,000</span>
-                  <span className="text-emerald-700 line-through text-xl">฿24,000</span>
+                  <span className="text-3xl font-bold text-emerald-900">IDR 7,000,000</span>
+                  <span className="text-emerald-700 line-through text-xl">IDR 9,350,000</span>
                   <span className="text-sm text-emerald-700">(3 courses of your choice)</span>
                 </div>
                 <Button 
@@ -532,19 +532,19 @@ const       BookingPage: React.FC = () => {
               {itemType === 'course' ? (
                 <>
                   <div className="text-lg font-semibold">Course cost</div>
-                  <div className="text-2xl font-bold">{totalItemCostMajor > 0 ? `฿${totalItemCostMajor}` : 'Contact us'}</div>
+                  <div className="text-2xl font-bold">{totalItemCostMajor > 0 ? `IDR ${totalItemCostMajor}` : 'Contact us'}</div>
                   {courseFunDiveCostMajor > 0 && (
                     <div className="text-sm text-muted-foreground mt-1">
-                      Includes Fun Dives add-on: ฿{courseFunDiveCostMajor}
+                      Includes Fun Dives add-on: IDR {courseFunDiveCostMajor}
                     </div>
                   )}
-                  <div className="text-sm text-muted-foreground mt-1">Deposit payable now (20%): {depositMajor > 0 ? `฿${depositMajor}` : 'Contact us'}</div>
+                  <div className="text-sm text-muted-foreground mt-1">Deposit payable now (20%): {depositMajor > 0 ? `IDR ${depositMajor}` : 'Contact us'}</div>
                 </>
               ) : itemType === 'dive' ? (
                 <>
                   <div className="text-lg font-semibold">Dive price</div>
-                  <div className="text-2xl font-bold">{courseCostMajor > 0 ? `฿${courseCostMajor}` : 'Contact us'}</div>
-                  <div className="text-sm text-muted-foreground mt-1">Deposit payable now (20%): {depositMajor > 0 ? `฿${depositMajor}` : 'Contact us'}</div>
+                  <div className="text-2xl font-bold">{courseCostMajor > 0 ? `IDR ${courseCostMajor}` : 'Contact us'}</div>
+                  <div className="text-sm text-muted-foreground mt-1">Deposit payable now (20%): {depositMajor > 0 ? `IDR ${depositMajor}` : 'Contact us'}</div>
                 </>
               ) : (
                 <>
@@ -623,7 +623,7 @@ const       BookingPage: React.FC = () => {
             </div>
             <p className="text-sm text-muted-foreground mb-3">
               Pricing: 1 dive = IDR 385,000, 2-9 dives = IDR 345,000 per dive, 10+ dives = IDR 310,000 per dive.
-              Selected add-on: {courseFunDiveCount} dives{courseFunDiveCount > 0 ? ` (฿${courseFunDiveCostMajor})` : ''}.
+              Selected add-on: {courseFunDiveCount} dives{courseFunDiveCount > 0 ? ` (IDR ${courseFunDiveCostMajor})` : ''}.
             </p>
 
             <label className="flex items-center gap-2 text-sm">
@@ -669,7 +669,7 @@ const       BookingPage: React.FC = () => {
             </div>
             <p className="text-sm text-muted-foreground">
               Pricing: 1 dive = IDR 385,000, 2-9 dives = IDR 345,000 per dive, 10+ dives = IDR 310,000 per dive.
-              Current rate: ฿{getFunDiveRate(funDiveCount)} per dive.
+              Current rate: IDR {getFunDiveRate(funDiveCount)} per dive.
             </p>
           </div>
         )}
@@ -681,7 +681,7 @@ const       BookingPage: React.FC = () => {
               {availableAddons.map((a) => (
                 <div key={a.id} className="flex items-center gap-4">
                   <span className="w-40 font-medium">{a.label}</span>
-                  <span className="text-sm text-muted-foreground flex-1">฿{a.amount}</span>
+                  <span className="text-sm text-muted-foreground flex-1">IDR {a.amount}</span>
                   <select
                     className="border rounded px-2 py-1 text-sm"
                     title={`${a.label} selection`}
@@ -702,10 +702,10 @@ const       BookingPage: React.FC = () => {
           <div className="text-sm text-muted-foreground">
             {isStayBooking ? 'Payment:' : (isDiveBooking ? 'Total payable now (incl. add-ons):' : 'Total payable now:')}
           </div>
-          <div className="text-2xl font-bold">{isStayBooking ? 'Quote on request' : `฿${depositMajor + totalAddons}`}</div>
+          <div className="text-2xl font-bold">{isStayBooking ? 'Quote on request' : `IDR ${depositMajor + totalAddons}`}</div>
           {!isStayBooking && totalItemCostMajor > 0 && (
             <div className="text-sm text-muted-foreground mt-1">
-              Total: ฿{totalItemCostMajor} · Deposit: ฿{depositMajor + totalAddons} · Balance: ฿{Math.max(totalItemCostMajor - (depositMajor + totalAddons), 0)}
+              Total: IDR {totalItemCostMajor} · Deposit: IDR {depositMajor + totalAddons} · Balance: IDR {Math.max(totalItemCostMajor - (depositMajor + totalAddons), 0)}
             </div>
           )}
         </div>
@@ -811,7 +811,7 @@ const       BookingPage: React.FC = () => {
                         <div>
                           <div className="font-medium">Pay deposit now via PayPal</div>
                           <div className="text-sm text-muted-foreground">
-                            Secure your booking by paying the deposit (฿{depositMajor + totalAddons}) via PayPal. You'll be redirected after submitting.
+                            Secure your booking by paying the deposit (IDR {depositMajor + totalAddons}) via PayPal. You'll be redirected after submitting.
                           </div>
                         </div>
                       </label>

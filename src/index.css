@@ -15,45 +15,45 @@
 
 @layer base {
   :root {
-    /* Tropical / Bright & Vibrant — Turquoise, Coral, Warm White */
-    --background: 40 30% 97%;        /* warm off-white */
-    --foreground: 200 40% 12%;       /* deep teal-black text */
+    /* Lembongan Dive Resort — Deep Ocean + Coral + Warm Sand */
+    --background: 210 33% 98%;       /* crisp near-white */
+    --foreground: 215 45% 10%;       /* deep navy text */
 
-    --card: 0 0% 100%;               /* pure white cards */
-    --card-foreground: 200 40% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 215 45% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 200 40% 12%;
+    --popover-foreground: 215 45% 10%;
 
-    --primary: 174 72% 40%;          /* vibrant turquoise */
+    --primary: 191 85% 38%;          /* deep cyan-teal */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 16 90% 60%;         /* coral / tropical orange */
+    --secondary: 14 95% 55%;         /* vivid coral */
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 40 20% 92%;             /* warm light sand */
-    --muted-foreground: 200 20% 40%;
+    --muted: 210 30% 95%;
+    --muted-foreground: 215 25% 42%;
 
-    --accent: 16 90% 60%;            /* coral accent */
+    --accent: 14 95% 55%;            /* coral */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 174 30% 82%;           /* soft turquoise border */
-    --input: 174 30% 88%;
-    --ring: 174 72% 40%;
+    --border: 210 25% 88%;
+    --input: 210 25% 92%;
+    --ring: 191 85% 38%;
 
-    --radius: 0.6rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 174 50% 94%;
-    --sidebar-foreground: 200 40% 18%;
-    --sidebar-primary: 174 72% 40%;
+    --sidebar-background: 215 50% 97%;
+    --sidebar-foreground: 215 45% 14%;
+    --sidebar-primary: 191 85% 38%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 16 90% 95%;
-    --sidebar-accent-foreground: 16 60% 30%;
-    --sidebar-border: 174 30% 82%;
-    --sidebar-ring: 174 72% 40%;
+    --sidebar-accent: 14 95% 96%;
+    --sidebar-accent-foreground: 14 60% 28%;
+    --sidebar-border: 210 25% 88%;
+    --sidebar-ring: 191 85% 38%;
   }
 
   .dark {

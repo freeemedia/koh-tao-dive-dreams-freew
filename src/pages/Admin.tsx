@@ -319,8 +319,8 @@ const Admin = () => {
                               <option value="completed">completed</option>
                             </select>
                           </td>
-                          <td className="px-3 py-2 text-slate-600">{b.deposit_amount ? `฿${b.deposit_amount.toLocaleString()}` : '—'}</td>
-                          <td className="px-3 py-2 text-slate-600">{b.total_amount ? `฿${b.total_amount.toLocaleString()}` : '—'}</td>
+                          <td className="px-3 py-2 text-slate-600">{b.deposit_amount ? `IDR ${b.deposit_amount.toLocaleString()}` : '—'}</td>
+                          <td className="px-3 py-2 text-slate-600">{b.total_amount ? `IDR ${b.total_amount.toLocaleString()}` : '—'}</td>
                           <td className="px-3 py-2 min-w-[180px]">
                             <textarea
                               rows={2}

@@ -30,7 +30,7 @@ const KohTaoInfo = () => {
   };
 
   const { content } = usePageContent({
-    pageSlug: 'koh-tao-info',
+    pageSlug: 'nusa-lembongan-info',
     locale,
     fallbackContent,
   });

@@ -526,7 +526,7 @@ const FunDiving = () => {
                         </div>
                         <p className="text-xs text-muted-foreground mt-3">Prerequisite: Open Water certification or equivalent</p>
                         <div className="mt-4">
-                          <Link to="/koh-tao-dive-sites" className="text-sm font-medium text-blue-600 hover:underline underline-offset-4">
+                          <Link to="/nusa-lembongan-dive-sites" className="text-sm font-medium text-blue-600 hover:underline underline-offset-4">
                             View all dive sites overview
                           </Link>
                         </div>
@@ -803,7 +803,7 @@ const FunDiving = () => {
                 Ready to discover Nusa Lembongan’s incredible underwater world? Get in touch to enquire, or use the form below to send your booking request directly.
               </p>
                 <div className="mb-4 flex flex-col items-center gap-2">
-                  <Link to="/fun-diving-koh-tao#world-class-dive-sites" className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">Fun Dive Info</Link>
+                  <Link to="/fun-diving-nusa-lembongan#world-class-dive-sites" className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">Fun Dive Info</Link>
                   <a href="/courses#course-openWater" className="inline-block bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded font-semibold">Book Course (PADI)</a>
                   <a href="https://www.divinginasia.com/#contact" target="_blank" rel="noopener noreferrer" className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold mb-2">Get in touch to book/enquire</a>
                   <div className="text-muted-foreground text-sm mb-4">Or use the form below to send a booking request directly.</div>

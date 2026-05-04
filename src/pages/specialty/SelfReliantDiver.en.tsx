@@ -72,7 +72,7 @@ export default function SelfReliantDiver() {
 
         <Card className="mb-8 p-6 bg-blue-50">
           <h2 className="text-2xl font-bold mb-4">Pricing</h2>
-          <div className="text-3xl font-bold text-blue-600 mb-2">฿8,000</div>
+          <div className="text-3xl font-bold text-blue-600 mb-2">IDR 3,100,000</div>
           <p className="text-gray-600 text-sm">Includes training, materials, and 4 training dives</p>
         </Card>
 
@@ -82,13 +82,13 @@ export default function SelfReliantDiver() {
             <div className="flex-1">
               <h3 className="text-xl font-bold text-emerald-900 mb-2">Save with 3 Specialty Bundle!</h3>
               <p className="text-emerald-800 mb-3">
-                Enroll in three PADI Specialty courses and pay only <strong>฿18,000</strong> instead of ฿24,000. 
+                Enroll in three PADI Specialty courses and pay only <strong>IDR 7,000,000</strong> instead of IDR 9,350,000. 
                 Mix and match any specialties to explore different aspects of scuba diving!
               </p>
               <div className="flex items-center gap-3 mb-3">
-                <span className="text-2xl font-bold text-emerald-900">฿18,000</span>
-                <span className="text-emerald-700 line-through">฿24,000</span>
-                <span className="text-sm bg-emerald-200 text-emerald-900 px-2 py-1 rounded">Save ฿6,000</span>
+                <span className="text-2xl font-bold text-emerald-900">IDR 7,000,000</span>
+                <span className="text-emerald-700 line-through">IDR 9,350,000</span>
+                <span className="text-sm bg-emerald-200 text-emerald-900 px-2 py-1 rounded">Save IDR 2,300,000</span>
               </div>
               <Button 
                 variant="default" 

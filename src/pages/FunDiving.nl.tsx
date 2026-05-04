@@ -161,7 +161,7 @@ const FunDiving = () => {
                   scrollToWithOffset('fun-dive-tabs');
                 } else {
                   try { sessionStorage.setItem('scrollTo', 'fun-dive-tabs'); } catch (_) {}
-                  navigate('/fun-diving-koh-tao');
+                  navigate('/fun-diving-nusa-lembongan');
                 }
               }}
             >
@@ -494,7 +494,7 @@ const FunDiving = () => {
                         <div className="space-y-3 mb-4">
                           <div className="flex justify-between items-center pb-2 border-b">
                             <span className="font-medium">1 duik</span>
-                            <span className="text-xl font-bold text-blue-600">฿1.000 <span className="text-sm text-muted-foreground">/duik</span></span>
+                            <span className="text-xl font-bold text-blue-600">IDR 385,000 <span className="text-sm text-muted-foreground">/duik</span></span>
                           </div>
                           <div className="flex justify-between items-center pb-2 border-b">
                             <span className="font-medium">2-9 duiken</span>
@@ -516,7 +516,7 @@ const FunDiving = () => {
                         </div>
                         <p className="text-xs text-muted-foreground mt-3">Vereiste: Open Water-certificering of gelijkwaardig</p>
                         <div className="mt-4">
-                          <Link to="/koh-tao-dive-sites" className="text-sm font-medium text-blue-600 hover:underline underline-offset-4">
+                          <Link to="/nusa-lembongan-dive-sites" className="text-sm font-medium text-blue-600 hover:underline underline-offset-4">
                             Bekijk overzicht van alle duiklocaties
                           </Link>
                         </div>
@@ -531,7 +531,7 @@ const FunDiving = () => {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-2xl font-bold text-green-600">฿2.900</p>
+                        <p className="text-2xl font-bold text-green-600">IDR 1,100,000</p>
                         <p className="text-sm text-muted-foreground">hele dagexcursie (3 duiken)</p>
                         <ul className="mt-4 space-y-2 text-sm">
                           <li>• Ontbijt & lunch inbegrepen</li>
@@ -794,7 +794,7 @@ const FunDiving = () => {
                 Klaar om de geweldige onderwaterwereld van Nusa Lembongan te ontdekken? Neem contact op voor een boekingsaanvraag of gebruik het formulier hieronder om direct te boeken.
               </p>
                 <div className="mb-4 flex flex-col items-center gap-2">
-                  <Link to="/fun-diving-koh-tao#world-class-dive-sites" className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">Fun Dive-informatie</Link>
+                  <Link to="/fun-diving-nusa-lembongan#world-class-dive-sites" className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">Fun Dive-informatie</Link>
                   <a href="/courses#course-openWater" className="inline-block bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded font-semibold">Boek cursus (PADI)</a>
                   <a href="https://www.divinginasia.com/#contact" target="_blank" rel="noopener noreferrer" className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold mb-2">Neem contact op om te boeken/informatie aan te vragen</a>
                   <div className="text-muted-foreground text-sm mb-4">Of gebruik het formulier hieronder om direct een boekingsaanvraag te sturen.</div>

@@ -69,7 +69,7 @@ const ThingsToDo = () => {
         ))}
       </ul>
       <div className="flex flex-wrap gap-4 mb-4">
-        <a href="/fun-diving-koh-tao" className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">{content.cta_fun_diving}</a>
+        <a href="/fun-diving-nusa-lembongan" className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">{content.cta_fun_diving}</a>
         <a href="/BeachesKohTao" className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">{content.cta_beaches}</a>
         <a href="/ViewpointsKohTao" className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">{content.cta_viewpoints}</a>
       </div>

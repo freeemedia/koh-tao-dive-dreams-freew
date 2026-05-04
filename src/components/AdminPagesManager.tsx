@@ -238,7 +238,7 @@ const getPageGroup = (pageSlug: string) => {
     return 'Marine Life';
   }
 
-  if (['home', 'contact', 'accommodation', 'koh-tao-info', 'how-to-get-here', 'things-to-do', 'weather'].includes(slug)) {
+  if (['home', 'contact', 'accommodation', 'nusa-lembongan-info', 'how-to-get-here', 'things-to-do', 'weather'].includes(slug)) {
     return 'Info';
   }
 

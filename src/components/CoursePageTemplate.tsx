@@ -248,7 +248,7 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
                     {locale === 'nl' ? 'Prijs' : 'Price'}
                   </div>
                   <div className="space-y-1">
-                    <p className="text-2xl font-bold text-sky-600">฿{thbAmount.toLocaleString(localeTag)}</p>
+                    <p className="text-2xl font-bold text-sky-600">IDR {thbAmount.toLocaleString(localeTag)}</p>
                     {exchangeRates && exchangeRates.USD && exchangeRates.IDR && (
                       <p className="text-base text-muted-foreground">
                         ${(thbAmount / exchangeRates.IDR * exchangeRates.USD).toLocaleString(localeTag, { maximumFractionDigits: 0 })} USD

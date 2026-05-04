@@ -105,7 +105,7 @@ export default function WreckDiver() {
 
         <Card className="mb-8 p-6 bg-blue-50">
           <h2 className="text-2xl font-bold mb-4">Prijs</h2>
-          <div className="text-3xl font-bold text-blue-600 mb-2">฿8,000</div>
+          <div className="text-3xl font-bold text-blue-600 mb-2">IDR 3,100,000</div>
           <p className="text-gray-600 text-sm mb-4">Inclusief alle training, lesmateriaal, uitrustingshuur en certificering</p>
           <p className="text-sm text-gray-600">*Korting van 1.500 baht als je de Wreck Adventure-duik al hebt afgerond als onderdeel van Advanced Open Water</p>
         </Card>
@@ -113,7 +113,7 @@ export default function WreckDiver() {
         <Card className="mb-8 p-6">
           <h2 className="text-lg font-bold mb-3">Combineren met andere cursussen</h2>
           <p className="text-gray-700 mb-4">Je kunt de PADI Wreck Diver-cursus combineren met de PADI Enriched Air Nitrox Specialty-cursus om twee certificeringen binnen dezelfde periode te behalen!</p>
-          <p className="text-sm text-gray-600">Voeg ฿5,900 toe om te combineren met Enriched Air Nitrox</p>
+          <p className="text-sm text-gray-600">Voeg IDR 2,300,000 toe om te combineren met Enriched Air Nitrox</p>
         </Card>
 
         <Card className="mb-8 p-6 bg-green-50">

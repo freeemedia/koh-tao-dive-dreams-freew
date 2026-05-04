@@ -63,7 +63,7 @@ const PAGE_REGISTRY: PageInfo[] = [
 
   // INFO PAGES
   { slug: 'accommodation', title: 'Accommodation', category: 'info', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
-  { slug: 'koh-tao-info', title: 'Nusa Lembongan Information', category: 'info', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
+  { slug: 'nusa-lembongan-info', title: 'Nusa Lembongan Information', category: 'info', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
   { slug: 'how-to-get-here', title: 'How to Get Here', category: 'info', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
   { slug: 'things-to-do', title: 'Things to Do', category: 'info', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },
   { slug: 'weather', title: 'Weather Information', category: 'info', hasEnglish: true, hasDutch: true, hasSEO: false, isSecured: false },

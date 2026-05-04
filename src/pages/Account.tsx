@@ -183,7 +183,7 @@ const Account = () => {
               <Button
                 variant="outline"
                 className="h-20 flex flex-col items-center gap-2"
-                onClick={() => navigate('/fun-diving-koh-tao')}
+                onClick={() => navigate('/fun-diving-nusa-lembongan')}
               >
                 <div className="h-6 w-6 rounded-full bg-blue-500"></div>
                 Book Fun Dive

@@ -113,7 +113,7 @@ const FacebookFeed = () => {
               }}
             >
               <iframe
-                src="https://www.instagram.com/pro_diving_asia/embed"
+                src="https://www.instagram.com/lembongandiveresort/embed"
                 width="100%"
                 height="600"
                 frameBorder="0"

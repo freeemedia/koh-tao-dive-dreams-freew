@@ -255,8 +255,8 @@ const App = () => (
               <Route path="/internship/divemaster" element={<DivemasterInternship />} />
               <Route path="/internship/instructor" element={<InstructorInternship />} />
               <Route path="/packages/open-water-to-divemaster" element={<OpenWaterToDivemaster />} />
-              <Route path="/fun-diving-koh-tao" element={<FunDiving />} />
-              <Route path="/koh-tao-dive-sites" element={<DiveSitesPage />} />
+              <Route path="/fun-diving-nusa-lembongan" element={<FunDiving />} />
+              <Route path="/nusa-lembongan-dive-sites" element={<DiveSitesPage />} />
               <Route path="/dive-site-reports" element={<DiveSiteReports />} />
               <Route path="/dive-sites/sail-rock" element={<SailRock />} />
               <Route path="/dive-sites/chumphon-pinnacles" element={<Navigate to="/dive-sites/chumphon-pinnacle" replace />} />
@@ -293,7 +293,7 @@ const App = () => (
               <Route path="/marine-life/nudibranchs" element={<Nudibranchs />} />
               <Route path="/Accommodation" element={<Accommodation />} />
               <Route path="/accommodation" element={<Accommodation />} />
-              <Route path="/koh-tao-info" element={<KohTaoInfo />} />
+              <Route path="/nusa-lembongan-info" element={<KohTaoInfo />} />
               <Route path="/ThingsToDo" element={<ThingsToDo />} />
               <Route path="/BanksKohTao" element={<BanksKohTao />} />
               <Route path="/BeachesKohTao" element={<BeachesKohTao />} />

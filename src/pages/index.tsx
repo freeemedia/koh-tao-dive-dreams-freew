@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { tryAutoScroll } from '@/lib/scroll';
 import Hero from '../components/Hero';
+import StayDivePackages from '../components/StayDivePackages';
 import DiveSites from '../components/DiveSites';
 import Courses from '../components/Courses';
 import Gallery from '../components/Gallery';
@@ -27,6 +28,7 @@ const Index = () => {
 	return (
 		<div className="min-h-screen bg-background">
 			<Hero />
+			<StayDivePackages />
 			<About />
 			<Courses />
 			<FunDiving />

@@ -31,9 +31,9 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
     if (!anchor) return navigate(path || '/');
 
     // Fun Diving sections live inside tabs; always navigate with hash so page can switch tab first.
-    if ((path === '/fun-diving-koh-tao' || path === 'fun-diving-koh-tao') && anchor) {
+    if ((path === '/fun-diving-nusa-lembongan' || path === 'fun-diving-nusa-lembongan') && anchor) {
       try { sessionStorage.setItem('scrollTo', anchor); } catch (_) {}
-      navigate(`/fun-diving-koh-tao#${anchor}`);
+      navigate(`/fun-diving-nusa-lembongan#${anchor}`);
       setIsOpen(false);
       return;
     }
@@ -197,11 +197,19 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
   }
   // Standard/main navigation for all other users/routes
   return (
-    <nav className="fixed top-0 w-full border-b border-blue-600 bg-background/70 pt-4 shadow-sm backdrop-blur-md z-50">
+    <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-md z-50 border-b border-cyan-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20 border-solid border-0 py-2">
-          <div className="flex items-center pl-6">
-            <img src="/images/logo.png" alt="Lembongan Dive Resort Logo" className="h-14 w-auto" style={{ display: 'block', marginRight: 20, marginLeft: 0 }} />
+        <div className="flex justify-between items-center h-20 py-2">
+          <div className="flex items-center pl-2">
+            <Link to="/" className="flex items-center gap-2 group">
+              <div className="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl w-10 h-10 flex items-center justify-center shadow-md group-hover:shadow-cyan-300 transition-shadow">
+                <span className="text-white text-lg">🤿</span>
+              </div>
+              <div className="leading-tight">
+                <div className="font-extrabold text-gray-900 text-base tracking-tight">Lembongan</div>
+                <div className="text-cyan-600 text-xs font-semibold tracking-widest uppercase">Dive Resort</div>
+              </div>
+            </Link>
           </div>
           {/* Desktop nav */}
           <div className="hidden md:flex items-center space-x-7 text-[1.05rem] pt-4" style={{ paddingLeft: '10px' }}>
@@ -272,7 +280,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                   <ul className="space-y-1">
                     <li>
                       <Link
-                        to="/koh-tao-dive-sites"
+                        to="/nusa-lembongan-dive-sites"
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
                         {labels.diveSitesOverview}
@@ -448,7 +456,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
             {/* Fun Dive Trips dropdown */}
             <div className="relative group">
               <Link
-                to="/fun-diving-koh-tao"
+                to="/fun-diving-nusa-lembongan"
                 className="text-gray-700 hover:text-blue-600 transition-colors duration-200 font-medium flex items-center gap-1"
               >
                 {labels.funDiveTrips}
@@ -462,7 +470,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                   <ul className="space-y-1">
                     <li>
                       <Link
-                        to="/fun-diving-koh-tao"
+                        to="/fun-diving-nusa-lembongan"
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
                         {labels.funDivingKohTao}
@@ -486,8 +494,8 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                     </li>
                     <li>
                       <a
-                        href="/fun-diving-koh-tao#schedule"
-                        onClick={(e) => handleAnchorClick(e, '/fun-diving-koh-tao#schedule')}
+                        href="/fun-diving-nusa-lembongan#schedule"
+                        onClick={(e) => handleAnchorClick(e, '/fun-diving-nusa-lembongan#schedule')}
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
                         {labels.boatSchedule}
@@ -495,8 +503,8 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                     </li>
                     <li>
                       <a
-                        href="/fun-diving-koh-tao#pricing"
-                        onClick={(e) => handleAnchorClick(e, '/fun-diving-koh-tao#pricing')}
+                        href="/fun-diving-nusa-lembongan#pricing"
+                        onClick={(e) => handleAnchorClick(e, '/fun-diving-nusa-lembongan#pricing')}
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
                         {labels.pricingPackages}
@@ -504,8 +512,8 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                     </li>
                     <li>
                       <a
-                        href="/fun-diving-koh-tao#requirements"
-                        onClick={(e) => handleAnchorClick(e, '/fun-diving-koh-tao#requirements')}
+                        href="/fun-diving-nusa-lembongan#requirements"
+                        onClick={(e) => handleAnchorClick(e, '/fun-diving-nusa-lembongan#requirements')}
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
                         {labels.diverRequirements}
@@ -513,8 +521,8 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                     </li>
                     <li>
                       <a
-                        href="/fun-diving-koh-tao#tips"
-                        onClick={(e) => handleAnchorClick(e, '/fun-diving-koh-tao#tips')}
+                        href="/fun-diving-nusa-lembongan#tips"
+                        onClick={(e) => handleAnchorClick(e, '/fun-diving-nusa-lembongan#tips')}
                         className="block py-1.5 text-sm text-gray-300 hover:text-white hover:pl-1 transition-all duration-150"
                       >
                         {labels.chooseDiveCenter}
@@ -699,7 +707,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                 )}
               </div>
 
-              <Link to="/koh-tao-dive-sites" className="block px-3 py-2 text-gray-700 hover:text-blue-600" onClick={() => setIsOpen(false)}>
+              <Link to="/nusa-lembongan-dive-sites" className="block px-3 py-2 text-gray-700 hover:text-blue-600" onClick={() => setIsOpen(false)}>
                 {t('nav.diveSites')}
               </Link>
 
@@ -714,7 +722,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                 </button>
                 {diveSitesOpen && (
                   <div className="pl-4 space-y-1 bg-muted rounded-lg mx-2 py-2">
-                    <Link to="/koh-tao-dive-sites" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
+                    <Link to="/nusa-lembongan-dive-sites" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
                       {labels.diveSitesOverview}
                     </Link>
                     <Link to="/dive-site-reports" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
@@ -770,7 +778,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
               {/* Mobile fun dive trips accordion */}
               <div>
                 <Link
-                  to="/fun-diving-koh-tao"
+                  to="/fun-diving-nusa-lembongan"
                   onClick={() => setIsOpen(false)}
                   className="flex items-center justify-between w-full px-3 py-2 text-gray-700 hover:text-blue-600"
                 >
@@ -786,7 +794,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                 </Link>
                 {funDivingOpen && (
                   <div className="pl-4 space-y-1 bg-muted rounded-lg mx-2 py-2">
-                    <Link to="/fun-diving-koh-tao" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
+                    <Link to="/fun-diving-nusa-lembongan" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
                       {labels.funDivingKohTao}
                     </Link>
                     <Link to="/courses/discover-scuba" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
@@ -795,16 +803,16 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                     <Link to="/courses/discover-scuba-deluxe" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
                       {labels.discoverScubaDeluxe}
                     </Link>
-                    <a href="/fun-diving-koh-tao#schedule" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={(e) => handleAnchorClick(e, '/fun-diving-koh-tao#schedule')}>
+                    <a href="/fun-diving-nusa-lembongan#schedule" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={(e) => handleAnchorClick(e, '/fun-diving-nusa-lembongan#schedule')}>
                       {labels.boatSchedule}
                     </a>
-                    <a href="/fun-diving-koh-tao#pricing" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={(e) => handleAnchorClick(e, '/fun-diving-koh-tao#pricing')}>
+                    <a href="/fun-diving-nusa-lembongan#pricing" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={(e) => handleAnchorClick(e, '/fun-diving-nusa-lembongan#pricing')}>
                       {labels.pricingPackages}
                     </a>
-                    <a href="/fun-diving-koh-tao#requirements" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={(e) => handleAnchorClick(e, '/fun-diving-koh-tao#requirements')}>
+                    <a href="/fun-diving-nusa-lembongan#requirements" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={(e) => handleAnchorClick(e, '/fun-diving-nusa-lembongan#requirements')}>
                       {labels.diverRequirements}
                     </a>
-                    <a href="/fun-diving-koh-tao#tips" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={(e) => handleAnchorClick(e, '/fun-diving-koh-tao#tips')}>
+                    <a href="/fun-diving-nusa-lembongan#tips" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={(e) => handleAnchorClick(e, '/fun-diving-nusa-lembongan#tips')}>
                       {labels.chooseDiveCenter}
                     </a>
                   </div>

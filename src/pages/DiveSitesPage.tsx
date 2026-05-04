@@ -97,7 +97,7 @@ const DiveSitesPage = () => {
     booking_text: 'Ready to explore Nusa Lembongan\u2019s amazing dive sites? Our experienced guides take you to the best spots for your level and interests.',
   };
 
-  const { content: pageContent } = usePageContent({ pageSlug: 'koh-tao-dive-sites', locale, fallbackContent });
+  const { content: pageContent } = usePageContent({ pageSlug: 'nusa-lembongan-dive-sites', locale, fallbackContent });
 
   const deepDiveSites = parseSiteList(pageContent.deep_sites);
   const coralReefSites = parseSiteList(pageContent.coral_sites);

@@ -62,7 +62,7 @@ export default function CoralWatch() {
 
         <Card className="mb-8 p-6 bg-blue-50">
           <h2 className="text-2xl font-bold mb-4">Prijs</h2>
-          <div className="text-3xl font-bold text-blue-600 mb-2">฿2,300</div>
+          <div className="text-3xl font-bold text-blue-600 mb-2">IDR 890,000</div>
           <p className="text-gray-600 text-sm">Inclusief training, lesmateriaal en 2-3 trainingsduiken</p>
         </Card>
 

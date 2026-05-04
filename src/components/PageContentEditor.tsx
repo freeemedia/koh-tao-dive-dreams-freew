@@ -404,7 +404,7 @@ const PAGE_DEFINITIONS: Record<string, ContentItem[]> = {
     { section_key: 'hero_subtitle', content_value: 'Find the perfect place to stay during your diving holiday.', content_type: 'text', label: 'Hero Subtitle' },
     { section_key: 'intro', content_value: 'Nusa Lembongan offers a range of accommodation from budget bungalows to boutique beach resorts, many right on the water.', content_type: 'textarea', label: 'Introduction' },
   ],
-  'koh-tao-info': [
+  'nusa-lembongan-info': [
     { section_key: 'hero_title', content_value: 'Nusa Lembongan Island Guide', content_type: 'text', label: 'Hero Title' },
     { section_key: 'hero_subtitle', content_value: 'Everything you need to know about Bali\'s premier dive island.', content_type: 'text', label: 'Hero Subtitle' },
     { section_key: 'intro', content_value: 'Nusa Lembongan is a small island off the southeast coast of Bali, world-famous for its spectacular dive sites including Crystal Bay, Manta Point, and Toyapakeh.', content_type: 'textarea', label: 'Introduction' },
