@@ -26,6 +26,11 @@ dist-ssr
 .env
 .env*.local
 
+# Nested deployment artifacts copied into the repo; keep them out of git.
+divinginasia.com/public_html/.builds/last-source/
+divinginasia.com/public_html/.builds/last-source.tmp/
+divinginasia.com/public_html/.builds/source/repository/
+
 # amplify
 .amplify
 amplify_outputs*
