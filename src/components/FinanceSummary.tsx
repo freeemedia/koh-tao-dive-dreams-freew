@@ -29,8 +29,8 @@ const FinanceSummary: React.FC = () => {
     <div className="w-full flex justify-center my-4">
       <div className="bg-white shadow rounded px-6 py-3 flex gap-8 items-center text-lg font-semibold text-slate-800">
         <span>Bookings: <span className="text-blue-600">{summary.count}</span></span>
-        <span>Total Revenue: <span className="text-green-600">฿{summary.total.toLocaleString()}</span></span>
-        <span>Outstanding: <span className="text-red-600">฿{summary.outstanding.toLocaleString()}</span></span>
+        <span>Total Revenue: <span className="text-green-600">IDR {summary.total.toLocaleString()}</span></span>
+        <span>Outstanding: <span className="text-red-600">IDR {summary.outstanding.toLocaleString()}</span></span>
       </div>
     </div>
   );

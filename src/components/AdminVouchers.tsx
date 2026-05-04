@@ -23,9 +23,9 @@ export default function AdminVouchers({ bookings }) {
     doc.text(`Name: ${booking.name || ''}`, 20, 40);
     doc.text(`Email: ${booking.email || ''}`, 20, 50);
     doc.text(`Course: ${booking.course_title || ''}`, 20, 60);
-    doc.text(`Deposit Paid: ฿${getDeposit(booking)}`, 20, 70);
-    doc.text(`Total Price: ฿${getTotal(booking)}`, 20, 80);
-    doc.text(`Amount Due: ฿${getDue(booking)}`, 20, 90);
+    doc.text(`Deposit Paid: IDR ${getDeposit(booking)}`, 20, 70);
+    doc.text(`Total Price: IDR ${getTotal(booking)}`, 20, 80);
+    doc.text(`Amount Due: IDR ${getDue(booking)}`, 20, 90);
     doc.text(`Booking Date: ${booking.created_at ? new Date(booking.created_at).toLocaleString() : ''}`, 20, 100);
     doc.text(`Booking ID: ${booking.id}`, 20, 110);
     doc.text('Show this voucher at the dive shop and pay the remaining balance.', 20, 130);
@@ -54,9 +54,9 @@ export default function AdminVouchers({ bookings }) {
               <td className="border px-2 py-1">{booking.name}</td>
               <td className="border px-2 py-1">{booking.email}</td>
               <td className="border px-2 py-1">{booking.course_title}</td>
-              <td className="border px-2 py-1">฿{getDeposit(booking)}</td>
-              <td className="border px-2 py-1">฿{getTotal(booking)}</td>
-              <td className="border px-2 py-1">฿{getDue(booking)}</td>
+              <td className="border px-2 py-1">IDR {getDeposit(booking)}</td>
+              <td className="border px-2 py-1">IDR {getTotal(booking)}</td>
+              <td className="border px-2 py-1">IDR {getDue(booking)}</td>
               <td className="border px-2 py-1">{booking.created_at ? new Date(booking.created_at).toLocaleString() : ''}</td>
               <td className="border px-2 py-1">
                 <button className="bg-blue-600 text-white px-3 py-1 rounded" onClick={() => handleDownloadVoucher(booking)}>

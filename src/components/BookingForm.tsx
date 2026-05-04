@@ -85,7 +85,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
         preferred_date: data.preferred_date || 'N/A',
         experience_level: data.experience_level || 'N/A',
         payment_choice: paymentChoice,
-        deposit_amount: typeof depositMajor === 'number' ? `฿${depositMajor}` : 'N/A',
+        deposit_amount: typeof depositMajor === 'number' ? `IDR ${depositMajor}` : 'N/A',
         message: messageBody,
       };
       let emailOk = false;

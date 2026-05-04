@@ -559,7 +559,7 @@ const Courses = () => {
                   <span className="text-blue-300 line-through text-sm">{t('courses.specialOffers.combo.originalPrice')}</span>
                   <span className="text-2xl font-bold">{getDisplayedPrice(t('courses.specialOffers.combo.price'))}</span>
                 </div>
-                <p className="text-xs text-blue-100 mb-3">10% deposit: {getDisplayedPrice('฿1,900')}</p>
+                <p className="text-xs text-blue-100 mb-3">10% deposit: {getDisplayedPrice('IDR 750,000')}</p>
                 <a
                   href="/bookingform.html?item=Open%20Water%20%2B%20Advanced&type=course&price=19000&currency=IDR&deposit=1900"
                   className="block w-full rounded-lg bg-white py-3 text-center font-semibold text-red-700 no-underline hover:bg-red-50"
@@ -577,10 +577,10 @@ const Courses = () => {
               </p>
               <div className="mt-auto">
                 <div className="flex flex-col items-start gap-1 mb-3">
-                  <span className="text-gray-400 line-through text-lg">{getDisplayedPrice('฿24,000')}</span>
-                  <span className="text-3xl font-bold">{getDisplayedPrice('฿18,000')}</span>
+                  <span className="text-gray-400 line-through text-lg">{getDisplayedPrice('IDR 9,350,000')}</span>
+                  <span className="text-3xl font-bold">{getDisplayedPrice('IDR 7,000,000')}</span>
                 </div>
-                <p className="text-xs text-gray-500 mb-3">10% deposit: {getDisplayedPrice('฿1,800')}</p>
+                <p className="text-xs text-gray-500 mb-3">10% deposit: {getDisplayedPrice('IDR 700,000')}</p>
               </div>
               <a
                 href="/bookingform.html?item=3%20Specialty%20Bundle&type=course&price=18000&currency=IDR"
@@ -599,10 +599,10 @@ const Courses = () => {
               </p>
               <div className="mt-auto">
                 <div className="flex flex-col items-start gap-1 mb-4">
-                  <span className="line-through text-blue-200">{getDisplayedPrice('฿66,800')}</span>
-                  <span className="text-3xl font-extrabold">{getDisplayedPrice('฿56,780')}</span>
+                  <span className="line-through text-blue-200">{getDisplayedPrice('IDR 26,000,000')}</span>
+                  <span className="text-3xl font-extrabold">{getDisplayedPrice('IDR 22,000,000')}</span>
                 </div>
-                <p className="text-xs text-blue-100 mb-3">10% deposit: {getDisplayedPrice('฿5,678')}</p>
+                <p className="text-xs text-blue-100 mb-3">10% deposit: {getDisplayedPrice('IDR 2,200,000')}</p>
               </div>
               <Link
                 to="/packages/open-water-to-divemaster"

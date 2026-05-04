@@ -97,7 +97,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
         preferred_date: data.preferred_date || 'N/A',
         experience_level: data.experience_level || 'N/A',
         payment_choice: data.paymentChoice === 'paypal' ? 'paypal-deposit' : 'inquire',
-        deposit_amount: deposit > 0 ? `฿${deposit}` : 'N/A',
+        deposit_amount: deposit > 0 ? `IDR ${deposit}` : 'N/A',
         message: `Phone: ${data.phone || 'N/A'}\nNationality: ${data.nationality || 'N/A'}\nAccommodation: ${data.accommodation || 'N/A'}\nGroup Size: ${data.guest_count || '1'}\nPreferred Date: ${data.preferred_date || 'N/A'}\nExperience Level: ${data.experience_level || 'N/A'}\nPayment: ${data.paymentChoice}\n\nMessage:\n${data.message || 'N/A'}`,
       };
 
@@ -402,7 +402,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
                   <label className="flex items-start gap-3 cursor-pointer">
                     <input type="radio" className="mt-1" value="paypal" checked={field.value === 'paypal'} onChange={() => field.onChange('paypal')} />
                     <div>
-                      <div className="font-medium text-sm">Pay ฿{depositMajor} deposit now via PayPal</div>
+                      <div className="font-medium text-sm">Pay IDR {depositMajor} deposit now via PayPal</div>
                       <div className="text-xs text-muted-foreground">You'll be redirected to PayPal after submitting.</div>
                     </div>
                   </label>
@@ -429,7 +429,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
           {isSubmitting
             ? 'Sending...'
             : (form.watch('paymentChoice') === 'paypal' && typeof depositMajor === 'number' && depositMajor > 0
-              ? `Book Now & Pay ฿${depositMajor} Deposit via PayPal`
+              ? `Book Now & Pay IDR ${depositMajor} Deposit via PayPal`
               : 'Book with Us Now')}
         </Button>
       </form>
