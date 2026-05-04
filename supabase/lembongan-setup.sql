@@ -530,4 +530,4 @@ WHERE (
 -- Legacy rename steps skipped — bookings table is created fresh above
 
 k
- back to it 
+ back to it t
