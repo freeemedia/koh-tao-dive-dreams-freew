@@ -486,7 +486,7 @@ const AdminBookings: React.FC = () => {
   const openWhatsApp = (booking: Booking) => {
     const phone = normalizePhoneForWhatsApp(booking.phone);
     if (!phone) return;
-    const text = encodeURIComponent(`Hi ${booking.name}, this is Lembongan Dive Resort regarding your booking for ${booking.course_title}${booking.preferred_date ? ` on ${booking.preferred_date}` : ''}.`);
+    const text = encodeURIComponent(`Hi ${booking.name}, this is Lembongan Watersports regarding your booking for ${booking.course_title}${booking.preferred_date ? ` on ${booking.preferred_date}` : ''}.`);
     window.open(`https://wa.me/${phone}?text=${text}`, '_blank', 'noopener,noreferrer');
   };
 

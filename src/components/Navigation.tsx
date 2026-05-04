@@ -207,7 +207,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
               </div>
               <div className="leading-tight">
                 <div className="font-extrabold text-gray-900 text-base tracking-tight">Lembongan</div>
-                <div className="text-cyan-600 text-xs font-semibold tracking-widest uppercase">Dive Resort</div>
+                <div className="text-cyan-600 text-xs font-semibold tracking-widest uppercase">Watersports</div>
               </div>
             </Link>
           </div>

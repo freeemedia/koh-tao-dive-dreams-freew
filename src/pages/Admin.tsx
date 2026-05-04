@@ -192,10 +192,10 @@ const Admin = () => {
             <LanguageSwitcher />
           </div>
           <p className="text-xs uppercase tracking-[0.2em] text-cyan-300">
-            {import.meta.env.VITE_SITE_NAME || 'Lembongan Dive Resort'} — Operations Console
+            {import.meta.env.VITE_SITE_NAME || 'Lembongan Watersports'} — Operations Console
           </p>
           <h1 className="text-3xl font-bold tracking-wide">{t('admin.dashboard_title', { defaultValue: 'Admin Dashboard' })}</h1>
-          <p className="text-xs text-slate-400">{import.meta.env.VITE_SITE_DOMAIN || 'lembongandiveresort.com'}</p>
+          <p className="text-xs text-slate-400">{import.meta.env.VITE_SITE_DOMAIN || 'lembonganwatersports.com'}</p>
         </div>
       </header>
 

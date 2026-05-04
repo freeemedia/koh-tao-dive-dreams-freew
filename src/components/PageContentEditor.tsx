@@ -35,7 +35,7 @@ const getErrorMessage = (err: unknown) => {
 
 const PAGE_DEFINITIONS: Record<string, ContentItem[]> = {
   'home': [
-    { section_key: 'hero_title', content_value: 'Dive Nusa Lembongan with Lembongan Dive Resort', content_type: 'text', label: 'Hero Title' },
+    { section_key: 'hero_title', content_value: 'Dive Nusa Lembongan with Lembongan Watersports', content_type: 'text', label: 'Hero Title' },
     { section_key: 'hero_subtitle', content_value: 'Discover world-class diving, friendly instructors, and unforgettable underwater adventures on Nusa Lembongan.', content_type: 'textarea', label: 'Hero Subtitle' },
     { section_key: 'hero_primary_cta', content_value: 'Book Now', content_type: 'text', label: 'Hero Primary CTA' },
     { section_key: 'hero_secondary_cta', content_value: 'Courses', content_type: 'text', label: 'Hero Secondary CTA' },
@@ -144,7 +144,7 @@ const PAGE_DEFINITIONS: Record<string, ContentItem[]> = {
     { section_key: 'form_message_label', content_value: 'Message', content_type: 'text', label: 'Message Label' },
     { section_key: 'form_submit_label', content_value: 'Send Message', content_type: 'text', label: 'Submit Button Label' },
     { section_key: 'form_sending_label', content_value: 'Sending...', content_type: 'text', label: 'Sending Button Label' },
-    { section_key: 'footer_line_1', content_value: '\u00a9 2026 Lembongan Dive Resort. All rights reserved. Powered by One Media Asia @ www.onemedia.asia', content_type: 'textarea', label: 'Footer Line 1' },
+    { section_key: 'footer_line_1', content_value: '\u00a9 2026 Lembongan Watersports. All rights reserved. Powered by One Media Asia @ www.onemedia.asia', content_type: 'textarea', label: 'Footer Line 1' },
     { section_key: 'footer_line_2', content_value: 'Discover the magic beneath the waves on Nusa Lembongan, Bali.', content_type: 'textarea', label: 'Footer Line 2' },
   ],
 

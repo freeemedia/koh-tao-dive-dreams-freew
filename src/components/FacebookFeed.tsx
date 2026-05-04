@@ -113,7 +113,7 @@ const FacebookFeed = () => {
               }}
             >
               <iframe
-                src="https://www.instagram.com/lembongandiveresort/embed"
+                src="https://www.instagram.com/lembonganwatersports/embed"
                 width="100%"
                 height="600"
                 frameBorder="0"

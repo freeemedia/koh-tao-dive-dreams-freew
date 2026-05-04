@@ -28,7 +28,7 @@ const bookingSchema = z.object({
 type BookingFormData = z.infer<typeof bookingSchema>;
 
 const COURSE_DEPOSIT_RATE = 0.2;
-const SKIP_PAYMENT_MESSAGE = 'You have chosen not to pay right now, no problem! We will contact you soon to arrange bookings and payment. Thank You, Lembongan Dive Resort Team.';
+const SKIP_PAYMENT_MESSAGE = 'You have chosen not to pay right now, no problem! We will contact you soon to arrange bookings and payment. Thank You, Lembongan Watersports Team.';
 
 const COURSE_FALLBACKS: Record<string, { item: string; price?: number; currency?: string }> = {
   'open-water': { item: 'PADI Open Water Course', price: 11500, currency: 'IDR' },
@@ -87,7 +87,7 @@ const       BookingPage: React.FC = () => {
     ? (apiBaseRaw.startsWith('http://') || apiBaseRaw.startsWith('https://')
         ? apiBaseRaw
         : `https://${apiBaseRaw}`)
-    : 'https://lembongandiveresort.com';
+    : 'https://lembonganwatersports.com';
   const apiBase = apiBaseNormalized.replace(/\/+$/, '');
   const apiUrl = (path: string) => `${apiBase}${path}`;
   const courseSlug = (searchParams.get('course') || '').trim();

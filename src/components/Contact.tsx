@@ -52,7 +52,7 @@ const Contact = () => {
         form_message_label: 'Bericht',
         form_submit_label: 'Verstuur bericht',
         form_sending_label: 'Versturen...',
-        footer_line_1: '© 2026 Lembongan Dive Resort. Alle rechten voorbehouden. Powered by One Media Asia @ www.onemedia.asia',
+        footer_line_1: '© 2026 Lembongan Watersports. Alle rechten voorbehouden. Powered by One Media Asia @ www.onemedia.asia',
         footer_line_2: 'Ontdek de magie onder de golven in het duikparadijs van Indonesia.',
       };
     }
@@ -85,7 +85,7 @@ const Contact = () => {
       form_message_label: 'Message',
       form_submit_label: 'Send Message',
       form_sending_label: 'Sending...',
-      footer_line_1: '© 2026 Lembongan Dive Resort. All rights reserved. Powered by One Media Asia @ www.onemedia.asia',
+      footer_line_1: '© 2026 Lembongan Watersports. All rights reserved. Powered by One Media Asia @ www.onemedia.asia',
       footer_line_2: "Discover the magic beneath the waves in Indonesia's diving paradise.",
     };
   }, [isDutch]);
@@ -231,7 +231,7 @@ const Contact = () => {
                 <a href="https://www.facebook.com/divegoprobybas/" target="_blank" rel="noopener noreferrer" title="Facebook" aria-label="Facebook" className="text-blue-400 hover:text-blue-300 transition-colors">
                   <Facebook className="h-6 w-6" />
                 </a>
-                <a href="https://www.instagram.com/lembongandiveresort/" target="_blank" rel="noopener noreferrer" title="Instagram" aria-label="Instagram" className="text-blue-400 hover:text-blue-300 transition-colors">
+                <a href="https://www.instagram.com/lembonganwatersports/" target="_blank" rel="noopener noreferrer" title="Instagram" aria-label="Instagram" className="text-blue-400 hover:text-blue-300 transition-colors">
                   <Instagram className="h-6 w-6" />
                 </a>
                 <a href="https://wa.me/66612345678" target="_blank" rel="noopener noreferrer" title="WhatsApp" aria-label="WhatsApp" className="text-green-400 hover:text-green-300 transition-colors">

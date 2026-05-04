@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Calendar, Copy, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-const CALENDAR_FEED_URL = 'https://lembongandiveresort.com/api/bookings/calendar';
+const CALENDAR_FEED_URL = 'https://lembonganwatersports.com/api/bookings/calendar';
 
 const CalendarSubscribe: React.FC = () => {
   const { i18n } = useTranslation();

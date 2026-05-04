@@ -76,7 +76,7 @@ const TRIP_ALLIANCE_ID = import.meta.env.VITE_TRIP_ALLIANCE_ID as string | undef
 const TRIP_SITE_ID = import.meta.env.VITE_TRIP_SITE_ID as string | undefined;
 const WHATSAPP_LINK = 'https://wa.me/66612345678';
 const FACEBOOK_LINK = 'https://www.facebook.com/divegoprobybas/';
-const INSTAGRAM_LINK = 'https://www.instagram.com/lembongandiveresort/';
+const INSTAGRAM_LINK = 'https://www.instagram.com/lembonganwatersports/';
 
 const trackBookingWidgetClick = (source: 'left-widget' | 'mobile-sticky') => {
   try {
@@ -153,7 +153,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-5 mb-10">
           <div>
-            <div className="text-xl font-bold text-cyan-400 mb-3">Lembongan Dive Resort</div>
+            <div className="text-xl font-bold text-cyan-400 mb-3">Lembongan Watersports</div>
             <p className="text-sm leading-relaxed text-gray-300 mb-4">
               {isDutch
                 ? 'Nusa Lembongan\'s premium duikschool voor PADI-cursussen, fun dives en onvergetelijke onderwaterervaringen.'
@@ -288,7 +288,7 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="border-t border-[#1a3a5c] pt-6 text-center text-xs text-gray-500 space-y-1">
-          {footerContent.footer_line_1 || `© ${new Date().getFullYear()} Lembongan Dive Resort — All rights reserved | Powered By One Media Asia Co, Ltd`}
+          {footerContent.footer_line_1 || `© ${new Date().getFullYear()} Lembongan Watersports — All rights reserved | Powered By One Media Asia Co, Ltd`}
           {footerContent.footer_line_2 && <span>{footerContent.footer_line_2}</span>}
         </div>
       </div>

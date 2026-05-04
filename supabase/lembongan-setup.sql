@@ -29,15 +29,10 @@ VALUES
   ('Question about Advanced Course', 'bob@example.com', 'Can you tell me more about the advanced course?', NULL, 'unread'),
   ('Group Booking', 'carol@example.com', 'We are a group of 4 interested in diving.', NULL, 'unread');
 
--- Add deposit and total columns to booking_inquiries for voucher support
-ALTER TABLE public.booking_inquiries
-ADD COLUMN deposit NUMERIC DEFAULT 0,
-ADD COLUMN total NUMERIC DEFAULT 0;
-
 -- Dedicated vouchers table for tracking generated vouchers
 CREATE TABLE IF NOT EXISTS public.vouchers (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  booking_id uuid REFERENCES booking_inquiries(id),
+  booking_id uuid REFERENCES bookings(id),
   voucher_code text UNIQUE NOT NULL,
   generated_at timestamptz NOT NULL DEFAULT now(),
   generated_by text,
@@ -110,26 +105,7 @@ FOR ALL
 TO authenticated
 USING (public.has_role(auth.uid(), 'admin'));
 
--- Allow admins to view booking inquiries
-CREATE POLICY "Admins can view booking inquiries"
-ON public.booking_inquiries
-FOR SELECT
-TO authenticated
-USING (public.has_role(auth.uid(), 'admin'));
-
--- Allow admins to delete booking inquiries
-CREATE POLICY "Admins can delete booking inquiries"
-ON public.booking_inquiries
-FOR DELETE
-TO authenticated
-USING (public.has_role(auth.uid(), 'admin'));
-
--- Allow admins to update booking inquiries
-CREATE POLICY "Admins can update booking inquiries"
-ON public.booking_inquiries
-FOR UPDATE
-TO authenticated
-USING (public.has_role(auth.uid(), 'admin'));-- Create a table for user profiles
+-- Create a table for user profiles
 CREATE TABLE public.profiles (
   id UUID REFERENCES auth.users ON DELETE CASCADE NOT NULL PRIMARY KEY,
   full_name TEXT,
@@ -449,40 +425,7 @@ BEGIN
   END IF;
 END $$;
 
--- Backfill from legacy booking_inquiries when present
-DO $$
-BEGIN
-  IF to_regclass('public.booking_inquiries') IS NOT NULL THEN
-    INSERT INTO bookings (
-      id,
-      name,
-      email,
-      phone,
-      course_title,
-      preferred_date,
-      experience_level,
-      message,
-      status,
-      created_at,
-      updated_at
-    )
-    SELECT
-      bi.id,
-      bi.name,
-      bi.email,
-      bi.phone,
-      bi.course_title,
-      bi.preferred_date,
-      bi.experience_level,
-      bi.message,
-      'pending',
-      bi.created_at,
-      bi.created_at
-    FROM public.booking_inquiries bi
-    ON CONFLICT (id) DO NOTHING;
-  END IF;
-END $$;ALTER TABLE bookings
-ADD COLUMN IF NOT EXISTS bank_transfer_details text;
+ALTER TABLE bookings ADD COLUMN IF NOT EXISTS bank_transfer_details text;
 CREATE TABLE IF NOT EXISTS public.role_change_audit (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   action text NOT NULL CHECK (action IN ('add', 'remove')),
@@ -584,7 +527,7 @@ WHERE (
     'images'
   )
   AND content_value ~* '(<[^>]+>|&lt;|&gt;|&nbsp;|&amp;)';
--- Rename bookings_duplicate table back to bookings
-ALTER TABLE bookings_duplicate RENAME TO bookings;
--- Rename bookings table to bookings_duplicate
-ALTER TABLE bookings RENAME TO bookings_duplicate;
+-- Legacy rename steps skipped — bookings table is created fresh above
+
+k
+ back to it 

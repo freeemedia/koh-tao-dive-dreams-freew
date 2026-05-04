@@ -116,10 +116,31 @@ class KTD_Booking_Manager {
         return is_numeric($value) ? (float) $value : null;
     }
 
+    private function get_expected_api_key() {
+        $from_option = trim((string) get_option($this->option_key, ''));
+        if ($from_option !== '') {
+            return $from_option;
+        }
+
+        if (defined('KTD_API_KEY')) {
+            $from_constant = trim((string) KTD_API_KEY);
+            if ($from_constant !== '') {
+                return $from_constant;
+            }
+        }
+
+        $from_env = trim((string) getenv('WP_BOOKING_API_KEY'));
+        if ($from_env !== '') {
+            return $from_env;
+        }
+
+        return '';
+    }
+
     public function validate_api_key($request) {
-        $expected = trim((string) get_option($this->option_key, ''));
+        $expected = $this->get_expected_api_key();
         if ($expected === '') {
-            return new WP_Error('ktd_missing_api_key', 'WordPress booking API key is not configured.', array('status' => 500));
+            return new WP_Error('ktd_missing_api_key', 'WordPress booking API key is not configured. Set ktd_booking_api_key, KTD_API_KEY, or WP_BOOKING_API_KEY.', array('status' => 500));
         }
 
         $provided = trim((string) $request->get_header('x-ktd-api-key'));
