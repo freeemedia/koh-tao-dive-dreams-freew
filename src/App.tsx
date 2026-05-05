@@ -11,6 +11,7 @@ import { hasAdminAccess } from '@/lib/adminAccess';
 
 import Layout from './components/Layout';
 import Courses from './components/Courses';
+import RouteSEO from './components/RouteSEO';
 
 import Index from './pages';
 import NotFound from './pages/NotFound';
@@ -201,6 +202,7 @@ const App = () => (
       <CurrencyProvider>
         <BrowserRouter>
           <ScrollToTop />
+          <RouteSEO />
           <Layout>
             <Routes>
               <Route path="/" element={<Index />} />
