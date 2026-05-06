@@ -5,6 +5,13 @@
 // DELETE /api/admin-bookings?id=123
 
 import { sendBookingStatusEmail } from './send-booking-notification.js';
+import {
+  getDbProvider,
+  isSupabaseProvider,
+  listSupabaseBookings,
+  updateSupabaseBookingById,
+  deleteSupabaseBookingById,
+} from './_lib/supabase-bookings.js';
 
 async function ensureAdmin(req) {
   const viewToken = process.env.ADMIN_BOOKINGS_VIEW_TOKEN || process.env.ADMIN_VIEW_TOKEN;
@@ -33,6 +40,7 @@ function getWpConfig() {
 }
 
 export default async function handler(req, res) {
+  const dbProvider = getDbProvider();
   // CORS for local dev
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, PATCH, DELETE, OPTIONS');
@@ -45,6 +53,21 @@ export default async function handler(req, res) {
   }
   
   if (req.method === 'GET') {
+    if (isSupabaseProvider()) {
+      try {
+        const rowsRaw = await listSupabaseBookings();
+        const rows = rowsRaw.map((row) => ({
+          ...row,
+          internal_notes: row?.internal_notes || row?.message || '',
+          message: row?.message || row?.internal_notes || '',
+        }));
+        return res.status(200).json(rows);
+      } catch (supabaseError) {
+        const message = supabaseError instanceof Error ? supabaseError.message : 'Supabase fetch failed';
+        return res.status(502).json({ error: message, provider: dbProvider });
+      }
+    }
+
     let wpConfig;
     try {
       wpConfig = getWpConfig();
@@ -94,6 +117,19 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'No valid fields to update' });
     }
 
+    if (isSupabaseProvider()) {
+      try {
+        const booking = await updateSupabaseBookingById(id, updates);
+        if ('status' in updates) {
+          await sendBookingStatusEmail(booking).catch(() => {});
+        }
+        return res.status(200).json(booking);
+      } catch (supabaseError) {
+        const message = supabaseError instanceof Error ? supabaseError.message : 'Supabase update failed';
+        return res.status(502).json({ error: message, provider: dbProvider });
+      }
+    }
+
     let wpConfig;
     try {
       wpConfig = getWpConfig();
@@ -132,6 +168,16 @@ export default async function handler(req, res) {
   if (req.method === 'DELETE') {
     const id = req.query?.id;
     if (!id) return res.status(400).json({ error: 'Missing booking id' });
+
+    if (isSupabaseProvider()) {
+      try {
+        const result = await deleteSupabaseBookingById(id);
+        return res.status(200).json({ ok: true, deleted: result.deleted });
+      } catch (supabaseError) {
+        const message = supabaseError instanceof Error ? supabaseError.message : 'Supabase delete failed';
+        return res.status(502).json({ error: message, provider: dbProvider });
+      }
+    }
 
     let wpConfig;
     try {

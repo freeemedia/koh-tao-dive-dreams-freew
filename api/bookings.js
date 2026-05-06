@@ -1,4 +1,12 @@
 import { sendBookingNotificationEmail } from './send-booking-notification.js';
+import {
+  getDbProvider,
+  isSupabaseProvider,
+  listSupabaseBookings,
+  insertSupabaseBooking,
+  updateSupabaseBookingById,
+  deleteSupabaseBookingById,
+} from './_lib/supabase-bookings.js';
 
 function parseBody(req) {
   if (!req || req.body == null) return {};
@@ -220,6 +228,7 @@ async function fetchBookingsFromWordPress() {
 
 export default async function handler(req, res) {
   try {
+    const dbProvider = getDbProvider();
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -229,6 +238,16 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'GET') {
+      if (isSupabaseProvider()) {
+        try {
+          const rows = await listSupabaseBookings();
+          return res.status(200).json({ bookings: rows, source: 'supabase' });
+        } catch (supabaseError) {
+          const message = supabaseError instanceof Error ? supabaseError.message : 'Supabase fetch failed';
+          return res.status(502).json({ error: message, provider: dbProvider });
+        }
+      }
+
       try {
         const wpRows = await fetchBookingsFromWordPress();
         if (!wpRows) {
@@ -250,6 +269,20 @@ export default async function handler(req, res) {
           ? globalThis.crypto.randomUUID()
           : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
         const payload = normalizeBookingPayload({ id: generatedId, ...rest }, { includeId: true });
+
+        if (isSupabaseProvider()) {
+          try {
+            const inserted = await insertSupabaseBooking(payload);
+            await sendBookingNotificationEmail({
+              ...inserted,
+              item_title: inserted.course_title || inserted.item_title,
+            }).catch(() => {});
+            return res.status(201).json(inserted);
+          } catch (supabaseError) {
+            const message = supabaseError instanceof Error ? supabaseError.message : 'Supabase booking create failed';
+            return res.status(502).json({ error: message, provider: dbProvider });
+          }
+        }
 
         // WordPress is the source of truth: creation must succeed here first.
         let wpMirrorResult = null;
@@ -287,6 +320,16 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'No valid fields to update' });
       }
 
+      if (isSupabaseProvider()) {
+        try {
+          const updated = await updateSupabaseBookingById(id, updates);
+          return res.status(200).json(updated);
+        } catch (supabaseError) {
+          const message = supabaseError instanceof Error ? supabaseError.message : 'Supabase update failed';
+          return res.status(502).json({ error: message, provider: dbProvider });
+        }
+      }
+
       const wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
       const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
       const wpId = Number.parseInt(String(id), 10);
@@ -312,6 +355,16 @@ export default async function handler(req, res) {
     if (req.method === 'DELETE') {
       const id = req.query?.id || (parseBody(req) || {}).id;
       if (!id) return res.status(400).json({ error: 'Missing booking id' });
+
+      if (isSupabaseProvider()) {
+        try {
+          const result = await deleteSupabaseBookingById(id);
+          return res.status(200).json(result);
+        } catch (supabaseError) {
+          const message = supabaseError instanceof Error ? supabaseError.message : 'Supabase delete failed';
+          return res.status(502).json({ error: message, provider: dbProvider });
+        }
+      }
 
       const wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
       const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();

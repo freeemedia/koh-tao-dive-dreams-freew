@@ -222,7 +222,7 @@ const findBookingRecordById = async (id) => {
   return null;
 };
 
-// Rouapp.get('/api/bookings', async (req, res) => {
+// Routeapp.get('/api/bookings', async (req, res) => {
   l
   const adminUser = await requireAdmin(req, res);
   if (!adminUser) return;
