@@ -149,10 +149,9 @@ function toSupabasePayload(payload) {
 }
 
 async function mirrorBookingToWordPress(payload) {
-  const canonicalWpUrl = 'https://lightsalmon-dinosaur-377714.hostingersite.com';
   let wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
-  if (!wpUrl || /admin\.divinginasia\.com$/i.test(wpUrl)) {
-    wpUrl = canonicalWpUrl;
+  if (!wpUrl) {
+    return { ok: false, skipped: true, reason: 'WP_BOOKING_URL missing' };
   }
   const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
   if (!wpApiKey) {
@@ -232,10 +231,9 @@ async function mirrorBookingToWordPress(payload) {
 }
 
 async function fetchBookingsFromWordPress() {
-  const canonicalWpUrl = 'https://lightsalmon-dinosaur-377714.hostingersite.com';
   let wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
-  if (!wpUrl || /admin\.divinginasia\.com$/i.test(wpUrl)) {
-    wpUrl = canonicalWpUrl;
+  if (!wpUrl) {
+    return null;
   }
 
   const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
