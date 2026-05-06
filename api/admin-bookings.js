@@ -1,27 +1,12 @@
 // api/admin-bookings.js
-// Server-side handler: uses service role key to bypass RLS on bookings table.
-// GET  /api/admin-bookings          → list all bookings
-// PATCH /api/admin-bookings?id=xxx  → update booking fields
+// WordPress/MySQL-backed admin handler.
+// GET    /api/admin-bookings
+// PATCH  /api/admin-bookings?id=123
+// DELETE /api/admin-bookings?id=123
 
-import { createClient } from '@supabase/supabase-js';
 import { sendBookingStatusEmail } from './send-booking-notification.js';
 
-function getSupabaseAdmin() {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY env vars');
-  return createClient(url, key);
-}
-
-function getAllowedAdminEmails() {
-  const raw = (process.env.ADMIN_EMAILS || process.env.VITE_ADMIN_EMAILS || '').trim();
-  return raw
-    .split(',')
-    .map((email) => String(email || '').trim().toLowerCase())
-    .filter(Boolean);
-}
-
-async function ensureAdmin(req, supabase) {
+async function ensureAdmin(req) {
   const viewToken = process.env.ADMIN_BOOKINGS_VIEW_TOKEN || process.env.ADMIN_VIEW_TOKEN;
   const suppliedViewToken = req.headers['x-admin-view-token'] || req.query?.view_token;
   if (viewToken && suppliedViewToken && String(suppliedViewToken) === String(viewToken)) {
@@ -35,31 +20,16 @@ async function ensureAdmin(req, supabase) {
     return { ok: true, mode: 'static-token' };
   }
 
-  const authHeader = req.headers.authorization || '';
-  const bearerToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
-  if (!bearerToken) {
-    return { ok: false, status: 401, error: 'Missing admin credentials' };
-  }
+  return { ok: false, status: 401, error: 'Missing admin credentials' };
+}
 
-  const { data, error } = await supabase.auth.getUser(bearerToken);
-  if (error || !data?.user) {
-    return { ok: false, status: 401, error: 'Invalid admin session token' };
+function getWpConfig() {
+  const wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
+  const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
+  if (!wpUrl || !wpApiKey) {
+    throw new Error('Missing WP_BOOKING_URL or WP_BOOKING_API_KEY env vars');
   }
-
-  const user = data.user;
-  const appRole = user.app_metadata?.app_role;
-  const userRole = user.user_metadata?.app_role || user.user_metadata?.role;
-  if (appRole === 'admin' || userRole === 'admin') {
-    return { ok: true, mode: 'supabase-role' };
-  }
-
-  const allowedEmails = getAllowedAdminEmails();
-  const normalizedEmail = String(user.email || '').trim().toLowerCase();
-  if (allowedEmails.includes(normalizedEmail)) {
-    return { ok: true, mode: 'allowlist' };
-  }
-
-  return { ok: false, status: 403, error: 'Admin access denied' };
+  return { wpUrl, wpApiKey };
 }
 
 export default async function handler(req, res) {
@@ -69,53 +39,44 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-login-token, x-admin-view-token');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const supabase = getSupabaseAdmin();
-  const adminCheck = await ensureAdmin(req, supabase);
+  const adminCheck = await ensureAdmin(req);
   if (!adminCheck.ok) {
     return res.status(adminCheck.status || 401).json({ error: adminCheck.error || 'Unauthorized' });
   }
 
   if (req.method === 'GET') {
-    const wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
-    const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
-
-    if (wpUrl && wpApiKey) {
-      // Proxy from WordPress REST API
-      let wpRes, wpJson;
-      try {
-        const sep = wpUrl.includes('?') ? '&' : '?';
-        const endpoint = `${wpUrl}/wp-json/ktd/v1/bookings${sep}nocache=${Date.now()}`;
-        wpRes = await fetch(endpoint, {
-          cache: 'no-store',
-          headers: {
-            'x-ktd-api-key': wpApiKey,
-            'cache-control': 'no-cache',
-          },
-        });
-        wpJson = await wpRes.json();
-      } catch (err) {
-        return res.status(502).json({ error: 'Failed to reach WordPress: ' + err.message });
-      }
-      if (!wpRes.ok) {
-        return res.status(wpRes.status).json({ error: wpJson?.message || 'WordPress API error' });
-      }
-      const rowsRaw = Array.isArray(wpJson?.data) ? wpJson.data : (Array.isArray(wpJson) ? wpJson : []);
-      const rows = rowsRaw.map((row) => ({
-        ...row,
-        internal_notes: row?.internal_notes || row?.message || '',
-        message: row?.message || row?.internal_notes || '',
-      }));
-      return res.status(200).json(rows);
+    let wpConfig;
+    try {
+      wpConfig = getWpConfig();
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
     }
 
-    // Fallback: Supabase
-    const { data, error } = await supabase
-      .from('bookings')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) return res.status(500).json({ error: error.message });
-    return res.status(200).json(data);
+    let wpRes;
+    let wpJson;
+    try {
+      const endpoint = `${wpConfig.wpUrl}/wp-json/ktd/v1/bookings?nocache=${Date.now()}`;
+      wpRes = await fetch(endpoint, {
+        cache: 'no-store',
+        headers: {
+          'x-ktd-api-key': wpConfig.wpApiKey,
+          'cache-control': 'no-cache',
+        },
+      });
+      wpJson = await wpRes.json().catch(() => null);
+    } catch (err) {
+      return res.status(502).json({ error: `Failed to reach WordPress: ${err.message}` });
+    }
+    if (!wpRes.ok) {
+      return res.status(wpRes.status).json({ error: wpJson?.message || 'WordPress API error' });
+    }
+    const rowsRaw = Array.isArray(wpJson?.data) ? wpJson.data : (Array.isArray(wpJson) ? wpJson : []);
+    const rows = rowsRaw.map((row) => ({
+      ...row,
+      internal_notes: row?.internal_notes || row?.message || '',
+      message: row?.message || row?.internal_notes || '',
+    }));
+    return res.status(200).json(rows);
   }
 
   if (req.method === 'PATCH') {
@@ -133,93 +94,71 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'No valid fields to update' });
     }
 
-    const wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
-    const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
-
-    if (wpUrl && wpApiKey) {
-      // Proxy to WordPress — id may be numeric WP id or Supabase UUID
-      // Try numeric first; if non-numeric, look up WP id from Supabase
-      let wpId = parseInt(id, 10);
-      if (!wpId) {
-        // id is a Supabase UUID — look up the corresponding WP booking by supabase_id or find by matching
-        const { data: sbRow } = await supabase.from('bookings').select('wp_booking_id').eq('id', id).single().catch(() => ({ data: null }));
-        wpId = sbRow?.wp_booking_id || 0;
-      }
-
-      if (wpId) {
-        let wpRes, wpJson;
-        try {
-          wpRes = await fetch(`${wpUrl}/wp-json/ktd/v1/bookings/${wpId}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json', 'x-ktd-api-key': wpApiKey },
-            body: JSON.stringify(updates),
-          });
-          wpJson = await wpRes.json().catch(() => ({}));
-        } catch (err) {
-          return res.status(502).json({ error: 'Failed to reach WordPress: ' + err.message });
-        }
-        if (!wpRes.ok) {
-          return res.status(wpRes.status).json({ error: wpJson?.message || 'WordPress update failed' });
-        }
-        // Also sync to Supabase (best-effort, don't fail if it errors)
-        await supabase.from('bookings').update(updates).eq('id', id).catch(() => {});
-        if ('status' in updates) {
-          await sendBookingStatusEmail({ ...(wpJson?.booking || {}), id }).catch(() => {});
-        }
-        return res.status(200).json(wpJson?.booking || { id, ...updates });
-      }
-      // No WP id found — fall through to Supabase-only update
+    let wpConfig;
+    try {
+      wpConfig = getWpConfig();
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
     }
 
-    const { data, error } = await supabase
-      .from('bookings')
-      .update(updates)
-      .eq('id', id)
-      .select()
-      .single();
+    const wpId = parseInt(id, 10);
+    if (!wpId) {
+      return res.status(400).json({ error: 'Booking id must be numeric.' });
+    }
 
-    if (error) return res.status(500).json({ error: error.message });
+    let wpRes;
+    let wpJson;
+    try {
+      wpRes = await fetch(`${wpConfig.wpUrl}/wp-json/ktd/v1/bookings/${wpId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-ktd-api-key': wpConfig.wpApiKey },
+        body: JSON.stringify(updates),
+      });
+      wpJson = await wpRes.json().catch(() => ({}));
+    } catch (err) {
+      return res.status(502).json({ error: `Failed to reach WordPress: ${err.message}` });
+    }
+    if (!wpRes.ok) {
+      return res.status(wpRes.status).json({ error: wpJson?.message || 'WordPress update failed' });
+    }
 
+    const booking = wpJson?.booking || { id: wpId, ...updates };
     if ('status' in updates) {
-      await sendBookingStatusEmail(data || {}).catch(() => {});
+      await sendBookingStatusEmail(booking).catch(() => {});
     }
-
-    return res.status(200).json(data);
+    return res.status(200).json(booking);
   }
 
   if (req.method === 'DELETE') {
     const id = req.query?.id;
     if (!id) return res.status(400).json({ error: 'Missing booking id' });
 
-    const wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
-    const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
-
-    if (wpUrl && wpApiKey) {
-      let wpId = parseInt(id, 10);
-      if (!wpId) {
-        const { data: sbRow } = await supabase.from('bookings').select('wp_booking_id').eq('id', id).single().catch(() => ({ data: null }));
-        wpId = sbRow?.wp_booking_id || 0;
-      }
-      if (wpId) {
-        try {
-          const wpRes = await fetch(`${wpUrl}/wp-json/ktd/v1/bookings/${wpId}`, {
-            method: 'DELETE',
-            headers: { 'x-ktd-api-key': wpApiKey },
-          });
-          if (!wpRes.ok) {
-            const wpJson = await wpRes.json().catch(() => ({}));
-            return res.status(wpRes.status).json({ error: wpJson?.message || 'WordPress delete failed' });
-          }
-        } catch (err) {
-          return res.status(502).json({ error: 'Failed to reach WordPress: ' + err.message });
-        }
-      }
+    let wpConfig;
+    try {
+      wpConfig = getWpConfig();
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
     }
 
-    // Always also delete from Supabase
-    const { error } = await supabase.from('bookings').delete().eq('id', id);
-    if (error) return res.status(500).json({ error: error.message });
-    return res.status(200).json({ ok: true, deleted: id });
+    const wpId = parseInt(id, 10);
+    if (!wpId) {
+      return res.status(400).json({ error: 'Booking id must be numeric.' });
+    }
+
+    try {
+      const wpRes = await fetch(`${wpConfig.wpUrl}/wp-json/ktd/v1/bookings/${wpId}`, {
+        method: 'DELETE',
+        headers: { 'x-ktd-api-key': wpConfig.wpApiKey },
+      });
+      if (!wpRes.ok) {
+        const wpJson = await wpRes.json().catch(() => ({}));
+        return res.status(wpRes.status).json({ error: wpJson?.message || 'WordPress delete failed' });
+      }
+    } catch (err) {
+      return res.status(502).json({ error: `Failed to reach WordPress: ${err.message}` });
+    }
+
+    return res.status(200).json({ ok: true, deleted: wpId });
   }
 
   res.status(405).json({ error: 'Method not allowed' });

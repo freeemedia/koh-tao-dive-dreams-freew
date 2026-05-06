@@ -1,22 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
 import { sendBookingNotificationEmail } from './send-booking-notification.js';
-
-function getSupabaseAdmin() {
-  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
-  if (!url || !key) {
-    throw new Error('Missing Supabase env vars. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (or fallback keys).');
-  }
-  return createClient(url, key);
-}
-
-function tryGetSupabaseAdmin() {
-  try {
-    return getSupabaseAdmin();
-  } catch {
-    return null;
-  }
-}
 
 function parseBody(req) {
   if (!req || req.body == null) return {};
@@ -115,36 +97,6 @@ function normalizeBookingPayload(input, { includeId = false } = {}) {
 
   normalizeAmounts(src, out);
 
-  return out;
-}
-
-// Map normalized payload to actual Supabase column names
-function toSupabasePayload(payload) {
-  const {
-    total_amount,
-    deposit_amount,
-    due_amount,
-    booking_type,
-    item_title,
-    accommodation,
-    booking_source,
-    currency,
-    guests,
-    nights,
-    paypal_link,
-    raw_payload,
-    nationality,
-    ...rest
-  } = payload;
-
-  const out = { ...rest };
-  // Map to Supabase column names
-  if (deposit_amount != null) out.total_payable_now = deposit_amount;
-  if (total_amount != null) out.subtotal_amount = total_amount;
-  // item_title maps to course_title if not already set
-  if (item_title != null && out.course_title == null) out.course_title = item_title;
-  // item_type from booking_type
-  if (booking_type != null) out.item_type = booking_type;
   return out;
 }
 
@@ -277,28 +229,16 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'GET') {
-      // WordPress is primary when configured (matches migrated WP tables).
       try {
         const wpRows = await fetchBookingsFromWordPress();
-        if (wpRows) {
-          return res.status(200).json({ bookings: wpRows, source: 'wordpress' });
+        if (!wpRows) {
+          return res.status(500).json({ error: 'WordPress booking API is not configured.' });
         }
+        return res.status(200).json({ bookings: wpRows, source: 'wordpress' });
       } catch (wpError) {
-        console.warn('WordPress bookings fetch failed, falling back to Supabase:', wpError);
+        const message = wpError instanceof Error ? wpError.message : 'WordPress fetch failed';
+        return res.status(502).json({ error: message });
       }
-
-      const supabase = tryGetSupabaseAdmin();
-      if (!supabase) {
-        return res.status(500).json({ error: 'WordPress fetch failed and Supabase is not configured.' });
-      }
-
-      const { data, error } = await supabase
-        .from('bookings')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) return res.status(500).json({ error: error.message });
-      return res.status(200).json({ bookings: data || [], source: 'supabase' });
     }
 
     if (req.method === 'POST') {
@@ -323,25 +263,6 @@ export default async function handler(req, res) {
           return res.status(502).json({ error: message });
         }
 
-        let supabaseWriteWarning = null;
-        let created = null;
-        const supabase = tryGetSupabaseAdmin();
-        if (supabase) {
-          const supabasePayload = toSupabasePayload(payload);
-          const { data, error } = await supabase
-            .from('bookings')
-            .insert(supabasePayload)
-            .select();
-
-          if (error) {
-            supabaseWriteWarning = error.message;
-          } else {
-            created = Array.isArray(data) ? data[0] : data;
-          }
-        } else {
-          supabaseWriteWarning = 'Supabase not configured; skipped secondary write.';
-        }
-
         // Best effort email notification for new bookings.
         await sendBookingNotificationEmail({
           ...payload,
@@ -349,17 +270,10 @@ export default async function handler(req, res) {
         }).catch(() => {});
 
         const responsePayload = {
-          ...(created || payload),
+          ...payload,
           wp_mirror_endpoint: wpMirrorResult?.endpoint || null,
           wp_mirror_id: wpMirrorResult?.id || null,
         };
-
-        if (supabaseWriteWarning) {
-          return res.status(201).json({
-            ...responsePayload,
-            supabase_warning: supabaseWriteWarning,
-          });
-        }
 
         return res.status(201).json(responsePayload);
       }
@@ -373,37 +287,51 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'No valid fields to update' });
       }
 
-      const supabase = tryGetSupabaseAdmin();
-      if (!supabase) {
-        return res.status(500).json({ error: 'Supabase is not configured for updates.' });
+      const wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
+      const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
+      const wpId = Number.parseInt(String(id), 10);
+      if (!wpUrl || !wpApiKey) {
+        return res.status(500).json({ error: 'WordPress booking API is not configured.' });
+      }
+      if (!wpId) {
+        return res.status(400).json({ error: 'Booking id must be a numeric WordPress id.' });
       }
 
-      const { data, error } = await supabase
-        .from('bookings')
-        .update(updates)
-        .eq('id', id)
-        .select();
-
-      if (error) return res.status(500).json({ error: error.message });
-      return res.status(200).json(Array.isArray(data) ? data[0] : data);
+      const wpRes = await fetch(`${wpUrl}/wp-json/ktd/v1/bookings/${wpId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-ktd-api-key': wpApiKey },
+        body: JSON.stringify(updates),
+      });
+      const wpJson = await wpRes.json().catch(() => ({}));
+      if (!wpRes.ok) {
+        return res.status(wpRes.status).json({ error: wpJson?.message || 'WordPress update failed' });
+      }
+      return res.status(200).json(wpJson?.booking || wpJson || { id: wpId, ...updates });
     }
 
     if (req.method === 'DELETE') {
       const id = req.query?.id || (parseBody(req) || {}).id;
       if (!id) return res.status(400).json({ error: 'Missing booking id' });
 
-      const supabase = tryGetSupabaseAdmin();
-      if (!supabase) {
-        return res.status(500).json({ error: 'Supabase is not configured for deletes.' });
+      const wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
+      const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
+      const wpId = Number.parseInt(String(id), 10);
+      if (!wpUrl || !wpApiKey) {
+        return res.status(500).json({ error: 'WordPress booking API is not configured.' });
+      }
+      if (!wpId) {
+        return res.status(400).json({ error: 'Booking id must be a numeric WordPress id.' });
       }
 
-      const { error } = await supabase
-        .from('bookings')
-        .delete()
-        .eq('id', id);
-
-      if (error) return res.status(500).json({ error: error.message });
-      return res.status(200).json({ deleted: id });
+      const wpRes = await fetch(`${wpUrl}/wp-json/ktd/v1/bookings/${wpId}`, {
+        method: 'DELETE',
+        headers: { 'x-ktd-api-key': wpApiKey },
+      });
+      if (!wpRes.ok) {
+        const wpJson = await wpRes.json().catch(() => ({}));
+        return res.status(wpRes.status).json({ error: wpJson?.message || 'WordPress delete failed' });
+      }
+      return res.status(200).json({ deleted: wpId });
     }
 
     res.setHeader('Allow', ['GET', 'POST', 'DELETE']);
