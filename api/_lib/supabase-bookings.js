@@ -15,8 +15,8 @@ function parseTableRef(tableRef, defaultSchema) {
 }
 
 export function getDbProvider() {
-  const provider = cleanProvider(process.env.DB_PROVIDER || 'wordpress');
-  return provider || 'wordpress';
+  const provider = cleanProvider(process.env.DB_PROVIDER || 'hostinger');
+  return provider || 'hostinger';
 }
 
 export function isSupabaseProvider() {

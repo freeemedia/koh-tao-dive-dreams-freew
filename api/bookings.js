@@ -165,124 +165,6 @@ function normalizeBookingPayload(input, { includeId = false } = {}) {
   return out;
 }
 
-async function mirrorBookingToWordPress(payload) {
-  let wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
-  if (!wpUrl) {
-    return { ok: false, skipped: true, reason: 'WP_BOOKING_URL missing' };
-  }
-  const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
-  if (!wpApiKey) {
-    return { ok: false, skipped: true, reason: 'WP_BOOKING_API_KEY missing' };
-  }
-
-  const wpPayload = {
-    name: payload.name || '',
-    email: payload.email || '',
-    phone: payload.phone || '',
-    accommodation: payload.accommodation || '',
-    preferred_date: payload.preferred_date || '',
-    experience_level: payload.experience_level || '',
-    payment_choice: payload.payment_choice || '',
-    deposit_amount: payload.deposit_amount ?? null,
-    total_amount: payload.total_amount ?? null,
-    due_amount: payload.due_amount ?? null,
-    message: payload.message || '',
-    internal_notes: payload.internal_notes || payload.message || '',
-    status: payload.status || 'new',
-    booking_type: payload.booking_type || payload.item_type || 'course',
-    item_title: payload.course_title || payload.item_title || '',
-    course_title: payload.course_title || payload.item_title || '',
-    course: payload.course_title || payload.item_title || '',
-    booking_source: 'website-api',
-  };
-
-  const baseHeaders = { 'Content-Type': 'application/json' };
-  const headerOptions = [
-    { ...baseHeaders, 'x-ktd-api-key': wpApiKey },
-  ];
-  const endpointOptions = [
-    `${wpUrl}/wp-json/ktd/v1/bookings/create`,
-    `${wpUrl}/wp-json/ktd/v1/bookings`,
-  ];
-
-  const attempts = [];
-  for (const endpoint of endpointOptions) {
-    for (const headers of headerOptions) {
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(wpPayload),
-      });
-      const text = await res.text();
-      let parsed = null;
-      try {
-        parsed = text ? JSON.parse(text) : null;
-      } catch {
-        parsed = null;
-      }
-
-      const mirrorId = parsed && typeof parsed === 'object'
-        ? (parsed.id || parsed.booking_id || (parsed.data && parsed.data.id))
-        : null;
-      if (res.ok && mirrorId != null) {
-        return {
-          ok: true,
-          endpoint,
-          status: res.status,
-          id: mirrorId,
-        };
-      }
-
-      attempts.push({
-        endpoint,
-        status: res.status,
-        body: (parsed && (parsed.message || parsed.code)) || text || 'unknown response',
-      });
-    }
-  }
-
-  const details = attempts
-    .map((a) => `${a.endpoint} -> ${a.status} ${a.body}`)
-    .join(' | ');
-  throw new Error(`WordPress mirror failed: ${details}`);
-}
-
-async function fetchBookingsFromWordPress() {
-  let wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
-  if (!wpUrl) {
-    return null;
-  }
-
-  const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
-  if (!wpUrl || !wpApiKey) return null;
-
-  const endpoint = `${wpUrl}/wp-json/ktd/v1/bookings?nocache=${Date.now()}`;
-  const response = await fetch(endpoint, {
-    headers: {
-      'Content-Type': 'application/json',
-      'x-ktd-api-key': wpApiKey,
-      'cache-control': 'no-cache',
-    },
-    cache: 'no-store',
-  });
-
-  if (!response.ok) {
-    const text = await response.text().catch(() => '');
-    throw new Error(`WordPress GET failed (${response.status}): ${text || 'unknown error'}`);
-  }
-
-  const json = await response.json().catch(() => null);
-  const rowsRaw = Array.isArray(json?.data) ? json.data : (Array.isArray(json) ? json : []);
-
-  const rows = rowsRaw.map((row) => ({
-    ...row,
-    internal_notes: row?.internal_notes || row?.message || '',
-    message: row?.message || row?.internal_notes || '',
-  }));
-
-  return rows;
-}
-
 export default async function handler(req, res) {
   try {
     const dbProvider = getDbProvider();
@@ -315,16 +197,7 @@ export default async function handler(req, res) {
         }
       }
 
-      try {
-        const wpRows = await fetchBookingsFromWordPress();
-        if (!wpRows) {
-          return res.status(500).json({ error: 'WordPress booking API is not configured.' });
-        }
-        return res.status(200).json({ bookings: wpRows, source: 'wordpress' });
-      } catch (wpError) {
-        const message = wpError instanceof Error ? wpError.message : 'WordPress fetch failed';
-        return res.status(502).json({ error: message });
-      }
+      return res.status(500).json({ error: `Unsupported DB provider for bookings: ${dbProvider}` });
     }
 
     if (req.method === 'POST') {
@@ -361,29 +234,7 @@ export default async function handler(req, res) {
           }
         }
 
-        // WordPress is the source of truth: creation must succeed here first.
-        let wpMirrorResult = null;
-        try {
-          wpMirrorResult = await mirrorBookingToWordPress(payload);
-          if (wpMirrorResult && wpMirrorResult.ok === false) {
-            return res.status(502).json({ error: `WordPress booking create skipped: ${wpMirrorResult.reason || 'unknown reason'}` });
-          }
-        } catch (err) {
-          const message = err instanceof Error ? err.message : 'WordPress booking create failed';
-          return res.status(502).json({ error: message });
-        }
-
-        // Best effort email notification for new bookings.
-        const wpEmailPayload = { ...payload, item_title: payload.course_title || payload.item_title };
-        await dispatchBookingNotifications(wpEmailPayload);
-
-        const responsePayload = {
-          ...payload,
-          wp_mirror_endpoint: wpMirrorResult?.endpoint || null,
-          wp_mirror_id: wpMirrorResult?.id || null,
-        };
-
-        return res.status(201).json(responsePayload);
+        return res.status(500).json({ error: `Unsupported DB provider for bookings: ${dbProvider}` });
       }
 
       if (Object.keys(rest).length === 0) {
@@ -415,26 +266,7 @@ export default async function handler(req, res) {
         }
       }
 
-      const wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
-      const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
-      const wpId = Number.parseInt(String(id), 10);
-      if (!wpUrl || !wpApiKey) {
-        return res.status(500).json({ error: 'WordPress booking API is not configured.' });
-      }
-      if (!wpId) {
-        return res.status(400).json({ error: 'Booking id must be a numeric WordPress id.' });
-      }
-
-      const wpRes = await fetch(`${wpUrl}/wp-json/ktd/v1/bookings/${wpId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'x-ktd-api-key': wpApiKey },
-        body: JSON.stringify(updates),
-      });
-      const wpJson = await wpRes.json().catch(() => ({}));
-      if (!wpRes.ok) {
-        return res.status(wpRes.status).json({ error: wpJson?.message || 'WordPress update failed' });
-      }
-      return res.status(200).json(wpJson?.booking || wpJson || { id: wpId, ...updates });
+      return res.status(500).json({ error: `Unsupported DB provider for bookings: ${dbProvider}` });
     }
 
     if (req.method === 'DELETE') {
@@ -461,25 +293,7 @@ export default async function handler(req, res) {
         }
       }
 
-      const wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
-      const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
-      const wpId = Number.parseInt(String(id), 10);
-      if (!wpUrl || !wpApiKey) {
-        return res.status(500).json({ error: 'WordPress booking API is not configured.' });
-      }
-      if (!wpId) {
-        return res.status(400).json({ error: 'Booking id must be a numeric WordPress id.' });
-      }
-
-      const wpRes = await fetch(`${wpUrl}/wp-json/ktd/v1/bookings/${wpId}`, {
-        method: 'DELETE',
-        headers: { 'x-ktd-api-key': wpApiKey },
-      });
-      if (!wpRes.ok) {
-        const wpJson = await wpRes.json().catch(() => ({}));
-        return res.status(wpRes.status).json({ error: wpJson?.message || 'WordPress delete failed' });
-      }
-      return res.status(200).json({ deleted: wpId });
+      return res.status(500).json({ error: `Unsupported DB provider for bookings: ${dbProvider}` });
     }
 
     res.setHeader('Allow', ['GET', 'POST', 'DELETE']);

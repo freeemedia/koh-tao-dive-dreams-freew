@@ -1,5 +1,5 @@
 // api/admin-bookings.js
-// WordPress/MySQL-backed admin handler.
+// MySQL/Supabase-backed admin handler.
 // GET    /api/admin-bookings
 // PATCH  /api/admin-bookings?id=123
 // DELETE /api/admin-bookings?id=123
@@ -34,15 +34,6 @@ async function ensureAdmin(req) {
   }
 
   return { ok: false, status: 401, error: `Missing admin credentials (got token: ${suppliedAdminToken ? 'yes' : 'no'}, expected: ${staticToken ? 'configured' : 'NOT configured'})` };
-}
-
-function getWpConfig() {
-  const wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
-  const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
-  if (!wpUrl || !wpApiKey) {
-    throw new Error('Missing WP_BOOKING_URL or WP_BOOKING_API_KEY env vars');
-  }
-  return { wpUrl, wpApiKey };
 }
 
 export default async function handler(req, res) {
@@ -84,38 +75,7 @@ export default async function handler(req, res) {
       }
     }
 
-    let wpConfig;
-    try {
-      wpConfig = getWpConfig();
-    } catch (err) {
-      return res.status(500).json({ error: err.message });
-    }
-
-    let wpRes;
-    let wpJson;
-    try {
-      const endpoint = `${wpConfig.wpUrl}/wp-json/ktd/v1/bookings?nocache=${Date.now()}`;
-      wpRes = await fetch(endpoint, {
-        cache: 'no-store',
-        headers: {
-          'x-ktd-api-key': wpConfig.wpApiKey,
-          'cache-control': 'no-cache',
-        },
-      });
-      wpJson = await wpRes.json().catch(() => null);
-    } catch (err) {
-      return res.status(502).json({ error: `Failed to reach WordPress: ${err.message}` });
-    }
-    if (!wpRes.ok) {
-      return res.status(wpRes.status).json({ error: wpJson?.message || 'WordPress API error' });
-    }
-    const rowsRaw = Array.isArray(wpJson?.data) ? wpJson.data : (Array.isArray(wpJson) ? wpJson : []);
-    const rows = rowsRaw.map((row) => ({
-      ...row,
-      internal_notes: row?.internal_notes || row?.message || '',
-      message: row?.message || row?.internal_notes || '',
-    }));
-    return res.status(200).json(rows);
+    return res.status(500).json({ error: `Unsupported DB provider for admin bookings: ${dbProvider}` });
   }
 
   if (req.method === 'PATCH') {
@@ -159,39 +119,7 @@ export default async function handler(req, res) {
       }
     }
 
-    let wpConfig;
-    try {
-      wpConfig = getWpConfig();
-    } catch (err) {
-      return res.status(500).json({ error: err.message });
-    }
-
-    const wpId = parseInt(id, 10);
-    if (!wpId) {
-      return res.status(400).json({ error: 'Booking id must be numeric.' });
-    }
-
-    let wpRes;
-    let wpJson;
-    try {
-      wpRes = await fetch(`${wpConfig.wpUrl}/wp-json/ktd/v1/bookings/${wpId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'x-ktd-api-key': wpConfig.wpApiKey },
-        body: JSON.stringify(updates),
-      });
-      wpJson = await wpRes.json().catch(() => ({}));
-    } catch (err) {
-      return res.status(502).json({ error: `Failed to reach WordPress: ${err.message}` });
-    }
-    if (!wpRes.ok) {
-      return res.status(wpRes.status).json({ error: wpJson?.message || 'WordPress update failed' });
-    }
-
-    const booking = wpJson?.booking || { id: wpId, ...updates };
-    if ('status' in updates) {
-      await sendBookingStatusEmail(booking).catch(() => {});
-    }
-    return res.status(200).json(booking);
+    return res.status(500).json({ error: `Unsupported DB provider for admin bookings: ${dbProvider}` });
   }
 
   if (req.method === 'DELETE') {
@@ -218,32 +146,7 @@ export default async function handler(req, res) {
       }
     }
 
-    let wpConfig;
-    try {
-      wpConfig = getWpConfig();
-    } catch (err) {
-      return res.status(500).json({ error: err.message });
-    }
-
-    const wpId = parseInt(id, 10);
-    if (!wpId) {
-      return res.status(400).json({ error: 'Booking id must be numeric.' });
-    }
-
-    try {
-      const wpRes = await fetch(`${wpConfig.wpUrl}/wp-json/ktd/v1/bookings/${wpId}`, {
-        method: 'DELETE',
-        headers: { 'x-ktd-api-key': wpConfig.wpApiKey },
-      });
-      if (!wpRes.ok) {
-        const wpJson = await wpRes.json().catch(() => ({}));
-        return res.status(wpRes.status).json({ error: wpJson?.message || 'WordPress delete failed' });
-      }
-    } catch (err) {
-      return res.status(502).json({ error: `Failed to reach WordPress: ${err.message}` });
-    }
-
-    return res.status(200).json({ ok: true, deleted: wpId });
+    return res.status(500).json({ error: `Unsupported DB provider for admin bookings: ${dbProvider}` });
   }
 
   res.status(405).json({ error: 'Method not allowed' });
