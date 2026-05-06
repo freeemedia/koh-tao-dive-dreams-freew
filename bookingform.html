@@ -214,6 +214,7 @@
 				});
 				if(bookingResponse.ok) {
 					successMsg.style.display = 'block';
+					setTimeout(() => { window.location.href = '/thank-you.html'; }, 1200);
 					form.reset();
 					if (itemParam) {
 						form.elements['course'].value = itemParam;

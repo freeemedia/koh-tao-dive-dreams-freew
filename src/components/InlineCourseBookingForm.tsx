@@ -131,6 +131,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
           setTimeout(() => { window.location.href = `${paypalBase}/${deposit}THB`; }, 1500);
         } else {
           toast.success('Booking inquiry sent! We\'ll be in touch within 24 hours.');
+          setTimeout(() => { window.location.href = '/thank-you.html'; }, 1200);
         }
       } else {
         toast.error(`Failed to save booking: ${dbError}`);
