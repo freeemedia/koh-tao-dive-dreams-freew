@@ -2,6 +2,18 @@ function cleanProvider(value) {
   return String(value || '').trim().toLowerCase();
 }
 
+function parseTableRef(tableRef, defaultSchema) {
+  const raw = String(tableRef || '').trim();
+  if (!raw) return { schema: defaultSchema, table: 'bookings' };
+
+  const parts = raw.split('.').map((p) => p.trim()).filter(Boolean);
+  if (parts.length === 2) {
+    return { schema: parts[0], table: parts[1] };
+  }
+
+  return { schema: defaultSchema, table: raw };
+}
+
 export function getDbProvider() {
   const provider = cleanProvider(process.env.DB_PROVIDER || 'wordpress');
   return provider || 'wordpress';
@@ -27,17 +39,23 @@ function getSupabaseConfig() {
     ''
   ).trim();
 
-  const table = (process.env.SUPABASE_BOOKINGS_TABLE || 'bookings').trim() || 'bookings';
+  const schema = 'public';
+  const parsed = parseTableRef(process.env.SUPABASE_BOOKINGS_TABLE || 'bookings', schema);
 
   if (!url || !apiKey) {
     throw new Error('Missing SUPABASE_URL or Supabase API key (SUPABASE_SERVICE_ROLE_KEY preferred)');
   }
 
-  return { url, apiKey, table };
+  return {
+    url,
+    apiKey,
+    schema: parsed.schema,
+    table: parsed.table,
+  };
 }
 
 async function supabaseRequest(path, options = {}) {
-  const { url, apiKey } = getSupabaseConfig();
+  const { url, apiKey, schema } = getSupabaseConfig();
   const endpoint = `${url}/rest/v1/${path}`;
   const response = await fetch(endpoint, {
     method: options.method || 'GET',
@@ -45,6 +63,8 @@ async function supabaseRequest(path, options = {}) {
       apikey: apiKey,
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
+      'Accept-Profile': schema,
+      'Content-Profile': schema,
       ...options.headers,
     },
     body: options.body ? JSON.stringify(options.body) : undefined,
@@ -68,14 +88,14 @@ async function supabaseRequest(path, options = {}) {
 
 export async function listSupabaseBookings() {
   const { table } = getSupabaseConfig();
-  const query = `${encodeURIComponent(table)}?select=*&order=created_at.desc.nullslast`;
+  const query = `${table}?select=*&order=created_at.desc.nullslast`;
   const rows = await supabaseRequest(query);
   return Array.isArray(rows) ? rows : [];
 }
 
 export async function insertSupabaseBooking(payload) {
   const { table } = getSupabaseConfig();
-  const query = `${encodeURIComponent(table)}?select=*`;
+  const query = `${table}?select=*`;
   const rows = await supabaseRequest(query, {
     method: 'POST',
     headers: {
@@ -94,7 +114,7 @@ export async function insertSupabaseBooking(payload) {
 export async function updateSupabaseBookingById(id, updates) {
   const { table } = getSupabaseConfig();
   const safeId = encodeURIComponent(String(id));
-  const query = `${encodeURIComponent(table)}?id=eq.${safeId}&select=*`;
+  const query = `${table}?id=eq.${safeId}&select=*`;
   const rows = await supabaseRequest(query, {
     method: 'PATCH',
     headers: {
@@ -113,7 +133,7 @@ export async function updateSupabaseBookingById(id, updates) {
 export async function deleteSupabaseBookingById(id) {
   const { table } = getSupabaseConfig();
   const safeId = encodeURIComponent(String(id));
-  const query = `${encodeURIComponent(table)}?id=eq.${safeId}`;
+  const query = `${table}?id=eq.${safeId}`;
   await supabaseRequest(query, {
     method: 'DELETE',
     headers: {
