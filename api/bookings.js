@@ -8,6 +8,38 @@ import {
   deleteSupabaseBookingById,
 } from './_lib/supabase-bookings.js';
 
+async function sendFluentBookingWebhook(payload) {
+  const webhookUrl = String(process.env.FLUENT_BOOKING_WEBHOOK_URL || '').trim();
+  if (!webhookUrl) return { skipped: true, reason: 'FLUENT_BOOKING_WEBHOOK_URL missing' };
+
+  const webhookKey = String(process.env.FLUENT_BOOKING_WEBHOOK_KEY || '').trim();
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  if (webhookKey) {
+    headers['x-fluent-webhook-key'] = webhookKey;
+  }
+
+  const response = await fetch(webhookUrl, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      source: 'koh-tao-dive-dreams',
+      event: 'booking.created',
+      submitted_at: new Date().toISOString(),
+      booking: payload,
+    }),
+  });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    throw new Error(`Fluent webhook failed (${response.status}): ${text || 'unknown error'}`);
+  }
+
+  return { ok: true };
+}
+
 function parseBody(req) {
   if (!req || req.body == null) return {};
   if (typeof req.body === 'string') {
@@ -277,6 +309,7 @@ export default async function handler(req, res) {
             await Promise.all([
               sendBookingNotificationEmail(emailPayload).catch(() => {}),
               sendCustomerInvoiceEmail(emailPayload).catch(() => {}),
+              sendFluentBookingWebhook(emailPayload).catch(() => {}),
             ]);
             return res.status(201).json(inserted);
           } catch (supabaseError) {
@@ -302,6 +335,7 @@ export default async function handler(req, res) {
         await Promise.all([
           sendBookingNotificationEmail(wpEmailPayload).catch(() => {}),
           sendCustomerInvoiceEmail(wpEmailPayload).catch(() => {}),
+          sendFluentBookingWebhook(wpEmailPayload).catch(() => {}),
         ]);
 
         const responsePayload = {
