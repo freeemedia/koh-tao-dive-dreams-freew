@@ -123,6 +123,9 @@ class KTD_Booking_Manager {
         }
 
         $provided = trim((string) $request->get_header('x-ktd-api-key'));
+        if ($provided === '') {
+            $provided = trim((string) $request->get_param('api_key'));
+        }
         if ($provided === '' || !hash_equals($expected, $provided)) {
             return new WP_Error('ktd_invalid_api_key', 'Invalid API key.', array('status' => 401));
         }

@@ -130,8 +130,7 @@ const Admin = () => {
       // 1) Try direct WordPress fetch (fastest when CORS and API key are accepted)
       if (wpBase && apiKey) {
         try {
-          const response = await fetch(`${wpBase}/wp-json/ktd/v1/bookings?per_page=200&nocache=${Date.now()}`, {
-            headers: { 'x-ktd-api-key': apiKey },
+          const response = await fetch(`${wpBase}/wp-json/ktd/v1/bookings?per_page=200&nocache=${Date.now()}&api_key=${encodeURIComponent(apiKey)}`, {
             cache: 'no-store',
           });
           const payload = await response.json().catch(() => null);

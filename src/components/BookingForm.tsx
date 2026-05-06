@@ -156,9 +156,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'x-ktd-api-key': wpApiKey,
             },
             body: JSON.stringify({
+              api_key: wpApiKey,
               status: 'new',
               booking_type: itemType,
               item_title: itemTitle,

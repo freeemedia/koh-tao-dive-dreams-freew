@@ -45,9 +45,8 @@ export function queueWordPressCrmSync({ wpApiBase, wpApiKey, payload }: QueueWor
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-ktd-api-key': apiKey,
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({ ...payload, api_key: apiKey }),
     keepalive: true,
   }).then(async (response) => {
     if (response.ok) {

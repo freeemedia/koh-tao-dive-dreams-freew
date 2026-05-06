@@ -272,6 +272,7 @@ const       BookingPage: React.FC = () => {
       if (wpApiBase && wpApiKey) {
         try {
           const wpPayload = {
+            api_key: wpApiKey,
             status: 'new',
             booking_type: itemType,
             item_title: bookingItemTitle,
@@ -298,7 +299,6 @@ const       BookingPage: React.FC = () => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'x-ktd-api-key': wpApiKey,
             },
             body: JSON.stringify(wpPayload),
           });
