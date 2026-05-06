@@ -142,6 +142,9 @@
 	</div>
 	<script>
 		// Web3Forms integration
+		const form = document.getElementById('bookingForm');
+		const successMsg = document.getElementById('successMsg');
+		const errorMsg = document.getElementById('errorMsg');
 		const params = new URLSearchParams(window.location.search);
 		const itemParam = params.get('item');
 		const priceParam = params.get('price');
@@ -151,10 +154,6 @@
 		if (itemParam) {
 			form.elements['course'].value = itemParam;
 		}
-
-		const form = document.getElementById('bookingForm');
-		const successMsg = document.getElementById('successMsg');
-		const errorMsg = document.getElementById('errorMsg');
 		form.addEventListener('submit', async function(e) {
 			e.preventDefault();
 			successMsg.style.display = 'none';
@@ -195,17 +194,25 @@
 			};
 
 			try {
-				const response = await fetch('https://api.web3forms.com/submit', {
-					method: 'POST',
-					body: formData
-				});
-				const result = await response.json();
+				try {
+					const response = await fetch('https://api.web3forms.com/submit', {
+						method: 'POST',
+						body: formData
+					});
+					const result = await response.json();
+					if (!result.success) {
+						console.warn('Web3Forms submit did not return success:', result);
+					}
+				} catch (mailErr) {
+					console.warn('Web3Forms submit failed:', mailErr);
+				}
+
 				const bookingResponse = await fetch('/api/bookings', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify(bookingData)
 				});
-				if(result.success && bookingResponse.ok) {
+				if(bookingResponse.ok) {
 					successMsg.style.display = 'block';
 					form.reset();
 					if (itemParam) {

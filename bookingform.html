@@ -10,27 +10,35 @@
       font-family: 'Segoe UI', Arial, sans-serif;
       background: linear-gradient(135deg, #e0f7fa 0%, #f8f8f8 100%);
       min-height: 100vh;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .booking-container {
-      background: #fff;
-      max-width: 420px;
+      try {
+        try {
+          const response = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            body: formData
+          });
+          const result = await response.json();
+          if (!result.success) {
+            console.warn('Web3Forms submit did not return success:', result);
+          }
+        } catch (mailErr) {
+          console.warn('Web3Forms submit failed:', mailErr);
+        }
+
+        const bookingResponse = await fetch('/api/bookings', {
       width: 100%;
       margin: 2rem;
       border-radius: 18px;
       box-shadow: 0 4px 24px #0070ba22;
-      padding: 2.5rem 2rem 2rem 2rem;
-      text-align: center;
-    }
-    .logo {
-      max-width: 120px;
-      margin-bottom: 1.5rem;
-      filter: drop-shadow(0 2px 8px #0070ba33);
-    }
-    h1 {
+
+        if(bookingResponse.ok) {
+          successMsg.style.display = 'block';
+          form.reset();
+          if (itemParam) {
+            document.getElementById('course-input').value = itemParam;
+          }
+        } else {
+          errorMsg.style.display = 'block';
+        }
       color: #009688;
       margin-bottom: 0.5rem;
       font-size: 2rem;
