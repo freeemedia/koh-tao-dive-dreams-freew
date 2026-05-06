@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
 import { queueWordPressCrmSync } from '@/lib/wordpressCrmSync';
+import { sendBookingNotification } from '@/lib/sendBookingNotification';
 
 const bookingSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
@@ -91,13 +92,17 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
       let emailOk = false;
       let responseData: any = {};
       try {
-        const response = await fetch(apiUrl('/api/send-booking-notification'), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
+        const emailResult = await sendBookingNotification({
+          endpointUrl: apiUrl('/api/send-booking-notification'),
+          payload,
         });
-        responseData = await response.json().catch(() => ({}));
-        emailOk = response.ok && Boolean(responseData?.success);
+        emailOk = emailResult.success;
+        responseData = {
+          success: emailResult.success,
+          warning: emailResult.warning,
+          message: emailResult.message,
+          provider: emailResult.provider,
+        };
       } catch (emailErr) {
         console.warn('Email notification API unavailable; continuing with booking save flow.', emailErr);
       }
