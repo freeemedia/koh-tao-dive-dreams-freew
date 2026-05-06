@@ -604,12 +604,12 @@ const Courses = () => {
                 </div>
                 <p className="text-xs text-blue-100 mb-3">10% deposit: {getDisplayedPrice('฿5,678')}</p>
               </div>
-              <Link
-                to="/packages/open-water-to-divemaster"
+              <a
+                href="/bookingform.html?item=Open%20Water%20to%20Divemaster%20Package&type=course&price=56780&currency=THB&deposit=5678"
                 className="block w-full rounded-lg bg-white py-3 text-center font-semibold text-blue-700 no-underline hover:bg-blue-50"
               >
-                {isDutch ? 'Bekijk pakket' : 'View Package'}
-              </Link>
+                {isDutch ? 'Boek bij ons' : 'Book with us'}
+              </a>
             </div>
           </div>
         </div>
