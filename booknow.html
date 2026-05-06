@@ -1,83 +1,17 @@
-
 <!DOCTYPE html>
-  <div class="form-container">
-    <div style="text-align:center; margin-bottom:1rem;">
-      <img src="/images/logo.png" alt="Diving In Asia Logo" style="max-width:180px; height:auto;"/>
-    </div>
-    <h2>Booking / Inquiry Form</h2>
-    <button class="book-now-btn" style="width:100%">Book Now / Inquiry</button>
-    <!-- Modal Structure -->
-    <div id="booking-modal" style="display:none;position:fixed;z-index:1000;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;">
-      <div style="background:#fff;padding:2rem;border-radius:8px;max-width:400px;width:90%;position:relative;box-shadow:0 2px 16px #0003;">
-        <button id="booking-modal-close" style="position:absolute;top:10px;right:10px;background:none;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>
-        <form action="https://api.web3forms.com/submit" method="POST">
-          <input type="hidden" name="access_key" value="e4c4edf6-6e35-456a-87da-b32b961b449a">
-          <input type="hidden" name="subject" value="New Booking Inquiry from Website">
-          <input type="hidden" name="redirect" value="https://www.divinginasia.com/thank-you.html">
-          <label for="name">Name</label>
-          <input type="text" id="name" name="name" required>
-          <label for="course_title">Course</label>
-          <select id="course_title" name="course_title" required>
-            <option value="">Select...</option>
-            <option value="Open Water">Open Water</option>
-            <option value="Advanced Open Water">Advanced Open Water</option>
-            <option value="Rescue Diver">Rescue Diver</option>
-            <option value="Divemaster">Divemaster</option>
-            <option value="Fun Dive">Fun Dive</option>
-          </select>
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required>
-          <label for="phone">Phone</label>
-          <input type="text" id="phone" name="phone">
-          <label for="accommodation_type">Accommodation Type</label>
-          <select id="accommodation_type" name="accommodation_type">
-            <option value="">Select...</option>
-            <option value="standard">Standard Room</option>
-            <option value="deluxe">Deluxe Room</option>
-            <option value="suite">Suite</option>
-            <option value="other">Other / Not sure</option>
-          </select>
-          <label for="arrival_date">Arrival Date</label>
-          <input type="date" id="arrival_date" name="arrival_date">
-          <label for="diving_experience">Diving Experience</label>
-          <select id="diving_experience" name="diving_experience">
-            <option value="">Select...</option>
-            <option value="none">No diving experience</option>
-            <option value="beginner">Beginner (1-10 dives)</option>
-            <option value="intermediate">Intermediate (10-50 dives)</option>
-            <option value="advanced">Advanced (50+ dives)</option>
-            <option value="professional">Professional diver</option>
-          </select>
-          <label for="message">Comments / Questions</label>
-          <textarea id="message" name="message" rows="3" placeholder="Let us know any special requests, questions, or details..."></textarea>
-          <button type="submit">Submit Booking</button>
-        </form>
-      </div>
-    </div>
-    <div style="text-align:center; margin-top:2rem; color:#555; font-size:1rem;">
-      — Diving In Asia Team —
-    </div>
-  </div>
-
-      <label for="diving_experience">Diving Experience</label>
-      <select id="diving_experience" name="diving_experience">
-        <option value="">Select...</option>
-        <option value="none">No diving experience</option>
-        <option value="beginner">Beginner (1-10 dives)</option>
-        <option value="intermediate">Intermediate (10-50 dives)</option>
-        <option value="advanced">Advanced (50+ dives)</option>
-        <option value="professional">Professional diver</option>
-      </select>
-
-
-
-
-      <label for="message">Comments / Questions</label>
-      <textarea id="message" name="message" rows="3" placeholder="Let us know any special requests, questions, or details..."></textarea>
-
-      <button type="submit">Submit Booking</button>
-    </form>
-  </div>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirecting...</title>
+  <meta http-equiv="refresh" content="0; url=/bookingform.html">
+  <script>
+    // Preserve query params so existing campaign/book links keep context.
+    const target = '/bookingform.html' + window.location.search + window.location.hash;
+    window.location.replace(target);
+  </script>
+</head>
+<body>
+  <p>Redirecting to booking form...</p>
 </body>
-<script src="/public/booking-modal.js"></script>
 </html>
