@@ -214,6 +214,17 @@
     document.getElementById('lang-en').onclick = () => setLang('en');
     // Set default language
     setLang('nl');
+
+    const params = new URLSearchParams(window.location.search);
+    const itemParam = params.get('item');
+    const priceParam = params.get('price');
+    const currencyParam = params.get('currency') || 'THB';
+    const depositParam = params.get('deposit');
+
+    if (itemParam) {
+      document.getElementById('course-input').value = itemParam;
+    }
+
     // Web3Forms integration
     const form = document.getElementById('bookingForm');
     const successMsg = document.getElementById('successMsg');
@@ -232,34 +243,52 @@
       const formData = new FormData(form);
       formData.append('access_key', 'e4c4edf6-6e35-456a-87da-b32b961b449a');
 
-      // Prepare booking data for SQLite API
+      const totalAmount = priceParam ? Number(priceParam) : null;
+      const depositAmount = depositParam ? Number(depositParam) : null;
+      const dueAmount = totalAmount != null && depositAmount != null
+        ? Math.max(totalAmount - depositAmount, 0)
+        : null;
+
+      // Prepare booking data for API storage
       const bookingData = {
         name: form.elements['name'].value,
         email: form.elements['email'].value,
         phone: form.elements['phone'].value,
-        course: form.elements['course'].value,
-        date: form.elements['date'].value,
-        experience: form.elements['experience'].checked ? 'Yes' : 'No',
-        level: form.elements['level'].value,
-        comments: messageField ? messageField.value : ''
+        course_title: form.elements['course'].value,
+        item_title: form.elements['course'].value,
+        preferred_date: form.elements['date'].value,
+        experience_level: form.elements['level'].value,
+        message: messageField ? messageField.value : '',
+        status: 'new',
+        booking_type: 'course',
+        payment_choice: depositAmount != null ? 'deposit_requested' : 'pending',
+        selected_price: Number.isFinite(totalAmount) ? totalAmount : null,
+        total_amount: Number.isFinite(totalAmount) ? totalAmount : null,
+        deposit_amount: Number.isFinite(depositAmount) ? depositAmount : null,
+        due_amount: Number.isFinite(dueAmount) ? dueAmount : null,
+        currency: currencyParam,
+        booking_source: 'bookingform-html'
       };
 
-      // Send to Web3Forms (email)
       try {
         const response = await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
           body: formData
         });
         const result = await response.json();
-        // Send to SQLite API (local server)
-        fetch('/api/bookings', {
+
+        const bookingResponse = await fetch('/api/bookings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(bookingData)
         });
-        if(result.success) {
+
+        if(result.success && bookingResponse.ok) {
           successMsg.style.display = 'block';
           form.reset();
+          if (itemParam) {
+            document.getElementById('course-input').value = itemParam;
+          }
         } else {
           errorMsg.style.display = 'block';
         }
