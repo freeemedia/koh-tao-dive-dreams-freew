@@ -65,6 +65,15 @@ async function dispatchBookingNotifications(payload) {
   ]);
 }
 
+async function dispatchBookingNotificationsWithWarning(payload) {
+  try {
+    await dispatchBookingNotifications(payload);
+    return null;
+  } catch (error) {
+    return error instanceof Error ? error.message : 'Booking saved, but notification delivery failed';
+  }
+}
+
 function parseBody(req) {
   if (!req || req.body == null) return {};
   if (typeof req.body === 'string') {
@@ -228,8 +237,8 @@ export default async function handler(req, res) {
           try {
             const inserted = await insertSupabaseBooking(payload);
             const emailPayload = { ...inserted, item_title: inserted.course_title || inserted.item_title };
-            await dispatchBookingNotifications(emailPayload);
-            return res.status(201).json(inserted);
+            const warning = await dispatchBookingNotificationsWithWarning(emailPayload);
+            return res.status(201).json(warning ? { ...inserted, warning } : inserted);
           } catch (supabaseError) {
             const message = supabaseError instanceof Error ? supabaseError.message : 'Supabase booking create failed';
             return res.status(502).json({ error: message, provider: dbProvider });
@@ -240,8 +249,8 @@ export default async function handler(req, res) {
           try {
             const inserted = await insertMySqlBooking(payload);
             const emailPayload = { ...inserted, item_title: inserted.course_title || inserted.item_title };
-            await dispatchBookingNotifications(emailPayload);
-            return res.status(201).json(inserted);
+            const warning = await dispatchBookingNotificationsWithWarning(emailPayload);
+            return res.status(201).json(warning ? { ...inserted, warning } : inserted);
           } catch (mysqlError) {
             const message = mysqlError instanceof Error ? mysqlError.message : 'MySQL booking create failed';
             return res.status(502).json({ error: message, provider: dbProvider });
