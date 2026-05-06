@@ -72,8 +72,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
     setIsSubmitting(true);
     try {
       const paymentChoice = (data as any).paymentChoice || 'none';
-      const wpApiBase = (import.meta.env.VITE_WP_API_BASE || 'https://lightsalmon-dinosaur-377714.hostingersite.com').trim().replace(/\/+$/, '');
-      const wpApiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || '909010232893284934783734').trim();
+      const wpApiBase = (import.meta.env.VITE_WP_API_BASE || '').trim().replace(/\/+$/, '');
+      const wpApiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || '').trim();
       const messageBody = `Phone: ${data.phone || 'N/A'}\nPreferred Date: ${data.preferred_date || 'N/A'}\nExperience Level: ${data.experience_level || 'N/A'}\nPayment Option: ${paymentChoice}\n\nMessage:\n${data.message || 'N/A'}`;
 
       // Send to backend notification API

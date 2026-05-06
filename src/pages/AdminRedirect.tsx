@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const wpAdminUrl = `${(import.meta.env.VITE_WP_API_BASE || 'https://lightsalmon-dinosaur-377714.hostingersite.com').replace(/\/$/, '')}/wp-admin/admin.php?page=ktd-bookings`;
+const wpAdminUrl = `${(import.meta.env.VITE_WP_API_BASE || '').trim().replace(/\/$/, '')}/wp-admin/admin.php?page=ktd-bookings`;
 
 const AdminRedirect = () => {
   useEffect(() => {

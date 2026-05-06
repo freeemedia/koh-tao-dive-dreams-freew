@@ -80,15 +80,10 @@ type BookingItemType = 'course' | 'dive' | 'stay';
 const       BookingPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const wpApiBase = (import.meta.env.VITE_WP_API_BASE || 'https://lightsalmon-dinosaur-377714.hostingersite.com').trim().replace(/\/+$/, '');
-  const wpApiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || '909010232893284934783734').trim();
+  const wpApiBase = (import.meta.env.VITE_WP_API_BASE || '').trim().replace(/\/+$/, '');
+  const wpApiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || '').trim();
   const apiBaseRaw = (import.meta.env.VITE_API_BASE_URL || '').trim();
-  const apiBaseNormalized = apiBaseRaw
-    ? (apiBaseRaw.startsWith('http://') || apiBaseRaw.startsWith('https://')
-        ? apiBaseRaw
-        : `https://${apiBaseRaw}`)
-    : 'https://koh-tao-dive-dreams-mocha.vercel.app';
-  const apiBase = apiBaseNormalized.replace(/\/+$/, '');
+  const apiBase = apiBaseRaw ? apiBaseRaw.replace(/\/+$/, '') : '';
   const apiUrl = (path: string) => `${apiBase}${path}`;
   const courseSlug = (searchParams.get('course') || '').trim();
   const fallbackCourse = courseSlug ? COURSE_FALLBACKS[courseSlug] : undefined;
