@@ -10,8 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
-import { queueWordPressCrmSync } from '@/lib/wordpressCrmSync';
-import { sendBookingNotification } from '@/lib/sendBookingNotification';
 
 const schema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100),
@@ -53,9 +51,6 @@ const InlineCourseBookingForm: React.FC<Props> = ({
   const apiBase = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '').trim().replace(/\/+$/, '');
   const apiUrl = (path: string) => (apiBase ? `${apiBase}${path}` : path);
   const paypalBase = (import.meta.env.VITE_PAYPAL_LINK || 'https://paypal.me/prodivingasia').trim().replace(/\/+$/, '');
-  const wpApiBase = (import.meta.env.VITE_WP_API_BASE || '').trim().replace(/\/+$/, '');
-  const wpApiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || '').trim();
-
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -87,39 +82,6 @@ const InlineCourseBookingForm: React.FC<Props> = ({
       const deposit = typeof depositMajor === 'number' ? depositMajor : 0;
       const guestCount = data.guest_count === '6' ? 6 : Number(data.guest_count || '1');
 
-      const payload = {
-        item_title: itemTitle,
-        name: data.name,
-        email: data.email,
-        phone: data.phone || 'N/A',
-        nationality: data.nationality || 'N/A',
-        accommodation: data.accommodation || 'N/A',
-        guest_count: data.guest_count || '1',
-        preferred_date: data.preferred_date || 'N/A',
-        experience_level: data.experience_level || 'N/A',
-        payment_choice: data.paymentChoice === 'paypal' ? 'paypal-deposit' : 'inquire',
-        deposit_amount: deposit > 0 ? `฿${deposit}` : 'N/A',
-        message: `Phone: ${data.phone || 'N/A'}\nNationality: ${data.nationality || 'N/A'}\nAccommodation: ${data.accommodation || 'N/A'}\nGroup Size: ${data.guest_count || '1'}\nPreferred Date: ${data.preferred_date || 'N/A'}\nExperience Level: ${data.experience_level || 'N/A'}\nPayment: ${data.paymentChoice}\n\nMessage:\n${data.message || 'N/A'}`,
-      };
-
-      let emailOk = false;
-      let resData: any = {};
-      try {
-        const emailResult = await sendBookingNotification({
-          endpointUrl: apiUrl('/api/send-booking-notification'),
-          payload,
-        });
-        emailOk = emailResult.success;
-        resData = {
-          success: emailResult.success,
-          warning: emailResult.warning,
-          message: emailResult.message,
-          provider: emailResult.provider,
-        };
-      } catch (emailErr) {
-        console.warn('Email notification API unavailable; continuing with booking save flow.', emailErr);
-      }
-
       let dbResult: any = null;
       let dbError: string | null = null;
       try {
@@ -133,7 +95,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
             accommodation: data.accommodation,
             preferred_date: data.preferred_date,
             experience_level: data.experience_level,
-            message: data.message,
+            message: `Phone: ${data.phone || 'N/A'}\nNationality: ${data.nationality || 'N/A'}\nAccommodation: ${data.accommodation || 'N/A'}\nGroup Size: ${data.guest_count || '1'}\nPreferred Date: ${data.preferred_date || 'N/A'}\nExperience Level: ${data.experience_level || 'N/A'}\nPayment: ${data.paymentChoice}\n\nMessage:\n${data.message || 'N/A'}`,
             payment_choice: data.paymentChoice,
             item_type: itemType,
             booking_type: itemType,
@@ -156,94 +118,9 @@ const InlineCourseBookingForm: React.FC<Props> = ({
         dbError = err instanceof Error ? err.message : 'Booking persistence failed';
       }
 
-      let wpDirectError: string | null = null;
-      let wpDirectSaved = false;
-      if (wpApiBase && wpApiKey) {
-        try {
-          const wpRes = await fetch(`${wpApiBase}/wp-json/ktd/v1/bookings/create`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              api_key: wpApiKey,
-              status: 'new',
-              booking_type: itemType,
-              item_title: itemTitle,
-              course_title: itemTitle,
-              name: data.name,
-              email: data.email,
-              phone: data.phone || '',
-              accommodation: data.accommodation || '',
-              preferred_date: data.preferred_date || '',
-              guests: Number.isFinite(guestCount) ? guestCount : 1,
-              experience_level: data.experience_level || '',
-              payment_choice: data.paymentChoice,
-              currency: depositCurrency,
-              deposit_amount: deposit,
-              total_amount: deposit > 0 ? Math.round(deposit / 0.2) : 0,
-              due_amount: deposit > 0 ? Math.round(deposit / 0.2) - deposit : 0,
-              message: data.message || '',
-              booking_source: crmSource,
-            }),
-          });
-          wpDirectSaved = wpRes.ok;
-          if (!wpRes.ok) {
-            wpDirectError = `WP direct save failed (HTTP ${wpRes.status})`;
-          }
-        } catch (err) {
-          wpDirectError = err instanceof Error ? err.message : 'WP direct save failed';
-        }
-
-        queueWordPressCrmSync({
-          wpApiBase,
-          wpApiKey,
-          payload: {
-            source: crmSource,
-            source_page: window.location.pathname,
-            event_type: 'booking_created',
-            submitted_at: new Date().toISOString(),
-            contact: {
-              full_name: data.name,
-              email: data.email,
-              phone: data.phone || '',
-              country: data.nationality || '',
-            },
-            booking: {
-              course_interest: itemTitle,
-              preferred_start_date: data.preferred_date || '',
-              experience_level: data.experience_level || '',
-              guest_count: Number.isFinite(guestCount) ? guestCount : 1,
-              accommodation_interest: data.accommodation || '',
-              message: data.message || '',
-              payment_choice: data.paymentChoice,
-              payment_status: data.paymentChoice === 'paypal' ? 'deposit_paypal_redirect' : 'new_inquiry',
-              deposit_amount: deposit || undefined,
-              currency: depositCurrency,
-            },
-            tags: ['ktd', 'website-form', `${itemType}-page`, 'inline-form', ...crmTags].filter(Boolean),
-          },
-        });
-      }
-
-      if (dbError) {
-        toast.error(`Booking not saved to WordPress: ${dbError}`);
-      }
-
-      const bookingSaved = wpDirectSaved || !dbError;
-
-      if (bookingSaved) {
-        if (dbError) {
-          toast.warning('Booking saved to WordPress directly, but API mirror failed.');
-        }
-        if (wpDirectError) {
-          toast.warning(`WordPress direct save warning: ${wpDirectError}`);
-        }
-        if (!emailOk) {
-          toast.warning('Booking saved, but email notification is currently unavailable.');
-        }
+      if (!dbError) {
         if (dbResult?.warning) {
-          toast.warning(`WordPress saved with warning: ${dbResult.warning}`);
+          toast.warning(`Booking saved with warning: ${dbResult.warning}`);
         }
         setSubmittedEmail(data.email);
         setSubmitted(true);
@@ -256,8 +133,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
           toast.success('Booking inquiry sent! We\'ll be in touch within 24 hours.');
         }
       } else {
-        const errMsg = resData?.message || resData?.error || 'Booking and email services unavailable';
-        toast.error(`Failed to send booking: ${errMsg}`);
+        toast.error(`Failed to save booking: ${dbError}`);
       }
     } catch (err) {
       console.error('Booking submission error:', err);

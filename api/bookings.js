@@ -86,6 +86,18 @@ function parseAmount(value) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function cleanOptionalString(value) {
+  if (value == null) return null;
+  const normalized = String(value).trim();
+  return normalized ? normalized : null;
+}
+
+function cleanOptionalDate(value) {
+  const normalized = cleanOptionalString(value);
+  if (!normalized) return null;
+  return /^\d{4}-\d{2}-\d{2}$/.test(normalized) ? normalized : null;
+}
+
 function normalizeAmounts(input, out) {
   const src = input || {};
 
@@ -135,30 +147,32 @@ function normalizeBookingPayload(input, { includeId = false } = {}) {
   const out = {};
 
   if (includeId && src.id) out.id = src.id;
-  if (src.name != null) out.name = src.name;
-  if (src.email != null) out.email = src.email;
-  if (src.phone != null) out.phone = src.phone;
-  if (src.accommodation != null) out.accommodation = src.accommodation;
-  else if (src.accommodation_type != null) out.accommodation = src.accommodation_type;
-  else if (src.accommodationType != null) out.accommodation = src.accommodationType;
-  if (src.course_title != null) out.course_title = src.course_title;
-  else if (src.item_title != null) out.course_title = src.item_title;
-  if (src.preferred_date != null) out.preferred_date = src.preferred_date;
-  else if (src.arrival_date != null) out.preferred_date = src.arrival_date;
-  else if (src.arrivalDate != null) out.preferred_date = src.arrivalDate;
-  if (src.experience_level != null) out.experience_level = src.experience_level;
-  else if (src.diving_experience != null) out.experience_level = src.diving_experience;
-  else if (src.divingExperience != null) out.experience_level = src.divingExperience;
-  if (src.payment_choice != null) out.payment_choice = src.payment_choice;
-  if (src.message != null) out.message = src.message;
-  else if (src.comments != null) out.message = src.comments;
-  else if (src.questions != null) out.message = src.questions;
-  if (src.status != null) out.status = src.status;
-  if (src.internal_notes != null) out.internal_notes = src.internal_notes;
+  if (src.name != null) out.name = cleanOptionalString(src.name);
+  if (src.email != null) out.email = cleanOptionalString(src.email);
+  if (src.phone != null) out.phone = cleanOptionalString(src.phone);
+  if (src.accommodation != null) out.accommodation = cleanOptionalString(src.accommodation);
+  else if (src.accommodation_type != null) out.accommodation = cleanOptionalString(src.accommodation_type);
+  else if (src.accommodationType != null) out.accommodation = cleanOptionalString(src.accommodationType);
+  if (src.item_type != null) out.item_type = cleanOptionalString(src.item_type);
+  else if (src.booking_type != null) out.item_type = cleanOptionalString(src.booking_type);
+  if (src.course_title != null) out.course_title = cleanOptionalString(src.course_title);
+  else if (src.item_title != null) out.course_title = cleanOptionalString(src.item_title);
+  if (src.preferred_date != null) out.preferred_date = cleanOptionalDate(src.preferred_date);
+  else if (src.arrival_date != null) out.preferred_date = cleanOptionalDate(src.arrival_date);
+  else if (src.arrivalDate != null) out.preferred_date = cleanOptionalDate(src.arrivalDate);
+  if (src.experience_level != null) out.experience_level = cleanOptionalString(src.experience_level);
+  else if (src.diving_experience != null) out.experience_level = cleanOptionalString(src.diving_experience);
+  else if (src.divingExperience != null) out.experience_level = cleanOptionalString(src.divingExperience);
+  if (src.payment_choice != null) out.payment_choice = cleanOptionalString(src.payment_choice);
+  if (src.message != null) out.message = cleanOptionalString(src.message);
+  else if (src.comments != null) out.message = cleanOptionalString(src.comments);
+  else if (src.questions != null) out.message = cleanOptionalString(src.questions);
+  if (src.status != null) out.status = cleanOptionalString(src.status);
+  if (src.internal_notes != null) out.internal_notes = cleanOptionalString(src.internal_notes);
   // Keep admin notes populated for forms that only send `message`.
-  if (out.internal_notes == null && src.message != null) out.internal_notes = src.message;
-  if (out.internal_notes == null && src.comments != null) out.internal_notes = src.comments;
-  if (src.bank_transfer_details != null) out.bank_transfer_details = src.bank_transfer_details;
+  if (out.internal_notes == null && src.message != null) out.internal_notes = cleanOptionalString(src.message);
+  if (out.internal_notes == null && src.comments != null) out.internal_notes = cleanOptionalString(src.comments);
+  if (src.bank_transfer_details != null) out.bank_transfer_details = cleanOptionalString(src.bank_transfer_details);
 
   normalizeAmounts(src, out);
 

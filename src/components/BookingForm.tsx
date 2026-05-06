@@ -10,8 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
-import { queueWordPressCrmSync } from '@/lib/wordpressCrmSync';
-import { sendBookingNotification } from '@/lib/sendBookingNotification';
 
 const bookingSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
@@ -73,39 +71,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
     setIsSubmitting(true);
     try {
       const paymentChoice = (data as any).paymentChoice || 'none';
-      const wpApiBase = (import.meta.env.VITE_WP_API_BASE || '').trim().replace(/\/+$/, '');
-      const wpApiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || '').trim();
       const messageBody = `Phone: ${data.phone || 'N/A'}\nPreferred Date: ${data.preferred_date || 'N/A'}\nExperience Level: ${data.experience_level || 'N/A'}\nPayment Option: ${paymentChoice}\n\nMessage:\n${data.message || 'N/A'}`;
-
-      // Send to backend notification API
-      const payload = {
-        item_title: itemTitle,
-        name: data.name,
-        email: data.email,
-        phone: data.phone || 'N/A',
-        preferred_date: data.preferred_date || 'N/A',
-        experience_level: data.experience_level || 'N/A',
-        payment_choice: paymentChoice,
-        deposit_amount: typeof depositMajor === 'number' ? `฿${depositMajor}` : 'N/A',
-        message: messageBody,
-      };
-      let emailOk = false;
-      let responseData: any = {};
-      try {
-        const emailResult = await sendBookingNotification({
-          endpointUrl: apiUrl('/api/send-booking-notification'),
-          payload,
-        });
-        emailOk = emailResult.success;
-        responseData = {
-          success: emailResult.success,
-          warning: emailResult.warning,
-          message: emailResult.message,
-          provider: emailResult.provider,
-        };
-      } catch (emailErr) {
-        console.warn('Email notification API unavailable; continuing with booking save flow.', emailErr);
-      }
 
       // Calculate totals from a percentage-based deposit model.
       const deposit_amount = typeof depositMajor === 'number' ? depositMajor : 0;
@@ -116,7 +82,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
         ? Math.max(total_amount - deposit_amount, 0)
         : 0;
 
-      // Persist booking through API so WordPress `ktd_bookings` is updated.
       let dbResult: any = null;
       let dbError: string | null = null;
       try {
@@ -129,7 +94,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
             phone: data.phone,
             preferred_date: data.preferred_date,
             experience_level: data.experience_level,
-            message: data.message,
+            message: messageBody,
             payment_choice: paymentChoice,
             item_type: itemType,
             course_title: itemTitle,
@@ -148,107 +113,16 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
       } catch (err) {
         dbError = err instanceof Error ? err.message : 'Booking persistence failed';
       }
-
-      if (dbError) {
-        toast.error(`Booking not saved to WordPress: ${dbError}`);
-      }
-
-      let wpDirectError: string | null = null;
-      let wpDirectSaved = false;
-      if (wpApiBase && wpApiKey) {
-        try {
-          const wpRes = await fetch(`${wpApiBase}/wp-json/ktd/v1/bookings/create`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              api_key: wpApiKey,
-              status: 'new',
-              booking_type: itemType,
-              item_title: itemTitle,
-              course_title: itemTitle,
-              name: data.name,
-              email: data.email,
-              phone: data.phone || '',
-              preferred_date: data.preferred_date || '',
-              experience_level: data.experience_level || '',
-              payment_choice: paymentChoice,
-              currency: depositCurrency || 'THB',
-              deposit_amount,
-              total_amount,
-              due_amount,
-              message: data.message || '',
-              booking_source: 'website-form',
-            }),
-          });
-          wpDirectSaved = wpRes.ok;
-          if (!wpRes.ok) {
-            wpDirectError = `WP direct save failed (HTTP ${wpRes.status})`;
-          }
-        } catch (err) {
-          wpDirectError = err instanceof Error ? err.message : 'WP direct save failed';
-        }
-      }
-
-      const bookingSaved = wpDirectSaved || !dbError;
-
-      if (bookingSaved) {
-        if (dbError) {
-          toast.warning('Booking saved to WordPress directly, but API mirror failed.');
-        }
-        if (wpDirectError) {
-          toast.warning(`WordPress direct save warning: ${wpDirectError}`);
-        }
-        if (!emailOk) {
-          toast.warning('Booking saved, but email notification is currently unavailable.');
-        } else if (responseData.warning) {
-          toast.warning(`Booking saved, but email notification needs attention: ${responseData.warning}`);
-        }
+      if (!dbError) {
         if (dbResult?.warning) {
-          toast.warning(`WordPress saved with warning: ${dbResult.warning}`);
+          toast.warning(`Booking saved with warning: ${dbResult.warning}`);
         }
-
-        // Fire-and-forget CRM sync
-        if (wpApiBase && wpApiKey) {
-          queueWordPressCrmSync({
-            wpApiBase,
-            wpApiKey,
-            payload: {
-              source: 'website',
-              source_page: window.location.pathname,
-              event_type: 'booking_created',
-              submitted_at: new Date().toISOString(),
-              contact: {
-                full_name: data.name,
-                email: data.email,
-                phone: data.phone || '',
-              },
-              booking: {
-                course_interest: itemTitle,
-                preferred_start_date: data.preferred_date || '',
-                experience_level: data.experience_level || '',
-                message: data.message || '',
-                payment_choice: paymentChoice,
-                payment_status: 'new_inquiry',
-                deposit_amount: typeof depositMajor === 'number' ? depositMajor : undefined,
-                currency: depositCurrency || 'THB',
-              },
-              tags: [
-                'website-form',
-                `${itemType}-page`,
-              ].filter(Boolean),
-            },
-          });
-        }
-
         toast.success('Booking inquiry sent. We will contact you shortly.');
         form.reset();
         onClose();
       } else {
-        const errMsg = responseData?.message || responseData?.error || 'Booking and email services unavailable';
-        console.error('Booking notification error:', errMsg, responseData);
-        toast.error(`Failed to send booking: ${errMsg}. Please try again.`);
+        console.error('Booking save error:', dbError, dbResult);
+        toast.error(`Failed to save booking: ${dbError}. Please try again.`);
       }
     } catch (error) {
       console.error('Booking submission failed:', error);
