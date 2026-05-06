@@ -40,6 +40,24 @@ async function sendFluentBookingWebhook(payload) {
   return { ok: true };
 }
 
+function getNotificationMode() {
+  return String(process.env.NOTIFICATION_PROVIDER || '').trim().toLowerCase();
+}
+
+async function dispatchBookingNotifications(payload) {
+  const mode = getNotificationMode();
+  if (mode === 'fluent_only' || mode === 'fluent-only' || mode === 'fluent') {
+    await sendFluentBookingWebhook(payload).catch(() => {});
+    return;
+  }
+
+  await Promise.all([
+    sendBookingNotificationEmail(payload).catch(() => {}),
+    sendCustomerInvoiceEmail(payload).catch(() => {}),
+    sendFluentBookingWebhook(payload).catch(() => {}),
+  ]);
+}
+
 function parseBody(req) {
   if (!req || req.body == null) return {};
   if (typeof req.body === 'string') {
@@ -306,11 +324,7 @@ export default async function handler(req, res) {
           try {
             const inserted = await insertSupabaseBooking(payload);
             const emailPayload = { ...inserted, item_title: inserted.course_title || inserted.item_title };
-            await Promise.all([
-              sendBookingNotificationEmail(emailPayload).catch(() => {}),
-              sendCustomerInvoiceEmail(emailPayload).catch(() => {}),
-              sendFluentBookingWebhook(emailPayload).catch(() => {}),
-            ]);
+            await dispatchBookingNotifications(emailPayload);
             return res.status(201).json(inserted);
           } catch (supabaseError) {
             const message = supabaseError instanceof Error ? supabaseError.message : 'Supabase booking create failed';
@@ -332,11 +346,7 @@ export default async function handler(req, res) {
 
         // Best effort email notification for new bookings.
         const wpEmailPayload = { ...payload, item_title: payload.course_title || payload.item_title };
-        await Promise.all([
-          sendBookingNotificationEmail(wpEmailPayload).catch(() => {}),
-          sendCustomerInvoiceEmail(wpEmailPayload).catch(() => {}),
-          sendFluentBookingWebhook(wpEmailPayload).catch(() => {}),
-        ]);
+        await dispatchBookingNotifications(wpEmailPayload);
 
         const responsePayload = {
           ...payload,
