@@ -11,7 +11,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
-import { queueWordPressCrmSync } from '@/lib/wordpressCrmSync';
 import { sendBookingNotification } from '@/lib/sendBookingNotification';
 
 const bookingSchema = z.object({
@@ -81,8 +80,6 @@ type BookingItemType = 'course' | 'dive' | 'stay';
 const       BookingPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const wpApiBase = (import.meta.env.VITE_WP_API_BASE || '').trim().replace(/\/+$/, '');
-  const wpApiKey = (import.meta.env.VITE_WP_BOOKING_API_KEY || '').trim();
   const apiBaseRaw = (import.meta.env.VITE_API_BASE_URL || '').trim();
   const apiBase = apiBaseRaw ? apiBaseRaw.replace(/\/+$/, '') : '';
   const apiUrl = (path: string) => `${apiBase}${path}`;
@@ -268,61 +265,6 @@ const       BookingPage: React.FC = () => {
         message: messageWithSource,
       };
 
-      let wpSaved = false;
-      let wpBookingId: string | null = null;
-      if (wpApiBase && wpApiKey) {
-        try {
-          const wpPayload = {
-            api_key: wpApiKey,
-            status: 'new',
-            booking_type: itemType,
-            item_title: bookingItemTitle,
-            name: data.name,
-            email: data.email,
-            phone: data.phone || '',
-            accommodation: data.accommodation || '',
-            preferred_date: data.preferred_date || '',
-            guests: guestCount,
-            nights: nightsCount,
-            experience_level: data.experience_level || '',
-            payment_choice: data.paymentChoice === 'paypal' ? 'paypal' : 'inquire',
-            currency: depositCurrency || 'THB',
-            deposit_amount: depositAmountMajor,
-            total_amount: totalAmountMajor,
-            due_amount: balanceAmountMajor,
-            paypal_link: (import.meta.env.VITE_PAYPAL_LINK || 'https://paypal.me/prodivingasia'),
-            addons: addonsText,
-            booking_source: bookingSource,
-            message: messageWithSource,
-          };
-
-          const wpRes = await fetch(`${wpApiBase}/wp-json/ktd/v1/bookings/create`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(wpPayload),
-          });
-          wpSaved = wpRes.ok;
-          if (wpRes.ok) {
-            const wpData = await wpRes.json().catch(() => ({}));
-            if (wpData?.id != null) {
-              wpBookingId = String(wpData.id);
-            }
-          }
-          if (!wpRes.ok) {
-            const wpError = await wpRes.text().catch(() => 'unknown error');
-            console.warn('WordPress booking save failed', wpRes.status, wpError);
-          }
-        } catch (wpErr) {
-          console.warn('WordPress booking save request failed', wpErr);
-        }
-      }
-
-      if (wpSaved) {
-        persisted = true;
-      }
-
       let emailOk = false;
       let responseData: {
         success?: boolean;
@@ -369,47 +311,6 @@ const       BookingPage: React.FC = () => {
           toast.warning(`Booking saved, but email notification needs attention: ${responseData.warning}`);
         } else if (bookingApiWarning) {
           toast.warning(`Inquiry saved with warning: ${bookingApiWarning}`);
-        } else if (wpApiBase && wpApiKey && !wpSaved) {
-          toast.warning('Inquiry sent, but WordPress booking storage failed.');
-        }
-
-        if (wpSaved) {
-          queueWordPressCrmSync({
-            wpApiBase,
-            wpApiKey,
-            payload: {
-              source: 'website',
-              source_page: `${window.location.pathname}${window.location.search}`,
-              event_type: 'booking_created',
-              booking_id: wpBookingId || undefined,
-              submitted_at: new Date().toISOString(),
-              contact: {
-                full_name: data.name,
-                email: data.email,
-                phone: data.phone || '',
-              },
-              booking: {
-                course_interest: bookingItemTitle,
-                preferred_start_date: data.preferred_date || '',
-                experience_level: data.experience_level || '',
-                guest_count: guestCount || undefined,
-                accommodation_interest: data.accommodation || '',
-                message: messageWithSource,
-                payment_choice: data.paymentChoice === 'paypal' ? 'paypal' : 'inquire',
-                payment_mode: data.paymentChoice === 'paypal' ? 'paypal' : 'inquire',
-                payment_status: data.paymentChoice === 'paypal' ? 'deposit_paypal_redirect' : (wpSaved ? 'new_inquiry' : 'not_synced'),
-                deposit_amount: depositAmountMajor,
-                total_amount: totalAmountMajor,
-                currency: depositCurrency || 'THB',
-              },
-              tags: [
-                'website-form',
-                `${itemType}-page`,
-                bookingSource || 'direct',
-                courseSlug || itemType,
-              ].filter(Boolean),
-            },
-          });
         }
 
         if (data.paymentChoice === 'paypal' && amountMajor > 0) {
@@ -422,7 +323,7 @@ const       BookingPage: React.FC = () => {
       } else {
         const errMsg = responseData?.message || responseData?.error || 'Email service unavailable';
         console.error('Booking notification error:', errMsg, responseData);
-        if (persisted || wpSaved) {
+        if (persisted) {
           toast.warning(`Inquiry saved, but email notification failed: ${errMsg}`);
           setTimeout(() => window.location.href = '/thank-you.html', 1500);
           setInquiryNotice(SKIP_PAYMENT_MESSAGE);
