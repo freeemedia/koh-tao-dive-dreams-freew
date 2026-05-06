@@ -1,23 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
-
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "redirects": [
-    {
-      "source": "/(.*)",
-      "has": [{ "type": "host", "value": "admin.divinginasia.com" }],
-      "destination": "https://lightsalmon-dinosaur-377714.hostingersite.com/wp-admin/$1",
-      "permanent": false
-    },
-    {
-      "source": "/(.*)",
-      "has": [{ "type": "host", "value": "admin.divnginasia.com" }],
-      "destination": "https://lightsalmon-dinosaur-377714.hostingersite.com/wp-admin/$1",
-      "permanent": false
-    }
-  ],
   "headers": [
     {
       "source": "/assets/(.*)",
@@ -34,7 +19,6 @@
   ],
   "rewrites": [
     { "source": "/functions/v1/page_content", "destination": "https://wulgixdyofyfdwcymwec.functions.supabase.co/page_content" },
-    { "source": "/wp-json/:path*", "destination": "https://lightsalmon-dinosaur-377714.hostingersite.com/wp-json/:path*" },
     { "source": "/api/:path*", "destination": "/api/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
