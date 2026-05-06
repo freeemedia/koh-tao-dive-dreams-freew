@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 
 const NewBooking: React.FC = () => {
   const [form, setForm] = useState({
@@ -29,10 +28,29 @@ const NewBooking: React.FC = () => {
       setLoading(false);
       return;
     }
-    const { error } = await supabase.from('bookings').insert([{ ...form }]);
-    if (error) {
-      setError(error.message);
-    } else {
+    try {
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...form,
+          item_type: 'course',
+          status: 'pending',
+        }),
+      });
+
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        setError(payload?.error || `HTTP ${response.status}`);
+      } else {
+        setSuccess(true);
+        setForm({ name: '', email: '', phone: '', course_title: '', preferred_date: '', message: '' });
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Network error');
+    }
+
+    if (!error) {
       setSuccess(true);
       setForm({ name: '', email: '', phone: '', course_title: '', preferred_date: '', message: '' });
     }

@@ -21,9 +21,9 @@ const BookingInquiryForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setResult('');
-    // Send to Supabase API
+    // Send to unified bookings API
     try {
-      const res = await fetch('/api/booking', {
+      const res = await fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
