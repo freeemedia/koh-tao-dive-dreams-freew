@@ -25,11 +25,6 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'dist')));
 
 
-const { createClient } = require('@supabase/supabase-js');
-const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY;
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { realtime: { enabled: false } });
-
 // Stripe setup
 const Stripe = require('stripe');
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
@@ -214,42 +209,47 @@ const mapAffiliateClick = (record) => {
   };
 };
 
-const findBookingRecordById = async (id) => {
-  try {
-    const { data, error } = await supabase.from('bookings').select('*').eq('id', id).limit(1);
-    if (error) throw error;
-    if (data && data.length) return data[0];
+// Bookings: now served by WordPress REST API
+// Deprecated: Supabase-backed booking queries removed.
+// Use WordPress endpoints instead:
+// - GET /wp-json/ktd/v1/bookings
+// - POST /wp-json/ktd/v1/bookings
+// - PUT /wp-json/ktd/v1/bookings/:id
 
-    // Fallback: try matching on a `record_id` column if present
-    const { data: data2, error: error2 } = await supabase.from('bookings').select('*').eq('record_id', id).limit(1);
-    if (error2) throw error2;
-    return data2?.[0] || null;
-  } catch (err) {
-    throw new Error(err.message || 'Failed to query booking');
-  }
+const findBookingRecordById = async (id) => {
+  // Stub: bookings are now managed via WordPress
+  // If needed, fetch from WordPress REST API
+  return null;
 };
 
 // Routes
 
 app.get('/api/bookings', async (req, res) => {
+  l
   const adminUser = await requireAdmin(req, res);
   if (!adminUser) return;
   try {
-    const { data, error } = await supabase
-      .from('bookings')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (error) {
-      return res.status(500).json({ error: error.message });
+    // Proxy to WordPress REST API
+    const wpBookingsUrl = `${process.env.WP_BOOKING_URL || 'https://admin.divinginasia.com'}/wp-json/ktd/v1/bookings`;
+    const response = await fetch(wpBookingsUrl, {
+      headers: {
+        'Authorization': `Bearer ${process.env.WP_BOOKING_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      return res.status(response.status).json({ error: 'Failed to fetch bookings from WordPress' });
     }
-    return res.json(data);
+    
+    const bookings = await response.json();
+    return res.json(bookings);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
 });
 
-// NOTE: Airtable-backed booking creation removed. Use the Supabase-backed
-// POST /api/bookings route below (adds a booking into the `bookings` table).
+// NOTE: Supabase-backed booking CRUD removed. All bookings now go through WordPress REST API.
 
 app.put('/api/bookings/:id/status', async (req, res) => {
   const { id } = req.params;
@@ -261,22 +261,23 @@ app.put('/api/bookings/:id/status', async (req, res) => {
   }
 
   try {
-    const record = await findBookingRecordById(id);
-    if (!record) {
-      return res.status(404).json({ error: 'Booking not found' });
+    // Proxy to WordPress REST API
+    const wpUrl = `${process.env.WP_BOOKING_URL || 'https://admin.divinginasia.com'}/wp-json/ktd/v1/bookings/${id}`;
+    const response = await fetch(wpUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${process.env.WP_BOOKING_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status }),
+    });
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: 'Failed to update booking in WordPress' });
     }
 
-    const { data, error } = await supabase
-      .from('bookings')
-      .update({ status, updated_at: new Date().toISOString() })
-      .eq('id', record.id)
-      .select();
-
-    if (error) {
-      return res.status(500).json({ error: error.message });
-    }
-
-    return res.json({ message: 'Status updated', booking: (data || [])[0] });
+    const booking = await response.json();
+    return res.json({ message: 'Status updated', booking });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -289,14 +290,23 @@ app.post('/api/bookings', async (req, res) => {
     return res.status(400).json({ error: 'Missing required fields: name and email' });
   }
   try {
-    const { data, error } = await supabase
-      .from('bookings')
-      .insert([body])
-      .select();
-    if (error) {
-      return res.status(500).json({ error: error.message });
+    // Proxy to WordPress REST API
+    const wpUrl = `${process.env.WP_BOOKING_URL || 'https://admin.divinginasia.com'}/wp-json/ktd/v1/bookings`;
+    const response = await fetch(wpUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.WP_BOOKING_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: 'Failed to create booking in WordPress' });
     }
-    return res.status(201).json(data[0]);
+
+    const booking = await response.json();
+    return res.status(201).json(booking);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

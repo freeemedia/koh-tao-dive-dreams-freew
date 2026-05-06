@@ -6,8 +6,6 @@ import { CurrencyProvider } from './hooks/useCurrency';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as Sonner } from '@/components/ui/sonner';
-import { supabase } from '@/integrations/supabase/client';
-import { hasAdminAccess } from '@/lib/adminAccess';
 
 import Layout from './components/Layout';
 import Courses from './components/Courses';
@@ -130,22 +128,12 @@ const RequireAdmin = ({ children }: { children: JSX.Element }) => {
     let isMounted = true;
 
     const checkAdmin = async () => {
-      if (window.localStorage.getItem('admin_authenticated') === '1') {
-        setStatus('allowed');
-        return;
-      }
-
-      const { data: sessionData } = await supabase.auth.getSession();
-      let user = sessionData.session?.user ?? null;
-
-      if (!user) {
-        const { data: userData } = await supabase.auth.getUser();
-        user = userData.user;
-      }
+      // Check if admin is authenticated via API token
+      const adminAuth = window.localStorage.getItem('admin_authenticated') === '1';
 
       if (!isMounted) return;
 
-      if (user && hasAdminAccess(user)) {
+      if (adminAuth) {
         setStatus('allowed');
         return;
       }
@@ -154,27 +142,6 @@ const RequireAdmin = ({ children }: { children: JSX.Element }) => {
     };
 
     checkAdmin();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (window.localStorage.getItem('admin_authenticated') === '1') {
-        setStatus('allowed');
-        return;
-      }
-
-      const user = session?.user ?? null;
-      if (user && hasAdminAccess(user)) {
-        setStatus('allowed');
-      } else {
-        setStatus('denied');
-      }
-    });
-
-    return () => {
-      isMounted = false;
-      subscription.unsubscribe();
-    };
   }, []);
 
   if (status === 'loading') {

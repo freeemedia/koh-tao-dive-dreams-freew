@@ -1,20 +1,34 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 
 export function useSupabaseUser() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
+
   useEffect(() => {
     let mounted = true;
-    supabase.auth.getUser().then(({ data }) => {
-      if (mounted) setUser(data?.user || null);
-    });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
-    });
+
+    // Check for user_auth_token in localStorage
+    const token = window.localStorage.getItem('user_auth_token');
+    if (mounted && token) {
+      // Minimal user object for non-admin routes that use this hook
+      setUser({ token, authenticated: true });
+    } else if (mounted) {
+      setUser(null);
+    }
+
+    // Listen for storage changes (e.g., logout from another tab)
+    const handleStorageChange = () => {
+      const updatedToken = window.localStorage.getItem('user_auth_token');
+      if (mounted) {
+        setUser(updatedToken ? { token: updatedToken, authenticated: true } : null);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
     return () => {
       mounted = false;
-      listener?.subscription?.unsubscribe?.();
+      window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
+
   return user;
 }

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 
 const TEAM_EMAILS = [
   { email: 'contact@prodiving.asia', name: 'Contact' },
@@ -18,15 +17,52 @@ export default function AdminEmails() {
 
   async function fetchEmails() {
     setLoading(true);
-    const { data, error } = await supabase.from('emails').select('*').order('created_at', { ascending: false });
-    if (error) setError(error.message);
-    else setEmails(data);
-    setLoading(false);
+    try {
+      const adminToken = window.localStorage.getItem('admin_login_token');
+      if (!adminToken) {
+        setError('Not authenticated. Please login as admin.');
+        return;
+      }
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '';
+      const baseUrl = apiUrl || window.location.origin;
+      const response = await fetch(`${baseUrl}/api/admin/emails`, {
+        headers: {
+          'x-admin-login-token': adminToken,
+        },
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      setEmails(Array.isArray(data) ? data : []);
+      setError('');
+    } catch (err) {
+      setError((err as any).message || 'Failed to fetch emails');
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function assignEmail(emailId, assignedTo) {
-    await supabase.from('emails').update({ assigned_to: assignedTo }).eq('id', emailId);
-    fetchEmails();
+    try {
+      const adminToken = window.localStorage.getItem('admin_login_token');
+      if (!adminToken) {
+        setError('Not authenticated. Please login as admin.');
+        return;
+      }
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '';
+      const baseUrl = apiUrl || window.location.origin;
+      const response = await fetch(`${baseUrl}/api/admin/emails`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-login-token': adminToken,
+        },
+        body: JSON.stringify({ id: emailId, assigned_to: assignedTo }),
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      fetchEmails();
+    } catch (err) {
+      setError((err as any).message || 'Failed to update email');
+    }
   }
 
   if (loading) return <div>Loading emails...</div>;

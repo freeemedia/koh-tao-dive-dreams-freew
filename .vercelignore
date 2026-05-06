@@ -1,0 +1,22 @@
+# Exclude secondary apps and archived build trees from Vercel deployment
+/admin/
+/pages/
+/divinginasia.com/
+/backup/
+/rebuilkd/
+/empty/
+/General/
+/General 2/
+
+# Exclude local artifacts
+**/.next/
+**/.builds/
+**/node_modules/
+**/.DS_Store
+
+# Exclude local-only scripts and generated files
+scripts/manual-api/
+*.sqlite
+*.sql
+*.csv
+*.ics

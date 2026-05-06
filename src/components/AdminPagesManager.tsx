@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '@/integrations/supabase/client';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
@@ -269,6 +268,12 @@ const AdminPagesManager: React.FC = () => {
   const [showIds, setShowIds] = useState(false);
   const [quickFilters, setQuickFilters] = useState<string[]>([]);
   const [recentlyEdited, setRecentlyEdited] = useState<Record<string, boolean>>({});
+
+  const buildApiUrl = (path: string) => {
+    const rawBase = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '').trim();
+    const base = rawBase.replace(/\/$/, '');
+    return base ? `${base}${path}` : path;
+  };
   const [newPageSlug, setNewPageSlug] = useState('');
   const [newSectionKey, setNewSectionKey] = useState('');
   const [newLocale, setNewLocale] = useState<'en' | 'nl'>('en');
@@ -279,24 +284,34 @@ const AdminPagesManager: React.FC = () => {
 
   const fetchData = async () => {
     setLoading(true);
-    if (!supabase) {
-      setError('Supabase is not configured for Admin Pages Manager. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
-      setLoading(false);
-      return;
-    }
+    try {
+      const adminToken = window.localStorage.getItem('admin_login_token');
+      if (!adminToken) {
+        setError('Not authenticated. Please login first.');
+        setLoading(false);
+        return;
+      }
 
-    const { data, error } = await supabase
-      .from('page_content')
-      .select('id,page_slug,section_key,locale,content_type,content_value,updated_at')
-      .order('page_slug', { ascending: true })
-      .order('section_key', { ascending: true })
-      .order('locale', { ascending: true });
-    if (error) {
-      setError(error.message);
-    } else {
-      setData(data as PageContentRow[]);
+      // Fetch all available page slugs from WordPress
+      const response = await fetch(buildApiUrl('/api/admin/page-content?listSlugs=true'), {
+        headers: {
+          'x-admin-login-token': adminToken,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch page slugs (${response.status})`);
+      }
+
+      const slugs = await response.json();
+      // Convert slugs to PageContentRow format for display
+      // For now, we'll fetch full content for each slug dynamically
+      setData([]);
+      setLoading(false);
+    } catch (err) {
+      setError((err as any).message || 'Failed to load page content');
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -396,13 +411,14 @@ const AdminPagesManager: React.FC = () => {
   }, [data, pageSectionKeys, selectedLocale, selectedPageSlug]);
 
   const handleSavePage = async () => {
-    if (!supabase) {
-      alert('Supabase is not configured.');
+    if (!selectedPageSlug) {
+      alert('Please select a page first.');
       return;
     }
 
-    if (!selectedPageSlug) {
-      alert('Please select a page first.');
+    const adminToken = window.localStorage.getItem('admin_login_token');
+    if (!adminToken) {
+      alert('Not authenticated. Please login first.');
       return;
     }
 
@@ -438,26 +454,31 @@ const AdminPagesManager: React.FC = () => {
 
     setSavingPage(true);
 
-    const { data: savedRows, error } = await supabase
-      .from('page_content')
-      .upsert(rowsToUpsert, { onConflict: 'page_slug,section_key,locale' })
-      .select('id,page_slug,section_key,locale,content_type,content_value,updated_at');
+    try {
+      const response = await fetch(buildApiUrl('/api/admin/page-content'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-login-token': adminToken,
+        },
+        body: JSON.stringify(rowsToUpsert),
+      });
 
-    setSavingPage(false);
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || `HTTP ${response.status}`);
+      }
 
-    if (error) {
-      alert('Error saving page: ' + error.message);
-      return;
-    }
+      const savedRows = await response.json();
 
-    if (savedRows) {
-      const incoming = savedRows as PageContentRow[];
-      const incomingIds = new Set(incoming.map((row) => row.id));
+      if (Array.isArray(savedRows)) {
+        const incoming = savedRows as PageContentRow[];
+        const incomingIds = new Set(incoming.map((row) => row.id));
 
-      setData((prev) => {
-        const kept = prev.filter((row) => !incomingIds.has(row.id));
-        const merged = [...kept, ...incoming];
-        merged.sort((a, b) => {
+        setData((prev) => {
+          const kept = prev.filter((row) => !incomingIds.has(row.id));
+          const merged = [...kept, ...incoming];
+          merged.sort((a, b) => {
           const pageCmp = a.page_slug.localeCompare(b.page_slug);
           if (pageCmp !== 0) return pageCmp;
           const sectionCmp = a.section_key.localeCompare(b.section_key);
@@ -466,9 +487,14 @@ const AdminPagesManager: React.FC = () => {
         });
         return merged;
       });
-    }
+      }
 
-    alert(`Saved ${rowsToUpsert.length} sections for ${selectedPageSlug} (${selectedLocale}).`);
+      alert(`Saved ${rowsToUpsert.length} sections for ${selectedPageSlug} (${selectedLocale}).`);
+    } catch (err) {
+      alert('Error saving page: ' + ((err as any).message || String(err)));
+    } finally {
+      setSavingPage(false);
+    }
   };
 
   const handleEdit = (row: PageContentRow) => {
@@ -478,15 +504,20 @@ const AdminPagesManager: React.FC = () => {
   };
 
   const handleSave = async (row: PageContentRow) => {
-    if (!supabase) {
-      alert('Supabase is not configured.');
+    const adminToken = window.localStorage.getItem('admin_login_token');
+    if (!adminToken) {
+      alert('Not authenticated. Please login first.');
       return;
     }
 
-    const { error } = await supabase
-      .from('page_content')
-      .upsert(
-        {
+    try {
+      const response = await fetch(buildApiUrl(`/api/admin/page-content?id=${encodeURIComponent(row.id)}`), {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-login-token': adminToken,
+        },
+        body: JSON.stringify({
           ...row,
           content_value: normalizeMediaLikeValue(
             row.section_key,
@@ -494,12 +525,14 @@ const AdminPagesManager: React.FC = () => {
             editContent
           ),
           content_type: editContentType || row.content_type || 'text',
-        },
-        { onConflict: 'id' }
-      );
-    if (error) {
-      alert('Error saving: ' + error.message);
-    } else {
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || `HTTP ${response.status}`);
+      }
+
       setData((prev) => prev.map((r) => (r.id === row.id ? { ...r, content_value: editContent, content_type: editContentType || r.content_type } : r)));
       setRecentlyEdited((prev) => ({ ...prev, [row.id]: true }));
       setTimeout(() => {
@@ -510,6 +543,8 @@ const AdminPagesManager: React.FC = () => {
         });
       }, 2500);
       setEditingId(null);
+    } catch (err) {
+      alert('Error saving: ' + ((err as any).message || String(err)));
     }
   };
 
@@ -524,33 +559,37 @@ const AdminPagesManager: React.FC = () => {
       return;
     }
 
-    if (!supabase) {
-      alert('Supabase is not configured.');
+    const adminToken = window.localStorage.getItem('admin_login_token');
+    if (!adminToken) {
+      alert('Not authenticated. Please login first.');
       return;
     }
 
     setIsAddingRow(true);
 
-    const { data: inserted, error } = await supabase
-      .from('page_content')
-      .insert({
-        page_slug,
-        section_key,
-        locale: newLocale,
-        content_type,
-        content_value: normalizeMediaLikeValue(section_key, content_type, content_value),
-      })
-      .select('id,page_slug,section_key,locale,content_type,content_value,updated_at')
-      .single();
+    try {
+      const response = await fetch(buildApiUrl('/api/admin/page-content'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-login-token': adminToken,
+        },
+        body: JSON.stringify({
+          page_slug,
+          section_key,
+          locale: selectedLocale,
+          content_value,
+          content_type,
+        }),
+      });
 
-    setIsAddingRow(false);
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || `HTTP ${response.status}`);
+      }
 
-    if (error) {
-      alert('Error adding row: ' + error.message);
-      return;
-    }
-
-    if (inserted) {
+      const inserted = await response.json();
+      
       setData((prev) => {
         const next = [inserted as PageContentRow, ...prev];
         next.sort((a, b) => {
@@ -572,6 +611,10 @@ const AdminPagesManager: React.FC = () => {
       }, 2500);
       setNewSectionKey('');
       setNewContentValue('');
+    } catch (err) {
+      alert('Error adding row: ' + ((err as any).message || String(err)));
+    } finally {
+      setIsAddingRow(false);
     }
   };
 

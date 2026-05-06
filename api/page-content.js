@@ -1,12 +1,3 @@
-import { createClient } from '@supabase/supabase-js';
-
-function getSupabaseClient() {
-  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
-  if (!url || !key) return null;
-  return createClient(url, key);
-}
-
 function buildSlugVariants(slug) {
   const clean = String(slug || '').trim();
   const normalized = clean.replace(/^\/+/, '');
@@ -94,31 +85,6 @@ async function fetchFromWordPress(slug, locale) {
   return normalizeRows(combined);
 }
 
-async function fetchFromSupabase(slug, locale) {
-  const supabase = getSupabaseClient();
-  if (!supabase) return [];
-
-  const normalizedSlug = String(slug || '').replace(/^\/+/, '');
-  const orFilter = [
-    `page_slug.eq.${normalizedSlug}`,
-    `page_slug.eq./${normalizedSlug}`,
-    `page_slug.eq./courses/${normalizedSlug}`,
-    `page_slug.eq.${slug}`,
-  ].join(',');
-
-  const { data, error } = await supabase
-    .from('page_content')
-    .select('section_key, content_value, updated_at, content_type')
-    .eq('locale', locale)
-    .or(orFilter);
-
-  if (error) {
-    throw new Error(error.message || 'Supabase page-content query failed');
-  }
-
-  return normalizeRows(data);
-}
-
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -139,22 +105,19 @@ export default async function handler(req, res) {
 
   try {
     const wpRows = await fetchFromWordPress(slug, locale);
-    if (wpRows && wpRows.length) {
-      return res.status(200).json({ rows: applyContentFixes(wpRows, slug, locale), source: 'wordpress' });
-    }
-
-    const sbRows = await fetchFromSupabase(slug, locale);
-    return res.status(200).json({ rows: applyContentFixes(sbRows || [], slug, locale), source: 'supabase' });
-  } catch (wpOrSbError) {
-    try {
-      const sbRows = await fetchFromSupabase(slug, locale);
-      return res.status(200).json({ rows: applyContentFixes(sbRows || [], slug, locale), source: 'supabase-fallback' });
-    } catch (sbError) {
-      return res.status(500).json({
-        error: 'Failed to load page content',
-        details: wpOrSbError instanceof Error ? wpOrSbError.message : 'unknown error',
-        fallback: sbError instanceof Error ? sbError.message : 'unknown error',
+    if (!wpRows || !wpRows.length) {
+      return res.status(404).json({
+        error: 'No page content found in WordPress',
+        rows: [],
+        source: 'wordpress',
       });
     }
+
+    return res.status(200).json({ rows: applyContentFixes(wpRows, slug, locale), source: 'wordpress' });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Failed to load page content from WordPress',
+      details: error instanceof Error ? error.message : 'unknown error',
+    });
   }
 }

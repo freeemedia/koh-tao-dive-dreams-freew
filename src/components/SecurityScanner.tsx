@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -62,16 +61,21 @@ export const SecurityScanner: React.FC<SecurityScannerProps> = ({ pageSlug, onCl
 
   const loadSecuritySettings = async () => {
     try {
-      // @ts-expect-error - page_security table will be available after migration
-      const { data, error } = await supabase
-        .from('page_security')
-        .select('*')
-        .eq('page_slug', pageSlug)
-        .single();
-
-      if (!error && data) {
-        setSettings(data);
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '';
+      const baseUrl = apiUrl || window.location.origin;
+      const adminToken = window.localStorage.getItem('admin_login_token');
+      if (!adminToken) {
+        setIsLoading(false);
+        return;
       }
+      const response = await fetch(`${baseUrl}/api/admin/page-security?slug=${encodeURIComponent(pageSlug)}`, {
+        headers: {
+          'x-admin-login-token': adminToken,
+        },
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      setSettings(data);
     } catch (err) {
       console.error('Failed to load security settings:', err);
     } finally {
@@ -203,29 +207,30 @@ export const SecurityScanner: React.FC<SecurityScannerProps> = ({ pageSlug, onCl
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const adminToken = window.localStorage.getItem('admin_login_token');
+      if (!adminToken) {
+        toast.error('Not authenticated. Please login as admin.');
+        return;
+      }
       
-      // @ts-expect-error - page_security table will be available after migration
-      const { error } = await supabase
-        .from('page_security')
-        .upsert({
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '';
+      const baseUrl = apiUrl || window.location.origin;
+      const response = await fetch(`${baseUrl}/api/admin/page-security`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-login-token': adminToken,
+        },
+        body: JSON.stringify({
           page_slug: pageSlug,
           ...settings,
-          updated_by: user?.email || null,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: 'page_slug' });
+        }),
+      });
 
-      if (error) throw error;
-
-      // Update metadata flag
-      // @ts-expect-error - page_metadata table will be available after migration
-      await supabase
-        .from('page_metadata')
-        .upsert({
-          page_slug: pageSlug,
-          is_secured: settings.is_secured,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: 'page_slug' });
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || `HTTP ${response.status}`);
+      }
 
       toast.success('Security settings saved successfully');
       onClose();

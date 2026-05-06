@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 
 interface PageContentRow {
   id: string;
@@ -28,15 +27,22 @@ const PagesContent: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('page_content')
-        .select('*');
-      if (error) {
-        setError(error.message);
-      } else {
-        setData(data as PageContentRow[]);
+      try {
+        const apiUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '';
+        const baseUrl = apiUrl || window.location.origin;
+        const adminToken = window.localStorage.getItem('admin_login_token');
+        const response = await fetch(`${baseUrl}/api/admin/page-content?listSlugs=true`, {
+          headers: adminToken ? { 'x-admin-login-token': adminToken } : {},
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const result = await response.json();
+        setData(Array.isArray(result) ? result : (result.data && Array.isArray(result.data) ? result.data : []));
+        setError(null);
+      } catch (err) {
+        setError((err as any).message || 'Failed to load content');
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     fetchData();
   }, []);

@@ -242,8 +242,8 @@ const InlineCourseBookingForm: React.FC<Props> = ({
         if (!emailOk) {
           toast.warning('Booking saved, but email notification is currently unavailable.');
         }
-        if (dbResult?.supabase_warning) {
-          toast.warning(`WordPress saved. Supabase mirror warning: ${dbResult.supabase_warning}`);
+        if (dbResult?.warning) {
+          toast.warning(`WordPress saved with warning: ${dbResult.warning}`);
         }
         setSubmittedEmail(data.email);
         setSubmitted(true);

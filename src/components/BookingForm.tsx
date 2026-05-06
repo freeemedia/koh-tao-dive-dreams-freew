@@ -205,8 +205,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
         } else if (responseData.warning) {
           toast.warning(`Booking saved, but email notification needs attention: ${responseData.warning}`);
         }
-        if (dbResult?.supabase_warning) {
-          toast.warning(`WordPress saved. Supabase mirror warning: ${dbResult.supabase_warning}`);
+        if (dbResult?.warning) {
+          toast.warning(`WordPress saved with warning: ${dbResult.warning}`);
         }
 
         // Fire-and-forget CRM sync

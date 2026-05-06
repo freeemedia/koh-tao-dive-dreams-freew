@@ -4,7 +4,6 @@ import BookNowModal from './BookNowModal';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { trackAffiliateClick } from '@/lib/affiliateTracking';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { Download, Facebook, Instagram, MessageCircle } from 'lucide-react';
@@ -309,28 +308,25 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   React.useEffect(() => {
     const checkAuth = async () => {
       const adminSession = window.localStorage.getItem('admin_authenticated') === '1';
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      // Import here to avoid circular dependency
-      const { hasAdminAccess } = await import('@/lib/adminAccess');
-      setIsAdmin(adminSession || (user ? hasAdminAccess(user) : false));
+      setIsAdmin(adminSession);
     };
     checkAuth();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      const user = session?.user ?? null;
-      setUser(user);
-      import('@/lib/adminAccess').then(({ hasAdminAccess }) => {
-        const adminSession = window.localStorage.getItem('admin_authenticated') === '1';
-        setIsAdmin(adminSession || (user ? hasAdminAccess(user) : false));
-      });
-    });
-    return () => { subscription.unsubscribe(); };
+
+    // Listen for storage changes (e.g., logout from another tab)
+    const handleStorageChange = () => {
+      const adminSession = window.localStorage.getItem('admin_authenticated') === '1';
+      setIsAdmin(adminSession);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const handleLogout = async () => {
     window.localStorage.removeItem('admin_authenticated');
     window.localStorage.removeItem('admin_login_token');
-    await supabase.auth.signOut();
     toast.success(isDutch ? 'Succesvol uitgelogd' : 'Successfully logged out');
     navigate('/admin/login');
   };

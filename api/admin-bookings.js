@@ -13,14 +13,14 @@ async function ensureAdmin(req) {
     return { ok: true, mode: 'view-token' };
   }
 
-  const staticToken = process.env.ADMIN_LOGIN_TOKEN || process.env.ADMIN_API_TOKEN || process.env.ADMIN_BOOKINGS_VIEW_TOKEN;
+  const staticToken = process.env.ADMIN_BOOKINGS_VIEW_TOKEN || process.env.ADMIN_LOGIN_TOKEN || process.env.ADMIN_API_TOKEN;
   const suppliedAdminToken = req.headers['x-admin-login-token'];
 
   if (staticToken && suppliedAdminToken && String(suppliedAdminToken) === String(staticToken)) {
     return { ok: true, mode: 'static-token' };
   }
 
-  return { ok: false, status: 401, error: 'Missing admin credentials' };
+  return { ok: false, status: 401, error: `Missing admin credentials (got token: ${suppliedAdminToken ? 'yes' : 'no'}, expected: ${staticToken ? 'configured' : 'NOT configured'})` };
 }
 
 function getWpConfig() {
@@ -43,7 +43,7 @@ export default async function handler(req, res) {
   if (!adminCheck.ok) {
     return res.status(adminCheck.status || 401).json({ error: adminCheck.error || 'Unauthorized' });
   }
-
+  
   if (req.method === 'GET') {
     let wpConfig;
     try {

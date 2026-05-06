@@ -4,8 +4,6 @@ import { Menu, X, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import LanguageSwitcher from './LanguageSwitcher';
-import { supabase } from '@/integrations/supabase/client';
-import { hasAdminAccess } from '@/lib/adminAccess';
 import { Badge } from '@/components/ui/badge';
 
 const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boolean, isAdminRoute?: boolean }) => {
@@ -615,7 +613,6 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                             onClick={async () => {
                               window.localStorage.removeItem('admin_authenticated');
                               window.localStorage.removeItem('admin_login_token');
-                              await supabase.auth.signOut();
                               navigate('/');
                             }}
                             className="w-full text-left py-2 px-3 text-sm text-gray-300 hover:text-white hover:bg-[#1a3a5c] transition-all duration-150 rounded"
@@ -875,7 +872,6 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                           onClick={async () => {
                             window.localStorage.removeItem('admin_authenticated');
                             window.localStorage.removeItem('admin_login_token');
-                            await supabase.auth.signOut();
                             setIsOpen(false);
                             navigate('/');
                           }}

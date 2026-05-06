@@ -43,14 +43,14 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const sendToSupabaseAndEmail = async (payNow: boolean) => {
+  const sendToBookingApiAndEmail = async (payNow: boolean) => {
     const totalAmount = coursePrice > 0 ? coursePrice : null;
     const depositAmount = deposit > 0 ? deposit : null;
     const dueAmount = totalAmount != null && depositAmount != null
       ? Math.max(totalAmount - depositAmount, 0)
       : null;
 
-    // Submit via API (saves to Supabase + mirrors to WordPress)
+    // Submit via API (WordPress/MySQL booking storage)
     try {
       const result = await Promise.race([
         fetch('/api/bookings', {
@@ -74,7 +74,7 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
             total_amount: totalAmount,
             deposit_amount: depositAmount,
             due_amount: dueAmount,
-            booking_source: 'vercel-form',
+            booking_source: 'website-form',
           }),
         }),
         new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000)),
@@ -99,7 +99,7 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
 
   const handlePayNow = async () => {
     setLoading(true);
-    sendToSupabaseAndEmail(true);
+    sendToBookingApiAndEmail(true);
     // Redirect after 500ms to let API fire
     setTimeout(() => {
       window.location.href = `${PAYPAL_BASE}/${deposit}THB`;
@@ -108,7 +108,7 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
 
   const handleNotNow = async () => {
     setLoading(true);
-    sendToSupabaseAndEmail(false);
+    sendToBookingApiAndEmail(false);
     // Show thank you after 500ms to let API fire
     setTimeout(() => {
       setShowThankYou(true);

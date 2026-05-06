@@ -218,7 +218,7 @@ const       BookingPage: React.FC = () => {
       };
 
       let persisted = false;
-      let wpMirrorWarning: string | null = null;
+      let bookingApiWarning: string | null = null;
       try {
         const dbRes = await fetch(apiUrl('/api/bookings'), {
           method: 'POST',
@@ -227,11 +227,11 @@ const       BookingPage: React.FC = () => {
         });
         persisted = dbRes.ok;
         const dbJson = await dbRes.json().catch(() => null);
-        if (dbRes.ok && dbJson?.supabase_warning) {
-          wpMirrorWarning = String(dbJson.supabase_warning);
+        if (dbRes.ok && dbJson?.warning) {
+          bookingApiWarning = String(dbJson.warning);
         }
         if (!dbRes.ok && dbJson?.error) {
-          wpMirrorWarning = String(dbJson.error);
+          bookingApiWarning = String(dbJson.error);
         }
       } catch (dbErr) {
         console.warn('Booking persistence failed; continuing with email flow.', dbErr);
@@ -324,7 +324,13 @@ const       BookingPage: React.FC = () => {
       }
 
       let emailOk = false;
-      let responseData: any = {};
+      let responseData: {
+        success?: boolean;
+        warning?: string;
+        message?: string;
+        error?: string;
+        provider?: string;
+      } = {};
       try {
         const emailResult = await sendBookingNotification({
           endpointUrl: apiUrl('/api/send-booking-notification'),
@@ -361,8 +367,8 @@ const       BookingPage: React.FC = () => {
       if (emailOk) {
         if (responseData.warning) {
           toast.warning(`Booking saved, but email notification needs attention: ${responseData.warning}`);
-        } else if (wpMirrorWarning) {
-          toast.warning(`Inquiry saved, but WordPress booking sync failed: ${wpMirrorWarning}`);
+        } else if (bookingApiWarning) {
+          toast.warning(`Inquiry saved with warning: ${bookingApiWarning}`);
         } else if (wpApiBase && wpApiKey && !wpSaved) {
           toast.warning('Inquiry sent, but WordPress booking storage failed.');
         }
@@ -583,7 +589,7 @@ const       BookingPage: React.FC = () => {
 
         <div className="mb-6 p-4 border rounded-lg bg-muted/20">
           <h3 className="font-semibold mb-3">Quick booking options</h3>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             <Button
               type="button"
               variant="outline"
@@ -858,7 +864,7 @@ const       BookingPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-white p-4 rounded-lg text-sm">
               <div><span className="font-semibold">Name:</span> {form.getValues('name')}</div>
               <div><span className="font-semibold">Email:</span> {form.getValues('email')}</div>
-              <div><span className="font-semibold">Course/Activity:</span> {bookingItemTitle}</div>
+              <div><span className="font-semibold">Course/Activity:</span> {itemTitle}</div>
               <div><span className="font-semibold">Preferred Date:</span> {form.getValues('preferred_date')}</div>
               <div><span className="font-semibold">Accommodation:</span> {form.getValues('accommodation') || 'Not specified'}</div>
             </div>

@@ -128,7 +128,7 @@ async function mirrorBookingToWordPress(payload) {
     item_title: payload.course_title || payload.item_title || '',
     course_title: payload.course_title || payload.item_title || '',
     course: payload.course_title || payload.item_title || '',
-    booking_source: 'vercel-app',
+    booking_source: 'website-api',
   };
 
   const baseHeaders = { 'Content-Type': 'application/json' };

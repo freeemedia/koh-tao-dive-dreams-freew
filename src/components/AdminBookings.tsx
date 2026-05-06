@@ -18,7 +18,6 @@ import FunDiveBooking from './FunDiveBooking';
 import FinanceSection from './FinanceSection';
 import BookingsCalendar from './BookingsCalendar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { supabase } from '@/integrations/supabase/client';
 
 interface Booking {
   total_payable_now?: number | null;
@@ -142,16 +141,10 @@ const AdminBookings: React.FC = () => {
       setCommentsLoading(true);
       setComments([]);
       setCommentError(null);
-      supabase
-        .from('booking_comments')
-        .select('*')
-        .eq('booking_id', financeModalBooking.id)
-        .order('created_at', { ascending: true })
-        .then(({ data, error }) => {
-          if (error) { setCommentError('Failed to load comments'); }
-          else { setComments(Array.isArray(data) ? data : []); }
-        })
-        .finally(() => setCommentsLoading(false));
+      // For now, comments feature is disabled as it was Supabase-only.
+      // To restore, add API endpoint for booking_comments backend storage.
+      setComments([]);
+      setCommentsLoading(false);
     }, [financeModalBooking]);
 
     // Add new comment
@@ -160,22 +153,30 @@ const AdminBookings: React.FC = () => {
       setCommentSaving(true);
       setCommentError(null);
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        const user_id = session?.user?.id;
-        if (!user_id) throw new Error('No admin user ID');
-        const { data: newComment, error: sbError } = await supabase
-          .from('booking_comments')
-          .insert({
+        // TODO: Implement via new /api/admin/comments endpoint backed by WordPress/MySQL
+        const adminLoginToken = window.localStorage.getItem('admin_login_token');
+        if (!adminLoginToken) throw new Error('Not authenticated');
+        
+        const response = await fetch(buildApiUrl('/api/admin/bookings/comments'), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-login-token': adminLoginToken,
+          },
+          body: JSON.stringify({
             booking_id: financeModalBooking.id,
-            user_id,
             comment: commentDraft,
-            is_admin: true,
-          })
-          .select()
-          .single();
-        if (sbError) throw sbError;
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to add comment');
+        }
+
+        const newComment = await response.json();
         setComments((prev) => [...prev, newComment]);
         setCommentDraft('');
+        toast.success('Comment added');
       } catch (err: any) {
         setCommentError(err.message || 'Failed to add comment');
       } finally {
@@ -244,15 +245,10 @@ const AdminBookings: React.FC = () => {
   };
 
   const adminAuthedFetch = async (url: string, init?: RequestInit) => {
-    const { data: { session } } = await supabase.auth.getSession();
-    const token = session?.access_token;
     const adminLoginToken = window.localStorage.getItem('admin_login_token');
     const viewToken = import.meta.env.VITE_ADMIN_BOOKINGS_VIEW_TOKEN || window.localStorage.getItem('admin_view_token');
 
     const headers = new Headers(init?.headers || {});
-    if (token) {
-      headers.set('Authorization', `Bearer ${token}`);
-    }
     if (adminLoginToken) {
       headers.set('x-admin-login-token', adminLoginToken);
     }
@@ -277,6 +273,12 @@ const AdminBookings: React.FC = () => {
     }
 
     return fetch(finalUrl, { ...init, headers });
+  };
+
+  const buildApiUrl = (path: string) => {
+    const rawBase = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '').trim();
+    const base = rawBase.replace(/\/$/, '');
+    return base ? `${base}${path}` : path;
   };
 
   const escalateToJira = async (booking: Booking) => {

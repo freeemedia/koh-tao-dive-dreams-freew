@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -94,27 +93,35 @@ export const PageManager: React.FC = () => {
   useEffect(() => {
     const loadPageMetadata = async () => {
       try {
-        const { data, error } = await supabase
-          .from('page_metadata')
-          .select('page_slug, has_seo, is_secured, draft_status, updated_at');
-
-        if (!error && data) {
-          setPages(PAGE_REGISTRY.map(page => {
-            const meta = data.find((d: any) => d.page_slug === page.slug);
-            if (meta !== null && typeof meta === 'object' && !('message' in meta)) {
-              return {
-                ...page,
-                hasSEO: 'has_seo' in meta ? meta.has_seo || false : false,
-                isSecured: 'is_secured' in meta ? meta.is_secured || false : false,
-                draftStatus: 'draft_status' in meta ? (meta.draft_status as 'draft' | 'published') || 'published' : 'published',
-                lastModified: 'updated_at' in meta ? meta.updated_at : undefined,
-              };
-            }
-            return page;
-          }));
-        } else {
+        const apiUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '';
+        const baseUrl = apiUrl || window.location.origin;
+        const adminToken = window.localStorage.getItem('admin_login_token');
+        if (!adminToken) {
           setPages(PAGE_REGISTRY);
+          return;
         }
+        const response = await fetch(`${baseUrl}/api/admin/page-metadata`, {
+          headers: {
+            'x-admin-login-token': adminToken,
+          },
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        const metadataArray = Array.isArray(data) ? data : [];
+
+        setPages(PAGE_REGISTRY.map(page => {
+          const meta = metadataArray.find((d: any) => d.page_slug === page.slug);
+          if (meta !== null && typeof meta === 'object' && !('message' in meta)) {
+            return {
+              ...page,
+              hasSEO: 'has_seo' in meta ? meta.has_seo || false : false,
+              isSecured: 'is_secured' in meta ? meta.is_secured || false : false,
+              draftStatus: 'draft_status' in meta ? (meta.draft_status as 'draft' | 'published') || 'published' : 'published',
+              lastModified: 'updated_at' in meta ? meta.updated_at : undefined,
+            };
+          }
+          return page;
+        }));
       } catch (err) {
         setPages(PAGE_REGISTRY);
         console.error('Failed to load page metadata:', err);

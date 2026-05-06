@@ -1,6 +1,5 @@
 // Minor change: trigger for git push
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Save, RefreshCw, Upload } from 'lucide-react';
-import { hasAdminAccess } from '@/lib/adminAccess';
+
 
 interface PageContentEditorProps {
   pageSlug: string;
@@ -430,35 +429,21 @@ const PAGE_DEFINITIONS: Record<string, ContentItem[]> = {
 };
 
 export const PageContentEditor: React.FC<PageContentEditorProps> = ({ pageSlug, locale }) => {
-  const [isAdmin, setIsAdmin] = useState(false);
   const [contentItems, setContentItems] = useState<ContentItem[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const checkAdmin = async () => {
-      const [{ data: userData }, { data: sessionData }] = await Promise.all([
-        supabase.auth.getUser(),
-        supabase.auth.getSession(),
-      ]);
-
-      const user = userData.user || sessionData.session?.user || null;
-      setIsAdmin(user ? hasAdminAccess(user) : false);
-    };
-    checkAdmin();
-  }, []);
 
   useEffect(() => {
     const loadContent = async () => {
       const template = PAGE_DEFINITIONS[pageSlug] || [];
       
       try {
-        const { data, error } = await supabase
-          .from('page_content')
-          .select('section_key, content_value, content_type')
-          .eq('page_slug', pageSlug)
-          .eq('locale', locale);
-        if (error) throw error;
+        const apiUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '';
+        const baseUrl = apiUrl || window.location.origin;
+        const response = await fetch(`${baseUrl}/api/admin/page-content?slug=${encodeURIComponent(pageSlug)}&locale=${encodeURIComponent(locale)}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const { data } = await response.json();
+        
         const loadedItems = template.map((item) => {
           const dbItem = data?.find((d: any) => d.section_key === item.section_key);
           return {
@@ -484,19 +469,33 @@ export const PageContentEditor: React.FC<PageContentEditorProps> = ({ pageSlug, 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const adminToken = window.localStorage.getItem('admin_login_token');
+      if (!adminToken) {
+        toast.error('Not authenticated. Please login as admin.');
+        return;
+      }
       const upserts = contentItems.map((item) => ({
         page_slug: pageSlug,
         locale,
         section_key: item.section_key,
         content_type: item.content_type,
         content_value: item.content_value,
-        updated_by: user?.email || null,
       }));
-      const { error } = await supabase
-        .from('page_content')
-        .upsert(upserts, { onConflict: 'page_slug,locale,section_key' });
-      if (error) throw error;
+      
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '';
+      const baseUrl = apiUrl || window.location.origin;
+      const response = await fetch(`${baseUrl}/api/admin/page-content`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-login-token': adminToken,
+        },
+        body: JSON.stringify(upserts),
+      });
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || `HTTP ${response.status}`);
+      }
       toast.success('Content saved successfully');
     } catch (err) {
       console.error('Failed to save content:', err);

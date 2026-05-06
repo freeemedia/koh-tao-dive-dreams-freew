@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -68,19 +67,15 @@ export const SEOMetaEditor: React.FC<SEOMetaEditorProps> = ({ pageSlug, onClose 
 
   const loadSEOData = async () => {
     try {
-      // @ts-expect-error - page_seo table will be available after migration
-      const { data, error } = await supabase
-        .from('page_seo')
-        .select('*')
-        .eq('page_slug', pageSlug)
-        .single();
-
-      if (!error && data) {
-        setSeoData({
-          ...data,
-          schema_json: typeof data.schema_json === 'string' ? data.schema_json : JSON.stringify(data.schema_json, null, 2)
-        });
-      }
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '';
+      const baseUrl = apiUrl || window.location.origin;
+      const response = await fetch(`${baseUrl}/api/admin/page-seo?slug=${encodeURIComponent(pageSlug)}`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      setSeoData({
+        ...data,
+        schema_json: typeof data.schema_json === 'string' ? data.schema_json : JSON.stringify(data.schema_json, null, 2)
+      });
     } catch (err) {
       console.error('Failed to load SEO data:', err);
     } finally {
@@ -91,7 +86,11 @@ export const SEOMetaEditor: React.FC<SEOMetaEditorProps> = ({ pageSlug, onClose 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const adminToken = window.localStorage.getItem('admin_login_token');
+      if (!adminToken) {
+        toast.error('Not authenticated. Please login as admin.');
+        return;
+      }
 
       let parsedSchemaJson: any = null;
       const rawSchema = (seoData.schema_json || '').trim();
@@ -105,30 +104,25 @@ export const SEOMetaEditor: React.FC<SEOMetaEditorProps> = ({ pageSlug, onClose 
         }
       }
 
-      // Ensure parent row exists first (required by page_seo FK -> page_metadata.page_slug).
-      // @ts-expect-error - page_metadata table will be available after migration
-      const { error: metadataError } = await supabase
-        .from('page_metadata')
-        .upsert({
-          page_slug: pageSlug,
-          has_seo: true,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: 'page_slug' });
-
-      if (metadataError) throw metadataError;
-      
-      // @ts-expect-error - page_seo table will be available after migration
-      const { error } = await supabase
-        .from('page_seo')
-        .upsert({
+      const apiUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '';
+      const baseUrl = apiUrl || window.location.origin;
+      const response = await fetch(`${baseUrl}/api/admin/page-seo`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-login-token': adminToken,
+        },
+        body: JSON.stringify({
           page_slug: pageSlug,
           ...seoData,
           schema_json: parsedSchemaJson,
-          updated_by: user?.email || null,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: 'page_slug' });
+        }),
+      });
 
-      if (error) throw error;
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || `HTTP ${response.status}`);
+      }
 
       toast.success('SEO metadata saved successfully');
       onClose();

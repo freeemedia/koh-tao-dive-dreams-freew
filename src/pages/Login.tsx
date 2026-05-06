@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { hasAdminAccess } from '@/lib/adminAccess';
 
 const buildApiUrl = (path: string) => {
   const rawBase = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '').trim();
@@ -29,36 +27,15 @@ const Login: React.FC = () => {
         return;
       }
 
-      const { data } = await supabase.auth.getSession();
-      const user = data.session?.user || null;
-      if (!user) return;
-
-      if (isAdminLogin && !hasAdminAccess(user)) {
+      // For non-admin users, check if they have a stored token from API auth
+      const userToken = window.localStorage.getItem('user_auth_token');
+      if (userToken && !isAdminLogin) {
+        navigate('/account', { replace: true });
         return;
-      }
-
-      if (user) {
-        navigate(targetPath, { replace: true });
       }
     };
 
     checkExistingSession();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      // Avoid automatic bounce loops on /admin/login.
-      if (isAdminLogin) return;
-
-      const user = session?.user || null;
-      if (!user) return;
-
-      if (user) {
-        navigate(targetPath, { replace: true });
-      }
-    });
-
-    return () => subscription.unsubscribe();
   }, [isAdminLogin, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -91,24 +68,7 @@ const Login: React.FC = () => {
             }
           }
 
-          // Fallback: allow admin login via Supabase session when API route is not available.
-          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-          if (error) {
-            toast.error(error.message || 'Admin login failed');
-            return;
-          }
-
-          const user = data.session?.user || null;
-          if (!user || !hasAdminAccess(user)) {
-            await supabase.auth.signOut();
-            toast.error('Your account is signed in but does not have admin access.');
-            return;
-          }
-
-          window.localStorage.setItem('admin_authenticated', '1');
-          window.localStorage.removeItem('admin_login_token');
-          toast.success('Admin login successful');
-          navigate('/admin', { replace: true });
+          toast.error('Admin login failed');
           return;
         } catch (err) {
           console.error(err);
@@ -117,44 +77,29 @@ const Login: React.FC = () => {
         }
       }
 
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        toast.error(error.message || 'Login failed');
-      } else {
-        toast.success('Logged in successfully');
-        const isAdminLogin = location.pathname.startsWith('/admin');
-        const hasSession = !!data.session;
-        const user = data.session?.user || null;
+      // Standard user login via API
+      try {
+        const response = await fetch(buildApiUrl('/api/user-login'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
 
-        if (isAdminLogin && user && !hasAdminAccess(user)) {
-          toast.error('Your account is signed in but does not have admin access.');
-          return;
-        }
-
-        if (hasSession) {
-          navigate(isAdminLogin ? '/admin' : '/account', { replace: true });
-          return;
-        }
-
-        // Fallback when session state arrives asynchronously.
-        setTimeout(async () => {
-          const { data: sessionData } = await supabase.auth.getSession();
-          const delayedUser = sessionData.session?.user || null;
-          if (!delayedUser) return;
-
-          if (isAdminLogin && !hasAdminAccess(delayedUser)) {
-            toast.error('Your account is signed in but does not have admin access.');
+        if (response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          if (payload?.success && payload?.token) {
+            window.localStorage.setItem('user_auth_token', payload.token);
+            toast.success('Logged in successfully');
+            navigate('/account', { replace: true });
             return;
           }
+        }
 
-          if (sessionData.session) {
-            navigate(isAdminLogin ? '/admin' : '/account', { replace: true });
-          }
-        }, 150);
+        toast.error('Login failed');
+      } catch (err) {
+        console.error(err);
+        toast.error('Unexpected error');
       }
-    } catch (err) {
-      console.error(err);
-      toast.error('Unexpected error');
     } finally {
       setIsLoading(false);
     }

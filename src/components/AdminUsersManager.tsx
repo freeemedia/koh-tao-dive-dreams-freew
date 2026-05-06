@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '@/integrations/supabase/client';
 
 type AppRole = 'admin' | 'user';
 
@@ -45,21 +44,14 @@ const AdminUsersManager: React.FC = () => {
   const [noteDraft, setNoteDraft] = useState('');
 
   const authedFetch = async (url: string, init?: RequestInit) => {
-    const { data: { session } } = await supabase.auth.getSession();
-    const token = session?.access_token;
     const adminLoginToken = window.localStorage.getItem('admin_login_token');
 
-    if (!token && !adminLoginToken) {
+    if (!adminLoginToken) {
       throw new Error('No authenticated session found. Please sign in again.');
     }
 
     const headers = new Headers(init?.headers || {});
-    if (token) {
-      headers.set('Authorization', `Bearer ${token}`);
-    }
-    if (adminLoginToken) {
-      headers.set('x-admin-login-token', adminLoginToken);
-    }
+    headers.set('x-admin-login-token', adminLoginToken);
     if (!headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
 
     return fetch(url, { ...init, headers });

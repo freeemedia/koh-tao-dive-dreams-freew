@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from './ui/table';
 import { Input } from './ui/input';
@@ -17,13 +16,33 @@ const PricingManager: React.FC = () => {
 	const [prices, setPrices] = useState<CoursePrice[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
+	const [error, setError] = useState('');
 
 	useEffect(() => {
 		const fetchPrices = async () => {
 			setIsLoading(true);
-			const { data, error } = await supabase.from('course_prices').select('*');
-			if (!error && data) setPrices(data);
-			setIsLoading(false);
+			try {
+				const adminToken = window.localStorage.getItem('admin_login_token');
+				if (!adminToken) {
+					setError('Not authenticated. Please login as admin.');
+					return;
+				}
+				const apiUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '';
+				const baseUrl = apiUrl || window.location.origin;
+				const response = await fetch(`${baseUrl}/api/admin/course-prices`, {
+					headers: {
+						'x-admin-login-token': adminToken,
+					},
+				});
+				if (!response.ok) throw new Error(`HTTP ${response.status}`);
+				const data = await response.json();
+				setPrices(Array.isArray(data) ? data : []);
+				setError('');
+			} catch (err) {
+				setError((err as any).message || 'Failed to fetch prices');
+			} finally {
+				setIsLoading(false);
+			}
 		};
 		fetchPrices();
 	}, []);
@@ -36,12 +55,34 @@ const PricingManager: React.FC = () => {
 		setIsSaving(true);
 		const price = prices.find(p => p.id === id);
 		if (!price) return;
-		await supabase.from('course_prices').update({
-			price_thb: price.price_thb,
-			price_usd: price.price_usd,
-			price_eur: price.price_eur,
-		}).eq('id', id);
-		setIsSaving(false);
+		try {
+			const adminToken = window.localStorage.getItem('admin_login_token');
+			if (!adminToken) {
+				setError('Not authenticated. Please login as admin.');
+				return;
+			}
+			const apiUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '';
+			const baseUrl = apiUrl || window.location.origin;
+			const response = await fetch(`${baseUrl}/api/admin/course-prices`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					'x-admin-login-token': adminToken,
+				},
+				body: JSON.stringify({
+					id,
+					price_thb: price.price_thb,
+					price_usd: price.price_usd,
+					price_eur: price.price_eur,
+				}),
+			});
+			if (!response.ok) throw new Error(`HTTP ${response.status}`);
+			setError('');
+		} catch (err) {
+			setError((err as any).message || 'Failed to save price');
+		} finally {
+			setIsSaving(false);
+		}
 	};
 
 	return (
