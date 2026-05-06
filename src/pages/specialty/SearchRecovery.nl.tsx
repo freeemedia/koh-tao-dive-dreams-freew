@@ -70,7 +70,7 @@ export default function SearchRecovery() {
         <Card className="mb-8 p-6 bg-green-50">
           <h2 className="text-2xl font-bold mb-6">Beheers zoeken en bergen</h2>
           <p className="text-gray-700 mb-4">Ontwikkel deskundige zoek- en bergingsvaardigheden met ons ervaren team.</p>
-          <Button size="lg" onClick={() => window.open('/booknow.html', '_blank')}>Boek nu</Button>
+          <Button size="lg" onClick={() => window.open('/bookingform.html', '_blank')}>Boek nu</Button>
         </Card>
 
         <div className="mt-12">

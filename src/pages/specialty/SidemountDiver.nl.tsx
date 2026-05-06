@@ -79,7 +79,7 @@ export default function SidemountDiver() {
         <Card className="mb-8 p-6 bg-green-50">
           <h2 className="text-2xl font-bold mb-6">Beheers sidemount</h2>
           <p className="text-gray-700 mb-4">Leer geavanceerde sidemount-configuratie voor technische duikavonturen.</p>
-          <Button size="lg" onClick={() => window.open('/booknow.html', '_blank')}>Boek nu</Button>
+          <Button size="lg" onClick={() => window.open('/bookingform.html', '_blank')}>Boek nu</Button>
         </Card>
 
         <div className="mt-12">

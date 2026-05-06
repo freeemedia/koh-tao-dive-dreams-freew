@@ -90,7 +90,7 @@ const ProLevelCourses: React.FC = () => {
                       </Link>
                     )}
 
-                    <Button className="w-full flex-1" onClick={() => window.open('/booknow.html', '_blank')}>{content.enquire_button}</Button>
+                    <Button className="w-full flex-1" onClick={() => window.open('/bookingform.html', '_blank')}>{content.enquire_button}</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -100,7 +100,7 @@ const ProLevelCourses: React.FC = () => {
           <section className="mt-16">
             <h2 className="text-2xl font-bold mb-4">{content.footer_title}</h2>
             <p className="text-muted-foreground mb-6">{content.footer_body}</p>
-            <Button onClick={() => window.open('/booknow.html', '_blank')}>{content.footer_cta}</Button>
+            <Button onClick={() => window.open('/bookingform.html', '_blank')}>{content.footer_cta}</Button>
           </section>
         </div>
       </section>
