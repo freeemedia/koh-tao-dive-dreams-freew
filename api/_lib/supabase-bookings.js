@@ -23,6 +23,11 @@ export function isSupabaseProvider() {
   return getDbProvider() === 'supabase';
 }
 
+export function isMySqlProvider() {
+  const provider = getDbProvider();
+  return provider === 'mysql' || provider === 'hostinger';
+}
+
 function getSupabaseConfig() {
   const url = (
     process.env.SUPABASE_URL ||
