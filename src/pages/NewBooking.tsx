@@ -50,10 +50,6 @@ const NewBooking: React.FC = () => {
       setError(err instanceof Error ? err.message : 'Network error');
     }
 
-    if (!error) {
-      setSuccess(true);
-      setForm({ name: '', email: '', phone: '', course_title: '', preferred_date: '', message: '' });
-    }
     setLoading(false);
   };
 
