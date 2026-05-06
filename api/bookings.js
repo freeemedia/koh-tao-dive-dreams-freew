@@ -2,11 +2,18 @@ import { sendBookingNotificationEmail, sendCustomerInvoiceEmail } from './send-b
 import {
   getDbProvider,
   isSupabaseProvider,
+  isMySqlProvider,
   listSupabaseBookings,
   insertSupabaseBooking,
   updateSupabaseBookingById,
   deleteSupabaseBookingById,
 } from './_lib/supabase-bookings.js';
+import {
+  listMySqlBookings,
+  insertMySqlBooking,
+  updateMySqlBookingById,
+  deleteMySqlBookingById,
+} from './_lib/mysql-bookings.js';
 
 async function sendFluentBookingWebhook(payload) {
   const webhookUrl = String(process.env.FLUENT_BOOKING_WEBHOOK_URL || '').trim();
@@ -298,6 +305,16 @@ export default async function handler(req, res) {
         }
       }
 
+      if (isMySqlProvider()) {
+        try {
+          const rows = await listMySqlBookings();
+          return res.status(200).json({ bookings: rows, source: 'mysql' });
+        } catch (mysqlError) {
+          const message = mysqlError instanceof Error ? mysqlError.message : 'MySQL fetch failed';
+          return res.status(502).json({ error: message, provider: dbProvider });
+        }
+      }
+
       try {
         const wpRows = await fetchBookingsFromWordPress();
         if (!wpRows) {
@@ -328,6 +345,18 @@ export default async function handler(req, res) {
             return res.status(201).json(inserted);
           } catch (supabaseError) {
             const message = supabaseError instanceof Error ? supabaseError.message : 'Supabase booking create failed';
+            return res.status(502).json({ error: message, provider: dbProvider });
+          }
+        }
+
+        if (isMySqlProvider()) {
+          try {
+            const inserted = await insertMySqlBooking(payload);
+            const emailPayload = { ...inserted, item_title: inserted.course_title || inserted.item_title };
+            await dispatchBookingNotifications(emailPayload);
+            return res.status(201).json(inserted);
+          } catch (mysqlError) {
+            const message = mysqlError instanceof Error ? mysqlError.message : 'MySQL booking create failed';
             return res.status(502).json({ error: message, provider: dbProvider });
           }
         }
@@ -376,6 +405,16 @@ export default async function handler(req, res) {
         }
       }
 
+      if (isMySqlProvider()) {
+        try {
+          const updated = await updateMySqlBookingById(id, updates);
+          return res.status(200).json(updated);
+        } catch (mysqlError) {
+          const message = mysqlError instanceof Error ? mysqlError.message : 'MySQL update failed';
+          return res.status(502).json({ error: message, provider: dbProvider });
+        }
+      }
+
       const wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
       const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
       const wpId = Number.parseInt(String(id), 10);
@@ -408,6 +447,16 @@ export default async function handler(req, res) {
           return res.status(200).json(result);
         } catch (supabaseError) {
           const message = supabaseError instanceof Error ? supabaseError.message : 'Supabase delete failed';
+          return res.status(502).json({ error: message, provider: dbProvider });
+        }
+      }
+
+      if (isMySqlProvider()) {
+        try {
+          const result = await deleteMySqlBookingById(id);
+          return res.status(200).json(result);
+        } catch (mysqlError) {
+          const message = mysqlError instanceof Error ? mysqlError.message : 'MySQL delete failed';
           return res.status(502).json({ error: message, provider: dbProvider });
         }
       }

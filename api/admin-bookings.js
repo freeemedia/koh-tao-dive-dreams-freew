@@ -8,10 +8,16 @@ import { sendBookingStatusEmail } from './send-booking-notification.js';
 import {
   getDbProvider,
   isSupabaseProvider,
+  isMySqlProvider,
   listSupabaseBookings,
   updateSupabaseBookingById,
   deleteSupabaseBookingById,
 } from './_lib/supabase-bookings.js';
+import {
+  listMySqlBookings,
+  updateMySqlBookingById,
+  deleteMySqlBookingById,
+} from './_lib/mysql-bookings.js';
 
 async function ensureAdmin(req) {
   const viewToken = process.env.ADMIN_BOOKINGS_VIEW_TOKEN || process.env.ADMIN_VIEW_TOKEN;
@@ -64,6 +70,16 @@ export default async function handler(req, res) {
         return res.status(200).json(rows);
       } catch (supabaseError) {
         const message = supabaseError instanceof Error ? supabaseError.message : 'Supabase fetch failed';
+        return res.status(502).json({ error: message, provider: dbProvider });
+      }
+    }
+
+    if (isMySqlProvider()) {
+      try {
+        const rows = await listMySqlBookings();
+        return res.status(200).json(rows);
+      } catch (mysqlError) {
+        const message = mysqlError instanceof Error ? mysqlError.message : 'MySQL fetch failed';
         return res.status(502).json({ error: message, provider: dbProvider });
       }
     }
@@ -130,6 +146,19 @@ export default async function handler(req, res) {
       }
     }
 
+    if (isMySqlProvider()) {
+      try {
+        const booking = await updateMySqlBookingById(id, updates);
+        if ('status' in updates) {
+          await sendBookingStatusEmail(booking).catch(() => {});
+        }
+        return res.status(200).json(booking);
+      } catch (mysqlError) {
+        const message = mysqlError instanceof Error ? mysqlError.message : 'MySQL update failed';
+        return res.status(502).json({ error: message, provider: dbProvider });
+      }
+    }
+
     let wpConfig;
     try {
       wpConfig = getWpConfig();
@@ -175,6 +204,16 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true, deleted: result.deleted });
       } catch (supabaseError) {
         const message = supabaseError instanceof Error ? supabaseError.message : 'Supabase delete failed';
+        return res.status(502).json({ error: message, provider: dbProvider });
+      }
+    }
+
+    if (isMySqlProvider()) {
+      try {
+        const result = await deleteMySqlBookingById(id);
+        return res.status(200).json({ ok: true, deleted: result.deleted });
+      } catch (mysqlError) {
+        const message = mysqlError instanceof Error ? mysqlError.message : 'MySQL delete failed';
         return res.status(502).json({ error: message, provider: dbProvider });
       }
     }
