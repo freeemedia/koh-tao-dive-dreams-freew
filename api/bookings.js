@@ -1,4 +1,4 @@
-import { sendBookingNotificationEmail } from './send-booking-notification.js';
+import { sendBookingNotificationEmail, sendCustomerInvoiceEmail } from './send-booking-notification.js';
 import {
   getDbProvider,
   isSupabaseProvider,
@@ -273,10 +273,11 @@ export default async function handler(req, res) {
         if (isSupabaseProvider()) {
           try {
             const inserted = await insertSupabaseBooking(payload);
-            await sendBookingNotificationEmail({
-              ...inserted,
-              item_title: inserted.course_title || inserted.item_title,
-            }).catch(() => {});
+            const emailPayload = { ...inserted, item_title: inserted.course_title || inserted.item_title };
+            await Promise.all([
+              sendBookingNotificationEmail(emailPayload).catch(() => {}),
+              sendCustomerInvoiceEmail(emailPayload).catch(() => {}),
+            ]);
             return res.status(201).json(inserted);
           } catch (supabaseError) {
             const message = supabaseError instanceof Error ? supabaseError.message : 'Supabase booking create failed';
@@ -297,10 +298,11 @@ export default async function handler(req, res) {
         }
 
         // Best effort email notification for new bookings.
-        await sendBookingNotificationEmail({
-          ...payload,
-          item_title: payload.course_title || payload.item_title,
-        }).catch(() => {});
+        const wpEmailPayload = { ...payload, item_title: payload.course_title || payload.item_title };
+        await Promise.all([
+          sendBookingNotificationEmail(wpEmailPayload).catch(() => {}),
+          sendCustomerInvoiceEmail(wpEmailPayload).catch(() => {}),
+        ]);
 
         const responsePayload = {
           ...payload,
