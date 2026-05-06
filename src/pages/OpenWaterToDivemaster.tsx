@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCurrency, CurrencySelector } from '@/hooks/useCurrency';
-import InlineCourseBookingForm from '@/components/InlineCourseBookingForm';
+import SharedBookingFormEmbed from '@/components/SharedBookingFormEmbed';
 import Contact from '@/components/Contact';
 
 const COURSES = [
@@ -257,11 +257,13 @@ const OpenWaterToDivemaster: React.FC = () => {
           <p className="text-center text-gray-500 mb-8">
             Have questions? Fill in the form and we'll get back to you quickly.
           </p>
-          <InlineCourseBookingForm
+          <SharedBookingFormEmbed
             itemType="course"
             itemTitle="Open Water to Divemaster Package"
-            depositMajor={DEPOSIT_THB}
-            depositCurrency="THB"
+            priceThb={PACKAGE_THB}
+            depositThb={DEPOSIT_THB}
+            currency="THB"
+            locale="en"
           />
         </div>
       </section>

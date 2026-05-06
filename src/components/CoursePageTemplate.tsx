@@ -4,11 +4,10 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useBookNowModal } from '@/components/useBookNowModal';
 import { usePageContent } from '@/hooks/usePageContent';
 // PageContentEditor import removed
 import Contact from './Contact';
-import InlineCourseBookingForm from './InlineCourseBookingForm';
+import SharedBookingFormEmbed from './SharedBookingFormEmbed';
 import DropboxGallerySection from './DropboxGallerySection';
 import ImageRow from './ImageRow';
 
@@ -72,10 +71,6 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
   galleryUnavailableMessage,
   galleryEmptyMessage,
 }) => {
-
-
-
-  const { setShowBookNow, BookNowModalComponent } = useBookNowModal();
   const { content, isLoading } = usePageContent({
     pageSlug,
     locale,
@@ -144,15 +139,12 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
   const thbAmount = parseAmount(priceThb);
   const usdAmount = parseAmount(priceUsd);
   const eurAmount = parseAmount(priceEur);
-  const bookingUrl = `/booking?item=${encodeURIComponent(bookingItemName || '')}&type=${bookingType}&price=${thbAmount}&currency=THB&course=${encodeURIComponent(pageSlug || '')}`;  
-
   const heroImageUrl = heroImage || images[0];
 
   const { exchangeRates } = useCurrency();
 
-  // Scroll to contact section
   const openBookNow = () => {
-    setShowBookNow(true);
+    document.getElementById('book-with-us')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
@@ -286,11 +278,13 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
                 ? 'Vul het formulier in en we nemen binnen 24 uur contact met je op.'
                 : 'Fill in the form below and we\'ll confirm availability within 24 hours.'}
             </p>
-            <InlineCourseBookingForm
+            <SharedBookingFormEmbed
               itemType={bookingType}
               itemTitle={bookingItemName || content.hero_title || ''}
-              depositMajor={thbAmount > 0 ? Math.round(thbAmount * 0.2) : undefined}
-              depositCurrency="THB"
+              priceThb={thbAmount > 0 ? thbAmount : undefined}
+              depositThb={thbAmount > 0 ? Math.round(thbAmount * 0.2) : undefined}
+              currency="THB"
+              locale={locale}
             />
           </div>
         </section>
@@ -298,7 +292,6 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
         <section className="mt-12" id="contact-section">
           <Contact />
         </section>
-        {BookNowModalComponent}
       </main>
     </div>
   );
