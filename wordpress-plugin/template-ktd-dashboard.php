@@ -408,10 +408,10 @@ $logo_url = get_site_icon_url( 64 );
 
     <p class="sidebar-section-label">Quick Links</p>
     <ul class="sidebar-nav">
-      <li><a href="https://www.divinginasia.com" target="_blank">
+      <li><a href="https://www.lembonganwatersports.com" target="_blank">
         <span class="nav-icon">🌐</span> Live Site ↗
       </a></li>
-      <li><a href="https://www.divinginasia.com/booking" target="_blank">
+      <li><a href="https://www.lembonganwatersports.com/booking" target="_blank">
         <span class="nav-icon">📅</span> Booking Page ↗
       </a></li>
     </ul>
@@ -556,7 +556,7 @@ $logo_url = get_site_icon_url( 64 );
           <div class="panel">
             <div class="panel-header"><h2>Quick Actions</h2></div>
             <div class="quick-actions">
-              <a href="https://www.divinginasia.com/booking" target="_blank" class="action-item">
+              <a href="https://www.lembonganwatersports.com/booking" target="_blank" class="action-item">
                 <span class="action-icon">📅</span>
                 <span class="action-label">Open Booking Form</span>
                 <span class="action-arrow">›</span>
@@ -566,7 +566,7 @@ $logo_url = get_site_icon_url( 64 );
                 <span class="action-label">Manage All Bookings</span>
                 <span class="action-arrow">›</span>
               </a>
-              <a href="https://www.divinginasia.com" target="_blank" class="action-item">
+              <a href="https://www.lembonganwatersports.com" target="_blank" class="action-item">
                 <span class="action-icon">🌐</span>
                 <span class="action-label">View Live Website</span>
                 <span class="action-arrow">›</span>
@@ -931,11 +931,11 @@ $logo_url = get_site_icon_url( 64 );
     buttonEl.textContent = 'Sending…';
 
     try {
-      const resp = await fetch('https://www.divinginasia.com/api/mollie-payment', {
+      const resp = await fetch('https://www.lembonganwatersports.com/api/mollie-payment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-admin-view-token': '<?php echo esc_js(defined("KTD_VIEW_TOKEN") ? KTD_VIEW_TOKEN : "liveyourlifeinparadise"); ?>',
+          'x-admin-view-token': '<?php echo esc_js(defined("KTD_VIEW_TOKEN") ? KTD_VIEW_TOKEN : "lembonganparadise2025"); ?>',
         },
         body: JSON.stringify({ booking_id, amount_eur, description, customer_email: email, customer_name: name }),
       });
