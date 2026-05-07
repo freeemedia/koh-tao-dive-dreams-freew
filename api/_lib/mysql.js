@@ -6,14 +6,20 @@ import mysql from 'mysql2/promise';
 
 let pool;
 
+function env(name, fallback = '') {
+  const value = process.env[name];
+  if (value == null || value === '') return fallback;
+  return String(value).trim();
+}
+
 export function getDb() {
   if (!pool) {
     pool = mysql.createPool({
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT || '3306', 10),
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      database: process.env.DB_NAME,
+      host: env('DB_HOST'),
+      port: parseInt(env('DB_PORT', '3306'), 10),
+      user: env('DB_USER'),
+      password: env('DB_PASS'),
+      database: env('DB_NAME'),
       waitForConnections: true,
       connectionLimit: 5,
       queueLimit: 0,
