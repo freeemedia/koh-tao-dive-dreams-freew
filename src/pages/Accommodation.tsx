@@ -21,6 +21,7 @@ import { usePageContent } from '@/hooks/usePageContent';
 
 const TRIP_ALLIANCE_ID = import.meta.env.VITE_TRIP_ALLIANCE_ID as string | undefined;
 const TRIP_SITE_ID = import.meta.env.VITE_TRIP_SITE_ID as string | undefined;
+const STAY_URL_LABEL = 'https://www.divinginasia.com/stay';
 
 type RoomCard = {
   name: string;
@@ -42,7 +43,7 @@ const Accommodation = () => {
         heroSubtitle:
           'Kies uit gezellige kamers, familiekamers en bungalows op toplocaties vlak bij onze duikactiviteiten.',
         viewRooms: 'Bekijk kamers',
-        bookStay: 'Boek verblijf',
+        bookStay: 'Plan je verblijf',
         roomsTitle: 'Onze kamers',
         roomsIntro:
           'Of je nu een budgetvriendelijke kamer zoekt of een ruimere familiekamer, we helpen je graag met de beste match voor jouw reis.',
@@ -57,9 +58,9 @@ const Accommodation = () => {
         ctaButton: 'Stay with us at our resort accommodation',
         viewPictures: 'Bekijk foto\'s',
         close: 'Sluiten',
-        chooseBooking: 'Kies je accommodatie-optie',
-        chooseBookingBody: 'Kies Book Our Accommodation om hieronder je kamergegevens in te vullen.',
-        bookOurAccommodation: 'Book Our Accommodation',
+        chooseBooking: 'Kies je verblijf-optie',
+        chooseBookingBody: 'Kies Stay With Us at Our Resort om hieronder je kamergegevens in te vullen.',
+        bookOurAccommodation: 'Stay With Us at Our Resort',
         accommodationType: 'Accommodatietype',
         people: 'Aantal personen',
         nights: 'Aantal nachten',
@@ -67,14 +68,14 @@ const Accommodation = () => {
         divingWithUs: 'Duik je mee met ons?',
         divingYes: 'Ja, ik duik mee',
         divingNo: 'Nee, alleen verblijf',
-        continueBooking: 'Ga verder naar boekingsformulier',
+        continueBooking: 'Ga verder naar verblijf formulier',
       }
     : {
         heroTitle: 'Stay With Us In Koh Tao',
         heroSubtitle:
           'Choose from cozy rooms, family-friendly suites, and bungalows in great locations close to our diving operations.',
         viewRooms: 'View Rooms',
-        bookStay: 'Book Your Stay',
+        bookStay: 'Plan Your Stay',
         roomsTitle: 'Our Rooms',
         roomsIntro:
           'Whether you are looking for a budget-friendly room or more space for family travel, we can match you with the right option.',
@@ -89,9 +90,9 @@ const Accommodation = () => {
         ctaButton: 'Stay with us at our resort accommodation',
         viewPictures: 'View Pictures',
         close: 'Close',
-        chooseBooking: 'Choose your accommodation option',
-        chooseBookingBody: 'Choose Book Our Accommodation to fill your room details below.',
-        bookOurAccommodation: 'Book Our Accommodation',
+        chooseBooking: 'Choose your stay option',
+        chooseBookingBody: 'Choose Stay With Us at Our Resort to fill your room details below.',
+        bookOurAccommodation: 'Stay With Us at Our Resort',
         accommodationType: 'Accommodation type',
         people: 'Number of people',
         nights: 'Number of nights',
@@ -99,7 +100,7 @@ const Accommodation = () => {
         divingWithUs: 'Diving with us?',
         divingYes: 'Yes, I am diving',
         divingNo: 'No, accommodation only',
-        continueBooking: 'Continue to booking form',
+        continueBooking: 'Continue to stay form',
       };
 
   const locale = isDutch ? 'nl' : 'en';
@@ -188,7 +189,6 @@ const Accommodation = () => {
         },
       ];
 
-  const bookingHref = '/booking?item=Resort%20Accommodation&type=stay&currency=THB';
   const [selectedRoomName, setSelectedRoomName] = useState<string>('');
   const [selectedGallery, setSelectedGallery] = useState<string[]>([]);
   const [selectedPhoto, setSelectedPhoto] = useState<string>('');
@@ -243,7 +243,7 @@ const Accommodation = () => {
       trackAffiliateClick({
         provider: 'trip',
         destinationUrl: url,
-        placement: 'accommodation-page',
+        placement: 'footer-link',
         hotelName: 'Trip.com - Accommodation Page',
         affiliateId: TRIP_ALLIANCE_ID || TRIP_SITE_ID || null,
       });
@@ -265,10 +265,18 @@ const Accommodation = () => {
       : accommodationType === 'basic'
         ? 'Basic Room'
         : 'Bungalow';
-    const message = encodeURIComponent(
-      `Accommodation request: ${roomLabel}. Guests: ${peopleCount}. Nights: ${nightCount}. Diving: ${isDiving === true ? 'Yes' : isDiving === false ? 'No' : 'Not specified'}. Details: ${accommodationDetails || 'None'}`
-    );
-    navigate(`/booking?item=Resort%20Accommodation%20-%20${encodeURIComponent(roomLabel)}&type=stay&currency=THB&people=${peopleCount}&nights=${nightCount}${isDiving !== null ? `&diving=${isDiving ? 'yes' : 'no'}` : ''}&message=${message}`);
+    const message =
+      `Accommodation request: ${roomLabel}. Guests: ${peopleCount}. Nights: ${nightCount}. ` +
+      `Diving: ${isDiving === true ? 'Yes' : isDiving === false ? 'No' : 'Not specified'}. ` +
+      `Details: ${accommodationDetails || 'None'}`;
+    const params = new URLSearchParams({
+      accommodationType,
+      people: String(peopleCount),
+      nights: String(nightCount),
+      message,
+    });
+    if (isDiving !== null) params.set('diving', isDiving ? 'yes' : 'no');
+    navigate(`/stay?${params.toString()}`);
   };
 
   return (
@@ -286,7 +294,7 @@ const Accommodation = () => {
                 {labels.viewRooms}
               </a>
               <Button onClick={openOurAccommodationForm} className="bg-blue-600 hover:bg-blue-700 text-white">
-                {labels.bookStay}
+                {STAY_URL_LABEL}
               </Button>
             </div>
           </div>
@@ -302,7 +310,7 @@ const Accommodation = () => {
           <CardContent>
             <div className="flex flex-wrap gap-3 mb-6">
               <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white" onClick={openOurAccommodationForm}>
-                {labels.bookOurAccommodation}
+                {STAY_URL_LABEL}
               </Button>
               <Button type="button" variant="outline" onClick={() => openAlternativeAccommodationPopup('trip')}>
                 Trip.com
@@ -442,7 +450,7 @@ const Accommodation = () => {
                     {labels.viewPictures}
                   </Button>
                   <Button type="button" className="flex-1 bg-blue-600 hover:bg-blue-700" onClick={openOurAccommodationForm}>
-                    {labels.bookStay}
+                    {STAY_URL_LABEL}
                   </Button>
                 </div>
               </CardContent>
