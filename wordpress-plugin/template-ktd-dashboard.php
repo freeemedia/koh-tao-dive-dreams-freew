@@ -751,7 +751,7 @@ $logo_url = get_site_icon_url( 64 );
         <td>
           <button class="invoice-btn" data-id="${b.id}" data-name="${escHtml(b.name||'')}" data-email="${escHtml(b.email||'')}"
             data-total="${b.total_amount||''}" data-deposit="${b.deposit_amount||''}" data-title="${escHtml(b.item_title||b.booking_type||'')}"
-            title="Send payment link via Mollie">💳 Invoice</button>
+            title="Open invoice email draft">💳 Invoice</button>
           <button class="invoice-btn paypal-inv-btn" data-id="${b.id}" data-name="${escHtml(b.name||'')}" data-email="${escHtml(b.email||'')}"
             data-deposit="${b.deposit_amount||''}" data-title="${escHtml(b.item_title||b.booking_type||'')}"
             title="Send PayPal payment link" style="margin-top:4px;">🅿 PayPal</button>
@@ -820,7 +820,7 @@ $logo_url = get_site_icon_url( 64 );
       });
     });
 
-    // Invoice button → open Mollie modal
+    // Invoice button → open email invoice modal
     tbody.querySelectorAll('.invoice-btn:not(.paypal-inv-btn)').forEach(btn => {
       btn.addEventListener('click', function() {
         const modal = document.getElementById('invoice-modal');
@@ -831,7 +831,7 @@ $logo_url = get_site_icon_url( 64 );
         document.getElementById('inv-email').value = this.dataset.email || '';
         const tot = parseFloat(this.dataset.total);
         document.getElementById('inv-amount').value = !isNaN(tot) && tot > 0
-          ? (tot / 34).toFixed(2)  // rough THB→EUR if total stored in THB
+          ? Math.round(tot)
           : '';
         document.getElementById('inv-desc').value = `Diving in Asia — Booking #${this.dataset.id}`;
         document.getElementById('inv-result').style.display = 'none';
@@ -910,20 +910,20 @@ $logo_url = get_site_icon_url( 64 );
     applyFilters();
   }
 
-  // Send invoice
+  // Send invoice email draft
   async function handleMollieInvoiceSend(buttonEl) {
     const modal      = document.getElementById('invoice-modal');
     const booking_id = modal.dataset.bookingId;
     const email      = document.getElementById('inv-email').value.trim();
     const name       = document.getElementById('inv-name').value.trim();
-    const amount_eur = parseFloat(document.getElementById('inv-amount').value);
+    const amount_thb = parseFloat(document.getElementById('inv-amount').value);
     const description = document.getElementById('inv-desc').value.trim();
     const resultEl   = document.getElementById('inv-result');
 
-    if (!email || isNaN(amount_eur) || amount_eur <= 0) {
+    if (!email || isNaN(amount_thb) || amount_thb <= 0) {
       resultEl.style.display = 'block';
       resultEl.style.color   = 'var(--red)';
-      resultEl.textContent   = 'Please fill in email and a valid EUR amount.';
+      resultEl.textContent   = 'Please fill in email and a valid THB amount.';
       return;
     }
 
@@ -931,31 +931,29 @@ $logo_url = get_site_icon_url( 64 );
     buttonEl.textContent = 'Sending…';
 
     try {
-      const resp = await fetch('https://www.divinginasia.com/api/mollie-payment', {
+      await fetch('<?php echo esc_js(get_site_url()); ?>/wp-json/ktd/v1/bookings/' + booking_id, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-admin-view-token': '<?php echo esc_js(defined("KTD_VIEW_TOKEN") ? KTD_VIEW_TOKEN : "liveyourlifeinparadise"); ?>',
+          'x-ktd-api-key': '<?php echo esc_js(defined("KTD_API_KEY") ? KTD_API_KEY : "909010232893284934783734"); ?>',
         },
-        body: JSON.stringify({ booking_id, amount_eur, description, customer_email: email, customer_name: name }),
+        body: JSON.stringify({ payment_status: 'invoiced' }),
       });
-      const data = await resp.json();
-      if (!resp.ok || !data.url) throw new Error(data.error || 'Failed to create payment link');
 
       // Update local booking cache
       const bk = allBookings.find(b => String(b.id) === String(booking_id));
-      if (bk) { bk.payment_status = 'invoiced'; bk.payment_link_url = data.url; }
+      if (bk) { bk.payment_status = 'invoiced'; }
 
-      // Open mailto with payment link
+      // Open mailto with invoice details
       const subject = encodeURIComponent(description);
       const body    = encodeURIComponent(
-        `Hi ${name},\n\nThank you for booking with Diving in Asia!\n\nPlease complete your payment of €${amount_eur.toFixed(2)} using the secure link below:\n\n${data.url}\n\nThis link supports iDEAL, credit card, PayPal and more.\n\nIf you have any questions, feel free to reply to this email.\n\nSee you underwater!\nThe Diving in Asia Team`
+        `Hi ${name},\n\nThank you for booking with Diving in Asia!\n\nPlease find your invoice details below:\n\nBooking: ${description}\nAmount Due: ฿${Math.round(amount_thb).toLocaleString()} THB\n\nIf you would like to pay online, please let us know and we can send you a PayPal payment link.\n\nIf you have any questions, feel free to reply to this email.\n\nSee you underwater!\nThe Diving in Asia Team`
       );
       window.open(`mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`, '_blank');
 
       resultEl.style.display = 'block';
       resultEl.style.color   = 'var(--green)';
-      resultEl.innerHTML     = `✅ Payment link created! <a href="${data.url}" target="_blank" style="color:var(--accent);">Open link</a><br><small style="color:var(--muted)">Email draft opened. Paste the link if needed.</small>`;
+      resultEl.innerHTML     = '✅ Invoice email draft opened.<br><small style="color:var(--muted)">Review it in your mail app and send when ready.</small>';
 
       // Refresh table row badge
       applyFilters();
@@ -1129,14 +1127,14 @@ $logo_url = get_site_icon_url( 64 );
 <!-- Invoice / Mollie payment link modal -->
 <div class="ktd-modal-overlay" id="invoice-modal">
   <div class="ktd-modal">
-    <h3>💳 Send Payment Invoice</h3>
-    <p class="modal-note">Creates a secure Mollie payment link (iDEAL, card, PayPal) and opens your email client with a pre-filled message.</p>
+    <h3>💳 Send Invoice Email</h3>
+    <p class="modal-note">Opens your email client with a pre-filled invoice message for this booking.</p>
     <label>Customer Name</label>
     <input type="text" id="inv-name" placeholder="Jane Smith" />
     <label>Customer Email</label>
     <input type="email" id="inv-email" placeholder="jane@example.com" />
-    <label>Amount (EUR €)</label>
-    <input type="number" id="inv-amount" placeholder="0.00" min="0.01" step="0.01" />
+    <label>Amount (THB ฿)</label>
+    <input type="number" id="inv-amount" placeholder="0" min="1" step="1" />
     <label>Description</label>
     <input type="text" id="inv-desc" placeholder="Diving in Asia — Booking #123" />
     <div id="inv-result" style="display:none;margin-bottom:12px;font-size:12px;line-height:1.6;"></div>
