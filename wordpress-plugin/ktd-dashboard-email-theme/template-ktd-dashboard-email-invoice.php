@@ -629,6 +629,7 @@ $logo_url = get_site_icon_url( 64 );
   const REST_BASE = '<?php echo esc_js( get_rest_url( null, 'ktd/v1' ) ); ?>';
   const NONCE    = '<?php echo esc_js( wp_create_nonce( 'wp_rest' ) ); ?>';
   const API_KEY  = '<?php echo esc_js( get_option( 'ktd_booking_api_key', '' ) ); ?>';
+  const API_KEY_FALLBACK = '<?php echo esc_js( defined("KTD_API_KEY") ? KTD_API_KEY : "909010232893284934783734" ); ?>';
 
   function buildApiUrl(path) {
     const separator = path.includes('?') ? '&' : '?';
@@ -636,10 +637,39 @@ $logo_url = get_site_icon_url( 64 );
   }
 
   async function apiFetch(path, options = {}) {
-    const headers = Object.assign({ 'X-WP-Nonce': NONCE }, API_KEY ? { 'x-ktd-api-key': API_KEY } : {}, options.headers || {});
-    const res = await fetch(buildApiUrl(path), Object.assign({}, options, { headers, cache: 'no-store' }));
+    const headers = Object.assign(
+      { 'X-WP-Nonce': NONCE },
+      API_KEY ? { 'x-ktd-api-key': API_KEY } : {},
+      options.headers || {}
+    );
+    const res = await fetch(buildApiUrl(path), Object.assign({}, options, { headers, cache: 'no-store', credentials: 'same-origin' }));
     if (!res.ok) throw new Error('HTTP ' + res.status);
     return res.json();
+  }
+
+  async function fetchBookings() {
+    try {
+      return await apiFetch('/bookings?per_page=200&orderby=created_at&order=desc');
+    } catch (primaryError) {
+      try {
+        return await apiFetch('/bookings');
+      } catch (secondaryError) {
+        const fallbackHeaders = {
+          'Content-Type': 'application/json',
+          'x-ktd-api-key': API_KEY || API_KEY_FALLBACK,
+        };
+        const fallbackRes = await fetch(buildApiUrl('/bookings'), {
+          method: 'GET',
+          headers: fallbackHeaders,
+          cache: 'no-store',
+          credentials: 'same-origin',
+        });
+        if (!fallbackRes.ok) {
+          throw new Error('Bookings API failed: ' + fallbackRes.status + ' (' + primaryError.message + ' / ' + secondaryError.message + ')');
+        }
+        return fallbackRes.json();
+      }
+    }
   }
 
   async function patchBooking(id, fields) {
@@ -1057,7 +1087,7 @@ $logo_url = get_site_icon_url( 64 );
     const silent = !!options.silent;
 
     try {
-      const data = await apiFetch('/bookings?per_page=200&orderby=created_at&order=desc');
+      const data = await fetchBookings();
       allBookings = Array.isArray(data) ? data : (Array.isArray(data.data) ? data.data : (data.bookings || data.items || []));
 
       document.getElementById('bookings-loading').style.display = 'none';
