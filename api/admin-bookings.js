@@ -2,7 +2,6 @@
 // MySQL/Supabase-backed admin handler.
 // GET    /api/admin-bookings
 // PATCH  /api/admin-bookings?id=123
-// DELETE /api/admin-bookings?id=123
 
 import { sendBookingStatusEmail } from './send-booking-notification.js';
 import {
@@ -12,17 +11,14 @@ import {
   isWordPressProvider,
   listSupabaseBookings,
   updateSupabaseBookingById,
-  deleteSupabaseBookingById,
 } from './_lib/supabase-bookings.js';
 import {
   listMySqlBookings,
   updateMySqlBookingById,
-  deleteMySqlBookingById,
 } from './_lib/mysql-bookings.js';
 import {
   listWordPressBookings,
   updateWordPressBookingById,
-  deleteWordPressBookingById,
 } from './_lib/wordpress-bookings.js';
 
 async function ensureAdmin(req) {
@@ -46,7 +42,7 @@ export default async function handler(req, res) {
   const dbProvider = getDbProvider();
   // CORS for local dev
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, PATCH, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, PATCH, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-login-token, x-admin-view-token');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
@@ -152,40 +148,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'DELETE') {
-    const id = req.query?.id;
-    if (!id) return res.status(400).json({ error: 'Missing booking id' });
-
-    if (isSupabaseProvider()) {
-      try {
-        const result = await deleteSupabaseBookingById(id);
-        return res.status(200).json({ ok: true, deleted: result.deleted });
-      } catch (supabaseError) {
-        const message = supabaseError instanceof Error ? supabaseError.message : 'Supabase delete failed';
-        return res.status(502).json({ error: message, provider: dbProvider });
-      }
-    }
-
-    if (isMySqlProvider()) {
-      try {
-        const result = await deleteMySqlBookingById(id);
-        return res.status(200).json({ ok: true, deleted: result.deleted });
-      } catch (mysqlError) {
-        const message = mysqlError instanceof Error ? mysqlError.message : 'MySQL delete failed';
-        return res.status(502).json({ error: message, provider: dbProvider });
-      }
-    }
-
-    if (isWordPressProvider()) {
-      try {
-        const result = await deleteWordPressBookingById(id);
-        return res.status(200).json({ ok: true, deleted: result.deleted });
-      } catch (wordpressError) {
-        const message = wordpressError instanceof Error ? wordpressError.message : 'WordPress delete failed';
-        return res.status(502).json({ error: message, provider: dbProvider });
-      }
-    }
-
-    return res.status(500).json({ error: `Unsupported DB provider for admin bookings: ${dbProvider}` });
+    return res.status(403).json({ error: 'Booking deletion is disabled' });
   }
 
   res.status(405).json({ error: 'Method not allowed' });

@@ -105,9 +105,6 @@ const AdminBookings: React.FC = () => {
     const [filterText, setFilterText] = useState<string>('');
     const [dateFrom, setDateFrom] = useState<string>('');
     const [dateTo, setDateTo] = useState<string>('');
-    const [deleteId, setDeleteId] = useState<string | null>(null);
-    const [deleting, setDeleting] = useState(false);
-    const [deleteResult, setDeleteResult] = useState<string | null>(null);
 
     const getBookingDate = (booking: Booking) => {
       const raw = booking.preferred_date || booking.created_at;
@@ -142,26 +139,6 @@ const AdminBookings: React.FC = () => {
 
       return statusMatch && textMatch && Boolean(fromOk) && Boolean(toOk);
     }), [bookings, filterStatus, filterText, dateFrom, dateTo]);
-
-    // Delete booking
-    const handleDelete = async (id: string) => {
-      setDeleting(true);
-      setDeleteResult(null);
-      try {
-        const res = await adminAuthedFetch(`/api/admin-bookings?id=${id}`, { method: 'DELETE' });
-        if (!res.ok) {
-          const p = await res.json().catch(() => ({}));
-          throw new Error(p?.error || `Delete failed (HTTP ${res.status})`);
-        }
-        setBookings((prev) => prev.filter((b) => b.id !== id));
-        setDeleteResult('Booking deleted.');
-      } catch (err: any) {
-        setDeleteResult(err.message || 'Delete failed.');
-      } finally {
-        setDeleting(false);
-        setDeleteId(null);
-      }
-    };
 
     // Export CSV
     const handleExportCSV = () => {
@@ -697,7 +674,6 @@ const AdminBookings: React.FC = () => {
                   <th className="border px-1 py-1 whitespace-nowrap">{t('admin.notes', { defaultValue: 'Notes' })}</th>
                   <th className="border px-1 py-1 whitespace-nowrap">{t('admin.finance', { defaultValue: 'Finance' })}</th>
                   <th className="border px-1 py-1 whitespace-nowrap">{t('admin.paypal', { defaultValue: 'PayPal' })}</th>
-                  <th className="border px-1 py-1 whitespace-nowrap">{t('admin.delete', { defaultValue: 'Delete' })}</th>
                 </tr>
               </thead>
               <tbody>
@@ -808,16 +784,6 @@ const AdminBookings: React.FC = () => {
                       {copyStatus[b.id] && (
                         <span className="ml-2 text-xs text-emerald-700">{copyStatus[b.id]}</span>
                       )}
-                    </td>
-                    <td className="border px-2 py-1">
-                      <button
-                        className="px-2 py-1 text-xs bg-red-600 text-white rounded"
-                        onClick={() => setDeleteId(b.id)}
-                        disabled={deleting && deleteId === b.id}
-                        title="Delete booking"
-                      >
-                        Delete
-                      </button>
                     </td>
                   </tr>
                 ))}
