@@ -896,6 +896,30 @@ $logo_url = get_site_icon_url( 64 );
     modal.classList.add('open');
   });
 
+  function openMailClient(mailtoUrl) {
+    try {
+      const popup = window.open(mailtoUrl, '_blank');
+      if (popup) return true;
+    } catch (e) {}
+
+    try {
+      window.location.href = mailtoUrl;
+      return true;
+    } catch (e) {}
+
+    try {
+      const link = document.createElement('a');
+      link.href = mailtoUrl;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      return true;
+    } catch (e) {}
+
+    return false;
+  }
+
   // Send PayPal invoice
   async function handlePaypalInvoiceSend(buttonEl) {
     const modal      = document.getElementById('paypal-invoice-modal');
@@ -933,11 +957,13 @@ $logo_url = get_site_icon_url( 64 );
     const body    = encodeURIComponent(
       `Hi ${name},\n\nThank you for booking with Diving in Asia!\n\nPlease complete your deposit payment of ฿${amountTHB.toLocaleString()} THB using the secure PayPal link below:\n\n${paypalUrl}\n\nIf you have any questions, feel free to reply to this email.\n\nSee you underwater!\nThe Diving in Asia Team`
     );
-    window.open(`mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`, '_blank');
+    const opened = openMailClient(`mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`);
 
     resultEl.style.display = 'block';
-    resultEl.style.color   = 'var(--green)';
-    resultEl.innerHTML     = `✅ PayPal link ready! <a href="${paypalUrl}" target="_blank" style="color:var(--accent);">Open link</a><br><small style="color:var(--muted)">Email draft opened. Paste the link if needed.</small>`;
+    resultEl.style.color   = opened ? 'var(--green)' : 'var(--yellow)';
+    resultEl.innerHTML     = opened
+      ? `✅ PayPal link ready! <a href="${paypalUrl}" target="_blank" style="color:var(--accent);">Open link</a><br><small style="color:var(--muted)">Email draft opened. Paste the link if needed.</small>`
+      : `⚠ PayPal link ready! <a href="${paypalUrl}" target="_blank" style="color:var(--accent);">Open link</a><br><small style="color:var(--muted)">Email app did not auto-open. Copy the email address and send manually.</small>`;
 
     applyFilters();
   }
@@ -981,11 +1007,13 @@ $logo_url = get_site_icon_url( 64 );
       const body    = encodeURIComponent(
         `Hi ${name},\n\nThank you for booking with Diving in Asia!\n\nPlease find your invoice details below:\n\nBooking: ${description}\nAmount Due: ฿${Math.round(amount_thb).toLocaleString()} THB\n\nIf you would like to pay online, please let us know and we can send you a PayPal payment link.\n\nIf you have any questions, feel free to reply to this email.\n\nSee you underwater!\nThe Diving in Asia Team`
       );
-      window.open(`mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`, '_blank');
+      const opened = openMailClient(`mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`);
 
       resultEl.style.display = 'block';
-      resultEl.style.color   = 'var(--green)';
-      resultEl.innerHTML     = '✅ Invoice email draft opened.<br><small style="color:var(--muted)">Review it in your mail app and send when ready.</small>';
+      resultEl.style.color   = opened ? 'var(--green)' : 'var(--yellow)';
+      resultEl.innerHTML     = opened
+        ? '✅ Invoice email draft opened.<br><small style="color:var(--muted)">Review it in your mail app and send when ready.</small>'
+        : '⚠ Mail app did not auto-open.<br><small style="color:var(--muted)">Copy the customer email and send the invoice manually.</small>';
 
       // Refresh table row badge
       applyFilters();
