@@ -19,7 +19,7 @@
     }
   ],
   "rewrites": [
-    { "source": "/wp-json/:path*", "destination": "https://olive-mosquito-633213.hostingersite.com/wp-json/:path*" },
+    { "source": "/wp-json/:path*", "destination": "https://admin.lembonganwatersports.com/wp-json/:path*" },
     { "source": "/api/:path*", "destination": "/api/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
