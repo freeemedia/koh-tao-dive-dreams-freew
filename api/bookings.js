@@ -156,7 +156,7 @@ function shouldSendBookingEmail(req) {
 
 
 async function mirrorBookingToWordPress(payload) {
-  const canonicalWpUrl = 'https://olive-mosquito-633213.hostingersite.com';
+  const canonicalWpUrl = 'https://admin.lembonganwatersports.com';
   let wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
   if (!wpUrl || /admin\.divinginasia\.com$/i.test(wpUrl)) {
     wpUrl = canonicalWpUrl;
@@ -239,7 +239,7 @@ async function mirrorBookingToWordPress(payload) {
 }
 
 async function fetchBookingsFromWordPress() {
-  const canonicalWpUrl = 'https://olive-mosquito-633213.hostingersite.com';
+  const canonicalWpUrl = 'https://admin.lembonganwatersports.com';
   let wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
   if (!wpUrl || /admin\.divinginasia\.com$/i.test(wpUrl)) {
     wpUrl = canonicalWpUrl;
