@@ -105,6 +105,9 @@ const AdminBookings: React.FC = () => {
     const [filterText, setFilterText] = useState<string>('');
     const [dateFrom, setDateFrom] = useState<string>('');
     const [dateTo, setDateTo] = useState<string>('');
+    const [deleteId, setDeleteId] = useState<string | null>(null);
+    const [deleting, setDeleting] = useState(false);
+    const [deleteResult, setDeleteResult] = useState<string | null>(null);
 
     const getBookingDate = (booking: Booking) => {
       const raw = booking.preferred_date || booking.created_at;
@@ -150,6 +153,29 @@ const AdminBookings: React.FC = () => {
       a.download = 'bookings.csv';
       a.click();
       URL.revokeObjectURL(url);
+    };
+
+    const handleDelete = async (id: string) => {
+      const confirmed = window.confirm('Delete this booking permanently?');
+      if (!confirmed) return;
+
+      setDeleting(true);
+      setDeleteId(id);
+      setDeleteResult(null);
+      try {
+        const res = await adminAuthedFetch(`/api/admin-bookings?id=${id}`, { method: 'DELETE' });
+        if (!res.ok) {
+          const p = await res.json().catch(() => ({}));
+          throw new Error(p?.error || `Delete failed (HTTP ${res.status})`);
+        }
+        setBookings((prev) => prev.filter((b) => b.id !== id));
+        setDeleteResult('Booking deleted.');
+      } catch (err: any) {
+        setDeleteResult(err.message || 'Delete failed.');
+      } finally {
+        setDeleting(false);
+        setDeleteId(null);
+      }
     };
   // (removed duplicate bookings state)
   const [loading, setLoading] = useState(true);
@@ -627,6 +653,7 @@ const AdminBookings: React.FC = () => {
           <option value="pending">{t('admin.status_pending', { defaultValue: 'Pending' })}</option>
           <option value="confirmed">{t('admin.status_confirmed', { defaultValue: 'Confirmed' })}</option>
           <option value="cancelled">{t('admin.status_cancelled', { defaultValue: 'Cancelled' })}</option>
+          <option value="archived">{t('admin.status_archived', { defaultValue: 'Archived' })}</option>
         </select>
         <button
           className="px-4 py-2 bg-slate-700 text-white rounded"
@@ -658,6 +685,7 @@ const AdminBookings: React.FC = () => {
           {exportResult && <div className="mb-4 text-green-700">{exportResult}</div>}
           {copyResult && <div className="mb-4 text-slate-700">{copyResult}</div>}
           {statusResult && <div className="mb-4 text-emerald-700">{statusResult}</div>}
+          {deleteResult && <div className="mb-4 text-amber-700">{deleteResult}</div>}
 
           {view === 'calendar' ? (
             <BookingsCalendar bookings={bookings} />
@@ -674,6 +702,7 @@ const AdminBookings: React.FC = () => {
                   <th className="border px-1 py-1 whitespace-nowrap">{t('admin.notes', { defaultValue: 'Notes' })}</th>
                   <th className="border px-1 py-1 whitespace-nowrap">{t('admin.finance', { defaultValue: 'Finance' })}</th>
                   <th className="border px-1 py-1 whitespace-nowrap">{t('admin.paypal', { defaultValue: 'PayPal' })}</th>
+                  <th className="border px-1 py-1 whitespace-nowrap">{t('admin.actions', { defaultValue: 'Actions' })}</th>
                 </tr>
               </thead>
               <tbody>
@@ -724,6 +753,7 @@ const AdminBookings: React.FC = () => {
                           <option value="pending">pending</option>
                           <option value="confirmed">confirmed</option>
                           <option value="cancelled">cancelled</option>
+                          <option value="archived">archived</option>
                         </select>
                         <button
                           className="px-2 py-1 text-xs bg-emerald-600 text-white rounded disabled:opacity-60"
@@ -784,6 +814,27 @@ const AdminBookings: React.FC = () => {
                       {copyStatus[b.id] && (
                         <span className="ml-2 text-xs text-emerald-700">{copyStatus[b.id]}</span>
                       )}
+                    </td>
+                    <td className="border px-2 py-1 whitespace-nowrap">
+                      {b.status !== 'archived' && (
+                        <button
+                          className="px-2 py-1 text-xs bg-gray-700 text-white rounded"
+                          onClick={() => {
+                            setStatusDrafts((prev) => ({ ...prev, [b.id]: 'archived' }));
+                            saveStatus(b.id, 'archived');
+                          }}
+                        >
+                          Archive
+                        </button>
+                      )}
+                      <button
+                        className="ml-2 px-2 py-1 text-xs bg-red-600 text-white rounded disabled:opacity-60"
+                        onClick={() => handleDelete(b.id)}
+                        disabled={deleting && deleteId === b.id}
+                        title="Delete booking"
+                      >
+                        {deleting && deleteId === b.id ? 'Deleting...' : 'Delete'}
+                      </button>
                     </td>
                   </tr>
                 ))}
