@@ -221,6 +221,13 @@ const Accommodation = () => {
     }
   };
 
+  const openRoomsSection = () => {
+    const roomsSection = document.getElementById('rooms');
+    if (roomsSection) {
+      roomsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const openAlternativeAccommodationPopup = (source: 'trip' | 'agoda') => {
     setBookingSource(source);
     setShowAltAccommodationPopup(true);
@@ -293,7 +300,7 @@ const Accommodation = () => {
               <a href="#rooms" className="inline-block bg-background text-slate-900 px-5 py-3 rounded-md font-semibold hover:bg-slate-100 transition">
                 {labels.viewRooms}
               </a>
-              <Button onClick={openOurAccommodationForm} className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Button onClick={openRoomsSection} className="bg-blue-600 hover:bg-blue-700 text-white">
                 {STAY_URL_LABEL}
               </Button>
             </div>
@@ -449,7 +456,7 @@ const Accommodation = () => {
                   <Button type="button" variant="outline" className="flex-1" onClick={() => openRoomGallery(room)}>
                     {labels.viewPictures}
                   </Button>
-                  <Button type="button" className="flex-1 bg-blue-600 hover:bg-blue-700" onClick={openOurAccommodationForm}>
+                  <Button type="button" className="flex-1 bg-blue-600 hover:bg-blue-700" onClick={() => openRoomGallery(room)}>
                     {STAY_URL_LABEL}
                   </Button>
                 </div>
@@ -544,9 +551,21 @@ const Accommodation = () => {
               ))}
             </div>
             <div className="text-right">
-              <Button type="button" variant="outline" onClick={() => setGalleryOpen(false)}>
-                {labels.close}
-              </Button>
+              <div className="flex flex-wrap justify-end gap-2">
+                <Button
+                  type="button"
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  onClick={() => {
+                    setGalleryOpen(false);
+                    openOurAccommodationForm();
+                  }}
+                >
+                  {STAY_URL_LABEL}
+                </Button>
+                <Button type="button" variant="outline" onClick={() => setGalleryOpen(false)}>
+                  {labels.close}
+                </Button>
+              </div>
             </div>
           </div>
         </DialogContent>
