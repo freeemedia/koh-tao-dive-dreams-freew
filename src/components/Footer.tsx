@@ -1,13 +1,15 @@
 import { Link } from 'react-router-dom'
 
 export default function Footer() {
+  const contactEmail = import.meta.env.VITE_ADMIN_EMAILS || 'admin@lembonganwatersports.com'
+
   return (
     <footer className="bg-[#023e8a] text-white pt-12 pb-6">
       <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8 mb-8">
         <div>
           <h3 className="text-lg font-extrabold mb-2">🤿 Lembongan Watersports</h3>
           <p className="text-sm text-blue-200">Nusa Lembongan, Bali, Indonesia</p>
-          <p className="text-sm text-blue-200 mt-1">onemediaasia.cloud</p>
+          <p className="text-sm text-blue-200 mt-1">lembonganwatersports.com</p>
         </div>
         <div>
           <h4 className="font-bold mb-3 text-[#00b4d8]">Quick Links</h4>
@@ -21,7 +23,7 @@ export default function Footer() {
         </div>
         <div>
           <h4 className="font-bold mb-3 text-[#00b4d8]">Contact</h4>
-          <p className="text-sm text-blue-200">📧 info@onemediaasia.cloud</p>
+          <p className="text-sm text-blue-200">📧 {contactEmail}</p>
           <p className="text-sm text-blue-200 mt-1">📱 WhatsApp us to book</p>
           <a
             href="https://wa.me/628123456789"

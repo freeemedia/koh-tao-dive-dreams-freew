@@ -52,7 +52,7 @@ async function sendEmail({ to, subject, html }) {
 export async function sendBookingNotificationEmail(payload = {}) {
   console.log('sendBookingNotificationEmail called');
 
-  const adminTo = process.env.RESEND_BOOKING_TO_EMAIL || 'contact@prodiving.asia';
+  const adminTo = process.env.RESEND_BOOKING_TO_EMAIL || 'bookings@lembonganwatersports.com';
 
   const {
     name, email, phone, accommodation, accommodation_type, preferred_date, experience_level,
