@@ -6,6 +6,7 @@ function getWordPressBookingsConfig() {
   const baseUrl = clean(
     process.env.WORDPRESS_BOOKINGS_API_URL ||
     process.env.WP_BOOKINGS_API_URL ||
+    process.env.WP_BOOKING_URL ||
     process.env.WORDPRESS_API_BASE_URL ||
     ''
   ).replace(/\/$/, '');
@@ -13,6 +14,7 @@ function getWordPressBookingsConfig() {
   const apiKey = clean(
     process.env.WORDPRESS_BOOKINGS_API_KEY ||
     process.env.WP_BOOKINGS_API_KEY ||
+    process.env.WP_BOOKING_API_KEY ||
     process.env.KTD_BOOKING_API_KEY ||
     ''
   );
