@@ -1,12 +1,12 @@
 <?php
 /**
  * Template Name: KTD Dashboard Home (Email Invoice)
- *
- * EMAIL-INVOICE VERSION — Uses email draft flow for invoicing instead of external payment gateways
+
+ * MARKER: Email invoice template clone of working dashboard
  *
  * Drop this file into your active WordPress theme folder, then:
  *   1. Create a new Page in WP Admin → "Dashboard" (or "Home")
- *   2. Set the Page Template to "KTD Dashboard Home (Email Invoice)"
+ *   2. Set the Page Template to "KTD Dashboard Home"
  *   3. Optionally set it as your front page under Settings → Reading
  *
  * Requires: Koh Tao Booking Manager plugin (provides wp-json/ktd/v1/ endpoints)
@@ -731,6 +731,14 @@ $logo_url = get_site_icon_url( 64 );
           </select>
         </td>
         <td>
+          <input class="ktd-edit" data-id="${b.id}" data-field="deposit_amount" value="${b.deposit_amount||''}"
+            style="width:80px;" placeholder="0" />
+        </td>
+        <td>
+          <input class="ktd-edit" data-id="${b.id}" data-field="total_amount" value="${b.total_amount||''}"
+            style="width:80px;" placeholder="0" />
+        </td>
+        <td>
           ${payBadge(b.payment_status)}
         </td>
         <td>
@@ -1118,7 +1126,7 @@ $logo_url = get_site_icon_url( 64 );
   </div>
 </div>
 
-<!-- Invoice / Email draft modal -->
+<!-- Invoice / Mollie payment link modal -->
 <div class="ktd-modal-overlay" id="invoice-modal">
   <div class="ktd-modal">
     <h3>💳 Send Invoice Email</h3>
