@@ -3,7 +3,7 @@ function clean(value) {
 }
 
 function getWordPressBookingsConfig() {
-  const baseUrl = clean(
+  let baseUrl = clean(
     process.env.WORDPRESS_BOOKINGS_API_URL ||
     process.env.WP_BOOKINGS_API_URL ||
     process.env.WP_BOOKING_URL ||
@@ -24,6 +24,16 @@ function getWordPressBookingsConfig() {
   }
   if (!apiKey) {
     throw new Error('Missing WORDPRESS_BOOKINGS_API_KEY');
+  }
+
+  if (!/\/wp-json\/ktd\/v1$/i.test(baseUrl)) {
+    if (/\/wp-json\/ktd\/v1\//i.test(baseUrl)) {
+      baseUrl = baseUrl.replace(/\/wp-json\/ktd\/v1\/.*/i, '/wp-json/ktd/v1');
+    } else if (/\/wp-json$/i.test(baseUrl)) {
+      baseUrl = `${baseUrl}/ktd/v1`;
+    } else {
+      baseUrl = `${baseUrl}/wp-json/ktd/v1`;
+    }
   }
 
   return { baseUrl, apiKey };
