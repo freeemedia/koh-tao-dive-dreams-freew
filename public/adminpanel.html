@@ -215,7 +215,7 @@
     async function fetchWpBookings() {
       try {
         const res = await fetch(`${API_BASE}/api/admin-bookings`, {
-          headers: { 'x-admin-view-token': 'liveyourlifeinparadise' }
+          headers: { 'x-admin-view-token': 'lembonganparadise2025' }
         });
         const data = await res.json();
         if (data.success && Array.isArray(data.data)) return data.data;
