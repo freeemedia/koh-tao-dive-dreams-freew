@@ -1,17 +1,10 @@
 // api/admin-bookings.js
-// Server-side handler: uses service role key to bypass RLS on bookings table.
+// Server-side handler: manages bookings via WordPress (primary) and MySQL (fallback).
 // GET  /api/admin-bookings          → list all bookings
 // PATCH /api/admin-bookings?id=xxx  → update booking fields
 
-import { createClient } from '@supabase/supabase-js';
+import { getDb, ensureBookingsTable } from './_lib/mysql.js';
 import { sendBookingStatusEmail } from './send-booking-notification.js';
-
-function getSupabaseAdmin() {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY env vars');
-  return createClient(url, key);
-}
 
 function getAllowedAdminEmails() {
   const raw = (process.env.ADMIN_EMAILS || process.env.VITE_ADMIN_EMAILS || '').trim();
@@ -21,7 +14,7 @@ function getAllowedAdminEmails() {
     .filter(Boolean);
 }
 
-async function ensureAdmin(req, supabase) {
+async function ensureAdmin(req) {
   const viewToken = process.env.ADMIN_BOOKINGS_VIEW_TOKEN || process.env.ADMIN_VIEW_TOKEN;
   const suppliedViewToken = req.headers['x-admin-view-token'] || req.query?.view_token;
   if (viewToken && suppliedViewToken && String(suppliedViewToken) === String(viewToken)) {
@@ -35,31 +28,7 @@ async function ensureAdmin(req, supabase) {
     return { ok: true, mode: 'static-token' };
   }
 
-  const authHeader = req.headers.authorization || '';
-  const bearerToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
-  if (!bearerToken) {
-    return { ok: false, status: 401, error: 'Missing admin credentials' };
-  }
-
-  const { data, error } = await supabase.auth.getUser(bearerToken);
-  if (error || !data?.user) {
-    return { ok: false, status: 401, error: 'Invalid admin session token' };
-  }
-
-  const user = data.user;
-  const appRole = user.app_metadata?.app_role;
-  const userRole = user.user_metadata?.app_role || user.user_metadata?.role;
-  if (appRole === 'admin' || userRole === 'admin') {
-    return { ok: true, mode: 'supabase-role' };
-  }
-
-  const allowedEmails = getAllowedAdminEmails();
-  const normalizedEmail = String(user.email || '').trim().toLowerCase();
-  if (allowedEmails.includes(normalizedEmail)) {
-    return { ok: true, mode: 'allowlist' };
-  }
-
-  return { ok: false, status: 403, error: 'Admin access denied' };
+  return { ok: false, status: 401, error: 'Missing or invalid admin credentials' };
 }
 
 export default async function handler(req, res) {
@@ -69,8 +38,7 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-login-token, x-admin-view-token');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const supabase = getSupabaseAdmin();
-  const adminCheck = await ensureAdmin(req, supabase);
+  const adminCheck = await ensureAdmin(req);
   if (!adminCheck.ok) {
     return res.status(adminCheck.status || 401).json({ error: adminCheck.error || 'Unauthorized' });
   }
@@ -108,14 +76,11 @@ export default async function handler(req, res) {
       return res.status(200).json(rows);
     }
 
-    // Fallback: Supabase
-    const { data, error } = await supabase
-      .from('bookings')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) return res.status(500).json({ error: error.message });
-    return res.status(200).json(data);
+    // Fallback: MySQL
+    await ensureBookingsTable();
+    const db = getDb();
+    const [rows] = await db.query(`SELECT * FROM bookings ORDER BY created_at DESC`);
+    return res.status(200).json(rows);
   }
 
   if (req.method === 'PATCH') {
@@ -141,9 +106,11 @@ export default async function handler(req, res) {
       // Try numeric first; if non-numeric, look up WP id from Supabase
       let wpId = parseInt(id, 10);
       if (!wpId) {
-        // id is a Supabase UUID — look up the corresponding WP booking by supabase_id or find by matching
-        const { data: sbRow } = await supabase.from('bookings').select('wp_booking_id').eq('id', id).single().catch(() => ({ data: null }));
-        wpId = sbRow?.wp_booking_id || 0;
+        // id is not a numeric WP id — look up wp_booking_id from MySQL
+        await ensureBookingsTable();
+        const db = getDb();
+        const [rows] = await db.query(`SELECT wp_booking_id FROM bookings WHERE id = ? LIMIT 1`, [id]);
+        wpId = rows[0]?.wp_booking_id || 0;
       }
 
       if (wpId) {
@@ -161,30 +128,33 @@ export default async function handler(req, res) {
         if (!wpRes.ok) {
           return res.status(wpRes.status).json({ error: wpJson?.message || 'WordPress update failed' });
         }
-        // Also sync to Supabase (best-effort, don't fail if it errors)
-        await supabase.from('bookings').update(updates).eq('id', id).catch(() => {});
+        // Sync to MySQL (best-effort)
+        try {
+          await ensureBookingsTable();
+          const db = getDb();
+          const sets = Object.keys(updates).map((k) => `\`${k}\` = ?`).join(', ');
+          await db.query(`UPDATE bookings SET ${sets} WHERE id = ?`, [...Object.values(updates), id]);
+        } catch {}
         if ('status' in updates) {
           await sendBookingStatusEmail({ ...(wpJson?.booking || {}), id }).catch(() => {});
         }
         return res.status(200).json(wpJson?.booking || { id, ...updates });
       }
-      // No WP id found — fall through to Supabase-only update
+      // No WP id found — fall through to MySQL-only update
     }
 
-    const { data, error } = await supabase
-      .from('bookings')
-      .update(updates)
-      .eq('id', id)
-      .select()
-      .single();
-
-    if (error) return res.status(500).json({ error: error.message });
+    await ensureBookingsTable();
+    const db = getDb();
+    const sets = Object.keys(updates).map((k) => `\`${k}\` = ?`).join(', ');
+    await db.query(`UPDATE bookings SET ${sets} WHERE id = ?`, [...Object.values(updates), id]);
+    const [rows] = await db.query(`SELECT * FROM bookings WHERE id = ? LIMIT 1`, [id]);
+    const updated = rows[0] || { id, ...updates };
 
     if ('status' in updates) {
-      await sendBookingStatusEmail(data || {}).catch(() => {});
+      await sendBookingStatusEmail(updated).catch(() => {});
     }
 
-    return res.status(200).json(data);
+    return res.status(200).json(updated);
   }
 
   if (req.method === 'DELETE') {
@@ -197,8 +167,10 @@ export default async function handler(req, res) {
     if (wpUrl && wpApiKey) {
       let wpId = parseInt(id, 10);
       if (!wpId) {
-        const { data: sbRow } = await supabase.from('bookings').select('wp_booking_id').eq('id', id).single().catch(() => ({ data: null }));
-        wpId = sbRow?.wp_booking_id || 0;
+        await ensureBookingsTable();
+        const db = getDb();
+        const [rows] = await db.query(`SELECT wp_booking_id FROM bookings WHERE id = ? LIMIT 1`, [id]);
+        wpId = rows[0]?.wp_booking_id || 0;
       }
       if (wpId) {
         try {
@@ -216,9 +188,10 @@ export default async function handler(req, res) {
       }
     }
 
-    // Always also delete from Supabase
-    const { error } = await supabase.from('bookings').delete().eq('id', id);
-    if (error) return res.status(500).json({ error: error.message });
+    // Always also delete from MySQL
+    await ensureBookingsTable();
+    const db = getDb();
+    await db.query(`DELETE FROM bookings WHERE id = ?`, [id]);
     return res.status(200).json({ ok: true, deleted: id });
   }
 

@@ -1,9 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
-
 export default function BookNow() {
   const { t } = useTranslation()
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
@@ -19,24 +16,19 @@ export default function BookNow() {
     e.preventDefault()
     setStatus('sending')
     try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/bookings`, {
+      const res = await fetch('/api/bookings', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Prefer': 'return=minimal',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          full_name: form.name,
+          name: form.name,
           email: form.email,
           phone: form.phone,
           preferred_date: form.date,
-          num_divers: parseInt(form.divers),
-          dive_type: form.type,
-          message: form.message,
+          course_title: form.type,
+          message: form.divers !== '1'
+            ? `Divers: ${form.divers}${form.message ? '. ' + form.message : ''}`
+            : form.message,
           status: 'pending',
-          created_at: new Date().toISOString(),
         }),
       })
       if (res.ok || res.status === 201) {

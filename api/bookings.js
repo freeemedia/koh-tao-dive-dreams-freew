@@ -1,21 +1,39 @@
-import { createClient } from '@supabase/supabase-js';
+import { getDb, ensureBookingsTable } from './_lib/mysql.js';
 import { sendBookingNotificationEmail } from './send-booking-notification.js';
 
-function getSupabaseAdmin() {
-  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
-  if (!url || !key) {
-    throw new Error('Missing Supabase env vars. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (or fallback keys).');
-  }
-  return createClient(url, key);
+// ---------- MySQL CRUD helpers ----------
+
+async function insertBooking(payload) {
+  await ensureBookingsTable();
+  const db = getDb();
+  const cols = Object.keys(payload);
+  const vals = Object.values(payload);
+  const placeholders = cols.map(() => '?').join(', ');
+  await db.query(
+    `INSERT INTO bookings (${cols.map((c) => `\`${c}\``).join(', ')}) VALUES (${placeholders})`,
+    vals
+  );
+  return payload;
 }
 
-function tryGetSupabaseAdmin() {
-  try {
-    return getSupabaseAdmin();
-  } catch {
-    return null;
-  }
+async function updateBookingById(id, updates) {
+  await ensureBookingsTable();
+  const db = getDb();
+  const sets = Object.keys(updates).map((k) => `\`${k}\` = ?`).join(', ');
+  await db.query(`UPDATE bookings SET ${sets} WHERE id = ?`, [...Object.values(updates), id]);
+}
+
+async function deleteBookingById(id) {
+  await ensureBookingsTable();
+  const db = getDb();
+  await db.query(`DELETE FROM bookings WHERE id = ?`, [id]);
+}
+
+async function getAllBookings() {
+  await ensureBookingsTable();
+  const db = getDb();
+  const [rows] = await db.query(`SELECT * FROM bookings ORDER BY created_at DESC`);
+  return rows;
 }
 
 function parseBody(req) {
@@ -118,38 +136,10 @@ function normalizeBookingPayload(input, { includeId = false } = {}) {
   return out;
 }
 
-// Map normalized payload to actual Supabase column names
-function toSupabasePayload(payload) {
-  const {
-    total_amount,
-    deposit_amount,
-    due_amount,
-    booking_type,
-    item_title,
-    accommodation,
-    booking_source,
-    currency,
-    guests,
-    nights,
-    paypal_link,
-    raw_payload,
-    nationality,
-    ...rest
-  } = payload;
 
-  const out = { ...rest };
-  // Map to Supabase column names
-  if (deposit_amount != null) out.total_payable_now = deposit_amount;
-  if (total_amount != null) out.subtotal_amount = total_amount;
-  // item_title maps to course_title if not already set
-  if (item_title != null && out.course_title == null) out.course_title = item_title;
-  // item_type from booking_type
-  if (booking_type != null) out.item_type = booking_type;
-  return out;
-}
 
 async function mirrorBookingToWordPress(payload) {
-  const canonicalWpUrl = 'https://lightsalmon-dinosaur-377714.hostingersite.com';
+  const canonicalWpUrl = 'https://olive-mosquito-633213.hostingersite.com';
   let wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
   if (!wpUrl || /admin\.divinginasia\.com$/i.test(wpUrl)) {
     wpUrl = canonicalWpUrl;
@@ -232,7 +222,7 @@ async function mirrorBookingToWordPress(payload) {
 }
 
 async function fetchBookingsFromWordPress() {
-  const canonicalWpUrl = 'https://lightsalmon-dinosaur-377714.hostingersite.com';
+  const canonicalWpUrl = 'https://olive-mosquito-633213.hostingersite.com';
   let wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
   if (!wpUrl || /admin\.divinginasia\.com$/i.test(wpUrl)) {
     wpUrl = canonicalWpUrl;
@@ -286,21 +276,11 @@ export default async function handler(req, res) {
           return res.status(200).json({ bookings: wpRows, source: 'wordpress' });
         }
       } catch (wpError) {
-        console.warn('WordPress bookings fetch failed, falling back to Supabase:', wpError);
+        console.warn('WordPress bookings fetch failed, falling back to MySQL:', wpError);
       }
 
-      const supabase = tryGetSupabaseAdmin();
-      if (!supabase) {
-        return res.status(500).json({ error: 'WordPress fetch failed and Supabase is not configured.' });
-      }
-
-      const { data, error } = await supabase
-        .from('bookings')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) return res.status(500).json({ error: error.message });
-      return res.status(200).json({ bookings: data || [], source: 'supabase' });
+      const rows = await getAllBookings();
+      return res.status(200).json({ bookings: rows, source: 'mysql' });
     }
 
     if (req.method === 'POST') {
@@ -325,23 +305,11 @@ export default async function handler(req, res) {
           return res.status(502).json({ error: message });
         }
 
-        let supabaseWriteWarning = null;
-        let created = null;
-        const supabase = tryGetSupabaseAdmin();
-        if (supabase) {
-          const supabasePayload = toSupabasePayload(payload);
-          const { data, error } = await supabase
-            .from('bookings')
-            .insert(supabasePayload)
-            .select();
-
-          if (error) {
-            supabaseWriteWarning = error.message;
-          } else {
-            created = Array.isArray(data) ? data[0] : data;
-          }
-        } else {
-          supabaseWriteWarning = 'Supabase not configured; skipped secondary write.';
+        let mysqlWarning = null;
+        try {
+          await insertBooking(payload);
+        } catch (err) {
+          mysqlWarning = err instanceof Error ? err.message : 'MySQL write failed';
         }
 
         // Best effort email notification for new bookings.
@@ -351,16 +319,13 @@ export default async function handler(req, res) {
         }).catch(() => {});
 
         const responsePayload = {
-          ...(created || payload),
+          ...payload,
           wp_mirror_endpoint: wpMirrorResult?.endpoint || null,
           wp_mirror_id: wpMirrorResult?.id || null,
         };
 
-        if (supabaseWriteWarning) {
-          return res.status(201).json({
-            ...responsePayload,
-            supabase_warning: supabaseWriteWarning,
-          });
+        if (mysqlWarning) {
+          return res.status(201).json({ ...responsePayload, mysql_warning: mysqlWarning });
         }
 
         return res.status(201).json(responsePayload);
@@ -375,36 +340,15 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'No valid fields to update' });
       }
 
-      const supabase = tryGetSupabaseAdmin();
-      if (!supabase) {
-        return res.status(500).json({ error: 'Supabase is not configured for updates.' });
-      }
-
-      const { data, error } = await supabase
-        .from('bookings')
-        .update(updates)
-        .eq('id', id)
-        .select();
-
-      if (error) return res.status(500).json({ error: error.message });
-      return res.status(200).json(Array.isArray(data) ? data[0] : data);
+      await updateBookingById(id, updates);
+      return res.status(200).json({ id, ...updates });
     }
 
     if (req.method === 'DELETE') {
       const id = req.query?.id || (parseBody(req) || {}).id;
       if (!id) return res.status(400).json({ error: 'Missing booking id' });
 
-      const supabase = tryGetSupabaseAdmin();
-      if (!supabase) {
-        return res.status(500).json({ error: 'Supabase is not configured for deletes.' });
-      }
-
-      const { error } = await supabase
-        .from('bookings')
-        .delete()
-        .eq('id', id);
-
-      if (error) return res.status(500).json({ error: error.message });
+      await deleteBookingById(id);
       return res.status(200).json({ deleted: id });
     }
 
