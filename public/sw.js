@@ -1,7 +1,6 @@
-const CACHE = 'dive-asia-v3';
+const CACHE = 'lembongan-v1';
 const PRECACHE = [
   '/',
-  '/manifest.json',
   '/images/logo.png',
 ];
 
@@ -31,7 +30,8 @@ self.addEventListener('fetch', (event) => {
     fetch(event.request)
       .then((response) => {
         if (response.ok) {
-          caches.open(CACHE).then((cache) => cache.put(event.request, response.clone()));
+          const toCache = response.clone();
+          caches.open(CACHE).then((cache) => cache.put(event.request, toCache));
         }
         return response;
       })
