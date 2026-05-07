@@ -7,12 +7,6 @@
   "redirects": [
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "admin.divinginasia.com" }],
-      "destination": "https://lightsalmon-dinosaur-377714.hostingersite.com/wp-admin/$1",
-      "permanent": false
-    },
-    {
-      "source": "/(.*)",
       "has": [{ "type": "host", "value": "admin.lembonganwatersports.com" }],
       "destination": "https://lightsalmon-dinosaur-377714.hostingersite.com/wp-admin/$1",
       "permanent": false
