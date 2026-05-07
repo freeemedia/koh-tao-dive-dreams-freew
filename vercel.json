@@ -17,6 +17,16 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        { "type": "host", "value": "admin.divinginasia.com" }
+      ],
+      "destination": "https://admin.divinginasia.com/ktd-dashboard-2/",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     { "source": "/functions/v1/page_content", "destination": "https://wulgixdyofyfdwcymwec.functions.supabase.co/page_content" },
     { "source": "/api/:path*", "destination": "/api/:path*" },
