@@ -531,7 +531,50 @@ export default async function handler(req, res) {
       }
 
       if (!id) {
+<<<<<<< HEAD
         return res.status(400).json({ error: 'Missing booking id for update mode' });
+=======
+        const generatedId = (globalThis.crypto && typeof globalThis.crypto.randomUUID === 'function')
+          ? globalThis.crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+        const payload = normalizeBookingPayload({ id: generatedId, ...rest }, { includeId: true });
+
+        // MySQL is the primary store — booking must succeed here.
+        try {
+          await insertBooking(payload);
+        } catch (err) {
+          const message = err instanceof Error ? err.message : 'Database write failed';
+          return res.status(500).json({ error: message });
+        }
+
+        // WordPress mirror is best-effort — failures are logged but do not block the response.
+        let wpMirrorResult = null;
+        let mysqlWarning = null;
+        try {
+          wpMirrorResult = await mirrorBookingToWordPress(payload);
+        } catch (err) {
+          mysqlWarning = err instanceof Error ? err.message : 'WordPress mirror failed';
+          console.warn('WordPress mirror failed (non-fatal):', mysqlWarning);
+        }
+
+        // Best effort email notification for new bookings.
+        await sendBookingNotificationEmail({
+          ...payload,
+          item_title: payload.course_title || payload.item_title,
+        }).catch(() => {});
+
+        const responsePayload = {
+          ...payload,
+          wp_mirror_endpoint: wpMirrorResult?.endpoint || null,
+          wp_mirror_id: wpMirrorResult?.id || null,
+        };
+
+        if (mysqlWarning) {
+          return res.status(201).json({ ...responsePayload, mysql_warning: mysqlWarning });
+        }
+
+        return res.status(201).json(responsePayload);
+>>>>>>> 770e059 (fix: make MySQL primary for bookings, WordPress mirror is best-effort)
       }
 
       if (Object.keys(rest).length === 0) {
