@@ -98,10 +98,20 @@ export default async function handler(req, res) {
     const allowed = ['status', 'internal_notes', 'bank_transfer_details', 'name', 'email', 'phone', 'course_title', 'item_title', 'preferred_date', 'total_amount', 'deposit_amount', 'due_amount'];
     const updates = {};
     for (const key of allowed) {
-      if (key in body) updates[key] = body[key];
-    }
-    if (Object.keys(updates).length === 0) {
-      return res.status(400).json({ error: 'No valid fields to update' });
+          try {
+            await ensureBookingsTable();
+            const db = getDb();
+            const [rows] = await db.query(`SELECT * FROM bookings ORDER BY created_at DESC`);
+            if (wpWarning) {
+              res.setHeader('X-Data-Source-Warning', wpWarning);
+            }
+            return res.status(200).json(rows);
+          } catch (mysqlErr) {
+            const mysqlMessage = mysqlErr instanceof Error ? mysqlErr.message : 'MySQL fallback failed';
+            res.setHeader('X-Data-Source-Warning', wpWarning || 'WordPress unavailable');
+            res.setHeader('X-MySQL-Warning', mysqlMessage);
+            return res.status(200).json([]);
+          }
     }
 
     const wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
