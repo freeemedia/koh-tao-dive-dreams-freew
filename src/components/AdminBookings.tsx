@@ -41,6 +41,60 @@ interface Booking {
 
 
 
+const InlineEditCell: React.FC<{
+  value: string;
+  onSave: (val: string) => Promise<void>;
+  textarea?: boolean;
+}> = ({ value, onSave, textarea }) => {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!editing) setDraft(value);
+  }, [value, editing]);
+
+  return editing ? (
+    <span>
+      {textarea ? (
+        <textarea
+          className="border rounded px-1 py-1 w-full"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          rows={2}
+        />
+      ) : (
+        <input
+          className="border rounded px-1 py-1 w-full"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+        />
+      )}
+      <button
+        className="ml-1 px-2 py-1 text-xs bg-blue-600 text-white rounded"
+        disabled={saving}
+        onClick={async () => {
+          setSaving(true);
+          await onSave(draft);
+          setSaving(false);
+          setEditing(false);
+        }}
+      >Save</button>
+      <button
+        className="ml-1 px-2 py-1 text-xs bg-gray-400 text-white rounded"
+        onClick={() => {
+          setEditing(false);
+          setDraft(value);
+        }}
+      >Cancel</button>
+    </span>
+  ) : (
+    <span onClick={() => setEditing(true)} className="cursor-pointer hover:underline">
+      {value || <span className="text-gray-400">(empty)</span>}
+    </span>
+  );
+};
+
 const AdminBookings: React.FC = () => {
     const { t } = useTranslation();
 
@@ -555,60 +609,6 @@ const AdminBookings: React.FC = () => {
       topSources,
     };
   }, [filteredBookings]);
-
-  const InlineEditCell: React.FC<{
-    value: string;
-    onSave: (val: string) => Promise<void>;
-    textarea?: boolean;
-  }> = ({ value, onSave, textarea }) => {
-    const [editing, setEditing] = useState(false);
-    const [draft, setDraft] = useState(value);
-    const [saving, setSaving] = useState(false);
-
-    useEffect(() => {
-      setDraft(value);
-    }, [value]);
-
-    return editing ? (
-      <span>
-        {textarea ? (
-          <textarea
-            className="border rounded px-1 py-1 w-full"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            rows={2}
-          />
-        ) : (
-          <input
-            className="border rounded px-1 py-1 w-full"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-          />
-        )}
-        <button
-          className="ml-1 px-2 py-1 text-xs bg-blue-600 text-white rounded"
-          disabled={saving}
-          onClick={async () => {
-            setSaving(true);
-            await onSave(draft);
-            setSaving(false);
-            setEditing(false);
-          }}
-        >Save</button>
-        <button
-          className="ml-1 px-2 py-1 text-xs bg-gray-400 text-white rounded"
-          onClick={() => {
-            setEditing(false);
-            setDraft(value);
-          }}
-        >Cancel</button>
-      </span>
-    ) : (
-      <span onClick={() => setEditing(true)} className="cursor-pointer hover:underline">
-        {value || <span className="text-gray-400">(empty)</span>}
-      </span>
-    );
-  };
 
   const handleInlineEdit = async (id: string, field: string, value: string) => {
     try {
