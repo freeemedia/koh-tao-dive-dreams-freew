@@ -6,8 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { usePageContent } from '@/hooks/usePageContent';
 // PageContentEditor import removed
-import Contact from './Contact';
-import SharedBookingFormEmbed from './SharedBookingFormEmbed';
+import InlineCourseBookingForm from './InlineCourseBookingForm';
 import DropboxGallerySection from './DropboxGallerySection';
 import ImageRow from './ImageRow';
 
@@ -278,19 +277,13 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
                 ? 'Vul het formulier in en we nemen binnen 24 uur contact met je op.'
                 : 'Fill in the form below and we\'ll confirm availability within 24 hours.'}
             </p>
-            <SharedBookingFormEmbed
+            <InlineCourseBookingForm
               itemType={bookingType}
               itemTitle={bookingItemName || content.hero_title || ''}
-              priceThb={thbAmount > 0 ? thbAmount : undefined}
-              depositThb={thbAmount > 0 ? Math.round(thbAmount * 0.2) : undefined}
-              currency="THB"
-              locale={locale}
+              depositMajor={thbAmount > 0 ? Math.round(thbAmount * 0.2) : undefined}
+              depositCurrency="THB"
             />
           </div>
-        </section>
-
-        <section className="mt-12" id="contact-section">
-          <Contact />
         </section>
       </main>
     </div>
