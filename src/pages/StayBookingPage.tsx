@@ -138,9 +138,23 @@ const StayBookingPage: React.FC = () => {
         currency: 'THB',
       }).catch(() => {});
 
-      setSubmittedData(data);
-      setSubmitted(true);
+      // Store for ThankYouPage display
+      sessionStorage.setItem(
+        'bookingData',
+        JSON.stringify({
+          item_title: `Accommodation: ${accommodationLabel}`,
+          name: data.name,
+          email: data.email,
+          phone: data.phone || 'N/A',
+          accommodation: accommodationLabel,
+          preferred_date: data.preferred_date,
+          experience_level: `${data.nights} night(s), ${data.guests} guest(s)`,
+          payment_choice: 'Enquiry only — no payment required now',
+        }),
+      );
+
       toast.success('Enquiry received! We will be in touch shortly.');
+      setTimeout(() => { window.location.href = '/thank-you'; }, 1200);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Something went wrong';
       toast.error(`Submission failed: ${message}`);
