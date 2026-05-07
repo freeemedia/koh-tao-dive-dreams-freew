@@ -46,6 +46,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     const wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
     const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
+    let wpWarning = null;
 
     if (wpUrl && wpApiKey) {
       // Proxy from WordPress REST API
@@ -62,18 +63,20 @@ export default async function handler(req, res) {
         });
         wpJson = await wpRes.json();
       } catch (err) {
-        return res.status(502).json({ error: 'Failed to reach WordPress: ' + err.message });
+        wpWarning = 'Failed to reach WordPress: ' + err.message;
       }
-      if (!wpRes.ok) {
-        return res.status(wpRes.status).json({ error: wpJson?.message || 'WordPress API error' });
+      if (wpRes && !wpRes.ok) {
+        wpWarning = wpJson?.message || 'WordPress API error';
       }
-      const rowsRaw = Array.isArray(wpJson?.data) ? wpJson.data : (Array.isArray(wpJson) ? wpJson : []);
-      const rows = rowsRaw.map((row) => ({
-        ...row,
-        internal_notes: row?.internal_notes || row?.message || '',
-        message: row?.message || row?.internal_notes || '',
-      }));
-      return res.status(200).json(rows);
+      if (wpRes && wpRes.ok) {
+        const rowsRaw = Array.isArray(wpJson?.data) ? wpJson.data : (Array.isArray(wpJson) ? wpJson : []);
+        const rows = rowsRaw.map((row) => ({
+          ...row,
+          internal_notes: row?.internal_notes || row?.message || '',
+          message: row?.message || row?.internal_notes || '',
+        }));
+        return res.status(200).json(rows);
+      }
     }
 
     // Fallback: MySQL
@@ -83,7 +86,10 @@ export default async function handler(req, res) {
     return res.status(200).json(rows);
   }
 
-  if (req.method === 'PATCH') {
+      if (wpWarning) {
+        res.setHeader('X-Data-Source-Warning', wpWarning);
+      }
+      return res.status(200).json(rows);
     const id = req.query?.id;
     if (!id) return res.status(400).json({ error: 'Missing booking id' });
 
