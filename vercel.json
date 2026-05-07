@@ -8,7 +8,7 @@
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "admin.lembonganwatersports.com" }],
-      "destination": "https://lightsalmon-dinosaur-377714.hostingersite.com/wp-admin/$1",
+      "destination": "https://olive-mosquito-633213.hostingersite.com/wp-admin/$1",
       "permanent": false
     }
   ],
