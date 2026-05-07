@@ -293,23 +293,22 @@ export default async function handler(req, res) {
           : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
         const payload = normalizeBookingPayload({ id: generatedId, ...rest }, { includeId: true });
 
-        // WordPress is the source of truth: creation must succeed here first.
-        let wpMirrorResult = null;
-        try {
-          wpMirrorResult = await mirrorBookingToWordPress(payload);
-          if (wpMirrorResult && wpMirrorResult.ok === false) {
-            return res.status(502).json({ error: `WordPress booking create skipped: ${wpMirrorResult.reason || 'unknown reason'}` });
-          }
-        } catch (err) {
-          const message = err instanceof Error ? err.message : 'WordPress booking create failed';
-          return res.status(502).json({ error: message });
-        }
-
-        let mysqlWarning = null;
+        // MySQL is the primary store — booking must succeed here.
         try {
           await insertBooking(payload);
         } catch (err) {
-          mysqlWarning = err instanceof Error ? err.message : 'MySQL write failed';
+          const message = err instanceof Error ? err.message : 'Database write failed';
+          return res.status(500).json({ error: message });
+        }
+
+        // WordPress mirror is best-effort — failures are logged but do not block the response.
+        let wpMirrorResult = null;
+        let mysqlWarning = null;
+        try {
+          wpMirrorResult = await mirrorBookingToWordPress(payload);
+        } catch (err) {
+          mysqlWarning = err instanceof Error ? err.message : 'WordPress mirror failed';
+          console.warn('WordPress mirror failed (non-fatal):', mysqlWarning);
         }
 
         // Best effort email notification for new bookings.
