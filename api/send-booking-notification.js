@@ -4,7 +4,7 @@ async function sendViaResend({ to, subject, html }) {
   const from = process.env.RESEND_FROM_EMAIL
     || process.env.RESEND_BOOKING_EMAIL
     || process.env.SMTP_FROM
-    || 'confirmed@divinginasia.com';
+    || 'confirmed@lembonganwatersports.com';
 
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
