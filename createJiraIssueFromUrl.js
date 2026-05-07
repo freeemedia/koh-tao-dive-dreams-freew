@@ -7,7 +7,7 @@ import fetch from 'node-fetch';
 import { buildJiraIssuePayload, createJiraIssue, isJiraConfigured } from './api/_lib/jira.js';
 
 
-const TARGET_URL = process.argv[2] || process.env.TARGET_URL || 'https://www.divinginasia.com/courses/open-water';
+const TARGET_URL = process.argv[2] || process.env.TARGET_URL || 'https://www.lembonganwatersports.com/courses/open-water';
 
 
 async function fetchPageContent(url) {
@@ -23,7 +23,7 @@ async function fetchPageContent(url) {
 async function createJiraIssue(htmlContent) {
   const summary = `Imported: ${TARGET_URL}`;
   // Use raw HTML as the description (Jira will store it as-is, but may not render all tags)
-  const description = `Imported content from https://www.divinginasia.com/courses/open-water:\n\n<pre>${htmlContent.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`;
+  const description = `Imported content from https://www.lembonganwatersports.com/courses/open-water:\n\n<pre>${htmlContent.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`;
   return createJiraIssue(buildJiraIssuePayload({
     summary,
     description,

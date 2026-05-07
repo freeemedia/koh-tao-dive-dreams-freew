@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Show iOS install hint only on iOS Safari (standalone not yet active) */
+@supports (-webkit-touch-callout: none) {
+  @media (display-mode: browser) {
+    .ios-install-hint {
+      display: flex !important;
+    }
+  }
+}
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
+
+@layer base {
+  :root {
+    /* Lembongan Dive Resort — Deep Ocean + Coral + Warm Sand */
+    --background: 210 33% 98%;       /* crisp near-white */
+    --foreground: 215 45% 10%;       /* deep navy text */
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 45% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 45% 10%;
+
+    --primary: 191 85% 38%;          /* deep cyan-teal */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 14 95% 55%;         /* vivid coral */
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 30% 95%;
+    --muted-foreground: 215 25% 42%;
+
+    --accent: 14 95% 55%;            /* coral */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 25% 88%;
+    --input: 210 25% 92%;
+    --ring: 191 85% 38%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 215 50% 97%;
+    --sidebar-foreground: 215 45% 14%;
+    --sidebar-primary: 191 85% 38%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 14 95% 96%;
+    --sidebar-accent-foreground: 14 60% 28%;
+    --sidebar-border: 210 25% 88%;
+    --sidebar-ring: 191 85% 38%;
+  }
+
+  .dark {
+    --background: 200 45% 10%;
+    --foreground: 40 30% 95%;
+
+    --card: 200 40% 14%;
+    --card-foreground: 40 30% 95%;
+
+    --popover: 200 40% 14%;
+    --popover-foreground: 40 30% 95%;
+
+    --primary: 174 72% 48%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 16 90% 55%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 200 30% 18%;
+    --muted-foreground: 200 20% 60%;
+
+    --accent: 16 90% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 200 30% 22%;
+    --input: 200 30% 22%;
+    --ring: 174 72% 48%;
+    --sidebar-background: 200 45% 8%;
+    --sidebar-foreground: 40 30% 90%;
+    --sidebar-primary: 174 72% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 200 30% 16%;
+    --sidebar-accent-foreground: 40 30% 90%;
+    --sidebar-border: 200 30% 18%;
+    --sidebar-ring: 174 72% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.instructor-hero-bg {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+    url('/images/photo-1618865181016-a80ad83a06d3.avif');
+  background-size: cover;
+  background-position: center;
+}
+
+.scuba-diver-hero-bg {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+    url('/images/fun-dsd/fun.png');
+  background-size: cover;
+  background-position: center;
+}

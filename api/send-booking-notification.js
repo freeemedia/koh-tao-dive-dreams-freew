@@ -119,7 +119,7 @@ export async function sendBookingNotificationEmail(payload = {}) {
         <!-- CTA -->
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr><td align="center">
-            <a href="https://admin.divinginasia.com/ktd-dashboard/" style="display:inline-block;background:linear-gradient(135deg,#0b3d91,#1a5ed4);color:#fff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;letter-spacing:0.5px;">Open Admin Panel →</a>
+            <a href="https://admin.lembonganwatersports.com/ktd-dashboard/" style="display:inline-block;background:linear-gradient(135deg,#0b3d91,#1a5ed4);color:#fff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;letter-spacing:0.5px;">Open Admin Panel →</a>
           </td></tr>
         </table>
       </td></tr>
@@ -317,7 +317,7 @@ export async function sendCustomerInvoiceEmail(payload = {}) {
         <!-- ── HEADER ── -->
         <tr>
           <td style="background:linear-gradient(135deg,#0b3d91 0%,#1a5ed4 100%);padding:32px 40px;text-align:center;">
-            <img src="https://www.divinginasia.com/images/logo.png"
+            <img src="https://www.lembonganwatersports.com/images/logo.png"
                  alt="Diving In Asia"
                  width="120" height="auto"
                  style="display:block;margin:0 auto 14px;max-width:120px;" />
@@ -421,12 +421,12 @@ export async function sendCustomerInvoiceEmail(payload = {}) {
         <!-- ── FOOTER ── -->
         <tr>
           <td style="background:#0b3d91;padding:20px 40px;text-align:center;">
-            <img src="https://www.divinginasia.com/images/logo.png"
+            <img src="https://www.lembonganwatersports.com/images/logo.png"
                  alt="Diving In Asia" width="70" height="auto"
                  style="display:block;margin:0 auto 10px;opacity:0.8;" />
             <p style="color:#93b4e8;margin:0;font-size:12px;line-height:1.6;">
               © ${new Date().getFullYear()} Diving In Asia · Koh Tao, Surat Thani, Thailand<br>
-              <a href="https://www.divinginasia.com" style="color:#93b4e8;text-decoration:underline;">www.divinginasia.com</a>
+              <a href="https://www.lembonganwatersports.com" style="color:#93b4e8;text-decoration:underline;">www.lembonganwatersports.com</a>
             </p>
           </td>
         </tr>

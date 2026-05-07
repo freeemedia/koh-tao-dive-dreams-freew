@@ -409,8 +409,8 @@ app.post('/api/create-stripe-session', async (req, res) => {
     ];
   }
 
-  const defaultSuccessUrl = 'https://www.divinginasia.com/thank-you.html';
-  const defaultCancelUrl = 'https://www.divinginasia.com/booking-form.html';
+  const defaultSuccessUrl = 'https://www.lembonganwatersports.com/thank-you.html';
+  const defaultCancelUrl = 'https://www.lembonganwatersports.com/booking-form.html';
   const safeSuccessUrl = typeof success_url === 'string' && /^https?:\/\//i.test(success_url)
     ? success_url
     : defaultSuccessUrl;

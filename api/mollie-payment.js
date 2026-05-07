@@ -9,7 +9,7 @@
 
 const VERCEL_URL = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
-  : 'https://www.divinginasia.com';
+  : 'https://www.lembonganwatersports.com';
 
 export default async function handler(req, res) {
   // CORS
@@ -72,7 +72,7 @@ export default async function handler(req, res) {
       currency: 'EUR',
       value: amountValue.toFixed(2),
     },
-    redirectUrl: 'https://www.divinginasia.com/thankyou.html',
+    redirectUrl: 'https://www.lembonganwatersports.com/thankyou.html',
     webhookUrl: `${VERCEL_URL}/api/mollie-webhook`,
     metadata: {
       booking_id: String(booking_id),
