@@ -43,7 +43,7 @@ async function ensureAdmin(req) {
 
 export default async function handler(req, res) {
   const dbProvider = getDbProvider();
-  const allowDelete = String(process.env.ALLOW_BOOKING_DELETE || '').toLowerCase() === 'true';
+  const allowDelete = String(process.env.ALLOW_BOOKING_DELETE || '').trim().toLowerCase() === 'true';
   // CORS for local dev
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', allowDelete ? 'GET, PATCH, DELETE, OPTIONS' : 'GET, PATCH, OPTIONS');
@@ -185,6 +185,10 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true, deleted: result.deleted });
       } catch (wordpressError) {
         const message = wordpressError instanceof Error ? wordpressError.message : 'WordPress delete failed';
+        if (message.toLowerCase().includes('no route was found')) {
+          const archivedBooking = await updateWordPressBookingById(id, { status: 'archived' });
+          return res.status(200).json({ ok: true, deleted: false, archived: true, booking: archivedBooking });
+        }
         return res.status(502).json({ error: message, provider: dbProvider });
       }
     }
