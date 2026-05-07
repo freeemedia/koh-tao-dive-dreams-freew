@@ -67,8 +67,6 @@ type StayFormData = z.infer<typeof staySchema>;
 // ─── Component ───────────────────────────────────────────────────────────────
 const StayBookingPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [submittedData, setSubmittedData] = useState<StayFormData | null>(null);
 
   const apiBaseRaw = (import.meta.env.VITE_API_BASE_URL || '').trim();
   const apiBase = apiBaseRaw ? apiBaseRaw.replace(/\/+$/, '') : '';
@@ -162,70 +160,6 @@ const StayBookingPage: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-
-  // ── Success screen ─────────────────────────────────────────────────────────
-  if (submitted && submittedData) {
-    const accommodationLabel =
-      ACCOMMODATION_OPTIONS.find((o) => o.value === submittedData.accommodation)?.label ??
-      submittedData.accommodation;
-
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-start justify-center pt-20 pb-16 px-4">
-        <div className="max-w-lg w-full rounded-2xl border-2 border-emerald-300 bg-emerald-50 p-8 space-y-6 shadow-lg">
-          <div className="text-center">
-            <div className="text-4xl mb-3">🏡</div>
-            <h2 className="text-2xl font-bold text-emerald-900">Enquiry Received!</h2>
-            <p className="text-emerald-700 mt-1">
-              Confirmation sent to <strong>{submittedData.email}</strong>
-            </p>
-          </div>
-
-          <div className="bg-white rounded-lg p-4 text-sm space-y-2">
-            <div>
-              <span className="font-semibold">Name:</span> {submittedData.name}
-            </div>
-            <div>
-              <span className="font-semibold">Accommodation:</span> {accommodationLabel}
-            </div>
-            <div>
-              <span className="font-semibold">Check-in:</span> {submittedData.preferred_date}
-            </div>
-            <div>
-              <span className="font-semibold">Nights:</span> {submittedData.nights}
-            </div>
-            <div>
-              <span className="font-semibold">Guests:</span> {submittedData.guests}
-            </div>
-            {submittedData.message && (
-              <div>
-                <span className="font-semibold">Message:</span> {submittedData.message}
-              </div>
-            )}
-          </div>
-
-          <div className="bg-emerald-100 rounded-lg border-l-4 border-emerald-600 p-4 text-sm text-emerald-900">
-            <p className="font-semibold mb-1">What happens next?</p>
-            <p>
-              Our team will review your request and contact you within 24 hours to confirm
-              availability and details. Check your inbox — and your spam folder just in case!
-            </p>
-          </div>
-
-          <Button
-            className="w-full"
-            variant="outline"
-            onClick={() => {
-              form.reset();
-              setSubmitted(false);
-              setSubmittedData(null);
-            }}
-          >
-            Submit another enquiry
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   // ── Form screen ────────────────────────────────────────────────────────────
   return (
