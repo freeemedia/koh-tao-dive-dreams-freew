@@ -317,7 +317,7 @@ const       BookingPage: React.FC = () => {
           const paypalUrl = `${paypalBase}/${amountMajor}THB`;
           setTimeout(() => { window.location.href = paypalUrl; }, 1200);
         } else {
-          setTimeout(() => window.location.href = '/thank-you.html', 1500);
+          setTimeout(() => window.location.href = '/thank-you', 1500);
           setInquiryNotice(SKIP_PAYMENT_MESSAGE);
         }
       } else {
@@ -325,7 +325,7 @@ const       BookingPage: React.FC = () => {
         console.error('Booking notification error:', errMsg, responseData);
         if (persisted) {
           toast.warning(`Inquiry saved, but email notification failed: ${errMsg}`);
-          setTimeout(() => window.location.href = '/thank-you.html', 1500);
+          setTimeout(() => window.location.href = '/thank-you', 1500);
           setInquiryNotice(SKIP_PAYMENT_MESSAGE);
         } else {
           toast.error(`Submission failed: ${errMsg}. Please retry.`);
