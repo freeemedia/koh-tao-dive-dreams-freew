@@ -136,6 +136,23 @@ function normalizeBookingPayload(input, { includeId = false } = {}) {
   return out;
 }
 
+function shouldSendBookingEmail(req) {
+  const host = String(req?.headers?.host || '').toLowerCase();
+  const origin = String(req?.headers?.origin || '').toLowerCase();
+  const referer = String(req?.headers?.referer || '').toLowerCase();
+
+  const allowed = [
+    'lembonganwatersports.com',
+    'www.lembonganwatersports.com',
+    'lembongan-seven.vercel.app',
+    'lembongan-divinngasia.vercel.app',
+  ];
+
+  return allowed.some((domain) =>
+    host.includes(domain) || origin.includes(domain) || referer.includes(domain)
+  );
+}
+
 
 
 async function mirrorBookingToWordPress(payload) {
@@ -312,10 +329,14 @@ export default async function handler(req, res) {
         }
 
         // Best effort email notification for new bookings.
-        await sendBookingNotificationEmail({
-          ...payload,
-          item_title: payload.course_title || payload.item_title,
-        }).catch(() => {});
+        if (shouldSendBookingEmail(req)) {
+          await sendBookingNotificationEmail({
+            ...payload,
+            item_title: payload.course_title || payload.item_title,
+          }).catch(() => {});
+        } else {
+          console.log('Skipping booking email: request origin/host not in allowed lembongan domains');
+        }
 
         const responsePayload = {
           ...payload,
