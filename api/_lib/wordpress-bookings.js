@@ -93,6 +93,17 @@ export async function listWordPressBookings() {
   return rows.map(normalizeWordPressRow);
 }
 
+export async function getWordPressBookingById(id) {
+  const data = await wordpressRequest(`/bookings/${encodeURIComponent(String(id))}`);
+  const row = data?.booking || data?.data || data;
+
+  if (!row || typeof row !== 'object') {
+    throw new Error('Booking not found');
+  }
+
+  return normalizeWordPressRow(row);
+}
+
 export async function insertWordPressBooking(payload) {
   const wpPayload = toWordPressPayload(payload);
   const data = await wordpressRequest('/bookings', {

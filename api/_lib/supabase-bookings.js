@@ -110,6 +110,19 @@ export async function listSupabaseBookings() {
   return Array.isArray(rows) ? rows : [];
 }
 
+export async function getSupabaseBookingById(id) {
+  const { table } = getSupabaseConfig();
+  const safeId = encodeURIComponent(String(id));
+  const query = `${table}?id=eq.${safeId}&select=*&limit=1`;
+  const rows = await supabaseRequest(query);
+
+  if (!Array.isArray(rows) || !rows[0]) {
+    throw new Error('Booking not found');
+  }
+
+  return rows[0];
+}
+
 export async function insertSupabaseBooking(payload) {
   const { table } = getSupabaseConfig();
   const query = `${table}?select=*`;
