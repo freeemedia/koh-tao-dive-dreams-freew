@@ -35,6 +35,11 @@ export function isMySqlProvider() {
   return provider === 'mysql' || provider === 'hostinger';
 }
 
+export function isWordPressProvider() {
+  const provider = getDbProvider();
+  return provider === 'wordpress' || provider === 'wp';
+}
+
 function getSupabaseConfig() {
   const url = (
     process.env.SUPABASE_URL ||

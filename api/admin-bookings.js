@@ -9,6 +9,7 @@ import {
   getDbProvider,
   isSupabaseProvider,
   isMySqlProvider,
+  isWordPressProvider,
   listSupabaseBookings,
   updateSupabaseBookingById,
   deleteSupabaseBookingById,
@@ -18,6 +19,11 @@ import {
   updateMySqlBookingById,
   deleteMySqlBookingById,
 } from './_lib/mysql-bookings.js';
+import {
+  listWordPressBookings,
+  updateWordPressBookingById,
+  deleteWordPressBookingById,
+} from './_lib/wordpress-bookings.js';
 
 async function ensureAdmin(req) {
   const viewToken = process.env.ADMIN_BOOKINGS_VIEW_TOKEN || process.env.ADMIN_VIEW_TOKEN;
@@ -75,6 +81,16 @@ export default async function handler(req, res) {
       }
     }
 
+    if (isWordPressProvider()) {
+      try {
+        const rows = await listWordPressBookings();
+        return res.status(200).json(rows);
+      } catch (wordpressError) {
+        const message = wordpressError instanceof Error ? wordpressError.message : 'WordPress fetch failed';
+        return res.status(502).json({ error: message, provider: dbProvider });
+      }
+    }
+
     return res.status(500).json({ error: `Unsupported DB provider for admin bookings: ${dbProvider}` });
   }
 
@@ -119,6 +135,19 @@ export default async function handler(req, res) {
       }
     }
 
+    if (isWordPressProvider()) {
+      try {
+        const booking = await updateWordPressBookingById(id, updates);
+        if ('status' in updates) {
+          await sendBookingStatusEmail(booking).catch(() => {});
+        }
+        return res.status(200).json(booking);
+      } catch (wordpressError) {
+        const message = wordpressError instanceof Error ? wordpressError.message : 'WordPress update failed';
+        return res.status(502).json({ error: message, provider: dbProvider });
+      }
+    }
+
     return res.status(500).json({ error: `Unsupported DB provider for admin bookings: ${dbProvider}` });
   }
 
@@ -142,6 +171,16 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true, deleted: result.deleted });
       } catch (mysqlError) {
         const message = mysqlError instanceof Error ? mysqlError.message : 'MySQL delete failed';
+        return res.status(502).json({ error: message, provider: dbProvider });
+      }
+    }
+
+    if (isWordPressProvider()) {
+      try {
+        const result = await deleteWordPressBookingById(id);
+        return res.status(200).json({ ok: true, deleted: result.deleted });
+      } catch (wordpressError) {
+        const message = wordpressError instanceof Error ? wordpressError.message : 'WordPress delete failed';
         return res.status(502).json({ error: message, provider: dbProvider });
       }
     }

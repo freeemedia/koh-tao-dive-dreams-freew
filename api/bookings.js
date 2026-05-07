@@ -3,6 +3,7 @@ import {
   getDbProvider,
   isSupabaseProvider,
   isMySqlProvider,
+  isWordPressProvider,
   listSupabaseBookings,
   insertSupabaseBooking,
   updateSupabaseBookingById,
@@ -14,6 +15,12 @@ import {
   updateMySqlBookingById,
   deleteMySqlBookingById,
 } from './_lib/mysql-bookings.js';
+import {
+  listWordPressBookings,
+  insertWordPressBooking,
+  updateWordPressBookingById,
+  deleteWordPressBookingById,
+} from './_lib/wordpress-bookings.js';
 
 async function sendFluentBookingWebhook(payload) {
   const webhookUrl = String(process.env.FLUENT_BOOKING_WEBHOOK_URL || '').trim();
@@ -220,6 +227,16 @@ export default async function handler(req, res) {
         }
       }
 
+      if (isWordPressProvider()) {
+        try {
+          const rows = await listWordPressBookings();
+          return res.status(200).json({ bookings: rows, source: 'wordpress' });
+        } catch (wordpressError) {
+          const message = wordpressError instanceof Error ? wordpressError.message : 'WordPress fetch failed';
+          return res.status(502).json({ error: message, provider: dbProvider });
+        }
+      }
+
       return res.status(500).json({ error: `Unsupported DB provider for bookings: ${dbProvider}` });
     }
 
@@ -257,6 +274,18 @@ export default async function handler(req, res) {
           }
         }
 
+        if (isWordPressProvider()) {
+          try {
+            const inserted = await insertWordPressBooking(payload);
+            const emailPayload = { ...inserted, item_title: inserted.course_title || inserted.item_title };
+            const warning = await dispatchBookingNotificationsWithWarning(emailPayload);
+            return res.status(201).json(warning ? { ...inserted, warning } : inserted);
+          } catch (wordpressError) {
+            const message = wordpressError instanceof Error ? wordpressError.message : 'WordPress booking create failed';
+            return res.status(502).json({ error: message, provider: dbProvider });
+          }
+        }
+
         return res.status(500).json({ error: `Unsupported DB provider for bookings: ${dbProvider}` });
       }
 
@@ -289,6 +318,16 @@ export default async function handler(req, res) {
         }
       }
 
+      if (isWordPressProvider()) {
+        try {
+          const updated = await updateWordPressBookingById(id, updates);
+          return res.status(200).json(updated);
+        } catch (wordpressError) {
+          const message = wordpressError instanceof Error ? wordpressError.message : 'WordPress update failed';
+          return res.status(502).json({ error: message, provider: dbProvider });
+        }
+      }
+
       return res.status(500).json({ error: `Unsupported DB provider for bookings: ${dbProvider}` });
     }
 
@@ -312,6 +351,16 @@ export default async function handler(req, res) {
           return res.status(200).json(result);
         } catch (mysqlError) {
           const message = mysqlError instanceof Error ? mysqlError.message : 'MySQL delete failed';
+          return res.status(502).json({ error: message, provider: dbProvider });
+        }
+      }
+
+      if (isWordPressProvider()) {
+        try {
+          const result = await deleteWordPressBookingById(id);
+          return res.status(200).json(result);
+        } catch (wordpressError) {
+          const message = wordpressError instanceof Error ? wordpressError.message : 'WordPress delete failed';
           return res.status(502).json({ error: message, provider: dbProvider });
         }
       }

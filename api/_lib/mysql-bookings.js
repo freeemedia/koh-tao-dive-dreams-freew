@@ -241,8 +241,17 @@ export async function updateMySqlBookingById(id, updates) {
     [...values, String(id)],
   );
 
-  if (!result || result.affectedRows === 0) {
-    throw new Error('Booking not found for update');
+  if (!result) {
+    throw new Error('Booking update failed');
+  }
+
+  // MySQL can report 0 affected rows when the row exists but values are unchanged.
+  if (result.affectedRows === 0) {
+    try {
+      return getMySqlBookingById(id);
+    } catch {
+      throw new Error('Booking not found for update');
+    }
   }
 
   return getMySqlBookingById(id);

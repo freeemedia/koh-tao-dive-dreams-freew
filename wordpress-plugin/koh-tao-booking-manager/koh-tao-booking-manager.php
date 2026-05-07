@@ -107,6 +107,15 @@ class KTD_Booking_Manager {
                 'id' => array('required' => true, 'sanitize_callback' => 'absint'),
             ),
         ));
+
+        register_rest_route('ktd/v1', '/bookings/(?P<id>\d+)', array(
+            'methods' => WP_REST_Server::DELETABLE,
+            'callback' => array($this, 'delete_booking'),
+            'permission_callback' => array($this, 'validate_api_key'),
+            'args' => array(
+                'id' => array('required' => true, 'sanitize_callback' => 'absint'),
+            ),
+        ));
     }
 
     private function normalize_number($value) {
@@ -247,6 +256,27 @@ class KTD_Booking_Manager {
         $response->header('Expires', 'Wed, 11 Jan 1984 05:00:00 GMT');
 
         return $response;
+    }
+
+    public function delete_booking($request) {
+        global $wpdb;
+        $id = absint($request['id']);
+        if (!$id) {
+            return new WP_Error('ktd_invalid_id', 'Invalid booking ID.', array('status' => 400));
+        }
+
+        $deleted = $wpdb->delete($this->table_name, array('id' => $id), array('%d'));
+        if ($deleted === false) {
+            return new WP_Error('ktd_delete_failed', 'Database delete failed.', array('status' => 500));
+        }
+        if ((int) $deleted === 0) {
+            return new WP_Error('ktd_not_found', 'Booking not found.', array('status' => 404));
+        }
+
+        return new WP_REST_Response(array(
+            'success' => true,
+            'deleted' => $id,
+        ), 200);
     }
 
     public function register_admin_page() {
