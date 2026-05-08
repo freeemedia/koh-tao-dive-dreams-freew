@@ -80,30 +80,34 @@ class KTD_Booking_Manager {
         }
 
         if (!current_user_can('manage_options')) {
-            $support_email = sanitize_email((string) get_option('admin_email', 'support@divinginasia.com'));
-            $help_email = $support_email !== '' ? antispambot($support_email) : 'support@divinginasia.com';
-            $home_link = esc_url(home_url('/'));
-            $logout_link = esc_url(wp_logout_url($home_link));
-
-            $access_html = '<div style="max-width:560px;margin:48px auto;padding:36px 32px;border:1px solid #d1d5db;border-radius:14px;background:#ffffff;box-shadow:0 12px 30px rgba(15,23,42,0.08);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;line-height:1.55;color:#0f172a;">';
-            $access_html .= '<div style="display:inline-block;padding:5px 10px;border-radius:999px;background:#e0f2fe;color:#0c4a6e;font-size:12px;font-weight:700;letter-spacing:0.02em;">SECURE NETWORK ACCESS</div>';
-            $access_html .= '<h1 style="margin:14px 0 8px;font-size:26px;line-height:1.2;">Restricted Area</h1>';
-            $access_html .= '<p style="margin:0 0 18px;font-size:15px;color:#334155;">Your account is authenticated but does not have permission to access this protected section.</p>';
-            $access_html .= '<p style="margin:0 0 20px;font-size:14px;color:#475569;">If you need access, contact <a href="mailto:' . esc_attr($help_email) . '" style="color:#0369a1;text-decoration:none;font-weight:600;">' . esc_html($help_email) . '</a>.</p>';
-            $access_html .= '<div style="display:flex;gap:10px;flex-wrap:wrap;">';
-            $access_html .= '<a href="' . $home_link . '" style="display:inline-block;padding:10px 14px;border-radius:9px;background:#0369a1;color:#ffffff;text-decoration:none;font-weight:600;font-size:14px;">Return to Website</a>';
-            $access_html .= '<a href="' . $logout_link . '" style="display:inline-block;padding:10px 14px;border-radius:9px;border:1px solid #cbd5e1;color:#0f172a;text-decoration:none;font-weight:600;font-size:14px;">Switch Account</a>';
-            $access_html .= '</div></div>';
-
-            wp_die(
-                $access_html,
-                __('Secure Network Access'),
-                array(
-                    'response' => 403,
-                    'back_link' => false,
-                )
-            );
+            $this->render_secure_access_denied();
         }
+    }
+
+    private function render_secure_access_denied() {
+        $support_email = sanitize_email((string) get_option('admin_email', 'support@divinginasia.com'));
+        $help_email = $support_email !== '' ? antispambot($support_email) : 'support@divinginasia.com';
+        $home_link = esc_url(home_url('/'));
+        $logout_link = esc_url(wp_logout_url($home_link));
+
+        $access_html = '<div style="max-width:560px;margin:48px auto;padding:36px 32px;border:1px solid #d1d5db;border-radius:14px;background:#ffffff;box-shadow:0 12px 30px rgba(15,23,42,0.08);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;line-height:1.55;color:#0f172a;">';
+        $access_html .= '<div style="display:inline-block;padding:5px 10px;border-radius:999px;background:#e0f2fe;color:#0c4a6e;font-size:12px;font-weight:700;letter-spacing:0.02em;">SECURE NETWORK ACCESS</div>';
+        $access_html .= '<h1 style="margin:14px 0 8px;font-size:26px;line-height:1.2;">Restricted Area</h1>';
+        $access_html .= '<p style="margin:0 0 18px;font-size:15px;color:#334155;">Your account is authenticated but does not have permission to access this protected section.</p>';
+        $access_html .= '<p style="margin:0 0 20px;font-size:14px;color:#475569;">If you need access, contact <a href="mailto:' . esc_attr($help_email) . '" style="color:#0369a1;text-decoration:none;font-weight:600;">' . esc_html($help_email) . '</a>.</p>';
+        $access_html .= '<div style="display:flex;gap:10px;flex-wrap:wrap;">';
+        $access_html .= '<a href="' . $home_link . '" style="display:inline-block;padding:10px 14px;border-radius:9px;background:#0369a1;color:#ffffff;text-decoration:none;font-weight:600;font-size:14px;">Return to Website</a>';
+        $access_html .= '<a href="' . $logout_link . '" style="display:inline-block;padding:10px 14px;border-radius:9px;border:1px solid #cbd5e1;color:#0f172a;text-decoration:none;font-weight:600;font-size:14px;">Switch Account</a>';
+        $access_html .= '</div></div>';
+
+        wp_die(
+            $access_html,
+            __('Secure Network Access'),
+            array(
+                'response' => 403,
+                'back_link' => false,
+            )
+        );
     }
 
     public static function activate() {
