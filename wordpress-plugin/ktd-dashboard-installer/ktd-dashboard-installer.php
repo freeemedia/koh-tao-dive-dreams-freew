@@ -35,6 +35,8 @@ function ktd_installer_activate() {
         'meta_value'     => 'template-ktd-dashboard.php',
     ] );
 
+    $dashboard_page_id = 0;
+
     if ( empty( $existing ) ) {
         $page_id = wp_insert_post( [
             'post_title'   => 'Dashboard',
@@ -47,9 +49,57 @@ function ktd_installer_activate() {
         if ( $page_id && ! is_wp_error( $page_id ) ) {
             update_post_meta( $page_id, '_wp_page_template', 'template-ktd-dashboard.php' );
             update_option( 'ktd_dashboard_page_id', $page_id );
+            $dashboard_page_id = (int) $page_id;
         }
     } else {
-        update_option( 'ktd_dashboard_page_id', $existing[0]->ID );
+        $dashboard_page_id = (int) $existing[0]->ID;
+        update_option( 'ktd_dashboard_page_id', $dashboard_page_id );
+    }
+
+    // 3. Use Dashboard as homepage to avoid default WP sample pages.
+    if ( $dashboard_page_id > 0 ) {
+        update_option( 'show_on_front', 'page' );
+        update_option( 'page_on_front', $dashboard_page_id );
+        update_option( 'page_for_posts', 0 );
+
+        // Clean default sample content created by fresh WordPress installs.
+        $sample_page = get_page_by_path( 'sample-page', OBJECT, 'page' );
+        if ( $sample_page && (int) $sample_page->ID !== $dashboard_page_id ) {
+            wp_delete_post( (int) $sample_page->ID, true );
+        }
+
+        $hello_world_posts = get_posts( [
+            'name'           => 'hello-world',
+            'post_type'      => 'post',
+            'post_status'    => 'any',
+            'posts_per_page' => 5,
+        ] );
+
+        if ( is_array( $hello_world_posts ) ) {
+            foreach ( $hello_world_posts as $post ) {
+                if ( isset( $post->ID ) ) {
+                    wp_delete_post( (int) $post->ID, true );
+                }
+            }
+        }
+
+        $default_posts = get_posts( [
+            'post_type'      => 'post',
+            'post_status'    => 'any',
+            'posts_per_page' => 20,
+        ] );
+
+        if ( is_array( $default_posts ) ) {
+            foreach ( $default_posts as $post ) {
+                if ( ! isset( $post->ID, $post->post_title ) ) {
+                    continue;
+                }
+                $title = strtolower( trim( (string) $post->post_title ) );
+                if ( $title === 'hello world!' || $title === 'hello world' ) {
+                    wp_delete_post( (int) $post->ID, true );
+                }
+            }
+        }
     }
 }
 

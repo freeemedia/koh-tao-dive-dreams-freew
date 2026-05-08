@@ -23,6 +23,11 @@ import {
   updateWordPressBookingById,
   deleteWordPressBookingById,
 } from './_lib/wordpress-bookings.js';
+import {
+  checkAndTrackFailure,
+  getClientFingerprint,
+  recordSecurityEvent,
+} from './_lib/security-tracker.js';
 
 async function ensureAdmin(req) {
   const viewToken = process.env.ADMIN_BOOKINGS_VIEW_TOKEN || process.env.ADMIN_VIEW_TOKEN;
@@ -52,6 +57,19 @@ export default async function handler(req, res) {
 
   const adminCheck = await ensureAdmin(req);
   if (!adminCheck.ok) {
+    const clientKey = getClientFingerprint(req, 'admin-bookings');
+    const throttle = checkAndTrackFailure({
+      scope: 'admin-bookings',
+      key: clientKey,
+      maxAttempts: 20,
+      windowMs: 10 * 60 * 1000,
+      blockMs: 15 * 60 * 1000,
+    });
+    recordSecurityEvent({ type: 'admin_bookings_unauthorized', req, details: { attempts: throttle.attempts } });
+    if (throttle.blocked) {
+      res.setHeader('Retry-After', Math.ceil(throttle.retryAfterMs / 1000));
+      return res.status(429).json({ error: 'Too many unauthorized attempts. Try again later.' });
+    }
     return res.status(adminCheck.status || 401).json({ error: adminCheck.error || 'Unauthorized' });
   }
   

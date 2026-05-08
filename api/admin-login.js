@@ -1,3 +1,10 @@
+import {
+  checkAndTrackFailure,
+  clearFailureTracking,
+  getClientFingerprint,
+  recordSecurityEvent,
+} from './_lib/security-tracker.js';
+
 export default function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -30,6 +37,7 @@ export default function handler(req, res) {
     .map((e) => e.toLowerCase());
 
   const emailLower = String(email).trim().toLowerCase();
+  const clientKey = getClientFingerprint(req, emailLower || 'admin-login');
 
   // Accept if email is in admin list and password matches token or ADMIN_PASSWORD
   const emailOk = allowedEmails.length === 0 || allowedEmails.includes(emailLower);
@@ -39,7 +47,24 @@ export default function handler(req, res) {
     adminPasswords.includes(normalizedPassword);
 
   if (emailOk && passwordOk) {
+    clearFailureTracking('admin-login', clientKey);
+    recordSecurityEvent({ type: 'admin_login_success', req, details: { email: emailLower } });
     return res.status(200).json({ success: true, token: adminTokens[0] || 'ok' });
+  }
+
+  const throttle = checkAndTrackFailure({
+    scope: 'admin-login',
+    key: clientKey,
+    maxAttempts: 7,
+    windowMs: 10 * 60 * 1000,
+    blockMs: 20 * 60 * 1000,
+  });
+
+  recordSecurityEvent({ type: 'admin_login_failed', req, details: { email: emailLower, attempts: throttle.attempts } });
+
+  if (throttle.blocked) {
+    res.setHeader('Retry-After', Math.ceil(throttle.retryAfterMs / 1000));
+    return res.status(429).json({ success: false, error: 'Too many attempts. Try again later.' });
   }
 
   return res.status(401).json({ success: false, error: 'Invalid credentials' });
