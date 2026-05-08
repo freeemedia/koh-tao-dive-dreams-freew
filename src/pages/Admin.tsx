@@ -12,6 +12,7 @@ interface KtdBooking {
   customer_phone?: string;
   item_title: string;
   status: string;
+  payment_status?: string;
   deposit_amount?: number;
   total_amount?: number;
   notes?: string;
@@ -20,7 +21,7 @@ interface KtdBooking {
 const DEFAULT_WP_API_BASE = 'https://lightsalmon-dinosaur-377714.hostingersite.com';
 const DEFAULT_WP_BOOKING_API_KEY = '909010232893284934783734';
 
-const normalizeBookingRow = (row: any): KtdBooking => ({
+const normalizeBookingRow = (row: Record<string, unknown>): KtdBooking => ({
   id: Number(row?.id || 0),
   booking_date: String(row?.booking_date || row?.created_at || ''),
   customer_name: String(row?.customer_name || row?.name || ''),
@@ -28,22 +29,27 @@ const normalizeBookingRow = (row: any): KtdBooking => ({
   customer_phone: String(row?.customer_phone || row?.phone || ''),
   item_title: String(row?.item_title || row?.course_title || row?.booking_type || ''),
   status: String(row?.status || 'new'),
+  payment_status: String(row?.payment_status || 'unpaid'),
   deposit_amount: Number(row?.deposit_amount || 0) || 0,
   total_amount: Number(row?.total_amount || 0) || 0,
   notes: String(row?.notes || row?.message || ''),
 });
 
-const extractBookings = (payload: any): KtdBooking[] => {
+const extractBookings = (payload: unknown): KtdBooking[] => {
+  const data = payload as Record<string, unknown> | unknown[] | null;
   const rowsRaw = Array.isArray(payload)
     ? payload
-    : Array.isArray(payload?.data)
-      ? payload.data
-      : Array.isArray(payload?.bookings)
-        ? payload.bookings
-        : Array.isArray(payload?.items)
-          ? payload.items
+    : Array.isArray((data as Record<string, unknown> | null)?.data)
+      ? ((data as Record<string, unknown>).data as unknown[])
+      : Array.isArray((data as Record<string, unknown> | null)?.bookings)
+        ? ((data as Record<string, unknown>).bookings as unknown[])
+        : Array.isArray((data as Record<string, unknown> | null)?.items)
+          ? ((data as Record<string, unknown>).items as unknown[])
           : [];
-  return rowsRaw.map(normalizeBookingRow).filter((r) => r.id > 0 || r.customer_email || r.customer_name);
+  return rowsRaw
+    .filter((row): row is Record<string, unknown> => typeof row === 'object' && row !== null)
+    .map(normalizeBookingRow)
+    .filter((r) => r.id > 0 || r.customer_email || r.customer_name);
 };
 
 const buildAdminProxyRequest = () => {
@@ -78,6 +84,8 @@ const Admin = () => {
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [editingNotes, setEditingNotes] = useState<Record<number, string>>({});
   const [savingNotes, setSavingNotes] = useState<number | null>(null);
+  const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
+  const [actionNotice, setActionNotice] = useState<string | null>(null);
 
   const patchBookingField = async (id: number, fields: Record<string, string | number>) => {
     const proxy = buildAdminProxyRequest();
@@ -116,6 +124,52 @@ const Admin = () => {
     } finally {
       setSavingNotes(null);
     }
+  };
+
+  const markBookingPaid = async (id: number) => {
+    setActionLoadingId(id);
+    setActionNotice(null);
+    try {
+      await patchBookingField(id, { payment_status: 'paid' });
+      setBookings(prev => prev.map(b => b.id === id ? { ...b, payment_status: 'paid' } : b));
+      setActionNotice(`Booking #${id} marked as paid.`);
+    } catch (e) {
+      setActionNotice(`Failed to mark paid: ${e instanceof Error ? e.message : e}`);
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  const sendInvoice = async (id: number) => {
+    setActionLoadingId(id);
+    setActionNotice(null);
+    try {
+      const res = await fetch(`/api/bookings/${id}/invoice`, { method: 'POST' });
+      const payload = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(payload?.error || `HTTP ${res.status}`);
+      }
+
+      try {
+        await patchBookingField(id, { payment_status: 'invoiced' });
+        setBookings(prev => prev.map(b => b.id === id ? { ...b, payment_status: 'invoiced' } : b));
+      } catch (_) {
+        // non-blocking: invoice email already sent
+      }
+
+      setActionNotice(`Invoice sent for booking #${id}.`);
+    } catch (e) {
+      setActionNotice(`Failed to send invoice: ${e instanceof Error ? e.message : e}`);
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  const paymentBadgeClass = (status?: string) => {
+    const s = (status || 'unpaid').toLowerCase();
+    if (s === 'paid') return 'border-green-200 bg-green-100 text-green-700';
+    if (s === 'invoiced') return 'border-yellow-200 bg-yellow-100 text-yellow-700';
+    return 'border-slate-200 bg-slate-100 text-slate-600';
   };
 
   const loadBookings = async () => {
@@ -266,6 +320,11 @@ const Admin = () => {
                 </button>
               </div>
             </div>
+            {actionNotice && (
+              <p className="mb-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                {actionNotice}
+              </p>
+            )}
             {bookingsLoading && <p className="py-8 text-center text-sm text-slate-500">Loading bookings...</p>}
             {bookingsError && <p className="py-4 text-center text-sm text-red-500">{bookingsError}</p>}
             {!bookingsLoading && !bookingsError && (() => {
@@ -285,7 +344,7 @@ const Admin = () => {
                   <table className="min-w-full divide-y divide-slate-200 text-sm">
                     <thead className="bg-slate-50">
                       <tr>
-                        {['Date', 'Name', 'Email', 'Phone', 'Item', 'Status', 'Deposit', 'Total', 'Notes'].map(h => (
+                        {['Date', 'Name', 'Email', 'Phone', 'Item', 'Status', 'Payment', 'Deposit', 'Total', 'Actions', 'Notes'].map(h => (
                           <th key={h} className="whitespace-nowrap px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">{h}</th>
                         ))}
                       </tr>
@@ -318,8 +377,33 @@ const Admin = () => {
                               <option value="completed">completed</option>
                             </select>
                           </td>
+                          <td className="px-3 py-2">
+                            <span className={`rounded-full border px-2 py-0.5 text-xs font-semibold ${paymentBadgeClass(b.payment_status)}`}>
+                              {b.payment_status || 'unpaid'}
+                            </span>
+                          </td>
                           <td className="px-3 py-2 text-slate-600">{b.deposit_amount ? `฿${b.deposit_amount.toLocaleString()}` : '—'}</td>
                           <td className="px-3 py-2 text-slate-600">{b.total_amount ? `฿${b.total_amount.toLocaleString()}` : '—'}</td>
+                          <td className="px-3 py-2">
+                            <div className="flex flex-col gap-1">
+                              <button
+                                type="button"
+                                onClick={() => { void sendInvoice(b.id); }}
+                                disabled={actionLoadingId === b.id}
+                                className="rounded border border-blue-200 bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100 disabled:cursor-wait disabled:opacity-60"
+                              >
+                                Send Invoice
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => { void markBookingPaid(b.id); }}
+                                disabled={actionLoadingId === b.id}
+                                className="rounded border border-green-200 bg-green-50 px-2 py-1 text-xs font-semibold text-green-700 hover:bg-green-100 disabled:cursor-wait disabled:opacity-60"
+                              >
+                                Mark Paid
+                              </button>
+                            </div>
+                          </td>
                           <td className="px-3 py-2 min-w-[180px]">
                             <textarea
                               rows={2}

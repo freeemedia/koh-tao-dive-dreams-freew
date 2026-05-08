@@ -100,7 +100,7 @@ export default async function handler(req, res) {
 
     const body = req.body || {};
     // Whitelist updatable fields
-    const allowed = ['status', 'internal_notes', 'bank_transfer_details', 'name', 'email', 'phone', 'course_title', 'item_title', 'preferred_date', 'total_amount', 'deposit_amount', 'due_amount'];
+    const allowed = ['status', 'payment_status', 'payment_link_url', 'internal_notes', 'bank_transfer_details', 'name', 'email', 'phone', 'course_title', 'item_title', 'preferred_date', 'total_amount', 'deposit_amount', 'due_amount'];
     const updates = {};
     for (const key of allowed) {
       if (key in body) updates[key] = body[key];
