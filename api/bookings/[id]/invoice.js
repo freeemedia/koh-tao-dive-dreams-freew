@@ -21,7 +21,7 @@ function ensureAdmin(req) {
     return { ok: true };
   }
 
-  const staticToken = process.env.ADMIN_BOOKINGS_VIEW_TOKEN || process.env.ADMIN_LOGIN_TOKEN || process.env.ADMIN_API_TOKEN;
+  const staticToken = process.env.ADMIN_BOOKINGS_VIEW_TOKEN || process.env.ADMIN_LOGIN_TOKEN || process.env.ADMIN_API_TOKEN || process.env.ADMIN_PASSWORD;
   const suppliedAdminToken = req.headers['x-admin-login-token'];
   if (staticToken && suppliedAdminToken && String(suppliedAdminToken) === String(staticToken)) {
     return { ok: true };
