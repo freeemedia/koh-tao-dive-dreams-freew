@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 
 
@@ -15,6 +15,20 @@ const COURSE_PRICES: Record<string, number> = {
 const COURSE_DEPOSIT_RATE = 0.2;
 
 const PAYPAL_BASE = 'https://paypal.me/prodivingasia';
+
+const normalizeCourseTitle = (itemRaw: string, typeRaw: string) => {
+  const item = String(itemRaw || '').toLowerCase();
+  const type = String(typeRaw || '').toLowerCase();
+
+  if (item.includes('advanced')) return 'Advanced Open Water';
+  if (item.includes('open water')) return 'Open Water';
+  if (item.includes('rescue')) return 'Rescue Diver';
+  if (item.includes('divemaster')) return 'Divemaster';
+  if (item.includes('instructor') || item.includes('idc')) return 'IDC (Instructor Development Course)';
+  if (item.includes('fun dive') || type === 'dive') return 'Fun Dive';
+
+  return '';
+};
 
 interface BookNowFormProps {
   fullPage?: boolean;
@@ -35,11 +49,45 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
   const [error, setError] = useState<string | null>(null);
   const [showPayOptions, setShowPayOptions] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
+  const [priceOverride, setPriceOverride] = useState<number | null>(null);
+  const [currencyOverride, setCurrencyOverride] = useState('THB');
 
-  const coursePrice = COURSE_PRICES[form.course_title] || 0;
+  const coursePrice = priceOverride ?? COURSE_PRICES[form.course_title] ?? 0;
   const deposit = coursePrice > 0 ? Math.round(coursePrice * COURSE_DEPOSIT_RATE) : 0;
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const item = params.get('item') || '';
+    const type = params.get('type') || '';
+    const price = Number(params.get('price'));
+    const currency = (params.get('currency') || 'THB').toUpperCase();
+    const dives = params.get('dives') || '';
+
+    const prefillCourse = normalizeCourseTitle(item, type);
+    if (prefillCourse) {
+      setForm((prev) => ({ ...prev, course_title: prefillCourse }));
+    }
+
+    if (Number.isFinite(price) && price > 0) {
+      setPriceOverride(price);
+    }
+
+    if (currency) {
+      setCurrencyOverride(currency);
+    }
+
+    if (dives) {
+      setForm((prev) => ({
+        ...prev,
+        message: prev.message || `Requested dives: ${dives}`,
+      }));
+    }
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    if (e.target.name === 'course_title' && priceOverride !== null) {
+      setPriceOverride(null);
+    }
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -70,7 +118,7 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
             booking_type: 'course',
             item_title: form.course_title,
             selected_price: totalAmount,
-            currency: 'THB',
+            currency: currencyOverride,
             total_amount: totalAmount,
             deposit_amount: depositAmount,
             due_amount: dueAmount,
@@ -172,6 +220,11 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
               <div style={{ background: '#f0f8ff', borderRadius: 6, padding: '1rem', marginBottom: 8 }}>
                 <div><strong>Course Price:</strong> {coursePrice.toLocaleString()} THB</div>
                 <div><strong>Deposit (20%):</strong> {deposit.toLocaleString()} THB</div>
+                {priceOverride !== null && (
+                  <div style={{ fontSize: '0.9em', color: '#555', marginTop: 4 }}>
+                    Prefilled from link ({currencyOverride})
+                  </div>
+                )}
                 <div style={{ fontSize: '0.95em', color: '#555', marginTop: 4 }}>You can pay the deposit now to secure your spot, or choose to pay later.</div>
               </div>
             )}

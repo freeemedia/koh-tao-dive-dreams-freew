@@ -19,6 +19,36 @@
   ],
   "redirects": [
     {
+      "source": "/booking-form",
+      "destination": "/booking",
+      "permanent": true
+    },
+    {
+      "source": "/booking-form.html",
+      "destination": "/booking",
+      "permanent": true
+    },
+    {
+      "source": "/booking.html",
+      "destination": "/booking",
+      "permanent": true
+    },
+    {
+      "source": "/bookingform.html",
+      "destination": "/booking",
+      "permanent": true
+    },
+    {
+      "source": "/booknow.html",
+      "destination": "/booking",
+      "permanent": true
+    },
+    {
+      "source": "/booking-form-standalone.html",
+      "destination": "/booking",
+      "permanent": true
+    },
+    {
       "source": "/",
       "has": [
         { "type": "host", "value": "admin.divinginasia.com" }
