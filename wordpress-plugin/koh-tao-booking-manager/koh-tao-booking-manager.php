@@ -36,6 +36,7 @@ class KTD_Booking_Manager {
         add_action('rest_api_init', array($this, 'register_rest_routes'));
         add_action('admin_menu', array($this, 'register_admin_page'));
         add_action('admin_init', array($this, 'register_settings'));
+        add_action('admin_init', array($this, 'repair_dashboard_page_content'));
     }
 
     public function disable_xmlrpc_methods($methods) {
@@ -108,6 +109,62 @@ class KTD_Booking_Manager {
                 'back_link' => false,
             )
         );
+    }
+
+    public function repair_dashboard_page_content() {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        $dashboard_page_id = (int) get_option('ktd_dashboard_page_id', 0);
+        if ($dashboard_page_id <= 0) {
+            $pages = get_posts(array(
+                'post_type'      => 'page',
+                'post_status'    => 'publish',
+                'posts_per_page' => 1,
+                'meta_key'       => '_wp_page_template',
+                'meta_value'     => 'template-ktd-dashboard.php',
+                'fields'         => 'ids',
+            ));
+
+            if (!empty($pages) && isset($pages[0])) {
+                $dashboard_page_id = (int) $pages[0];
+                update_option('ktd_dashboard_page_id', $dashboard_page_id);
+            }
+        }
+
+        if ($dashboard_page_id <= 0) {
+            return;
+        }
+
+        $template = get_post_meta($dashboard_page_id, '_wp_page_template', true);
+        if ($template !== 'template-ktd-dashboard.php') {
+            return;
+        }
+
+        $page = get_post($dashboard_page_id);
+        if (!$page || !isset($page->post_content) || $page->post_content === '') {
+            return;
+        }
+
+        $content = (string) $page->post_content;
+        $looks_corrupted = (
+            stripos($content, '<?php') !== false ||
+            stripos($content, 'display_name, 0, 1') !== false ||
+            stripos($content, 'wp_logout_url( home_url() )') !== false ||
+            stripos($content, "admin_url( 'post-new.php' )") !== false ||
+            stripos($content, 'get_site_icon_url( 64 )') !== false ||
+            stripos($content, 'KTD CRM') !== false
+        );
+
+        if (!$looks_corrupted) {
+            return;
+        }
+
+        wp_update_post(array(
+            'ID'           => $dashboard_page_id,
+            'post_content' => '',
+        ));
     }
 
     public static function activate() {
