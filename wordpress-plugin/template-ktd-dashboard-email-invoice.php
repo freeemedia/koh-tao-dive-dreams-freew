@@ -1211,3 +1211,4 @@ $logo_url = get_site_icon_url( 64 );
 <?php
 // Prevent default WP template rendering
 exit;
+p
