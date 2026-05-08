@@ -9,6 +9,22 @@ import {
 import { getMySqlBookingById } from '../../_lib/mysql-bookings.js';
 import { getWordPressBookingById } from '../../_lib/wordpress-bookings.js';
 
+function ensureAdmin(req) {
+  const viewToken = process.env.ADMIN_BOOKINGS_VIEW_TOKEN || process.env.ADMIN_VIEW_TOKEN;
+  const suppliedViewToken = req.headers['x-admin-view-token'] || req.query?.view_token;
+  if (viewToken && suppliedViewToken && String(suppliedViewToken) === String(viewToken)) {
+    return { ok: true };
+  }
+
+  const staticToken = process.env.ADMIN_BOOKINGS_VIEW_TOKEN || process.env.ADMIN_LOGIN_TOKEN || process.env.ADMIN_API_TOKEN;
+  const suppliedAdminToken = req.headers['x-admin-login-token'];
+  if (staticToken && suppliedAdminToken && String(suppliedAdminToken) === String(staticToken)) {
+    return { ok: true };
+  }
+
+  return { ok: false, status: 401, error: 'Unauthorized' };
+}
+
 async function loadBookingById(id) {
   const provider = getDbProvider();
 
@@ -33,7 +49,7 @@ async function loadBookingById(id) {
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-login-token, x-admin-view-token');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -42,6 +58,11 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const adminCheck = ensureAdmin(req);
+  if (!adminCheck.ok) {
+    return res.status(adminCheck.status || 401).json({ error: adminCheck.error || 'Unauthorized' });
   }
 
   const id = String(req.query?.id || '').trim();

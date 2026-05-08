@@ -38,7 +38,7 @@ async function ensureAdmin(req) {
     return { ok: true, mode: 'static-token' };
   }
 
-  return { ok: false, status: 401, error: `Missing admin credentials (got token: ${suppliedAdminToken ? 'yes' : 'no'}, expected: ${staticToken ? 'configured' : 'NOT configured'})` };
+  return { ok: false, status: 401, error: 'Unauthorized' };
 }
 
 export default async function handler(req, res) {

@@ -144,7 +144,11 @@ const Admin = () => {
     setActionLoadingId(id);
     setActionNotice(null);
     try {
-      const res = await fetch(`/api/bookings/${id}/invoice`, { method: 'POST' });
+      const proxy = buildAdminProxyRequest();
+      const res = await fetch(`/api/bookings/${id}/invoice`, {
+        method: 'POST',
+        headers: proxy.headers,
+      });
       const payload = await res.json().catch(() => ({}));
       if (!res.ok) {
         throw new Error(payload?.error || `HTTP ${res.status}`);

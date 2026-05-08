@@ -26,9 +26,41 @@ class KTD_Booking_Manager {
         global $wpdb;
         $this->table_name = $wpdb->prefix . 'ktd_bookings';
 
+        // Security hardening: disable XML-RPC attack surface.
+        add_filter('xmlrpc_enabled', '__return_false');
+        add_filter('xmlrpc_methods', array($this, 'disable_xmlrpc_methods'));
+        add_filter('wp_headers', array($this, 'disable_pingback_header'));
+        add_action('init', array($this, 'block_xmlrpc_direct_requests'));
+
         add_action('rest_api_init', array($this, 'register_rest_routes'));
         add_action('admin_menu', array($this, 'register_admin_page'));
         add_action('admin_init', array($this, 'register_settings'));
+    }
+
+    public function disable_xmlrpc_methods($methods) {
+        if (is_array($methods)) {
+            unset($methods['pingback.ping'], $methods['pingback.extensions.getPingbacks']);
+        }
+        return $methods;
+    }
+
+    public function disable_pingback_header($headers) {
+        if (is_array($headers) && isset($headers['X-Pingback'])) {
+            unset($headers['X-Pingback']);
+        }
+        return $headers;
+    }
+
+    public function block_xmlrpc_direct_requests() {
+        if (!isset($_SERVER['REQUEST_URI'])) {
+            return;
+        }
+
+        $uri = (string) $_SERVER['REQUEST_URI'];
+        if (stripos($uri, 'xmlrpc.php') !== false) {
+            status_header(403);
+            exit('XML-RPC is disabled.');
+        }
     }
 
     public static function activate() {
