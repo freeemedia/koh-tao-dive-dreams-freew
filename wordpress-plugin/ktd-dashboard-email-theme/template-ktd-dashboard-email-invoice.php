@@ -957,7 +957,8 @@ $logo_url = get_site_icon_url( 64 );
     const body    = encodeURIComponent(
       `Hi ${name},\n\nThank you for booking with Diving in Asia!\n\nPlease complete your deposit payment of ฿${amountTHB.toLocaleString()} THB using the secure PayPal link below:\n\n${paypalUrl}\n\nIf you have any questions, feel free to reply to this email.\n\nSee you underwater!\nThe Diving in Asia Team`
     );
-    const opened = openMailClient(`mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`);
+    const adminCc = encodeURIComponent('payments@divinginasia.com');
+    const opened = openMailClient(`mailto:${encodeURIComponent(email)}?cc=${adminCc}&subject=${subject}&body=${body}`);
 
     resultEl.style.display = 'block';
     resultEl.style.color   = opened ? 'var(--green)' : 'var(--yellow)';
@@ -1007,7 +1008,8 @@ $logo_url = get_site_icon_url( 64 );
       const body    = encodeURIComponent(
         `Hi ${name},\n\nThank you for booking with Diving in Asia!\n\nPlease find your invoice details below:\n\nBooking: ${description}\nAmount Due: ฿${Math.round(amount_thb).toLocaleString()} THB\n\nIf you would like to pay online, please let us know and we can send you a PayPal payment link.\n\nIf you have any questions, feel free to reply to this email.\n\nSee you underwater!\nThe Diving in Asia Team`
       );
-      const opened = openMailClient(`mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`);
+      const adminCc = encodeURIComponent('payments@divinginasia.com');
+      const opened = openMailClient(`mailto:${encodeURIComponent(email)}?cc=${adminCc}&subject=${subject}&body=${body}`);
 
       resultEl.style.display = 'block';
       resultEl.style.color   = opened ? 'var(--green)' : 'var(--yellow)';
@@ -1211,3 +1213,4 @@ $logo_url = get_site_icon_url( 64 );
 <?php
 // Prevent default WP template rendering
 exit;
+pttgerwis
