@@ -452,6 +452,63 @@ export async function sendCustomerInvoiceEmail(payload = {}) {
   }
 }
 
+export async function sendAdminInvoiceCopyEmail(payload = {}) {
+  const adminTo = String(
+    process.env.RESEND_INVOICE_ADMIN_EMAIL
+    || process.env.RESEND_BOOKING_TO_EMAIL
+    || 'contact@prodiving.asia'
+  ).trim();
+  if (!adminTo) {
+    return { success: true, warning: 'Missing admin recipient; admin invoice copy skipped' };
+  }
+
+  const customerName = String(payload.name || payload.customer_name || 'N/A');
+  const customerEmail = String(payload.email || payload.customer_email || '').trim();
+  const customerPhone = String(payload.phone || payload.customer_phone || 'N/A');
+  const bookingTitle = String(payload.item_title || payload.course_title || payload.activity || 'Diving Package');
+  const bookingDate = String(payload.preferred_date || payload.arrival_date || payload.booking_date || 'N/A');
+  const totalAmount = formatMoney(payload.total_amount ?? payload.selected_price ?? payload.amount);
+  const depositAmount = formatMoney(payload.deposit_amount);
+  const paymentChoice = normalizePaymentChoiceLabel(payload.payment_choice || payload.payment_mode);
+  const bookingId = String(payload.id || payload.booking_id || '').trim();
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Invoice Sent Copy</title></head>
+<body style="margin:0;padding:24px;background:#f5f7fb;font-family:Arial,sans-serif;color:#0f172a;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;margin:0 auto;background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;">
+    <tr><td style="background:#0b3d91;color:#ffffff;padding:16px 20px;font-size:18px;font-weight:700;">Invoice Sent (Admin Copy)</td></tr>
+    <tr><td style="padding:18px 20px;">
+      <p style="margin:0 0 14px;font-size:14px;color:#334155;">A customer invoice email was sent from the admin dashboard.</p>
+      <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
+        <tr><td style="padding:10px 12px;background:#f8fafc;color:#64748b;font-size:13px;width:40%;">Booking</td><td style="padding:10px 12px;font-size:13px;">${bookingTitle}</td></tr>
+        <tr><td style="padding:10px 12px;background:#f8fafc;color:#64748b;font-size:13px;">Booking ID</td><td style="padding:10px 12px;font-size:13px;">${bookingId || 'N/A'}</td></tr>
+        <tr><td style="padding:10px 12px;background:#f8fafc;color:#64748b;font-size:13px;">Customer</td><td style="padding:10px 12px;font-size:13px;">${customerName}</td></tr>
+        <tr><td style="padding:10px 12px;background:#f8fafc;color:#64748b;font-size:13px;">Customer Email</td><td style="padding:10px 12px;font-size:13px;">${customerEmail || 'N/A'}</td></tr>
+        <tr><td style="padding:10px 12px;background:#f8fafc;color:#64748b;font-size:13px;">Phone</td><td style="padding:10px 12px;font-size:13px;">${customerPhone}</td></tr>
+        <tr><td style="padding:10px 12px;background:#f8fafc;color:#64748b;font-size:13px;">Booking Date</td><td style="padding:10px 12px;font-size:13px;">${bookingDate}</td></tr>
+        <tr><td style="padding:10px 12px;background:#f8fafc;color:#64748b;font-size:13px;">Deposit</td><td style="padding:10px 12px;font-size:13px;">${depositAmount}</td></tr>
+        <tr><td style="padding:10px 12px;background:#f8fafc;color:#64748b;font-size:13px;">Total</td><td style="padding:10px 12px;font-size:13px;">${totalAmount}</td></tr>
+        <tr><td style="padding:10px 12px;background:#f8fafc;color:#64748b;font-size:13px;">Payment Option</td><td style="padding:10px 12px;font-size:13px;">${paymentChoice}</td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  try {
+    await sendEmail({
+      to: adminTo,
+      subject: `Invoice sent: ${bookingTitle}${customerName ? ` - ${customerName}` : ''}`,
+      html,
+    });
+    return { success: true };
+  } catch (err) {
+    console.error('sendAdminInvoiceCopyEmail error', err);
+    return { success: true, warning: `Admin invoice copy failed: ${err.message}` };
+  }
+}
+
 export async function sendBookingStatusEmail(payload = {}) {
   const toEmail = String(payload.email || '').trim();
   if (!toEmail) {

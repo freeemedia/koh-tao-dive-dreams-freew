@@ -1,4 +1,4 @@
-import { sendCustomerInvoiceEmail } from '../../send-booking-notification.js';
+import { sendCustomerInvoiceEmail, sendAdminInvoiceCopyEmail } from '../../send-booking-notification.js';
 import {
   getDbProvider,
   isSupabaseProvider,
@@ -51,13 +51,17 @@ export default async function handler(req, res) {
 
   try {
     const { booking, source } = await loadBookingById(id);
-    const invoiceResult = await sendCustomerInvoiceEmail(booking);
+    const [invoiceResult, adminCopyResult] = await Promise.all([
+      sendCustomerInvoiceEmail(booking),
+      sendAdminInvoiceCopyEmail(booking),
+    ]);
 
     return res.status(200).json({
       ok: true,
       source,
       bookingId: id,
       invoice: invoiceResult,
+      adminCopy: adminCopyResult,
     });
   } catch (error) {
     return res.status(500).json({
