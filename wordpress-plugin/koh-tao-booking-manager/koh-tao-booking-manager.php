@@ -31,7 +31,7 @@ class KTD_Booking_Manager {
         add_filter('xmlrpc_methods', array($this, 'disable_xmlrpc_methods'));
         add_filter('wp_headers', array($this, 'disable_pingback_header'));
         add_action('init', array($this, 'block_xmlrpc_direct_requests'));
-        add_action('template_redirect', array($this, 'redirect_admin_home_to_dashboard'), 1);
+        add_action('template_redirect', array($this, 'lock_admin_subdomain_pages'), 1);
 
         add_action('rest_api_init', array($this, 'register_rest_routes'));
         add_action('admin_menu', array($this, 'register_admin_page'));
@@ -64,41 +64,24 @@ class KTD_Booking_Manager {
         }
     }
 
-    public function redirect_admin_home_to_dashboard() {
-        if (is_admin() || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST)) {
+    public function lock_admin_subdomain_pages() {
+        $host = isset($_SERVER['HTTP_HOST']) ? strtolower((string) $_SERVER['HTTP_HOST']) : '';
+        if ($host !== 'admin.divinginasia.com') {
             return;
         }
 
-        if (!is_front_page() && !is_home()) {
+        // Keep non-template request types and login flow available.
+        if (is_admin() || wp_doing_ajax() || wp_doing_cron() || (defined('REST_REQUEST') && REST_REQUEST)) {
             return;
         }
 
-        if (!is_user_logged_in() || !current_user_can('manage_options')) {
-            return;
+        if (!is_user_logged_in()) {
+            auth_redirect();
         }
 
-        $dashboard_page_id = (int) get_option('ktd_dashboard_page_id', 0);
-        if ($dashboard_page_id <= 0) {
-            $dashboard_page = get_page_by_path('ktd-dashboard', OBJECT, 'page');
-            if ($dashboard_page && !empty($dashboard_page->ID)) {
-                $dashboard_page_id = (int) $dashboard_page->ID;
-            }
+        if (!current_user_can('manage_options')) {
+            wp_die(__('This page is locked.'), __('Access denied'), array('response' => 403));
         }
-
-        if ($dashboard_page_id > 0 && get_queried_object_id() === $dashboard_page_id) {
-            return;
-        }
-
-        $target_url = $dashboard_page_id > 0
-            ? get_permalink($dashboard_page_id)
-            : home_url('/ktd-dashboard/');
-
-        if (!$target_url) {
-            return;
-        }
-
-        wp_safe_redirect($target_url, 302);
-        exit;
     }
 
     public static function activate() {
