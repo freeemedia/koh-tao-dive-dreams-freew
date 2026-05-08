@@ -80,7 +80,11 @@ class KTD_Booking_Manager {
         }
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('This page is locked.'), __('Access denied'), array('response' => 403));
+            wp_die(
+                __('Secure access required. Your account does not have permission to access this protected network area.'),
+                __('Secure Network Access'),
+                array('response' => 403)
+            );
         }
     }
 
