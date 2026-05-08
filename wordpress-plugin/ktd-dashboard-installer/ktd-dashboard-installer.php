@@ -9,6 +9,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 register_activation_hook( __FILE__, 'ktd_installer_activate' );
+add_action( 'admin_init', 'ktd_installer_repair_dashboard_page_content' );
 
 function ktd_installer_activate() {
     // 1. Write the template file into the active theme
@@ -101,6 +102,71 @@ function ktd_installer_activate() {
             }
         }
     }
+}
+
+/**
+ * If dashboard template code was accidentally pasted into page content,
+ * clear it so the template can render normally.
+ */
+function ktd_installer_repair_dashboard_page_content() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        return;
+    }
+
+    $page_id = (int) get_option( 'ktd_dashboard_page_id' );
+
+    if ( $page_id <= 0 ) {
+        $existing = get_posts( [
+            'post_type'      => 'page',
+            'post_status'    => 'publish',
+            'posts_per_page' => 1,
+            'meta_key'       => '_wp_page_template',
+            'meta_value'     => 'template-ktd-dashboard.php',
+            'fields'         => 'ids',
+        ] );
+
+        if ( empty( $existing ) || ! isset( $existing[0] ) ) {
+            return;
+        }
+
+        $page_id = (int) $existing[0];
+        update_option( 'ktd_dashboard_page_id', $page_id );
+    }
+
+    if ( $page_id <= 0 ) {
+        return;
+    }
+
+    $template = get_post_meta( $page_id, '_wp_page_template', true );
+    if ( $template !== 'template-ktd-dashboard.php' ) {
+        return;
+    }
+
+    $page = get_post( $page_id );
+    if ( ! $page || ! isset( $page->post_content ) ) {
+        return;
+    }
+
+    $content = (string) $page->post_content;
+    if ( $content === '' ) {
+        return;
+    }
+
+    $looks_like_template_code = (
+        stripos( $content, '<?php' ) !== false ||
+        stripos( $content, 'wp_get_current_user' ) !== false ||
+        stripos( $content, 'display_name' ) !== false ||
+        stripos( $content, 'KTD CRM' ) !== false
+    );
+
+    if ( ! $looks_like_template_code ) {
+        return;
+    }
+
+    wp_update_post( [
+        'ID'           => $page_id,
+        'post_content' => '',
+    ] );
 }
 
 // Admin notice after activation
