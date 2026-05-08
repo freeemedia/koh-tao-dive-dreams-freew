@@ -31,7 +31,12 @@ export default function handler(req, res) {
     return Array.from(candidates);
   };
 
-  const adminTokens = parseCandidates(process.env.ADMIN_BOOKINGS_VIEW_TOKEN || process.env.VITE_ADMIN_BOOKINGS_VIEW_TOKEN);
+  const adminTokens = parseCandidates(
+    process.env.ADMIN_BOOKINGS_VIEW_TOKEN
+    || process.env.ADMIN_LOGIN_TOKEN
+    || process.env.ADMIN_API_TOKEN
+    || process.env.VITE_ADMIN_BOOKINGS_VIEW_TOKEN
+  );
   const adminPasswords = parseCandidates(process.env.ADMIN_PASSWORD);
   const allowedEmails = parseCandidates(process.env.ADMIN_EMAILS || process.env.VITE_ADMIN_EMAILS)
     .map((e) => e.toLowerCase());
@@ -49,7 +54,8 @@ export default function handler(req, res) {
   if (emailOk && passwordOk) {
     clearFailureTracking('admin-login', clientKey);
     recordSecurityEvent({ type: 'admin_login_success', req, details: { email: emailLower } });
-    return res.status(200).json({ success: true, token: adminTokens[0] || 'ok' });
+    const issuedToken = adminTokens[0] || normalizedPassword;
+    return res.status(200).json({ success: true, token: issuedToken });
   }
 
   const throttle = checkAndTrackFailure({
