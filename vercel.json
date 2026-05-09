@@ -47,30 +47,6 @@
       "source": "/booking-form-standalone.html",
       "destination": "/booking",
       "permanent": true
-    },
-    {
-      "source": "/",
-      "has": [
-        { "type": "host", "value": "admin.divinginasia.com" }
-      ],
-      "destination": "https://admin.divinginasia.com/admin",
-      "permanent": true
-    },
-    {
-      "source": "/ktd-dashboard-2",
-      "has": [
-        { "type": "host", "value": "admin.divinginasia.com" }
-      ],
-      "destination": "https://admin.divinginasia.com/admin",
-      "permanent": true
-    },
-    {
-      "source": "/ktd-dashboard-2/:path*",
-      "has": [
-        { "type": "host", "value": "admin.divinginasia.com" }
-      ],
-      "destination": "https://admin.divinginasia.com/admin",
-      "permanent": true
     }
   ],
   "rewrites": [
