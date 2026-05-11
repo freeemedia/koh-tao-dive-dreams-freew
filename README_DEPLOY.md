@@ -58,3 +58,23 @@ npm run build
 - `divinginasia.com/public_html/.htaccess` is already configured for SPA routing on Hostinger.
 - `divinginasia.com/public_html/api/index.php` is a proxy layer that expects the Node backend to be reachable on port `3001`.
 - Keep `admin/` deployed separately from the public site.
+
+## Hostinger Node.js settings (important)
+
+If you deploy the Node backend with Hostinger Node.js hosting, use the working server inside `divinginasia.com/nodejs`.
+
+- Application root: `divinginasia.com/nodejs`
+- Startup file: `server.cjs`
+- Node version: `20+` (or at least `18+`)
+- App port: `3001`
+
+Do not point Hostinger to the repository root `server.cjs` (it currently contains broken code and fails at startup).
+
+Quick local check before deployment:
+
+```bash
+cd divinginasia.com/nodejs
+node server.cjs
+```
+
+If you see `Server running on port 3001`, the backend entrypoint is valid.
