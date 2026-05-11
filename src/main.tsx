@@ -40,6 +40,27 @@ window.addEventListener('unhandledrejection', (event) => {
 	renderStartupError('Unhandled promise rejection', event.reason || 'Unknown rejection');
 });
 
+const apiBaseRaw = ((import.meta.env.VITE_API_BASE_URL as string | undefined) || (import.meta.env.VITE_API_URL as string | undefined) || '').trim();
+const apiBase = apiBaseRaw.replace(/\/+$/, '');
+
+if (apiBase) {
+	const originalFetch = window.fetch.bind(window);
+	window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+		if (typeof input === 'string' && input.startsWith('/api/')) {
+			return originalFetch(`${apiBase}${input}`, init);
+		}
+
+		if (input instanceof URL && input.pathname.startsWith('/api/')) {
+			const redirected = new URL(input.toString());
+			redirected.protocol = new URL(apiBase).protocol;
+			redirected.host = new URL(apiBase).host;
+			return originalFetch(redirected, init);
+		}
+
+		return originalFetch(input, init);
+	};
+}
+
 try {
 	createRoot(rootElement).render(<App />);
 } catch (error) {
