@@ -39,6 +39,17 @@ function normalizeWordPressBaseUrl(rawBaseUrl) {
   return baseUrl;
 }
 
+function isWordPressNoRouteError(error) {
+  const message = String(error instanceof Error ? error.message : error || '').toLowerCase();
+  return (
+    message.includes('rest_no_route') ||
+    message.includes('no route was found') ||
+    message.includes('no route found') ||
+    message.includes('request method not found') ||
+    message.includes('404')
+  );
+}
+
 function getWordPressBookingsConfig() {
   const baseUrlCandidates = [
     process.env.WORDPRESS_BOOKINGS_API_URL,
@@ -121,7 +132,7 @@ async function wordpressRequest(path, options = {}) {
       }
 
       const message = (data && (data.message || data.error || data.code)) || text || `WordPress request failed (${response.status})`;
-      throw new Error(`WordPress request failed on ${baseUrl}: ${String(message)}`);
+      throw new Error(`WordPress request failed on ${baseUrl}${path}: ${String(message)}`);
     } catch (error) {
       const isAbort = error && typeof error === 'object' && error.name === 'AbortError';
       const isNetwork = error instanceof TypeError && /fetch failed|network|socket|timed out/i.test(String(error.message || ''));
@@ -206,7 +217,7 @@ export async function insertWordPressBooking(payload) {
   let data = null;
   let lastError = null;
 
-  for (const path of ['/bookings/create', '/bookings']) {
+  for (const path of ['/bookings/create', '/bookings', '/booking']) {
     try {
       data = await wordpressRequest(path, {
         method: 'POST',
@@ -215,10 +226,12 @@ export async function insertWordPressBooking(payload) {
       break;
     } catch (error) {
       lastError = error;
-      const message = String(error instanceof Error ? error.message : error || '');
-      const isRouteMissing = /No route was found matching the URL and request method/i.test(message);
+      const isRouteMissing = isWordPressNoRouteError(error);
       if (!isRouteMissing || path === '/bookings') {
-        throw error;
+        // Keep falling back for no-route responses, but fail fast for real errors.
+        if (!isRouteMissing) {
+          throw error;
+        }
       }
     }
   }
