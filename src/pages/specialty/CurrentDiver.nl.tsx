@@ -25,7 +25,7 @@ export default function CurrentDiver() {
 
         <Card className="mb-8 p-6 bg-green-50">
           <h2 className="text-2xl font-bold mb-6">Ga mee met een driftduik</h2>
-          <Button size="lg" onClick={() => window.open('/bookingform.html', '_blank')}>Boek nu</Button>
+          <Button size="lg" onClick={() => window.open('/booking', '_blank')}>Boek nu</Button>
         </Card>
 
         <div className="mt-12">

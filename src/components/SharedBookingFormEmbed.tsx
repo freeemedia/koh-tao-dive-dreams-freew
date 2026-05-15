@@ -36,7 +36,7 @@ const SharedBookingFormEmbed: React.FC<SharedBookingFormEmbedProps> = ({
       params.set('deposit', String(depositThb));
     }
 
-    return `/bookingform.html?${params.toString()}`;
+    return `/booking?${params.toString()}`;
   }, [currency, depositThb, itemTitle, itemType, priceThb]);
 
   return (

@@ -95,7 +95,7 @@ export default function SearchRecovery() {
         <Card className="mb-8 p-6 bg-green-50">
           <h2 className="text-2xl font-bold mb-6">Master Search & Recovery</h2>
           <p className="text-gray-700 mb-4">Develop expert search and recovery skills with our experienced team.</p>
-          <Button size="lg" onClick={() => window.open('/bookingform.html', '_blank')}>Book Now</Button>
+          <Button size="lg" onClick={() => window.open('/booking', '_blank')}>Book Now</Button>
         </Card>
 
         <div className="mt-12">

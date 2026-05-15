@@ -561,7 +561,7 @@ const Courses = () => {
                 </div>
                 <p className="text-xs text-blue-100 mb-3">10% deposit: {getDisplayedPrice('฿1,900')}</p>
                 <a
-                  href="/bookingform.html?item=Open%20Water%20%2B%20Advanced&type=course&price=19000&currency=THB&deposit=1900"
+                  href="/booking?item=Open%20Water%20%2B%20Advanced&type=course&price=19000&currency=THB&deposit=1900"
                   className="block w-full rounded-lg bg-white py-3 text-center font-semibold text-red-700 no-underline hover:bg-red-50"
                 >
                   {isDutch ? 'Boek Combo' : 'Book Combo'}
@@ -583,7 +583,7 @@ const Courses = () => {
                 <p className="text-xs text-gray-500 mb-3">10% deposit: {getDisplayedPrice('฿1,800')}</p>
               </div>
               <a
-                href="/bookingform.html?item=3%20Specialty%20Bundle&type=course&price=18000&currency=THB"
+                href="/booking?item=3%20Specialty%20Bundle&type=course&price=18000&currency=THB"
                 className="block w-full rounded-lg bg-red-600 py-3 text-center font-semibold text-white no-underline hover:bg-red-700"
               >
                 {isDutch ? 'Boek Bundel' : 'Book Bundle'}
@@ -605,7 +605,7 @@ const Courses = () => {
                 <p className="text-xs text-blue-100 mb-3">10% deposit: {getDisplayedPrice('฿5,678')}</p>
               </div>
               <a
-                href="/bookingform.html?item=Open%20Water%20to%20Divemaster%20Package&type=course&price=56780&currency=THB&deposit=5678"
+                href="/booking?item=Open%20Water%20to%20Divemaster%20Package&type=course&price=56780&currency=THB&deposit=5678"
                 className="block w-full rounded-lg bg-white py-3 text-center font-semibold text-blue-700 no-underline hover:bg-blue-50"
               >
                 {isDutch ? 'Boek bij ons' : 'Book with us'}

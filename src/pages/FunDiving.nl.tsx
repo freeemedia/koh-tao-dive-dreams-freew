@@ -801,7 +801,7 @@ const FunDiving = () => {
                 </div>
                 <Button
                   size="lg"
-                  onClick={() => window.open('/bookingform.html', '_blank')}
+                  onClick={() => window.open('/booking', '_blank')}
                 >
                   Verstuur boekingsaanvraag
                 </Button>
