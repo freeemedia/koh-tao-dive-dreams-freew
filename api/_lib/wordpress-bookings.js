@@ -52,8 +52,8 @@ function getWordPressBookingsConfig() {
     .filter(Boolean);
 
   const dedupedBaseUrls = [...new Set(baseUrlCandidates)];
-  const blockedBaseUrls = dedupedBaseUrls.filter((url) => /\.hostingersite\.com\//i.test(`${url}/`));
-  const baseUrls = dedupedBaseUrls.filter((url) => !/\.hostingersite\.com\//i.test(`${url}/`));
+  const stableBaseUrls = dedupedBaseUrls.filter((url) => !/\.hostingersite\.com\//i.test(`${url}/`));
+  const baseUrls = stableBaseUrls.length > 0 ? stableBaseUrls : dedupedBaseUrls;
 
   const apiKey = clean(
     process.env.WORDPRESS_BOOKINGS_API_KEY ||
@@ -65,11 +65,6 @@ function getWordPressBookingsConfig() {
   );
 
   if (baseUrls.length === 0) {
-    if (blockedBaseUrls.length > 0) {
-      throw new Error(
-        `Blocked temporary Hostinger URL(s): ${blockedBaseUrls.join(', ')}. Set WP_BOOKING_URL or WORDPRESS_BOOKINGS_API_URL to your stable domain (e.g. https://admin.divinginasia.com).`
-      );
-    }
     throw new Error('Missing WORDPRESS_BOOKINGS_API_URL');
   }
   if (!apiKey) {
