@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCurrency } from '@/hooks/useCurrency';
 
 import { Button } from '@/components/ui/button';
@@ -139,12 +140,26 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
   const usdAmount = parseAmount(priceUsd);
   const eurAmount = parseAmount(priceEur);
   const heroImageUrl = heroImage || images[0];
+  const navigate = useNavigate();
 
   const { exchangeRates } = useCurrency();
 
   const openBookNow = () => {
-    document.getElementById('book-with-us')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const params = new URLSearchParams();
+    if (bookingItemName) params.append('item', bookingItemName);
+    params.append('type', bookingType);
+    if (thbAmount > 0) params.append('price', thbAmount.toString());
+    params.append('currency', 'THB');
+
+    navigate(`/booking?${params.toString()}`);
   };
+
+  const bookNowParams = new URLSearchParams();
+  if (bookingItemName) bookNowParams.append('item', bookingItemName);
+  bookNowParams.append('type', bookingType);
+  if (thbAmount > 0) bookNowParams.append('price', thbAmount.toString());
+  bookNowParams.append('currency', 'THB');
+  const bookingHref = `/booking?${bookNowParams.toString()}`;
 
   return (
     <div className="min-h-screen bg-background">
@@ -159,8 +174,13 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
           <h1 className="text-4xl md:text-5xl font-bold">{content.hero_title}</h1>
           <p className="mt-4 max-w-2xl text-lg">{content.hero_subtitle}</p>
           <div className="mt-6">
-            <Button size="lg" onClick={openBookNow}>
-              {locale === 'nl' ? 'Boek Nu' : 'Book Now'}
+            <Button size="lg" asChild>
+              <a href={bookingHref} onClick={(event) => {
+                event.preventDefault();
+                openBookNow();
+              }}>
+                {locale === 'nl' ? 'Boek Nu' : 'Book Now'}
+              </a>
             </Button>
           </div>
         </div>
@@ -257,8 +277,13 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
                     ? 'Inclusief alle training, materialen, PADI certificering en uitrusting' 
                     : 'Includes all training, materials, PADI certification and equipment'}
                 </p>
-                <Button className="w-full" onClick={openBookNow}>
-                  {locale === 'nl' ? 'Boek / Informeer' : 'Book / Enquire'}
+                <Button className="w-full" asChild>
+                  <a href={bookingHref} onClick={(event) => {
+                    event.preventDefault();
+                    openBookNow();
+                  }}>
+                    {locale === 'nl' ? 'Boek / Informeer' : 'Book / Enquire'}
+                  </a>
                 </Button>
               </CardContent>
             </Card>
