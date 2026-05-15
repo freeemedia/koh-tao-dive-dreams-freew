@@ -203,10 +203,29 @@ export async function getWordPressBookingById(id) {
 
 export async function insertWordPressBooking(payload) {
   const wpPayload = toWordPressPayload(payload);
-  const data = await wordpressRequest('/bookings', {
-    method: 'POST',
-    body: wpPayload,
-  });
+  let data = null;
+  let lastError = null;
+
+  for (const path of ['/bookings/create', '/bookings']) {
+    try {
+      data = await wordpressRequest(path, {
+        method: 'POST',
+        body: wpPayload,
+      });
+      break;
+    } catch (error) {
+      lastError = error;
+      const message = String(error instanceof Error ? error.message : error || '');
+      const isRouteMissing = /No route was found matching the URL and request method/i.test(message);
+      if (!isRouteMissing || path === '/bookings') {
+        throw error;
+      }
+    }
+  }
+
+  if (!data) {
+    throw lastError || new Error('WordPress booking create failed');
+  }
 
   const id = data?.id != null ? String(data.id) : null;
   if (!id) {
