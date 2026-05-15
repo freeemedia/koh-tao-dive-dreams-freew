@@ -2,6 +2,15 @@ function clean(value) {
   return String(value || '').trim();
 }
 
+function getPositiveInt(value, fallback) {
+  const parsed = Number.parseInt(String(value || ''), 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function getWordPressBookingsConfig() {
   let baseUrl = clean(
     process.env.WORDPRESS_BOOKINGS_API_URL ||
@@ -41,30 +50,74 @@ function getWordPressBookingsConfig() {
 
 async function wordpressRequest(path, options = {}) {
   const { baseUrl, apiKey } = getWordPressBookingsConfig();
-  const response = await fetch(`${baseUrl}${path}`, {
-    method: options.method || 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-ktd-api-key': apiKey,
-      ...(options.headers || {}),
-    },
-    body: options.body ? JSON.stringify(options.body) : undefined,
-  });
+  const timeoutMs = getPositiveInt(process.env.WORDPRESS_BOOKINGS_TIMEOUT_MS, 12000);
+  const maxAttempts = getPositiveInt(process.env.WORDPRESS_BOOKINGS_RETRIES, 3);
 
-  const text = await response.text();
-  let data = null;
-  try {
-    data = text ? JSON.parse(text) : null;
-  } catch {
-    data = text || null;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      const response = await fetch(`${baseUrl}${path}`, {
+        method: options.method || 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-ktd-api-key': apiKey,
+          ...(options.headers || {}),
+        },
+        body: options.body ? JSON.stringify(options.body) : undefined,
+        signal: controller.signal,
+      });
+
+      const text = await response.text();
+      let data = null;
+      try {
+        data = text ? JSON.parse(text) : null;
+      } catch {
+        data = text || null;
+      }
+
+      if (response.ok) {
+        return data;
+      }
+
+      // Retry only transient upstream failures.
+      if ((response.status === 429 || response.status >= 500) && attempt < maxAttempts) {
+        await sleep(250 * attempt);
+        continue;
+      }
+
+      const message = (data && (data.message || data.error || data.code)) || text || `WordPress request failed (${response.status})`;
+      throw new Error(String(message));
+    } catch (error) {
+      const isAbort = error && typeof error === 'object' && error.name === 'AbortError';
+      const isNetwork = error instanceof TypeError && /fetch failed|network|socket|timed out/i.test(String(error.message || ''));
+      const cause = error && typeof error === 'object' ? error.cause : null;
+      const causeDetails = cause && typeof cause === 'object'
+        ? [cause.code, cause.address, cause.port].filter(Boolean).join(' ')
+        : '';
+
+      if ((isAbort || isNetwork) && attempt < maxAttempts) {
+        await sleep(250 * attempt);
+        continue;
+      }
+
+      if (isAbort) {
+        throw new Error(`WordPress request timeout after ${timeoutMs}ms`);
+      }
+
+      if (isNetwork) {
+        const detailSuffix = causeDetails ? ` (${causeDetails})` : '';
+        throw new Error(`WordPress network error: ${String(error.message || 'fetch failed')}${detailSuffix}`);
+      }
+
+      throw error;
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
-  if (!response.ok) {
-    const message = (data && (data.message || data.error || data.code)) || text || `WordPress request failed (${response.status})`;
-    throw new Error(String(message));
-  }
-
-  return data;
+  throw new Error('WordPress request failed after retries');
 }
 
 function normalizeWordPressRow(row) {
