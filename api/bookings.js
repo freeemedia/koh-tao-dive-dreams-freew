@@ -114,6 +114,20 @@ function cleanOptionalDate(value) {
   return /^\d{4}-\d{2}-\d{2}$/.test(normalized) ? normalized : null;
 }
 
+function isMySqlAccessDeniedError(error) {
+  if (!error) return false;
+
+  const code = String(error.code || '').toUpperCase();
+  const errno = Number(error.errno);
+  const message = String(error.message || '');
+
+  return (
+    code === 'ER_ACCESS_DENIED_ERROR' ||
+    errno === 1045 ||
+    /access denied for user/i.test(message)
+  );
+}
+
 function normalizeAmounts(input, out) {
   const src = input || {};
 
@@ -222,6 +236,25 @@ export default async function handler(req, res) {
           const rows = await listMySqlBookings();
           return res.status(200).json({ bookings: rows, source: 'mysql' });
         } catch (mysqlError) {
+          if (isMySqlAccessDeniedError(mysqlError)) {
+            try {
+              const rows = await listWordPressBookings();
+              return res.status(200).json({
+                bookings: rows,
+                source: 'wordpress',
+                warning: 'MySQL access denied; using WordPress bookings fallback',
+              });
+            } catch (wordpressFallbackError) {
+              const fallbackMessage = wordpressFallbackError instanceof Error
+                ? wordpressFallbackError.message
+                : 'WordPress fallback fetch failed';
+              return res.status(502).json({
+                error: `MySQL access denied and WordPress fallback failed: ${fallbackMessage}`,
+                provider: dbProvider,
+              });
+            }
+          }
+
           const message = mysqlError instanceof Error ? mysqlError.message : 'MySQL fetch failed';
           return res.status(502).json({ error: message, provider: dbProvider });
         }
@@ -269,6 +302,28 @@ export default async function handler(req, res) {
             const warning = await dispatchBookingNotificationsWithWarning(emailPayload);
             return res.status(201).json(warning ? { ...inserted, warning } : inserted);
           } catch (mysqlError) {
+            if (isMySqlAccessDeniedError(mysqlError)) {
+              try {
+                const inserted = await insertWordPressBooking(payload);
+                const emailPayload = { ...inserted, item_title: inserted.course_title || inserted.item_title };
+                const warning = await dispatchBookingNotificationsWithWarning(emailPayload);
+                const baseResponse = warning ? { ...inserted, warning } : inserted;
+                return res.status(201).json({
+                  ...baseResponse,
+                  source: 'wordpress',
+                  storage_warning: 'MySQL access denied; booking saved via WordPress fallback',
+                });
+              } catch (wordpressFallbackError) {
+                const fallbackMessage = wordpressFallbackError instanceof Error
+                  ? wordpressFallbackError.message
+                  : 'WordPress fallback create failed';
+                return res.status(502).json({
+                  error: `MySQL access denied and WordPress fallback failed: ${fallbackMessage}`,
+                  provider: dbProvider,
+                });
+              }
+            }
+
             const message = mysqlError instanceof Error ? mysqlError.message : 'MySQL booking create failed';
             return res.status(502).json({ error: message, provider: dbProvider });
           }

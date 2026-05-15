@@ -17,9 +17,15 @@ function parseTableRef(tableRef, defaultSchema) {
 export function getDbProvider() {
   const provider = cleanProvider(process.env.DB_PROVIDER || 'hostinger');
   const allowSupabase = cleanProvider(process.env.ALLOW_SUPABASE_BOOKINGS) === 'true';
+  const allowWordPress = cleanProvider(process.env.ALLOW_WORDPRESS_BOOKINGS) === 'true';
 
   // Safety guard: prevent accidental writes to Supabase for bookings unless explicitly enabled.
   if (provider === 'supabase' && !allowSupabase) {
+    return 'hostinger';
+  }
+
+  // Safety guard: keep bookings on MySQL unless WordPress is explicitly opted in.
+  if ((provider === 'wordpress' || provider === 'wp') && !allowWordPress) {
     return 'hostinger';
   }
 

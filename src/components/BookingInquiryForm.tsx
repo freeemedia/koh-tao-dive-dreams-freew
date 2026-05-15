@@ -26,7 +26,11 @@ const BookingInquiryForm = () => {
       const res = await fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          id: crypto.randomUUID(),
+          created_at: new Date().toISOString(),
+        })
       });
       const data = await res.json();
       if (res.ok) {

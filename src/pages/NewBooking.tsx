@@ -34,8 +34,10 @@ const NewBooking: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
+          id: crypto.randomUUID(),
           item_type: 'course',
           status: 'pending',
+          created_at: new Date().toISOString(),
         }),
       });
 

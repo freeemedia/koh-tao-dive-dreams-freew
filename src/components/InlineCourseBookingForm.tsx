@@ -89,6 +89,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            id: crypto.randomUUID(),
             name: data.name,
             email: data.email,
             phone: data.phone,
@@ -108,6 +109,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
             due_amount: deposit > 0 ? Math.round(deposit / 0.2) - deposit : 0,
             booking_source: crmSource,
             currency: depositCurrency,
+            created_at: new Date().toISOString(),
           }),
         });
         dbResult = await dbRes.json().catch(() => ({}));

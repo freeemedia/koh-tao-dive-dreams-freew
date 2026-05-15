@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "start": "node divinginasia.com/nodejs/server.cjs",
-    "postinstall": "npm --prefix divinginasia.com/nodejs install --omit=dev",
+    "build:hostinger": "vite build",
+    "start": "node server.cjs",
+    "start:hostinger": "node hostinger-server.cjs",
     "preview": "vite preview",
     "lint": "eslint .",
     "migrate:bookings:hostinger": "node scripts/migrate-bookings-supabase-to-mysql.mjs"

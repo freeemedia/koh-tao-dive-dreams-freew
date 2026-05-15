@@ -7,9 +7,34 @@ function clean(value) {
   return String(value || '').trim();
 }
 
+function normalizeEnvValue(value, expectedKey) {
+  let next = clean(value);
+  if (!next) return '';
+
+  // Some hosting dashboards accidentally get values pasted as KEY=value.
+  const expectedPrefix = `${expectedKey}=`;
+  if (next.startsWith(expectedPrefix)) {
+    next = next.slice(expectedPrefix.length).trim();
+  }
+
+  const genericAssignmentMatch = next.match(/^[A-Z][A-Z0-9_]*=(.*)$/);
+  if (genericAssignmentMatch && typeof genericAssignmentMatch[1] === 'string') {
+    next = genericAssignmentMatch[1].trim();
+  }
+
+  if (
+    (next.startsWith('"') && next.endsWith('"')) ||
+    (next.startsWith("'") && next.endsWith("'"))
+  ) {
+    next = next.slice(1, -1).trim();
+  }
+
+  return next;
+}
+
 function getEnv(...keys) {
   for (const key of keys) {
-    const value = clean(process.env[key]);
+    const value = normalizeEnvValue(process.env[key], key);
     if (value) return value;
   }
   return '';

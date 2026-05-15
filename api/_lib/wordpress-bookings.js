@@ -7,6 +7,17 @@ function getPositiveInt(value, fallback) {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 }
 
+function buildWordPressHeaders(apiKey, extraHeaders = {}) {
+  return {
+    'Content-Type': 'application/json',
+    Accept: 'application/json, text/plain, */*',
+    // Some WP security stacks are stricter with non-browser default clients.
+    'User-Agent': 'Mozilla/5.0 (compatible; KTD-BookingsBot/1.0; +https://divinginasia.com)',
+    'x-ktd-api-key': apiKey,
+    ...extraHeaders,
+  };
+}
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -51,7 +62,7 @@ function getWordPressBookingsConfig() {
 async function wordpressRequest(path, options = {}) {
   const { baseUrl, apiKey } = getWordPressBookingsConfig();
   const timeoutMs = getPositiveInt(process.env.WORDPRESS_BOOKINGS_TIMEOUT_MS, 12000);
-  const maxAttempts = getPositiveInt(process.env.WORDPRESS_BOOKINGS_RETRIES, 3);
+  const maxAttempts = getPositiveInt(process.env.WORDPRESS_BOOKINGS_RETRIES, 4);
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const controller = new AbortController();
@@ -60,11 +71,7 @@ async function wordpressRequest(path, options = {}) {
     try {
       const response = await fetch(`${baseUrl}${path}`, {
         method: options.method || 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-ktd-api-key': apiKey,
-          ...(options.headers || {}),
-        },
+        headers: buildWordPressHeaders(apiKey, options.headers || {}),
         body: options.body ? JSON.stringify(options.body) : undefined,
         signal: controller.signal,
       });
@@ -83,7 +90,7 @@ async function wordpressRequest(path, options = {}) {
 
       // Retry only transient upstream failures.
       if ((response.status === 429 || response.status >= 500) && attempt < maxAttempts) {
-        await sleep(250 * attempt);
+        await sleep(400 * attempt);
         continue;
       }
 
@@ -98,7 +105,7 @@ async function wordpressRequest(path, options = {}) {
         : '';
 
       if ((isAbort || isNetwork) && attempt < maxAttempts) {
-        await sleep(250 * attempt);
+        await sleep(400 * attempt);
         continue;
       }
 
@@ -108,7 +115,8 @@ async function wordpressRequest(path, options = {}) {
 
       if (isNetwork) {
         const detailSuffix = causeDetails ? ` (${causeDetails})` : '';
-        throw new Error(`WordPress network error: ${String(error.message || 'fetch failed')}${detailSuffix}`);
+        const endpointSuffix = ` [url=${baseUrl}${path}]`;
+        throw new Error(`WordPress network error: ${String(error.message || 'fetch failed')}${detailSuffix}${endpointSuffix}`);
       }
 
       throw error;

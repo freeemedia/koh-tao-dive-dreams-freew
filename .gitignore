@@ -30,3 +30,9 @@ dist-ssr
 .amplify
 amplify_outputs*
 amplifyconfiguration*
+
+# WordPress installation files (server-only, never commit WP core or credentials)
+admmin.lem-mov/
+koh-tao-booking-manager.zip
+*.tar.gz
+*.tar.gz.crdownload

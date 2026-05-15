@@ -112,14 +112,17 @@ const FunDiveBooking: React.FC<FunDiveBookingProps> = ({ initialSite }) => {
         onSubmit={data => {
           setSubmissionWarning(null);
           const payload = {
+            id: crypto.randomUUID(),
             name: data.name,
             email: data.email,
             phone: data.phone,
-            preferred_date: data.date,
-            experience_level: data.experience,
+            preferred_date: data.preferred_date,
+            experience_level: data.experience_level,
             message: data.message,
             item_title: selectedSite || 'Fun Dive',
             course_title: selectedSite || 'Fun Dive',
+            status: 'pending',
+            created_at: new Date().toISOString(),
           };
           // Fire-and-forget — backend handles notifications.
           // Backend saves booking and mirrors to WordPress.

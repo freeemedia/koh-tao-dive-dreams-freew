@@ -194,6 +194,7 @@ const       BookingPage: React.FC = () => {
       const messageWithSource = `${data.message || 'No additional message'}\n\nBooking Source: ${bookingSource}`;
 
       const apiBookingPayload = {
+        id: crypto.randomUUID(),
         name: data.name,
         email: data.email,
         phone: data.phone || null,
@@ -212,6 +213,7 @@ const       BookingPage: React.FC = () => {
         deposit_amount: depositAmountMajor,
         total_amount: totalAmountMajor,
         due_amount: balanceAmountMajor,
+        created_at: new Date().toISOString(),
       };
 
       let persisted = false;

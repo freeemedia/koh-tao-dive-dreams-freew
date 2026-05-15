@@ -85,10 +85,12 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
       let dbResult: any = null;
       let dbError: string | null = null;
       try {
+        const bookingId = crypto.randomUUID();
         const dbRes = await fetch(apiUrl('/api/bookings'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            id: bookingId,
             name: data.name,
             email: data.email,
             phone: data.phone,
@@ -104,6 +106,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
             deposit_amount,
             total_amount,
             due_amount,
+            created_at: new Date().toISOString(),
           }),
         });
         dbResult = await dbRes.json().catch(() => ({}));

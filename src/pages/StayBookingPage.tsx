@@ -97,6 +97,7 @@ const StayBookingPage: React.FC = () => {
         data.accommodation;
 
       const payload = {
+        id: crypto.randomUUID(),
         name: data.name,
         email: data.email,
         phone: data.phone || '',
@@ -113,6 +114,7 @@ const StayBookingPage: React.FC = () => {
           .filter(Boolean)
           .join('\n'),
         booking_type: 'stay',
+        created_at: new Date().toISOString(),
         nights: data.nights,
         guests: data.guests,
         accommodation: data.accommodation,
