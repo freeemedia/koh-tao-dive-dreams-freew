@@ -13,6 +13,7 @@ if (!defined('ABSPATH')) {
 class KTD_Booking_Manager {
     private static $instance = null;
     private $table_name;
+    private $content_table_name;
     private $option_key = 'ktd_booking_api_key';
 
     public static function instance() {
@@ -25,6 +26,7 @@ class KTD_Booking_Manager {
     private function __construct() {
         global $wpdb;
         $this->table_name = $wpdb->prefix . 'ktd_bookings';
+        $this->content_table_name = $wpdb->prefix . 'ktd_page_content';
 
         // Security hardening: disable XML-RPC attack surface.
         add_filter('xmlrpc_enabled', '__return_false');
@@ -209,6 +211,23 @@ class KTD_Booking_Manager {
         ) {$charset_collate};";
 
         dbDelta($sql);
+
+        $sql2 = "CREATE TABLE {$wpdb->prefix}ktd_page_content (
+            id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            page_slug VARCHAR(255) NOT NULL DEFAULT '',
+            section_key VARCHAR(255) NOT NULL DEFAULT '',
+            locale VARCHAR(20) NOT NULL DEFAULT 'en',
+            content_value LONGTEXT,
+            content_type VARCHAR(50) DEFAULT 'text',
+            created_at DATETIME NOT NULL,
+            updated_at DATETIME NOT NULL,
+            PRIMARY KEY  (id),
+            UNIQUE KEY slug_section_locale (page_slug(191), section_key(191), locale(20)),
+            KEY page_slug (page_slug),
+            KEY locale (locale)
+        ) {$charset_collate};";
+
+        dbDelta($sql2);
     }
 
     public function register_settings() {
@@ -252,6 +271,43 @@ class KTD_Booking_Manager {
                 'id' => array('required' => true, 'sanitize_callback' => 'absint'),
             ),
         ));
+
+        // Page content routes
+        register_rest_route('ktd/v1', '/page-content', array(
+            'methods' => WP_REST_Server::READABLE,
+            'callback' => array($this, 'get_page_content'),
+            'permission_callback' => '__return_true',
+        ));
+
+        register_rest_route('ktd/v1', '/page-content', array(
+            'methods' => WP_REST_Server::CREATABLE,
+            'callback' => array($this, 'upsert_page_content'),
+            'permission_callback' => array($this, 'validate_api_key_or_bearer'),
+        ));
+
+        register_rest_route('ktd/v1', '/page-content/(?P<id>\d+)', array(
+            'methods' => 'PUT',
+            'callback' => array($this, 'update_page_content'),
+            'permission_callback' => array($this, 'validate_api_key_or_bearer'),
+            'args' => array(
+                'id' => array('required' => true, 'sanitize_callback' => 'absint'),
+            ),
+        ));
+
+        register_rest_route('ktd/v1', '/page-content/(?P<id>\d+)', array(
+            'methods' => WP_REST_Server::DELETABLE,
+            'callback' => array($this, 'delete_page_content'),
+            'permission_callback' => array($this, 'validate_api_key_or_bearer'),
+            'args' => array(
+                'id' => array('required' => true, 'sanitize_callback' => 'absint'),
+            ),
+        ));
+
+        register_rest_route('ktd/v1', '/page-slugs', array(
+            'methods' => WP_REST_Server::READABLE,
+            'callback' => array($this, 'list_page_slugs'),
+            'permission_callback' => array($this, 'validate_api_key_or_bearer'),
+        ));
     }
 
     private function normalize_number($value) {
@@ -277,6 +333,187 @@ class KTD_Booking_Manager {
 
         return true;
     }
+
+    public function validate_api_key_or_bearer($request) {
+        $expected = trim((string) get_option($this->option_key, ''));
+        if ($expected === '') {
+            return new WP_Error('ktd_missing_api_key', 'WordPress booking API key is not configured.', array('status' => 500));
+        }
+
+        // Accept x-ktd-api-key header
+        $provided = trim((string) $request->get_header('x-ktd-api-key'));
+        // Accept Authorization: Bearer {key}
+        if ($provided === '') {
+            $auth_header = trim((string) $request->get_header('authorization'));
+            if (strncasecmp($auth_header, 'bearer ', 7) === 0) {
+                $provided = trim(substr($auth_header, 7));
+            }
+        }
+        if ($provided === '') {
+            $provided = trim((string) $request->get_param('api_key'));
+        }
+        if ($provided === '' || !hash_equals($expected, $provided)) {
+            return new WP_Error('ktd_invalid_api_key', 'Invalid API key.', array('status' => 401));
+        }
+
+        return true;
+    }
+
+    public function get_page_content($request) {
+        global $wpdb;
+        $table = $this->content_table_name;
+
+        $raw_slug   = trim((string) ($request->get_param('slug') ?? ''));
+        $raw_locale = trim((string) ($request->get_param('locale') ?? 'en'));
+        $slug       = sanitize_text_field($raw_slug);
+        $locale     = sanitize_text_field($raw_locale ?: 'en');
+
+        if ($slug === '') {
+            return new WP_REST_Response(array(), 200);
+        }
+
+        // Try exact slug then slug without leading slash
+        $clean_slug   = ltrim($slug, '/');
+        $results      = array();
+        $tried_slugs  = array_unique(array($slug, $clean_slug, '/' . $clean_slug));
+
+        foreach ($tried_slugs as $try_slug) {
+            $rows = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT section_key, content_value, content_type, updated_at FROM {$table} WHERE page_slug = %s AND locale = %s",
+                    $try_slug,
+                    $locale
+                ),
+                ARRAY_A
+            );
+            if (!empty($rows)) {
+                $results = $rows;
+                break;
+            }
+        }
+
+        return new WP_REST_Response($results, 200);
+    }
+
+    public function upsert_page_content($request) {
+        global $wpdb;
+        $table = $this->content_table_name;
+
+        $body = $request->get_json_params();
+        if (!is_array($body)) {
+            return new WP_Error('ktd_invalid_payload', 'Payload must be a JSON object or array.', array('status' => 400));
+        }
+
+        $rows = isset($body[0]) ? $body : array($body);
+        $now  = current_time('mysql');
+        $saved = array();
+
+        foreach ($rows as $row) {
+            $page_slug    = sanitize_text_field((string) ($row['page_slug'] ?? ''));
+            $section_key  = sanitize_text_field((string) ($row['section_key'] ?? ''));
+            $locale       = sanitize_text_field((string) ($row['locale'] ?? 'en'));
+            $content_value = (string) ($row['content_value'] ?? '');
+            $content_type  = sanitize_text_field((string) ($row['content_type'] ?? 'text'));
+
+            if ($page_slug === '' || $section_key === '' || $locale === '') {
+                continue;
+            }
+
+            $existing_id = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT id FROM {$table} WHERE page_slug = %s AND section_key = %s AND locale = %s",
+                    $page_slug, $section_key, $locale
+                )
+            );
+
+            if ($existing_id) {
+                $wpdb->update(
+                    $table,
+                    array('content_value' => $content_value, 'content_type' => $content_type, 'updated_at' => $now),
+                    array('id' => (int) $existing_id),
+                    array('%s', '%s', '%s'),
+                    array('%d')
+                );
+                $saved[] = (int) $existing_id;
+            } else {
+                $wpdb->insert(
+                    $table,
+                    array(
+                        'page_slug'     => $page_slug,
+                        'section_key'   => $section_key,
+                        'locale'        => $locale,
+                        'content_value' => $content_value,
+                        'content_type'  => $content_type,
+                        'created_at'    => $now,
+                        'updated_at'    => $now,
+                    ),
+                    array('%s', '%s', '%s', '%s', '%s', '%s', '%s')
+                );
+                $saved[] = (int) $wpdb->insert_id;
+            }
+        }
+
+        return new WP_REST_Response(array('success' => true, 'ids' => $saved), 201);
+    }
+
+    public function update_page_content($request) {
+        global $wpdb;
+        $table = $this->content_table_name;
+        $id    = absint($request['id']);
+
+        if (!$id) {
+            return new WP_Error('ktd_invalid_id', 'Invalid content ID.', array('status' => 400));
+        }
+
+        $body = $request->get_json_params();
+        if (!is_array($body)) {
+            return new WP_Error('ktd_invalid_payload', 'Payload must be a JSON object.', array('status' => 400));
+        }
+
+        $updates  = array('updated_at' => current_time('mysql'));
+        $formats  = array('%s');
+
+        if (array_key_exists('content_value', $body)) {
+            $updates['content_value'] = (string) $body['content_value'];
+            $formats[] = '%s';
+        }
+        if (array_key_exists('content_type', $body)) {
+            $updates['content_type'] = sanitize_text_field((string) $body['content_type']);
+            $formats[] = '%s';
+        }
+
+        $result = $wpdb->update($table, $updates, array('id' => $id), $formats, array('%d'));
+        if ($result === false) {
+            return new WP_Error('ktd_update_failed', 'Database update failed.', array('status' => 500));
+        }
+
+        return new WP_REST_Response(array('success' => true), 200);
+    }
+
+    public function delete_page_content($request) {
+        global $wpdb;
+        $table = $this->content_table_name;
+        $id    = absint($request['id']);
+
+        if (!$id) {
+            return new WP_Error('ktd_invalid_id', 'Invalid content ID.', array('status' => 400));
+        }
+
+        $deleted = $wpdb->delete($table, array('id' => $id), array('%d'));
+        if ($deleted === false) {
+            return new WP_Error('ktd_delete_failed', 'Database delete failed.', array('status' => 500));
+        }
+
+        return new WP_REST_Response(array('success' => true), 200);
+    }
+
+    public function list_page_slugs($request) {
+        global $wpdb;
+        $table = $this->content_table_name;
+        $rows  = $wpdb->get_col("SELECT DISTINCT page_slug FROM {$table} ORDER BY page_slug ASC");
+        return new WP_REST_Response(is_array($rows) ? $rows : array(), 200);
+    }
+
 
     public function create_booking($request) {
         $auth = $this->validate_api_key($request);
