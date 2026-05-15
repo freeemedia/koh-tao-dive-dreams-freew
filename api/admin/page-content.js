@@ -17,8 +17,8 @@ const isAdminAuthed = (req) => {
 
 const buildWpUrl = () => {
   let wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
-  if (!wpUrl || /admin\.divinginasia\.com$/i.test(wpUrl)) {
-    wpUrl = 'https://lightsalmon-dinosaur-377714.hostingersite.com';
+  if (!wpUrl) {
+    wpUrl = 'https://admin.divinginasia.com';
   }
   return wpUrl;
 };

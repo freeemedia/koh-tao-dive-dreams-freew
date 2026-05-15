@@ -18,7 +18,7 @@ interface KtdBooking {
   notes?: string;
 }
 
-const DEFAULT_WP_API_BASE = 'https://lightsalmon-dinosaur-377714.hostingersite.com';
+const DEFAULT_WP_API_BASE = 'https://admin.divinginasia.com';
 const DEFAULT_WP_BOOKING_API_KEY = '909010232893284934783734';
 
 const normalizeBookingRow = (row: Record<string, unknown>): KtdBooking => ({
@@ -287,7 +287,7 @@ const Admin = () => {
           </nav>
           <div className="flex items-center gap-2">
             <a
-              href="https://lightsalmon-dinosaur-377714.hostingersite.com/wp-admin"
+              href="https://admin.divinginasia.com/wp-admin"
               target="_blank"
               rel="noreferrer noopener"
               className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700 shadow-sm transition hover:bg-blue-100"

@@ -10,6 +10,9 @@ app.use(cors());
 app.use(express.json());
 
 const candidateStaticDirs = [
+	path.join(__dirname, '.builds'),
+	path.join(__dirname, '.builds', 'dist'),
+	path.join(__dirname, '.builds', 'public_html'),
 	path.join(__dirname, 'dist'),
 	path.join(__dirname, 'public_html'),
 	path.join(__dirname, 'divinginasia.com', 'public_html'),

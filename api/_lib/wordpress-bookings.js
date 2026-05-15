@@ -22,29 +22,9 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function getWordPressBookingsConfig() {
-  let baseUrl = clean(
-    process.env.WORDPRESS_BOOKINGS_API_URL ||
-    process.env.WP_BOOKINGS_API_URL ||
-    process.env.WP_BOOKING_URL ||
-    process.env.WORDPRESS_API_BASE_URL ||
-    ''
-  ).replace(/\/$/, '');
-
-  const apiKey = clean(
-    process.env.WORDPRESS_BOOKINGS_API_KEY ||
-    process.env.WP_BOOKINGS_API_KEY ||
-    process.env.WP_BOOKING_API_KEY ||
-    process.env.KTD_BOOKING_API_KEY ||
-    ''
-  );
-
-  if (!baseUrl) {
-    throw new Error('Missing WORDPRESS_BOOKINGS_API_URL');
-  }
-  if (!apiKey) {
-    throw new Error('Missing WORDPRESS_BOOKINGS_API_KEY');
-  }
+function normalizeWordPressBaseUrl(rawBaseUrl) {
+  let baseUrl = clean(rawBaseUrl).replace(/\/$/, '');
+  if (!baseUrl) return '';
 
   if (!/\/wp-json\/ktd\/v1$/i.test(baseUrl)) {
     if (/\/wp-json\/ktd\/v1\//i.test(baseUrl)) {
@@ -56,15 +36,60 @@ function getWordPressBookingsConfig() {
     }
   }
 
-  return { baseUrl, apiKey };
+  return baseUrl;
+}
+
+function getWordPressBookingsConfig() {
+  const baseUrlCandidates = [
+    process.env.WORDPRESS_BOOKINGS_API_URL,
+    process.env.WP_BOOKINGS_API_URL,
+    process.env.WP_BOOKING_URL,
+    process.env.WORDPRESS_API_BASE_URL,
+    process.env.VITE_WP_API_BASE,
+    process.env.VITE_WP_BASE_URL,
+  ]
+    .map((value) => normalizeWordPressBaseUrl(value))
+    .filter(Boolean);
+
+  const dedupedBaseUrls = [...new Set(baseUrlCandidates)];
+  const blockedBaseUrls = dedupedBaseUrls.filter((url) => /\.hostingersite\.com\//i.test(`${url}/`));
+  const baseUrls = dedupedBaseUrls.filter((url) => !/\.hostingersite\.com\//i.test(`${url}/`));
+
+  const apiKey = clean(
+    process.env.WORDPRESS_BOOKINGS_API_KEY ||
+    process.env.WP_BOOKINGS_API_KEY ||
+    process.env.WP_BOOKING_API_KEY ||
+    process.env.VITE_WP_BOOKING_API_KEY ||
+    process.env.KTD_BOOKING_API_KEY ||
+    ''
+  );
+
+  if (baseUrls.length === 0) {
+    if (blockedBaseUrls.length > 0) {
+      throw new Error(
+        `Blocked temporary Hostinger URL(s): ${blockedBaseUrls.join(', ')}. Set WP_BOOKING_URL or WORDPRESS_BOOKINGS_API_URL to your stable domain (e.g. https://admin.divinginasia.com).`
+      );
+    }
+    throw new Error('Missing WORDPRESS_BOOKINGS_API_URL');
+  }
+  if (!apiKey) {
+    throw new Error(
+      'Missing WordPress booking API key. Set one of: WORDPRESS_BOOKINGS_API_KEY, WP_BOOKINGS_API_KEY, WP_BOOKING_API_KEY, VITE_WP_BOOKING_API_KEY, KTD_BOOKING_API_KEY'
+    );
+  }
+
+  return { baseUrls, apiKey };
 }
 
 async function wordpressRequest(path, options = {}) {
-  const { baseUrl, apiKey } = getWordPressBookingsConfig();
+  const { baseUrls, apiKey } = getWordPressBookingsConfig();
   const timeoutMs = getPositiveInt(process.env.WORDPRESS_BOOKINGS_TIMEOUT_MS, 12000);
   const maxAttempts = getPositiveInt(process.env.WORDPRESS_BOOKINGS_RETRIES, 4);
+  const totalAttempts = Math.max(maxAttempts, baseUrls.length);
+  let lastError = null;
 
-  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+  for (let attempt = 1; attempt <= totalAttempts; attempt += 1) {
+    const baseUrl = baseUrls[(attempt - 1) % baseUrls.length];
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -89,13 +114,13 @@ async function wordpressRequest(path, options = {}) {
       }
 
       // Retry only transient upstream failures.
-      if ((response.status === 429 || response.status >= 500) && attempt < maxAttempts) {
+      if ((response.status === 429 || response.status >= 500) && attempt < totalAttempts) {
         await sleep(400 * attempt);
         continue;
       }
 
       const message = (data && (data.message || data.error || data.code)) || text || `WordPress request failed (${response.status})`;
-      throw new Error(String(message));
+      throw new Error(`WordPress request failed on ${baseUrl}: ${String(message)}`);
     } catch (error) {
       const isAbort = error && typeof error === 'object' && error.name === 'AbortError';
       const isNetwork = error instanceof TypeError && /fetch failed|network|socket|timed out/i.test(String(error.message || ''));
@@ -104,25 +129,35 @@ async function wordpressRequest(path, options = {}) {
         ? [cause.code, cause.address, cause.port].filter(Boolean).join(' ')
         : '';
 
-      if ((isAbort || isNetwork) && attempt < maxAttempts) {
+      if ((isAbort || isNetwork) && attempt < totalAttempts) {
+        lastError = error;
         await sleep(400 * attempt);
         continue;
       }
 
       if (isAbort) {
-        throw new Error(`WordPress request timeout after ${timeoutMs}ms`);
+        throw new Error(`WordPress request timeout after ${timeoutMs}ms (tried: ${baseUrls.join(', ')})`);
       }
 
       if (isNetwork) {
         const detailSuffix = causeDetails ? ` (${causeDetails})` : '';
         const endpointSuffix = ` [url=${baseUrl}${path}]`;
-        throw new Error(`WordPress network error: ${String(error.message || 'fetch failed')}${detailSuffix}${endpointSuffix}`);
+        throw new Error(`WordPress network error: ${String(error.message || 'fetch failed')}${detailSuffix}${endpointSuffix} (tried: ${baseUrls.join(', ')})`);
       }
 
       throw error;
     } finally {
       clearTimeout(timer);
     }
+  }
+
+  if (lastError) {
+    const cause = lastError && typeof lastError === 'object' ? lastError.cause : null;
+    const causeDetails = cause && typeof cause === 'object'
+      ? [cause.code, cause.address, cause.port].filter(Boolean).join(' ')
+      : '';
+    const detailSuffix = causeDetails ? ` (${causeDetails})` : '';
+    throw new Error(`WordPress network error: fetch failed${detailSuffix} (tried: ${baseUrls.join(', ')})`);
   }
 
   throw new Error('WordPress request failed after retries');

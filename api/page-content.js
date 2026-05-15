@@ -51,9 +51,9 @@ function applyContentFixes(rows, slug, locale) {
 }
 
 async function fetchFromWordPress(slug, locale) {
-  const canonicalWpUrl = 'https://lightsalmon-dinosaur-377714.hostingersite.com';
+  const canonicalWpUrl = 'https://admin.divinginasia.com';
   let wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
-  if (!wpUrl || /admin\.divinginasia\.com$/i.test(wpUrl)) {
+  if (!wpUrl) {
     wpUrl = canonicalWpUrl;
   }
   if (!wpUrl) return null;
