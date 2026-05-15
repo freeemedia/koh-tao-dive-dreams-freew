@@ -52,8 +52,8 @@ function getWordPressBookingsConfig() {
     .filter(Boolean);
 
   const dedupedBaseUrls = [...new Set(baseUrlCandidates)];
-  const stableBaseUrls = dedupedBaseUrls.filter((url) => !/\.hostingersite\.com\//i.test(`${url}/`));
-  const baseUrls = stableBaseUrls.length > 0 ? stableBaseUrls : dedupedBaseUrls;
+  const blockedBaseUrls = dedupedBaseUrls.filter((url) => /\.hostingersite\.com\//i.test(`${url}/`));
+  const baseUrls = dedupedBaseUrls.filter((url) => !/\.hostingersite\.com\//i.test(`${url}/`));
 
   const apiKey = clean(
     process.env.WORDPRESS_BOOKINGS_API_KEY ||
@@ -65,7 +65,13 @@ function getWordPressBookingsConfig() {
   );
 
   if (baseUrls.length === 0) {
-    throw new Error('Missing WORDPRESS_BOOKINGS_API_URL');
+    if (blockedBaseUrls.length > 0) {
+      throw new Error(
+        `WordPress booking API blocked: temporary Hostinger URL(s) detected (${blockedBaseUrls.join(', ')}). ` +
+        'Set WORDPRESS_BOOKINGS_API_URL or WP_BOOKING_URL to a stable domain like https://admin.divinginasia.com'
+      );
+    }
+    throw new Error('Missing WORDPRESS_BOOKINGS_API_URL. Set WORDPRESS_BOOKINGS_API_URL or WP_BOOKING_URL.');
   }
   if (!apiKey) {
     throw new Error(
@@ -138,7 +144,7 @@ async function wordpressRequest(path, options = {}) {
         const detailSuffix = causeDetails ? ` (${causeDetails})` : '';
         const endpointSuffix = ` [url=${baseUrl}${path}]`;
         throw new Error(`WordPress network error: ${String(error.message || 'fetch failed')}${detailSuffix}${endpointSuffix} (tried: ${baseUrls.join(', ')})`);
-      }
+     }
 
       throw error;
     } finally {
