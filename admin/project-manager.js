@@ -4,6 +4,7 @@ const TaskManagement = dynamic(() => import('../components/TaskManagement'), { s
 
 const jiraEmbedUrl = process.env.NEXT_PUBLIC_JIRA_EMBED_URL || '';
 const jiraProjectUrl = process.env.NEXT_PUBLIC_JIRA_PROJECT_URL || jiraEmbedUrl || 'https://divinginasia.atlassian.net';
+const trelloBoardUrl = process.env.NEXT_PUBLIC_TRELLO_BOARD_URL || 'https://trello.com';
 
 export default function ProjectManager() {
   return (
@@ -27,19 +28,29 @@ export default function ProjectManager() {
       <section className="bg-white rounded shadow p-4 space-y-4">
         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
           <div>
-            <h2 className="text-xl font-semibold">Jira</h2>
+            <h2 className="text-xl font-semibold">Project Boards</h2>
             <p className="text-sm text-gray-600">
-              View the Jira project here. If Atlassian blocks the embed in your browser, open it in a new tab.
+              Open Jira or Trello for planning and tracking. If Jira embed is blocked, open it in a new tab.
             </p>
           </div>
-          <a
-            href={jiraProjectUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-          >
-            Open Jira
-          </a>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={jiraProjectUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            >
+              Open Jira
+            </a>
+            <a
+              href={trelloBoardUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700"
+            >
+              Open Trello
+            </a>
+          </div>
         </div>
 
         {jiraEmbedUrl ? (
@@ -53,7 +64,7 @@ export default function ProjectManager() {
         ) : (
           <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-6 text-sm text-gray-600">
             Set `NEXT_PUBLIC_JIRA_EMBED_URL` to the embeddable Jira view and optionally `NEXT_PUBLIC_JIRA_PROJECT_URL`
-            for the direct project link.
+            for the direct project link. Set `NEXT_PUBLIC_TRELLO_BOARD_URL` for a direct Trello board link.
           </div>
         )}
       </section>
