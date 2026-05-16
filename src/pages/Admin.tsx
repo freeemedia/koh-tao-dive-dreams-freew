@@ -1,9 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
+import { BookOpenCheck, ChartNoAxesCombined, LogOut, ShieldCheck, UsersRound } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import AdminBookings from '../components/AdminBookings';
+import FinanceSummary from '../components/FinanceSummary';
+import AdminUsersManager from '../components/AdminUsersManager';
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -24,7 +27,8 @@ const Admin = () => {
         <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-4 py-4 sm:px-6">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Admin</p>
-            <h1 className="text-2xl font-bold text-slate-900">Bookings Dashboard</h1>
+            <h1 className="text-2xl font-bold text-slate-900">Operations Control Center</h1>
+            <p className="mt-1 text-sm text-slate-600">Bookings, finance tracking, and team access in one place.</p>
           </div>
           <Button onClick={handleLogout} variant="outline" size="sm">
             <LogOut className="mr-2 h-4 w-4" /> Logout
@@ -32,8 +36,56 @@ const Admin = () => {
         </div>
       </header>
 
-      <main>
-        <AdminBookings />
+      <main className="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6">
+        <section className="mb-5 grid gap-3 md:grid-cols-3">
+          <div className="rounded-xl border border-sky-100 bg-gradient-to-br from-sky-50 to-white p-4 shadow-sm">
+            <div className="flex items-center gap-2 text-sky-700">
+              <BookOpenCheck className="h-4 w-4" />
+              <span className="text-xs font-semibold uppercase tracking-[0.14em]">Bookings</span>
+            </div>
+            <p className="mt-2 text-sm text-slate-700">Manage all inquiries, payment states, and follow-up notes.</p>
+          </div>
+          <div className="rounded-xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-white p-4 shadow-sm">
+            <div className="flex items-center gap-2 text-emerald-700">
+              <ChartNoAxesCombined className="h-4 w-4" />
+              <span className="text-xs font-semibold uppercase tracking-[0.14em]">Finance</span>
+            </div>
+            <p className="mt-2 text-sm text-slate-700">Track totals, outstanding amounts, and booking volume.</p>
+          </div>
+          <div className="rounded-xl border border-violet-100 bg-gradient-to-br from-violet-50 to-white p-4 shadow-sm">
+            <div className="flex items-center gap-2 text-violet-700">
+              <ShieldCheck className="h-4 w-4" />
+              <span className="text-xs font-semibold uppercase tracking-[0.14em]">Access</span>
+            </div>
+            <p className="mt-2 text-sm text-slate-700">Control admin/user roles with full audit visibility.</p>
+          </div>
+        </section>
+
+        <Tabs defaultValue="bookings" className="space-y-4">
+          <TabsList className="h-auto w-full justify-start gap-2 overflow-x-auto rounded-xl border border-slate-200 bg-white p-2">
+            <TabsTrigger value="bookings" className="gap-2 rounded-lg px-4 py-2">
+              <BookOpenCheck className="h-4 w-4" /> Bookings
+            </TabsTrigger>
+            <TabsTrigger value="finance" className="gap-2 rounded-lg px-4 py-2">
+              <ChartNoAxesCombined className="h-4 w-4" /> Finance
+            </TabsTrigger>
+            <TabsTrigger value="users" className="gap-2 rounded-lg px-4 py-2">
+              <UsersRound className="h-4 w-4" /> Users
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="bookings" className="mt-0 rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+            <AdminBookings />
+          </TabsContent>
+
+          <TabsContent value="finance" className="mt-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <FinanceSummary />
+          </TabsContent>
+
+          <TabsContent value="users" className="mt-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <AdminUsersManager />
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );
