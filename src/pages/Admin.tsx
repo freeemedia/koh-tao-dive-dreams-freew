@@ -17,7 +17,7 @@ function ProjectTab({ jiraProjectUrl, trelloBoardUrl }: { jiraProjectUrl: string
     setExportResult(null);
     try {
       const token = window.localStorage.getItem('admin_login_token') || window.sessionStorage.getItem('admin_login_token') || import.meta.env.VITE_ADMIN_BOOKINGS_VIEW_TOKEN || '';
-      const res = await fetch('/api/export-to-trello', {
+      const res = await fetch('/api/admin-bookings?action=export-to-trello', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-admin-login-token': token },
         body: JSON.stringify({}),

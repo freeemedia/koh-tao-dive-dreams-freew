@@ -214,6 +214,87 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: `Unsupported DB provider for admin bookings: ${dbProvider}` });
   }
 
+  // POST — export all bookings to Trello
+  if (req.method === 'POST') {
+    const action = req.query?.action || (req.body || {}).action;
+    if (action !== 'export-to-trello') {
+      return res.status(400).json({ error: 'Unknown action. Use ?action=export-to-trello' });
+    }
+
+    const apiKey = String(process.env.TRELLO_API_KEY || '').trim();
+    const token = String(process.env.TRELLO_TOKEN || '').trim();
+    const listId = String(process.env.TRELLO_LIST_ID || '').trim();
+    if (!apiKey || !token || !listId) {
+      return res.status(400).json({
+        error: 'Trello not configured. Add TRELLO_API_KEY, TRELLO_TOKEN, TRELLO_LIST_ID to Vercel environment variables.',
+      });
+    }
+    const labels = String(process.env.TRELLO_LABEL_IDS || '').trim();
+    const members = String(process.env.TRELLO_MEMBER_IDS || '').trim();
+
+    // Fetch bookings
+    let bookings = [];
+    try {
+      if (isSupabaseProvider()) bookings = await listSupabaseBookings();
+      else if (isMySqlProvider()) bookings = await listMySqlBookings();
+      else if (isWordPressProvider()) bookings = await listWordPressBookings();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Fetch failed';
+      return res.status(502).json({ error: `Failed to fetch bookings: ${message}` });
+    }
+
+    const { status: filterStatus } = req.body || {};
+    const toExport = filterStatus
+      ? bookings.filter((b) => String(b.status || '').toLowerCase() === String(filterStatus).toLowerCase())
+      : bookings;
+
+    if (toExport.length === 0) {
+      return res.status(200).json({ exported: 0, message: 'No bookings to export.' });
+    }
+
+    function buildCardContent(booking) {
+      const fields = ['id', 'name', 'email', 'phone', 'course_title', 'booking_type', 'preferred_date', 'status', 'message', 'internal_notes'];
+      const lines = fields.map((k) => {
+        const v = booking[k];
+        if (v == null || v === '') return null;
+        return `${k}: ${typeof v === 'object' ? JSON.stringify(v) : String(v)}`;
+      }).filter(Boolean);
+      const title = booking.course_title || booking.item_title || booking.booking_type || 'Booking';
+      const name = booking.name || 'Unknown guest';
+      return { name: `${title} - ${name}`, desc: lines.join('\n') || 'Exported from divinginasia.com' };
+    }
+
+    let exported = 0;
+    const errors = [];
+    for (const booking of toExport) {
+      try {
+        const { name, desc } = buildCardContent(booking);
+        const body = new URLSearchParams({ key: apiKey, token, idList: listId, name, desc, pos: 'top' });
+        if (labels) body.set('idLabels', labels);
+        if (members) body.set('idMembers', members);
+        const cardRes = await fetch('https://api.trello.com/1/cards', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body,
+        });
+        if (!cardRes.ok) {
+          const text = await cardRes.text().catch(() => '');
+          throw new Error(`Trello ${cardRes.status}: ${text}`);
+        }
+        exported++;
+      } catch (err) {
+        errors.push({ id: booking.id, error: err instanceof Error ? err.message : 'Unknown error' });
+      }
+    }
+
+    return res.status(200).json({
+      exported,
+      total: toExport.length,
+      errors: errors.length ? errors : undefined,
+      message: `${exported} of ${toExport.length} bookings exported to Trello.`,
+    });
+  }
+
   res.status(405).json({ error: 'Method not allowed' });
 }
 
