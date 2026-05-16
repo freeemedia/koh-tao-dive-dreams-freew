@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpenCheck, ChartNoAxesCombined, LogOut, ShieldCheck, UsersRound } from 'lucide-react';
+import { BookOpenCheck, ChartNoAxesCombined, FolderKanban, LogOut, ShieldCheck, UsersRound } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
@@ -10,6 +10,8 @@ import AdminUsersManager from '../components/AdminUsersManager';
 
 const Admin = () => {
   const navigate = useNavigate();
+  const jiraProjectUrl = import.meta.env.VITE_JIRA_PROJECT_URL || 'https://divinginasia.atlassian.net';
+  const trelloBoardUrl = import.meta.env.VITE_TRELLO_BOARD_URL || 'https://trello.com';
 
   const handleLogout = () => {
     window.localStorage.removeItem('admin_authenticated');
@@ -72,6 +74,9 @@ const Admin = () => {
             <TabsTrigger value="users" className="gap-2 rounded-lg px-4 py-2">
               <UsersRound className="h-4 w-4" /> Users
             </TabsTrigger>
+            <TabsTrigger value="project" className="gap-2 rounded-lg px-4 py-2">
+              <FolderKanban className="h-4 w-4" /> Project
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="bookings" className="mt-0 rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
@@ -84,6 +89,31 @@ const Admin = () => {
 
           <TabsContent value="users" className="mt-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
             <AdminUsersManager />
+          </TabsContent>
+
+          <TabsContent value="project" className="mt-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <h2 className="text-lg font-semibold text-slate-900">Project Management</h2>
+              <p className="mt-1 text-sm text-slate-600">Use Jira and Trello boards for planning and tracking.</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <a
+                  href={jiraProjectUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                >
+                  Open Jira
+                </a>
+                <a
+                  href={trelloBoardUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center rounded bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700"
+                >
+                  Open Trello
+                </a>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
       </main>
