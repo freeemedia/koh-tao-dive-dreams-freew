@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BookOpenCheck, ChartNoAxesCombined, FolderKanban, LogOut, ShieldCheck, UsersRound } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,69 @@ import { toast } from 'sonner';
 import AdminBookings from '../components/AdminBookings';
 import FinanceSummary from '../components/FinanceSummary';
 import AdminUsersManager from '../components/AdminUsersManager';
+
+function ProjectTab({ jiraProjectUrl, trelloBoardUrl }: { jiraProjectUrl: string; trelloBoardUrl: string }) {
+  const [exporting, setExporting] = useState(false);
+  const [exportResult, setExportResult] = useState<string | null>(null);
+
+  async function handleExport() {
+    setExporting(true);
+    setExportResult(null);
+    try {
+      const token = window.localStorage.getItem('admin_login_token') || window.sessionStorage.getItem('admin_login_token') || import.meta.env.VITE_ADMIN_BOOKINGS_VIEW_TOKEN || '';
+      const res = await fetch('/api/export-to-trello', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-login-token': token },
+        body: JSON.stringify({}),
+      });
+      const data = await res.json();
+      setExportResult(data.message || (res.ok ? 'Export complete.' : data.error));
+    } catch {
+      setExportResult('Export failed. Check your network or Trello credentials.');
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <h2 className="text-lg font-semibold text-slate-900">Project Management</h2>
+        <p className="mt-1 text-sm text-slate-600">Use Jira and Trello boards for planning and tracking.</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <a href={jiraProjectUrl} target="_blank" rel="noreferrer"
+            className="inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+            Open Jira
+          </a>
+          <a href={trelloBoardUrl} target="_blank" rel="noreferrer"
+            className="inline-flex items-center justify-center rounded bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700">
+            Open Trello
+          </a>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <h3 className="font-semibold text-slate-900">Export Bookings to Trello</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Creates a Trello card for every booking in your database.
+          Requires <code className="rounded bg-slate-200 px-1 text-xs">TRELLO_API_KEY</code>,{' '}
+          <code className="rounded bg-slate-200 px-1 text-xs">TRELLO_TOKEN</code>, and{' '}
+          <code className="rounded bg-slate-200 px-1 text-xs">TRELLO_LIST_ID</code> set in Vercel.
+        </p>
+        <button
+          onClick={handleExport}
+          disabled={exporting}
+          className="mt-3 inline-flex items-center justify-center rounded bg-sky-700 px-4 py-2 text-sm font-medium text-white hover:bg-sky-800 disabled:opacity-60"
+        >
+          {exporting ? 'Exporting…' : 'Export all bookings to Trello'}
+        </button>
+        {exportResult && (
+          <p className="mt-2 rounded border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">{exportResult}</p>
+        )}
+      </div>
+    </div>
+  );
+}
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -92,28 +155,7 @@ const Admin = () => {
           </TabsContent>
 
           <TabsContent value="project" className="mt-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <h2 className="text-lg font-semibold text-slate-900">Project Management</h2>
-              <p className="mt-1 text-sm text-slate-600">Use Jira and Trello boards for planning and tracking.</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <a
-                  href={jiraProjectUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-                >
-                  Open Jira
-                </a>
-                <a
-                  href={trelloBoardUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center rounded bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700"
-                >
-                  Open Trello
-                </a>
-              </div>
-            </div>
+            <ProjectTab jiraProjectUrl={jiraProjectUrl} trelloBoardUrl={trelloBoardUrl} />
           </TabsContent>
         </Tabs>
       </main>
