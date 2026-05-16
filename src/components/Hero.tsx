@@ -40,7 +40,7 @@ const Hero = () => {
           {content.hero_subtitle}
         </p>
         <div className="space-x-4">
-          <a href="https://www.divinginasia.com/#contact" className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105">
+          <a href="/#contact" className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105">
             {content.hero_primary_cta}
           </a>
           <a href="/courses" className="inline-block border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-3 rounded-full font-semibold transition-all duration-300">

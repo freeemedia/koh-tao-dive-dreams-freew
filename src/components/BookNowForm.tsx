@@ -91,7 +91,7 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const sendToBookingApiAndEmail = async (payNow: boolean) => {
+  const sendToBookingApiAndEmail = async (payNow: boolean): Promise<boolean> => {
     const totalAmount = coursePrice > 0 ? coursePrice : null;
     const depositAmount = deposit > 0 ? deposit : null;
     const dueAmount = totalAmount != null && depositAmount != null
@@ -129,39 +129,59 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
       ]);
 
       if (result instanceof Response) {
+        if (!result.ok) {
+          const failureBody = await result.json().catch(() => null);
+          setError(failureBody?.error || 'Booking submission failed. Please try again.');
+          return false;
+        }
+
         const body = await result.json().catch(() => null);
         if (body?.wp_mirror_warning) {
           setError(`Booking saved, but WordPress dashboard sync failed: ${String(body.wp_mirror_warning)}`);
         }
       }
+      return true;
     } catch {
       setError('Booking submitted, but sync check timed out. Please verify in admin.');
+      return false;
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    // Courses without a defined price should skip deposit options and be submitted as enquiry.
+    if (coursePrice <= 0) {
+      setLoading(true);
+      const ok = await sendToBookingApiAndEmail(false);
+      if (ok) {
+        setShowThankYou(true);
+      }
+      setLoading(false);
+      return;
+    }
+
     setShowPayOptions(true);
   };
 
   const handlePayNow = async () => {
     setLoading(true);
-    sendToBookingApiAndEmail(true);
-    // Redirect after 500ms to let API fire
-    setTimeout(() => {
+    const ok = await sendToBookingApiAndEmail(true);
+    if (ok) {
       window.location.href = `${PAYPAL_BASE}/${deposit}THB`;
-    }, 500);
+      return;
+    }
+    setLoading(false);
   };
 
   const handleNotNow = async () => {
     setLoading(true);
-    sendToBookingApiAndEmail(false);
-    // Show thank you after 500ms to let API fire
-    setTimeout(() => {
+    const ok = await sendToBookingApiAndEmail(false);
+    if (ok) {
       setShowThankYou(true);
-      setLoading(false);
-    }, 500);
+    }
+    setLoading(false);
   };
 
   const containerStyle: React.CSSProperties = fullPage

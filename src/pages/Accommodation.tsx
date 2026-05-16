@@ -21,7 +21,7 @@ import { usePageContent } from '@/hooks/usePageContent';
 
 const TRIP_ALLIANCE_ID = import.meta.env.VITE_TRIP_ALLIANCE_ID as string | undefined;
 const TRIP_SITE_ID = import.meta.env.VITE_TRIP_SITE_ID as string | undefined;
-const STAY_URL_LABEL = 'https://www.divinginasia.com/stay';
+const STAY_URL_LABEL = '/stay';
 
 type RoomCard = {
   name: string;
@@ -244,7 +244,7 @@ const Accommodation = () => {
 
   const handleExternalBooking = () => {
     if (bookingSource === 'agoda') {
-      window.open('https://www.divinginasia.com/agoda-hotels', '_blank', 'noopener,noreferrer');
+      window.open('/agoda-hotels', '_blank', 'noopener,noreferrer');
     } else {
       const url = buildTripUrl();
       trackAffiliateClick({

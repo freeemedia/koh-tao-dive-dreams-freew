@@ -185,7 +185,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
   ];
 
   const navItems = [
-    { name: t('nav.home'), href: 'https://divinginasia.com' },
+    { name: t('nav.home'), href: '/' },
     { name: t('nav.contact'), href: '/#contact' },
   ];
 

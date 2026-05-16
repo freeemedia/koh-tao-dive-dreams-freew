@@ -191,7 +191,7 @@ const DiveSitesPage = () => {
           <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto">
             {pageContent.hero_text}
           </p>
-          <a href="https://www.divinginasia.com/#contact" target="_blank" rel="noopener noreferrer">
+          <a href="/#contact" target="_blank" rel="noopener noreferrer">
             <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg">
               {pageContent.book_dive}
             </Button>

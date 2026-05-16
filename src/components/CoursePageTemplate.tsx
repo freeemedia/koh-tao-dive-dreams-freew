@@ -71,6 +71,9 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
   galleryUnavailableMessage,
   galleryEmptyMessage,
 }) => {
+  // All hooks must be called unconditionally at the top
+  const navigate = useNavigate();
+  const { exchangeRates } = useCurrency();
   const { content, isLoading } = usePageContent({
     pageSlug,
     locale,
@@ -140,9 +143,6 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
   const usdAmount = parseAmount(priceUsd);
   const eurAmount = parseAmount(priceEur);
   const heroImageUrl = heroImage || images[0];
-  const navigate = useNavigate();
-
-  const { exchangeRates } = useCurrency();
 
   const openBookNow = () => {
     const params = new URLSearchParams();

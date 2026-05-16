@@ -23,7 +23,7 @@ const AdminRedirect = () => {
             Open WordPress bookings
           </a>
           <a
-            href="/admin/legacy"
+            href="/admin"
             className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
           >
             Open legacy tools

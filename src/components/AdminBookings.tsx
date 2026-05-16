@@ -59,6 +59,8 @@ const InlineEditCell: React.FC<{
       {textarea ? (
         <textarea
           className="border rounded px-1 py-1 w-full"
+          placeholder="Edit note"
+          title="Edit note"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           rows={2}
@@ -66,6 +68,8 @@ const InlineEditCell: React.FC<{
       ) : (
         <input
           className="border rounded px-1 py-1 w-full"
+          placeholder="Edit value"
+          title="Edit value"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
         />

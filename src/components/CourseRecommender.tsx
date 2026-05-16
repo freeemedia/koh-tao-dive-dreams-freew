@@ -283,7 +283,7 @@ const CourseRecommender = () => {
               {ui.startOver}
             </button>
             <a
-              href="https://www.divinginasia.com/#contact"
+              href="/#contact"
               className="px-6 py-3 bg-background text-blue-700 rounded-lg hover:bg-blue-50 transition-colors font-semibold"
             >
               {ui.bookCourse}
