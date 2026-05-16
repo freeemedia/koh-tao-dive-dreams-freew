@@ -121,7 +121,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
           toast.warning(`Booking saved with warning: ${dbResult.warning}`);
         }
         toast.success('Booking inquiry sent. We will contact you shortly.');
-        setTimeout(() => { window.location.href = '/thank-you.html'; }, 1200);
+        setTimeout(() => { window.location.href = '/thank-you'; }, 1200);
         form.reset();
         onClose();
       } else {

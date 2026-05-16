@@ -1,5 +1,7 @@
 # Deploying to Hostinger + Vercel (recommended split)
 
+For pure static hosting on Hostinger (no Node runtime), use [HOSTINGER_STATIC_DEPLOY.md](HOSTINGER_STATIC_DEPLOY.md).
+
 | Layer | Host | What runs |
 |-------|------|-----------|
 | **Frontend** | Hostinger Node.js | `hostinger-server.cjs` serves `dist/` (Vite SPA) |

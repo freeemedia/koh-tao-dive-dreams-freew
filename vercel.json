@@ -52,6 +52,11 @@
       "source": "/booking-form-standalone.html",
       "destination": "/booking",
       "permanent": true
+    },
+    {
+      "source": "/thank-you.html",
+      "destination": "/thank-you",
+      "permanent": true
     }
   ],
   "rewrites": [

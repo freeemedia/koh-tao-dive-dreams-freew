@@ -1,12 +1,14 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+require_once __DIR__ . '/class-api-client.php';
+
 class KTD_Finance {
 
-    private KTD_API_Client $api;
+    private \KTD_API_Client $api;
 
     public function __construct() {
-        $this->api = new KTD_API_Client();
+        $this->api = new \KTD_API_Client();
     }
 
     public function render(): void {
