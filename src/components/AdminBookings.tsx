@@ -14,6 +14,39 @@ interface BookingComment {
   is_admin: boolean;
   created_at: string;
 }
+
+const parseCommentsFromNotes = (bookingId: string, notes?: string | null): BookingComment[] => {
+  if (!notes) return [];
+
+  return notes
+    .split('\n')
+    .map((line, index) => ({ line: line.trim(), index }))
+    .filter((entry) => entry.line.length > 0)
+    .map((entry) => {
+      const match = entry.line.match(/^\[(.*?)\]\s*Admin:\s*(.*)$/i);
+      if (match) {
+        const [, dateRaw, commentText] = match;
+        const parsedDate = new Date(dateRaw);
+        return {
+          id: `${bookingId}-${entry.index}`,
+          booking_id: bookingId,
+          user_id: 'admin',
+          comment: commentText || '',
+          is_admin: true,
+          created_at: Number.isNaN(parsedDate.getTime()) ? new Date().toISOString() : parsedDate.toISOString(),
+        };
+      }
+
+      return {
+        id: `${bookingId}-${entry.index}`,
+        booking_id: bookingId,
+        user_id: 'admin',
+        comment: entry.line,
+        is_admin: true,
+        created_at: new Date().toISOString(),
+      };
+    });
+};
 import FunDiveBooking from './FunDiveBooking';
 import FinanceSection from './FinanceSection';
 import BookingsCalendar from './BookingsCalendar';
@@ -196,15 +229,12 @@ const AdminBookings: React.FC = () => {
   const [commentDraft, setCommentDraft] = useState('');
   const [commentSaving, setCommentSaving] = useState(false);
   const [commentError, setCommentError] = useState<string | null>(null);
-    // Fetch comments when finance modal opens
+    // Populate comments from booking notes when finance modal opens
     useEffect(() => {
       if (!financeModalBooking) return;
       setCommentsLoading(true);
-      setComments([]);
       setCommentError(null);
-      // For now, comments feature is disabled as it was Supabase-only.
-      // To restore, add API endpoint for booking_comments backend storage.
-      setComments([]);
+      setComments(parseCommentsFromNotes(financeModalBooking.id, financeModalBooking.internal_notes || ''));
       setCommentsLoading(false);
     }, [financeModalBooking]);
 
@@ -214,28 +244,29 @@ const AdminBookings: React.FC = () => {
       setCommentSaving(true);
       setCommentError(null);
       try {
-        // TODO: Implement via new /api/admin/comments endpoint backed by WordPress/MySQL
-        const adminLoginToken = window.localStorage.getItem('admin_login_token');
-        if (!adminLoginToken) throw new Error('Not authenticated');
-        
-        const response = await fetch(buildApiUrl('/api/admin/bookings/comments'), {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-admin-login-token': adminLoginToken,
-          },
-          body: JSON.stringify({
-            booking_id: financeModalBooking.id,
-            comment: commentDraft,
-          }),
+        const commentText = commentDraft.trim();
+        const now = new Date();
+        const commentLine = `[${now.toISOString()}] Admin: ${commentText}`;
+        const existingNotes = financeModalBooking.internal_notes?.trim() || '';
+        const mergedNotes = existingNotes ? `${existingNotes}\n${commentLine}` : commentLine;
+
+        const response = await adminAuthedFetch(`/api/admin-bookings?id=${encodeURIComponent(financeModalBooking.id)}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ internal_notes: mergedNotes }),
         });
 
         if (!response.ok) {
-          throw new Error('Failed to add comment');
+          const payload = await response.json().catch(() => ({}));
+          throw new Error(payload?.error || 'Failed to add comment');
         }
 
-        const newComment = await response.json();
-        setComments((prev) => [...prev, newComment]);
+        const updatedBooking = await response.json().catch(() => null);
+        const nextNotes = updatedBooking?.internal_notes || mergedNotes;
+
+        setBookings((prev) => prev.map((b) => (b.id === financeModalBooking.id ? { ...b, internal_notes: nextNotes } : b)));
+        setFinanceModalBooking((prev) => (prev ? { ...prev, internal_notes: nextNotes } : prev));
+        setComments(parseCommentsFromNotes(financeModalBooking.id, nextNotes));
+        setNoteDraft(nextNotes);
         setCommentDraft('');
         toast.success('Comment added');
       } catch (err: any) {

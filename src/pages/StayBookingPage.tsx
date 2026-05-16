@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -86,6 +86,42 @@ const StayBookingPage: React.FC = () => {
     },
   });
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.toString()) return;
+
+    const accommodationType = (params.get('accommodationType') || '').toLowerCase();
+    const guests = Number(params.get('people'));
+    const nights = Number(params.get('nights'));
+    const message = params.get('message') || '';
+    const diving = (params.get('diving') || '').toLowerCase();
+
+    const accommodationMap: Record<string, string> = {
+      family: 'family-bungalow',
+      basic: 'basic-room',
+      bungalow: 'bungalow',
+    };
+
+    const mappedAccommodation = accommodationMap[accommodationType] || accommodationType;
+    if (mappedAccommodation) {
+      form.setValue('accommodation', mappedAccommodation, { shouldDirty: false });
+    }
+
+    if (Number.isFinite(guests) && guests >= 1 && guests <= 10) {
+      form.setValue('guests', guests, { shouldDirty: false });
+    }
+
+    if (Number.isFinite(nights) && nights >= 1 && nights <= 90) {
+      form.setValue('nights', nights, { shouldDirty: false });
+    }
+
+    const divingLine = diving ? `Diving with us: ${diving === 'yes' ? 'Yes' : 'No'}` : '';
+    const combinedMessage = [message, divingLine].filter(Boolean).join('\n');
+    if (combinedMessage) {
+      form.setValue('message', combinedMessage, { shouldDirty: false });
+    }
+  }, [form]);
+
   const watchedAccommodation = form.watch('accommodation');
   const showAdvanceWarning = ADVANCE_WARNING_VALUES.has(watchedAccommodation as string);
 
@@ -165,124 +201,125 @@ const StayBookingPage: React.FC = () => {
 
   // ── Form screen ────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-16">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-10">
       {/* Hero */}
-      <div className="bg-blue-900 text-white py-14 px-4 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold mb-3">Stay With Us in Koh Tao</h1>
-        <p className="text-blue-200 text-lg max-w-xl mx-auto">
+      <div className="bg-blue-900 text-white py-8 px-4 text-center">
+        <h1 className="text-2xl md:text-3xl font-bold mb-2">Stay With Us in Koh Tao</h1>
+        <p className="text-blue-200 text-sm md:text-base max-w-2xl mx-auto">
           Choose your room and let us take care of the rest. Cozy rooms and bungalows right next
           to our dive centre.
         </p>
       </div>
 
-      <div className="max-w-xl mx-auto px-4 pt-10">
-        {/* Room cards quick reference */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
-          {[
-            { name: 'Family Bungalow', guests: 'up to 5', price: '฿4,000–6,000' },
-            { name: 'Basic Room', guests: '2 guests', price: '฿1,450–1,650' },
-            { name: 'Bungalow', guests: '2 guests', price: '฿1,600–2,000' },
-          ].map((room) => (
-            <div
-              key={room.name}
-              className="rounded-xl border bg-white shadow-sm p-4 text-center text-sm"
-            >
-              <BedDouble className="mx-auto mb-2 text-blue-600" size={22} />
-              <p className="font-semibold text-gray-800">{room.name}</p>
-              <p className="text-gray-500">{room.guests}</p>
-              <p className="text-blue-700 font-medium mt-1">{room.price} / night</p>
+      <div className="max-w-3xl mx-auto px-4 pt-6">
+        {/* Compact room reference */}
+        <div className="rounded-xl border bg-white shadow-sm p-4 mb-5">
+          <div className="flex items-center justify-between gap-3">
+            <div className="text-sm text-slate-700">
+              <span className="font-semibold">Quick rates:</span> Family ฿4,000–6,000, Basic ฿1,450–1,650, Bungalow ฿1,600–2,000
             </div>
-          ))}
+            <BedDouble className="text-blue-600" size={18} />
+          </div>
+          <details className="mt-2 text-xs text-slate-600">
+            <summary className="cursor-pointer select-none font-medium text-slate-700">View room details</summary>
+            <ul className="mt-2 space-y-1">
+              <li><strong>Family Bungalow:</strong> up to 5 guests</li>
+              <li><strong>Basic Room:</strong> 2 guests</li>
+              <li><strong>Bungalow:</strong> 2 guests</li>
+            </ul>
+          </details>
         </div>
 
         {/* Booking form */}
-        <div className="bg-white rounded-2xl shadow-md border p-6 md:p-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Accommodation Enquiry</h2>
+        <div className="bg-white rounded-2xl shadow-md border p-5 md:p-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-4">Accommodation Enquiry</h2>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-              {/* Name */}
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      <User size={14} className="inline mr-1" />
-                      Full Name *
-                    </FormLabel>
-                    <FormControl>
-                      <Input placeholder="Your name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Email */}
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      <Mail size={14} className="inline mr-1" />
-                      Email Address *
-                    </FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="you@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Phone */}
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      <Phone size={14} className="inline mr-1" />
-                      Phone / WhatsApp
-                    </FormLabel>
-                    <FormControl>
-                      <Input type="tel" placeholder="+66 ..." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Accommodation */}
-              <FormField
-                control={form.control}
-                name="accommodation"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      <BedDouble size={14} className="inline mr-1" />
-                      Accommodation *
-                    </FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Name */}
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <User size={14} className="inline mr-1" />
+                        Full Name *
+                      </FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select an option..." />
-                        </SelectTrigger>
+                        <Input placeholder="Your name" {...field} />
                       </FormControl>
-                      <SelectContent>
-                        {ACCOMMODATION_OPTIONS.map((opt) => (
-                          <SelectItem key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Email */}
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <Mail size={14} className="inline mr-1" />
+                        Email Address *
+                      </FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="you@example.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Phone */}
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <Phone size={14} className="inline mr-1" />
+                        Phone / WhatsApp
+                      </FormLabel>
+                      <FormControl>
+                        <Input type="tel" placeholder="+66 ..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Accommodation */}
+                <FormField
+                  control={form.control}
+                  name="accommodation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <BedDouble size={14} className="inline mr-1" />
+                        Accommodation *
+                      </FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select an option..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {ACCOMMODATION_OPTIONS.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               {/* 7-day advance warning */}
               {showAdvanceWarning && (

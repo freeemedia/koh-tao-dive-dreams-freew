@@ -58,6 +58,103 @@ function getNotificationMode() {
   return String(process.env.NOTIFICATION_PROVIDER || '').trim().toLowerCase();
 }
 
+function getTrelloFieldKeys() {
+  const configured = String(process.env.TRELLO_FIELD_KEYS || '').trim();
+  if (!configured) {
+    return [
+      'id',
+      'name',
+      'email',
+      'phone',
+      'course_title',
+      'preferred_date',
+      'status',
+      'booking_type',
+      'message',
+      'internal_notes',
+    ];
+  }
+
+  return configured
+    .split(',')
+    .map((k) => k.trim())
+    .filter(Boolean);
+}
+
+function buildTrelloCardContent(payload = {}) {
+  const keys = getTrelloFieldKeys();
+  const lines = keys
+    .map((key) => {
+      const value = payload?.[key];
+      if (value == null || value === '') return null;
+      if (typeof value === 'object') return `${key}: ${JSON.stringify(value)}`;
+      return `${key}: ${String(value)}`;
+    })
+    .filter(Boolean);
+
+  const titleBase = payload?.course_title || payload?.item_title || payload?.booking_type || 'Booking';
+  const nameBase = payload?.name || 'Unknown guest';
+
+  return {
+    name: `${titleBase} - ${nameBase}`,
+    desc: lines.join('\n') || 'Booking received from website.',
+  };
+}
+
+async function sendTrelloCard(payload = {}) {
+  const apiKey = String(process.env.TRELLO_API_KEY || '').trim();
+  const token = String(process.env.TRELLO_TOKEN || '').trim();
+  const listId = String(process.env.TRELLO_LIST_ID || '').trim();
+
+  if (!apiKey || !token || !listId) {
+    return { skipped: true, reason: 'Trello credentials/list not configured' };
+  }
+
+  const labels = String(process.env.TRELLO_LABEL_IDS || '').trim();
+  const members = String(process.env.TRELLO_MEMBER_IDS || '').trim();
+  const { name, desc } = buildTrelloCardContent(payload);
+
+  const body = new URLSearchParams({
+    key: apiKey,
+    token,
+    idList: listId,
+    name,
+    desc,
+    pos: 'top',
+  });
+
+  if (labels) body.set('idLabels', labels);
+  if (members) body.set('idMembers', members);
+
+  const response = await fetch('https://api.trello.com/1/cards', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body,
+  });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    throw new Error(`Trello card create failed (${response.status}): ${text || 'unknown error'}`);
+  }
+
+  return response.json();
+}
+
+async function dispatchTrelloWithWarning(payload) {
+  try {
+    await sendTrelloCard(payload);
+    return null;
+  } catch (error) {
+    return error instanceof Error ? error.message : 'Booking saved, but Trello sync failed';
+  }
+}
+
+function mergeWarnings(...warnings) {
+  const filtered = warnings.filter(Boolean);
+  if (!filtered.length) return null;
+  return filtered.join(' | ');
+}
+
 async function dispatchBookingNotifications(payload) {
   const mode = getNotificationMode();
   if (mode === 'fluent_only' || mode === 'fluent-only' || mode === 'fluent') {
@@ -287,7 +384,9 @@ export default async function handler(req, res) {
           try {
             const inserted = await insertSupabaseBooking(payload);
             const emailPayload = { ...inserted, item_title: inserted.course_title || inserted.item_title };
-            const warning = await dispatchBookingNotificationsWithWarning(emailPayload);
+            const notificationWarning = await dispatchBookingNotificationsWithWarning(emailPayload);
+            const trelloWarning = await dispatchTrelloWithWarning(emailPayload);
+            const warning = mergeWarnings(notificationWarning, trelloWarning);
             return res.status(201).json(warning ? { ...inserted, warning } : inserted);
           } catch (supabaseError) {
             const message = supabaseError instanceof Error ? supabaseError.message : 'Supabase booking create failed';
@@ -299,14 +398,18 @@ export default async function handler(req, res) {
           try {
             const inserted = await insertMySqlBooking(payload);
             const emailPayload = { ...inserted, item_title: inserted.course_title || inserted.item_title };
-            const warning = await dispatchBookingNotificationsWithWarning(emailPayload);
+            const notificationWarning = await dispatchBookingNotificationsWithWarning(emailPayload);
+            const trelloWarning = await dispatchTrelloWithWarning(emailPayload);
+            const warning = mergeWarnings(notificationWarning, trelloWarning);
             return res.status(201).json(warning ? { ...inserted, warning } : inserted);
           } catch (mysqlError) {
             if (isMySqlAccessDeniedError(mysqlError)) {
               try {
                 const inserted = await insertWordPressBooking(payload);
                 const emailPayload = { ...inserted, item_title: inserted.course_title || inserted.item_title };
-                const warning = await dispatchBookingNotificationsWithWarning(emailPayload);
+                const notificationWarning = await dispatchBookingNotificationsWithWarning(emailPayload);
+                const trelloWarning = await dispatchTrelloWithWarning(emailPayload);
+                const warning = mergeWarnings(notificationWarning, trelloWarning);
                 const baseResponse = warning ? { ...inserted, warning } : inserted;
                 return res.status(201).json({
                   ...baseResponse,
@@ -333,7 +436,9 @@ export default async function handler(req, res) {
           try {
             const inserted = await insertWordPressBooking(payload);
             const emailPayload = { ...inserted, item_title: inserted.course_title || inserted.item_title };
-            const warning = await dispatchBookingNotificationsWithWarning(emailPayload);
+            const notificationWarning = await dispatchBookingNotificationsWithWarning(emailPayload);
+            const trelloWarning = await dispatchTrelloWithWarning(emailPayload);
+            const warning = mergeWarnings(notificationWarning, trelloWarning);
             return res.status(201).json(warning ? { ...inserted, warning } : inserted);
           } catch (wordpressError) {
             const message = wordpressError instanceof Error ? wordpressError.message : 'WordPress booking create failed';
