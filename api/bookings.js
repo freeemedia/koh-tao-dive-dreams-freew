@@ -373,12 +373,15 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
       const body = parseBody(req);
       const { id, ...rest } = body || {};
+      const updateMode = String(req.query?.mode || body?.mode || '').trim().toLowerCase() === 'update';
 
-      if (!id) {
-        const generatedId = (globalThis.crypto && typeof globalThis.crypto.randomUUID === 'function')
-          ? globalThis.crypto.randomUUID()
-          : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-        const payload = normalizeBookingPayload({ id: generatedId, ...rest }, { includeId: true });
+      if (!updateMode) {
+        const createId = cleanOptionalString(id) || (
+          (globalThis.crypto && typeof globalThis.crypto.randomUUID === 'function')
+            ? globalThis.crypto.randomUUID()
+            : `${Date.now()}-${Math.random().toString(16).slice(2)}`
+        );
+        const payload = normalizeBookingPayload({ id: createId, ...rest }, { includeId: true });
 
         if (isSupabaseProvider()) {
           try {
@@ -447,6 +450,10 @@ export default async function handler(req, res) {
         }
 
         return res.status(500).json({ error: `Unsupported DB provider for bookings: ${dbProvider}` });
+      }
+
+      if (!id) {
+        return res.status(400).json({ error: 'Missing booking id for update mode' });
       }
 
       if (Object.keys(rest).length === 0) {

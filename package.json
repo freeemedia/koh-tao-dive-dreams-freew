@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:api": "PORT=4001 node server.cjs",
+    "dev:local": "concurrently \"npm run dev\" \"npm run dev:api\"",
     "build": "vite build",
     "build:hostinger": "vite build",
     "start": "node server.cjs",

@@ -169,9 +169,12 @@ const StayBookingPage: React.FC = () => {
 
       // Fire-and-forget email notification (same helper used elsewhere)
       sendBookingNotification({
-        ...payload,
-        item: `Accommodation: ${accommodationLabel}`,
-        currency: 'THB',
+        endpointUrl: apiUrl('/api/send-booking-notification'),
+        payload: {
+          ...payload,
+          item_title: `Accommodation: ${accommodationLabel}`,
+          currency: 'THB',
+        },
       }).catch(() => {});
 
       // Store for ThankYouPage display
@@ -301,7 +304,7 @@ const StayBookingPage: React.FC = () => {
                         <BedDouble size={14} className="inline mr-1" />
                         Accommodation *
                       </FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select an option..." />
