@@ -5,6 +5,7 @@ import Papa from 'papaparse';
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Trash2 } from 'lucide-react';
 // Comment type for booking comments
 interface BookingComment {
   id: string;
@@ -688,7 +689,6 @@ const AdminBookings: React.FC = () => {
           <option value="pending">{t('admin.status_pending', { defaultValue: 'Pending' })}</option>
           <option value="confirmed">{t('admin.status_confirmed', { defaultValue: 'Confirmed' })}</option>
           <option value="cancelled">{t('admin.status_cancelled', { defaultValue: 'Cancelled' })}</option>
-          <option value="archived">{t('admin.status_archived', { defaultValue: 'Archived' })}</option>
         </select>
         <button
           className="px-4 py-2 bg-slate-700 text-white rounded"
@@ -788,7 +788,6 @@ const AdminBookings: React.FC = () => {
                           <option value="pending">pending</option>
                           <option value="confirmed">confirmed</option>
                           <option value="cancelled">cancelled</option>
-                          <option value="archived">archived</option>
                         </select>
                         <button
                           className="px-2 py-1 text-xs bg-emerald-600 text-white rounded disabled:opacity-60"
@@ -851,24 +850,14 @@ const AdminBookings: React.FC = () => {
                       )}
                     </td>
                     <td className="border px-2 py-1 whitespace-nowrap">
-                      {b.status !== 'archived' && (
-                        <button
-                          className="px-2 py-1 text-xs bg-gray-700 text-white rounded"
-                          onClick={() => {
-                            setStatusDrafts((prev) => ({ ...prev, [b.id]: 'archived' }));
-                            saveStatus(b.id, 'archived');
-                          }}
-                        >
-                          Archive
-                        </button>
-                      )}
                       <button
-                        className="ml-2 px-2 py-1 text-xs bg-red-600 text-white rounded disabled:opacity-60"
+                        className="inline-flex h-7 w-7 items-center justify-center rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-60"
                         onClick={() => handleDelete(b.id)}
                         disabled={deleting && deleteId === b.id}
                         title="Delete booking"
+                        aria-label="Delete booking"
                       >
-                        {deleting && deleteId === b.id ? 'Deleting...' : 'Delete'}
+                        {deleting && deleteId === b.id ? '…' : <Trash2 className="h-3.5 w-3.5" />}
                       </button>
                     </td>
                   </tr>
