@@ -217,8 +217,111 @@ export default async function handler(req, res) {
   // POST — export all bookings to Trello
   if (req.method === 'POST') {
     const action = req.query?.action || (req.body || {}).action;
-    if (action !== 'export-to-trello') {
-      return res.status(400).json({ error: 'Unknown action. Use ?action=export-to-trello' });
+    if (action !== 'export-to-trello' && action !== 'export-to-jira') {
+      return res.status(400).json({ error: 'Unknown action. Use ?action=export-to-trello or ?action=export-to-jira' });
+    }
+
+    if (action === 'export-to-jira') {
+      const jiraBaseUrl = String(process.env.JIRA_BASE_URL || 'https://divinginasia.atlassian.net').trim().replace(/\/$/, '');
+      const jiraEmail = String(process.env.JIRA_EMAIL || '').trim();
+      const jiraApiToken = String(process.env.JIRA_API_TOKEN || '').trim();
+      const jiraProjectKey = String(process.env.JIRA_PROJECT_KEY || '').trim();
+      const jiraIssueType = String(process.env.JIRA_ISSUE_TYPE || 'Task').trim();
+
+      if (!jiraEmail || !jiraApiToken || !jiraProjectKey) {
+        return res.status(400).json({
+          error: 'Jira not configured. Add JIRA_EMAIL, JIRA_API_TOKEN, JIRA_PROJECT_KEY to Vercel environment variables.',
+        });
+      }
+
+      let bookings = [];
+      try {
+        if (isSupabaseProvider()) bookings = await listSupabaseBookings();
+        else if (isMySqlProvider()) bookings = await listMySqlBookings();
+        else if (isWordPressProvider()) bookings = await listWordPressBookings();
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Fetch failed';
+        return res.status(502).json({ error: `Failed to fetch bookings: ${message}` });
+      }
+
+      const { status: filterStatus } = req.body || {};
+      const toExport = filterStatus
+        ? bookings.filter((b) => String(b.status || '').toLowerCase() === String(filterStatus).toLowerCase())
+        : bookings;
+
+      if (toExport.length === 0) {
+        return res.status(200).json({ exported: 0, message: 'No bookings to export.' });
+      }
+
+      function toAtlassianDocument(booking) {
+        const lines = [
+          `Booking ID: ${booking.id || ''}`,
+          `Name: ${booking.name || ''}`,
+          `Email: ${booking.email || ''}`,
+          `Phone: ${booking.phone || ''}`,
+          `Course: ${booking.course_title || booking.item_title || ''}`,
+          `Booking Type: ${booking.booking_type || ''}`,
+          `Preferred Date: ${booking.preferred_date || ''}`,
+          `Status: ${booking.status || ''}`,
+          `Message: ${booking.message || ''}`,
+          `Internal Notes: ${booking.internal_notes || ''}`,
+        ].filter((line) => !line.endsWith(': '));
+
+        return {
+          type: 'doc',
+          version: 1,
+          content: lines.map((text) => ({
+            type: 'paragraph',
+            content: [{ type: 'text', text }],
+          })),
+        };
+      }
+
+      const authHeader = `Basic ${Buffer.from(`${jiraEmail}:${jiraApiToken}`).toString('base64')}`;
+      let exported = 0;
+      const errors = [];
+
+      for (const booking of toExport) {
+        try {
+          const title = booking.course_title || booking.item_title || booking.booking_type || 'Booking';
+          const guestName = booking.name || 'Unknown guest';
+          const summary = `[Booking] ${title} - ${guestName}`;
+          const payload = {
+            fields: {
+              project: { key: jiraProjectKey },
+              summary,
+              issuetype: { name: jiraIssueType },
+              description: toAtlassianDocument(booking),
+            },
+          };
+
+          const issueRes = await fetch(`${jiraBaseUrl}/rest/api/3/issue`, {
+            method: 'POST',
+            headers: {
+              'Authorization': authHeader,
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+          });
+
+          if (!issueRes.ok) {
+            const text = await issueRes.text().catch(() => '');
+            throw new Error(`Jira ${issueRes.status}: ${text}`);
+          }
+
+          exported++;
+        } catch (err) {
+          errors.push({ id: booking.id, error: err instanceof Error ? err.message : 'Unknown error' });
+        }
+      }
+
+      return res.status(200).json({
+        exported,
+        total: toExport.length,
+        errors: errors.length ? errors : undefined,
+        message: `${exported} of ${toExport.length} bookings exported to Jira.`,
+      });
     }
 
     const apiKey = String(process.env.TRELLO_API_KEY || '').trim();

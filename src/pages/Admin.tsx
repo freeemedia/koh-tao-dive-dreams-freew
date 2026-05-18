@@ -10,6 +10,7 @@ import AdminUsersManager from '../components/AdminUsersManager';
 
 function ProjectTab({ jiraProjectUrl, trelloBoardUrl }: { jiraProjectUrl: string; trelloBoardUrl: string }) {
   const [exporting, setExporting] = useState(false);
+  const [exportingJira, setExportingJira] = useState(false);
   const [exportResult, setExportResult] = useState<string | null>(null);
 
   async function handleExport() {
@@ -31,6 +32,25 @@ function ProjectTab({ jiraProjectUrl, trelloBoardUrl }: { jiraProjectUrl: string
     }
   }
 
+  async function handleJiraExport() {
+    setExportingJira(true);
+    setExportResult(null);
+    try {
+      const token = window.localStorage.getItem('admin_login_token') || window.sessionStorage.getItem('admin_login_token') || import.meta.env.VITE_ADMIN_BOOKINGS_VIEW_TOKEN || '';
+      const res = await fetch('/api/admin-bookings?action=export-to-jira', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-login-token': token },
+        body: JSON.stringify({}),
+      });
+      const data = await res.json();
+      setExportResult(data.message || (res.ok ? 'Jira export complete.' : data.error));
+    } catch {
+      setExportResult('Jira export failed. Check your network or Jira credentials.');
+    } finally {
+      setExportingJira(false);
+    }
+  }
+
   return (
     <div className="space-y-4">
       <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -49,6 +69,23 @@ function ProjectTab({ jiraProjectUrl, trelloBoardUrl }: { jiraProjectUrl: string
       </div>
 
       <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <h3 className="font-semibold text-slate-900">Export Bookings to Jira</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Creates a Jira issue for every booking in your database.
+          Requires <code className="rounded bg-slate-200 px-1 text-xs">JIRA_EMAIL</code>,{' '}
+          <code className="rounded bg-slate-200 px-1 text-xs">JIRA_API_TOKEN</code>, and{' '}
+          <code className="rounded bg-slate-200 px-1 text-xs">JIRA_PROJECT_KEY</code> set in Vercel.
+        </p>
+        <button
+          onClick={handleJiraExport}
+          disabled={exportingJira}
+          className="mt-3 inline-flex items-center justify-center rounded bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 disabled:opacity-60"
+        >
+          {exportingJira ? 'Exporting to Jira...' : 'Export all bookings to Jira'}
+        </button>
+      </div>
+
+      <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
         <h3 className="font-semibold text-slate-900">Export Bookings to Trello</h3>
         <p className="mt-1 text-sm text-slate-600">
           Creates a Trello card for every booking in your database.
@@ -61,7 +98,7 @@ function ProjectTab({ jiraProjectUrl, trelloBoardUrl }: { jiraProjectUrl: string
           disabled={exporting}
           className="mt-3 inline-flex items-center justify-center rounded bg-sky-700 px-4 py-2 text-sm font-medium text-white hover:bg-sky-800 disabled:opacity-60"
         >
-          {exporting ? 'Exporting…' : 'Export all bookings to Trello'}
+          {exporting ? 'Exporting to Trello...' : 'Export all bookings to Trello'}
         </button>
         {exportResult && (
           <p className="mt-2 rounded border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">{exportResult}</p>
