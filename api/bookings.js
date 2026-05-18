@@ -309,6 +309,7 @@ function normalizeBookingPayload(input, { includeId = false } = {}) {
 export default async function handler(req, res) {
   try {
     const dbProvider = getDbProvider();
+    res.setHeader('x-ktd-bookings-version', '2026-05-19a');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
