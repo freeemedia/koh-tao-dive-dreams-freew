@@ -1,6 +1,8 @@
 import { getDb, ensureBookingsTable } from './_lib/mysql.js';
 import { sendBookingNotificationEmail } from './send-booking-notification.js';
 
+const API_DEPLOY_MARKER = process.env.API_DEPLOY_MARKER || 'bookings-wp-primary-2026-05-22';
+
 // ---------- MySQL CRUD helpers ----------
 
 async function insertBooking(payload) {
@@ -141,26 +143,58 @@ function shouldSendBookingEmail(req) {
   const origin = String(req?.headers?.origin || '').toLowerCase();
   const referer = String(req?.headers?.referer || '').toLowerCase();
 
-  const allowed = [
-    'lembonganwatersports.com',
-    'www.lembonganwatersports.com',
-    'lembongan-seven.vercel.app',
-    'lembongan-divinngasia.vercel.app',
-  ];
+  const configuredDomains = [
+    process.env.SITE_DOMAIN,
+    process.env.SITE_URL,
+    process.env.VITE_API_BASE_URL,
+  ]
+    .filter(Boolean)
+    .map((value) => String(value).toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, ''));
+
+  const allowed = configuredDomains.length
+    ? configuredDomains
+    : [
+      'lembonganwatersports.com',
+      'www.lembonganwatersports.com',
+      'lembongan-seven.vercel.app',
+      'lembongan-divinngasia.vercel.app',
+    ];
 
   return allowed.some((domain) =>
     host.includes(domain) || origin.includes(domain) || referer.includes(domain)
   );
 }
 
+function isWordPressMirrorEnabled() {
+  return String(process.env.ENABLE_WP_BOOKING_MIRROR || '')
+    .trim()
+    .toLowerCase() === 'true';
+}
 
+function isWordPressPrimaryMode() {
+  const bookingStorage = String(process.env.BOOKING_STORAGE || process.env.BOOKINGS_PRIMARY || '')
+    .trim()
+    .toLowerCase();
+  const disableMysql = String(process.env.DISABLE_MYSQL_BOOKINGS || '')
+    .trim()
+    .toLowerCase() === 'true';
+  return disableMysql || bookingStorage === 'wordpress' || bookingStorage === 'wp';
+}
+
+function getWordPressBaseUrl() {
+  const directUrl = String(process.env.WP_BOOKING_URL || '').trim();
+  if (directUrl) return directUrl.replace(/\/$/, '');
+
+  const adminPanelUrl = String(process.env.ADMIN_PANEL_URL || '').trim();
+  if (!adminPanelUrl) return '';
+
+  return adminPanelUrl
+    .replace(/\/wp-admin\/.*$/i, '')
+    .replace(/\/$/, '');
+}
 
 async function mirrorBookingToWordPress(payload) {
-  const canonicalWpUrl = 'https://admin.lembonganwatersports.com';
-  let wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
-  if (!wpUrl || /admin\.divinginasia\.com$/i.test(wpUrl)) {
-    wpUrl = canonicalWpUrl;
-  }
+  const wpUrl = getWordPressBaseUrl();
   const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
   if (!wpApiKey) {
     return { ok: false, skipped: true, reason: 'WP_BOOKING_API_KEY missing' };
@@ -238,62 +272,59 @@ async function mirrorBookingToWordPress(payload) {
   throw new Error(`WordPress mirror failed: ${details}`);
 }
 
-async function fetchBookingsFromWordPress() {
-  const canonicalWpUrl = 'https://admin.lembonganwatersports.com';
-  let wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
-  if (!wpUrl || /admin\.divinginasia\.com$/i.test(wpUrl)) {
-    wpUrl = canonicalWpUrl;
+async function listBookingsFromWordPress() {
+  const wpUrl = getWordPressBaseUrl();
+  const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
+  if (!wpUrl || !wpApiKey) {
+    throw new Error('WordPress bookings are not configured (WP_BOOKING_URL and WP_BOOKING_API_KEY required)');
   }
 
-  const wpApiKey = (process.env.WP_BOOKING_API_KEY || '').trim();
-  if (!wpUrl || !wpApiKey) return null;
-
-  const endpoint = `${wpUrl}/wp-json/ktd/v1/bookings?nocache=${Date.now()}`;
-  const response = await fetch(endpoint, {
+  const endpoint = `${wpUrl}/wp-json/ktd/v1/bookings?per_page=500&nocache=${Date.now()}`;
+  const res = await fetch(endpoint, {
     headers: {
-      'Content-Type': 'application/json',
       'x-ktd-api-key': wpApiKey,
       'cache-control': 'no-cache',
     },
-    cache: 'no-store',
   });
 
-  if (!response.ok) {
-    const text = await response.text().catch(() => '');
-    throw new Error(`WordPress GET failed (${response.status}): ${text || 'unknown error'}`);
+  const text = await res.text();
+  let parsed = null;
+  try {
+    parsed = text ? JSON.parse(text) : null;
+  } catch {
+    parsed = null;
   }
 
-  const json = await response.json().catch(() => null);
-  const rowsRaw = Array.isArray(json?.data) ? json.data : (Array.isArray(json) ? json : []);
+  if (!res.ok) {
+    const message = parsed && typeof parsed === 'object'
+      ? (parsed.message || parsed.code)
+      : text;
+    throw new Error(`WordPress bookings fetch failed: ${res.status} ${message || 'unknown error'}`);
+  }
 
-  const rows = rowsRaw.map((row) => ({
-    ...row,
-    internal_notes: row?.internal_notes || row?.message || '',
-    message: row?.message || row?.internal_notes || '',
-  }));
-
-  return rows;
+  if (Array.isArray(parsed)) return parsed;
+  if (parsed && Array.isArray(parsed.data)) return parsed.data;
+  if (parsed && Array.isArray(parsed.bookings)) return parsed.bookings;
+  return [];
 }
 
 export default async function handler(req, res) {
   try {
+    const wordpressPrimary = isWordPressPrimaryMode();
+
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('X-API-Deploy-Marker', API_DEPLOY_MARKER);
 
     if (req.method === 'OPTIONS') {
       return res.status(200).end();
     }
 
     if (req.method === 'GET') {
-      // WordPress is primary when configured (matches migrated WP tables).
-      try {
-        const wpRows = await fetchBookingsFromWordPress();
-        if (wpRows) {
-          return res.status(200).json({ bookings: wpRows, source: 'wordpress' });
-        }
-      } catch (wpError) {
-        console.warn('WordPress bookings fetch failed, falling back to MySQL:', wpError);
+      if (wordpressPrimary) {
+        const wpRows = await listBookingsFromWordPress();
+        return res.status(200).json({ bookings: wpRows, source: 'wordpress' });
       }
 
       const rows = await getAllBookings();
@@ -310,22 +341,54 @@ export default async function handler(req, res) {
           : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
         const payload = normalizeBookingPayload({ id: generatedId, ...rest }, { includeId: true });
 
-        // MySQL is the primary store — booking must succeed here.
-        try {
-          await insertBooking(payload);
-        } catch (err) {
-          const message = err instanceof Error ? err.message : 'Database write failed';
-          return res.status(500).json({ error: message });
+        if (wordpressPrimary) {
+          const wpMirrorResult = await mirrorBookingToWordPress(payload);
+
+          // Best effort email notification for new bookings.
+          if (shouldSendBookingEmail(req)) {
+            await sendBookingNotificationEmail({
+              ...payload,
+              item_title: payload.course_title || payload.item_title,
+            }).catch(() => {});
+          }
+
+          return res.status(201).json({
+            ...payload,
+            persisted_in_mysql: false,
+            wp_mirror_endpoint: wpMirrorResult?.endpoint || null,
+            wp_mirror_id: wpMirrorResult?.id || null,
+            source: 'wordpress',
+          });
         }
 
-        // WordPress mirror is best-effort — failures are logged but do not block the response.
-        let wpMirrorResult = null;
+        // Try both stores; at least one successful write is enough for a valid booking.
         let mysqlWarning = null;
+        let mysqlOk = false;
         try {
-          wpMirrorResult = await mirrorBookingToWordPress(payload);
+          await insertBooking(payload);
+          mysqlOk = true;
         } catch (err) {
-          mysqlWarning = err instanceof Error ? err.message : 'WordPress mirror failed';
-          console.warn('WordPress mirror failed (non-fatal):', mysqlWarning);
+          mysqlWarning = err instanceof Error ? err.message : 'Database write failed';
+          console.warn('MySQL booking insert failed (non-fatal if WP succeeds):', mysqlWarning);
+        }
+
+        let wpMirrorResult = null;
+        let wpWarning = null;
+        if (isWordPressMirrorEnabled()) {
+          try {
+            wpMirrorResult = await mirrorBookingToWordPress(payload);
+          } catch (err) {
+            wpWarning = err instanceof Error ? err.message : 'WordPress mirror failed';
+            console.warn('WordPress mirror failed (non-fatal because MySQL succeeded):', wpWarning);
+          }
+        }
+
+        if (!mysqlOk) {
+          return res.status(500).json({
+            error: 'Failed to create booking in MySQL',
+            mysql_error: mysqlWarning,
+            ...(wpWarning ? { wp_error: wpWarning } : {}),
+          });
         }
 
         // Best effort email notification for new bookings.
@@ -340,10 +403,14 @@ export default async function handler(req, res) {
 
         const responsePayload = {
           ...payload,
+          persisted_in_mysql: mysqlOk,
           wp_mirror_endpoint: wpMirrorResult?.endpoint || null,
           wp_mirror_id: wpMirrorResult?.id || null,
         };
 
+        if (wpWarning) {
+          responsePayload.wp_warning = wpWarning;
+        }
         if (mysqlWarning) {
           return res.status(201).json({ ...responsePayload, mysql_warning: mysqlWarning });
         }
@@ -365,6 +432,12 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'DELETE') {
+      if (wordpressPrimary) {
+        return res.status(501).json({
+          error: 'DELETE is not supported in WordPress primary mode from this endpoint',
+        });
+      }
+
       const id = req.query?.id || (parseBody(req) || {}).id;
       if (!id) return res.status(400).json({ error: 'Missing booking id' });
 
