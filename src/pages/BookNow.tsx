@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next'
 export default function BookNow() {
   const { t } = useTranslation()
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
-  const apiBase = (import.meta.env.VITE_API_BASE_URL || 'https://api.lembonganwatersports.com')
-    .trim()
-    .replace(/\/+$/, '')
+  const configuredApiBase = (import.meta.env.VITE_API_BASE_URL || '').trim().replace(/\/+$/, '')
+  const apiBase = configuredApiBase.includes('api.lembonganwatersports.com')
+    ? configuredApiBase
+    : 'https://api.lembonganwatersports.com'
   const [form, setForm] = useState({
     name: '', email: '', phone: '', date: '', divers: '1', type: 'Fun Dive', message: ''
   })
