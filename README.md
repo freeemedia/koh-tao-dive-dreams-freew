@@ -1,91 +1,39 @@
-# Welcome to your Lovable project
+# Lembongan Static Frontend
 
-## Project info
+This repository is now running in static frontend mode.
 
-**URL**: https://lovable.dev/projects/262b1d2a-b9e8-4e3a-8aaf-307801ed16f9
+The app is built with Vite + React + TypeScript and deployed as static assets.
 
-## How can I edit this code?
+## Local development
 
-There are several ways of editing your application.
+Requirements:
 
-**Use Lovable**
+- Node.js 20+
+- npm 10+
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/262b1d2a-b9e8-4e3a-8aaf-307801ed16f9) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Commands:
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Build command:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```sh
+npm run build
+```
 
-**Use GitHub Codespaces**
+The production files are generated in the `dist` directory.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Deployment (Hostinger static)
 
-## What technologies are used for this project?
+1. Run `npm run build`.
+2. Upload the contents of `dist` to the web root on Hostinger.
+3. Configure SPA fallback so non-file routes resolve to `index.html`.
+4. Purge any CDN/cache layer after upload.
 
-This project is built with:
+## Notes
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## Airtable CRM setup (Bookings + Affiliate clicks)
-
-This project now stores booking inquiries and affiliate click tracking in Airtable.
-
-1. Copy [.env.example](.env.example) to `.env` and set:
-   - `AIRTABLE_PERSONAL_ACCESS_TOKEN`
-   - `AIRTABLE_BASE_ID`
-   - `AIRTABLE_BOOKINGS_TABLE` (default: `bookings`)
-   - `AIRTABLE_AFFILIATE_CLICKS_TABLE` (default: `affiliate_clicks`)
-
-2. Create Airtable tables with these fields:
-   - `bookings`: `id`, `name`, `email`, `phone`, `course_title`, `preferred_date`, `experience_level`, `message`, `status`, `created_at`, `updated_at`
-   - `affiliate_clicks`: `id`, `hotel_name`, `hotel_url`, `affiliate_id`, `referrer`, `user_agent`, `clicked_at`
-
-3. Local dev (API + frontend):
-   - Run API server: `node server.cjs` (port `3001`)
-   - Run frontend: `npm run dev` (Vite proxies `/api` to `http://localhost:3001`)
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/262b1d2a-b9e8-4e3a-8aaf-307801ed16f9) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- This mode does not depend on the local Node server for development.
+- `vercel.json` is configured for static SPA behavior only.

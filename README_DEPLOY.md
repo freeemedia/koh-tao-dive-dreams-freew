@@ -1,64 +1,36 @@
-# Deploying to Vercel
+# Deploying Static Frontend (Hostinger)
 
-This project is configured to deploy a static frontend (Vite build) and serverless API functions on Vercel.
+This project is deployed as a static frontend.
 
-The repository root is the deployable Vite app. The separate `admin/` folder is its own Next.js app and should only be deployed as a separate Vercel project with `admin` set as the Root Directory.
-
-## Quick steps
-
-1. Commit and push your changes to the repository.
-2. In the Vercel dashboard, create a new project and import the repository.
-3. Set the framework preset to `Vite`, then set the build command to:
+## Build locally
 
 ```bash
+npm install
 npm run build
 ```
 
-1. Set the output directory to:
+Build output is generated in `dist/`.
 
-```text
-dist
-```
+## Upload to Hostinger
 
-1. Add the environment variables (Project Settings → Environment Variables):
+1. Open Hostinger File Manager.
+2. Go to the site root (`public_html`).
+3. Remove old static assets from previous deploys.
+4. Upload all files from `dist/` into `public_html`.
 
-- SUPABASE_URL
-- SUPABASE_SERVICE_ROLE_KEY (server-side only)
-- VITE_SUPABASE_URL
-- VITE_SUPABASE_ANON_KEY
-- VITE_API_BASE_URL (optional; leave empty to use same-origin)
-- VITE_ADMIN_EMAILS (optional)
-- DROPBOX_ACCESS_TOKEN (required for Dropbox-backed gallery sections)
-- BOOKING_CALENDAR_TOKEN (optional; protects /api/bookings/calendar when set)
+## SPA routing
 
-Security note: do NOT expose `SUPABASE_SERVICE_ROLE_KEY` in client builds — only set it in Vercel's server-side env configuration.
-Never create or use `VITE_SUPABASE_SERVICE_ROLE_KEY`; any `VITE_` variable is bundled into the client.
+Set rewrite/fallback so unknown routes resolve to `index.html`.
 
-## Local testing
+Without this, direct refresh on routes like `/contact` or `/book-now` returns 404.
 
-- Run backend + frontend concurrently (single-port dev):
+## Cache
 
-```bash
-npm run dev:single
-```
+After upload:
 
-- Or run the dev stack using Vercel's local simulator:
+1. Purge Hostinger cache/CDN (if enabled).
+2. Hard-refresh browser cache.
 
-```bash
-vercel dev
-```
+## Optional Vercel usage
 
-## CI / CLI deploy
-
-- To deploy from your machine using the Vercel CLI:
-
-```bash
-vercel --prod
-```
-
-## Notes
-
-- `vercel.json` is included to configure static build and serverless functions.
-- `vercel.json` explicitly pins the root app to the `vite` preset so Vercel does not try to detect Next.js from the repository root.
-- If you want to deploy `admin/`, create a second Vercel project and set its Root Directory to `admin` so Vercel reads `admin/package.json`, where `next` is declared.
-- The `/api` folder maps to Vercel functions; keep server-only secrets in Vercel environment settings.
+`vercel.json` is kept in static SPA mode only. It is optional and not required for Hostinger deployment.

@@ -1,7 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
-
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "headers": [
@@ -19,8 +18,6 @@
     }
   ],
   "rewrites": [
-    { "source": "/wp-json/:path*", "destination": "https://admin.lembonganwatersports.com/wp-json/:path*" },
-    { "source": "/api/:path*", "destination": "/api/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
