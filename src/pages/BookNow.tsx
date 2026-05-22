@@ -4,6 +4,9 @@ import { useTranslation } from 'react-i18next'
 export default function BookNow() {
   const { t } = useTranslation()
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
+  const apiBase = (import.meta.env.VITE_API_BASE_URL || 'https://api.lembonganwatersports.com')
+    .trim()
+    .replace(/\/+$/, '')
   const [form, setForm] = useState({
     name: '', email: '', phone: '', date: '', divers: '1', type: 'Fun Dive', message: ''
   })
@@ -16,7 +19,7 @@ export default function BookNow() {
     e.preventDefault()
     setStatus('sending')
     try {
-      const res = await fetch('/api/bookings', {
+      const res = await fetch(`${apiBase}/api/bookings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -31,7 +34,11 @@ export default function BookNow() {
           status: 'pending',
         }),
       })
-      if (res.ok || res.status === 201) {
+
+      const contentType = (res.headers.get('content-type') || '').toLowerCase()
+      const isJson = contentType.includes('application/json')
+
+      if ((res.ok || res.status === 201) && isJson) {
         setStatus('success')
         setForm({ name: '', email: '', phone: '', date: '', divers: '1', type: 'Fun Dive', message: '' })
       } else {

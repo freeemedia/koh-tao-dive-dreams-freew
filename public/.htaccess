@@ -1,5 +1,9 @@
 RewriteEngine On
 RewriteBase /
+
+# Send /admin directly to WordPress admin.
+RewriteRule ^admin/?$ https://admin.lembonganwatersports.com/wp-admin/ [R=302,L]
+
 RewriteRule ^index\.html$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 const fallbackAdminUrl =
-  'https://admin.lembonganwatersports.com/wp-admin/admin.php?page=ktd-dashboard'
+  'https://admin.lembonganwatersports.com/wp-admin/'
 
 export default function AdminRedirect() {
   const targetUrl = (import.meta.env.VITE_ADMIN_PANEL_URL || fallbackAdminUrl).trim()
