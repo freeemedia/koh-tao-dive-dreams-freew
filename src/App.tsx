@@ -5,6 +5,7 @@ import Packages from './pages/Packages'
 import FunDiving from './pages/FunDiving'
 import BookNow from './pages/BookNow'
 import Contact from './pages/Contact'
+import AdminRedirect from './pages/AdminRedirect'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="packages" element={<Packages />} />
           <Route path="fun-diving" element={<FunDiving />} />
           <Route path="book" element={<BookNow />} />
+          <Route path="admin" element={<AdminRedirect />} />
           <Route path="contact" element={<Contact />} />
           <Route path="*" element={<NotFound />} />
         </Route>
