@@ -36,7 +36,7 @@ const NewBooking: React.FC = () => {
           ...form,
           id: crypto.randomUUID(),
           item_type: 'course',
-          status: 'pending',
+          status: 'new',
           created_at: new Date().toISOString(),
         }),
       });

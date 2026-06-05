@@ -87,8 +87,9 @@ class KTD_Invoice {
                     <p><strong><?php echo esc_html( $inv_num ); ?></strong></p>
                     <p>Issued: <?php echo esc_html( $today ); ?></p>
                     <p>
-                        <span class="badge badge-<?php echo esc_attr( $booking['status'] ?? 'pending' ); ?>">
-                            <?php echo esc_html( $booking['status'] ?? 'pending' ); ?>
+                        <?php $invoice_status = \KTD_Booking_Status::normalize( (string) ( $booking['status'] ?? 'new' ) ); ?>
+                        <span class="badge badge-<?php echo esc_attr( $invoice_status ); ?>">
+                            <?php echo esc_html( $invoice_status ); ?>
                         </span>
                         &nbsp;
                         <span class="badge badge-<?php echo esc_attr( $booking['payment_status'] ?? 'unpaid' ); ?>">

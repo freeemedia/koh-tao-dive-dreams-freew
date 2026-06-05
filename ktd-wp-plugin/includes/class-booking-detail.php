@@ -24,7 +24,12 @@ class KTD_Booking_Detail {
             return;
         }
 
-        $statuses  = [ 'pending', 'confirmed', 'cancelled', 'completed', 'enquiry' ];
+        $current_status     = \KTD_Booking_Status::normalize( (string) ( $booking['status'] ?? 'new' ) );
+        $editable_statuses  = array_values( array_unique( array_merge(
+            [ $current_status ],
+            \KTD_Booking_Status::allowed_next( $current_status )
+        ) ) );
+        $allowed_next_text  = implode( ', ', array_map( [ '\\KTD_Booking_Status', 'label' ], \KTD_Booking_Status::allowed_next( $current_status ) ) );
         $payments  = [ 'unpaid', 'deposit_paid', 'paid', 'refunded' ];
         $notes     = $booking['internal_notes'] ?? '';
         $comments  = $this->parse_comments( $notes );
@@ -70,10 +75,17 @@ class KTD_Booking_Detail {
                         <div class="ktd-field-row">
                             <label>Status</label>
                             <select name="status">
-                                <?php foreach ( $statuses as $s ) : ?>
-                                    <option value="<?php echo esc_attr( $s ); ?>" <?php selected( $booking['status'] ?? '', $s ); ?>><?php echo esc_html( ucfirst( $s ) ); ?></option>
+                                <?php foreach ( $editable_statuses as $s ) : ?>
+                                    <option value="<?php echo esc_attr( $s ); ?>" <?php selected( $current_status, $s ); ?>><?php echo esc_html( \KTD_Booking_Status::label( $s ) ); ?></option>
                                 <?php endforeach; ?>
                             </select>
+                            <p class="description">
+                                <?php if ( $allowed_next_text ) : ?>
+                                    Allowed next statuses: <?php echo esc_html( $allowed_next_text ); ?>
+                                <?php else : ?>
+                                    This booking is in a terminal status and cannot transition further.
+                                <?php endif; ?>
+                            </p>
                         </div>
 
                         <div class="ktd-field-row">

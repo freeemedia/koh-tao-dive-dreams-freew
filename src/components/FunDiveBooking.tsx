@@ -121,7 +121,7 @@ const FunDiveBooking: React.FC<FunDiveBookingProps> = ({ initialSite }) => {
             message: data.message,
             item_title: selectedSite || 'Fun Dive',
             course_title: selectedSite || 'Fun Dive',
-            status: 'pending',
+            status: 'new',
             created_at: new Date().toISOString(),
           };
           // Fire-and-forget — backend handles notifications.

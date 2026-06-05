@@ -5,22 +5,34 @@ import {
   isMySqlProvider,
   isWordPressProvider,
   listSupabaseBookings,
+  getSupabaseBookingById,
   insertSupabaseBooking,
   updateSupabaseBookingById,
   deleteSupabaseBookingById,
 } from './_lib/supabase-bookings.js';
 import {
   listMySqlBookings,
+  getMySqlBookingById,
   insertMySqlBooking,
   updateMySqlBookingById,
   deleteMySqlBookingById,
 } from './_lib/mysql-bookings.js';
 import {
   listWordPressBookings,
+  getWordPressBookingById,
   insertWordPressBooking,
   updateWordPressBookingById,
   deleteWordPressBookingById,
 } from './_lib/wordpress-bookings.js';
+
+const BOOKING_STATUS_VALUES = ['new', 'confirmed', 'deposit_paid', 'completed', 'cancelled'];
+const BOOKING_STATUS_TRANSITIONS = {
+  new: ['confirmed', 'deposit_paid', 'cancelled'],
+  confirmed: ['deposit_paid', 'completed', 'cancelled'],
+  deposit_paid: ['confirmed', 'completed', 'cancelled'],
+  completed: [],
+  cancelled: [],
+};
 
 async function sendFluentBookingWebhook(payload) {
   const webhookUrl = String(process.env.FLUENT_BOOKING_WEBHOOK_URL || '').trim();
@@ -211,6 +223,46 @@ function cleanOptionalDate(value) {
   return /^\d{4}-\d{2}-\d{2}$/.test(normalized) ? normalized : null;
 }
 
+function normalizeBookingStatus(value) {
+  const normalized = cleanOptionalString(value);
+  if (!normalized) return null;
+
+  const lower = normalized.toLowerCase();
+  if (BOOKING_STATUS_VALUES.includes(lower)) {
+    return lower;
+  }
+
+  const aliases = {
+    pending: 'new',
+    paid: 'deposit_paid',
+    deposit_received: 'deposit_paid',
+    done: 'completed',
+    canceled: 'cancelled',
+  };
+
+  return aliases[lower] || null;
+}
+
+function bookingStatusErrorMessage(value) {
+  return `Invalid booking status '${String(value)}'. Allowed values: ${BOOKING_STATUS_VALUES.join(', ')}`;
+}
+
+async function getBookingByIdForProvider(id) {
+  if (isSupabaseProvider()) {
+    return getSupabaseBookingById(id);
+  }
+
+  if (isMySqlProvider()) {
+    return getMySqlBookingById(id);
+  }
+
+  if (isWordPressProvider()) {
+    return getWordPressBookingById(id);
+  }
+
+  throw new Error(`Unsupported DB provider for bookings: ${getDbProvider()}`);
+}
+
 function isMySqlAccessDeniedError(error) {
   if (!error) return false;
 
@@ -294,7 +346,10 @@ function normalizeBookingPayload(input, { includeId = false } = {}) {
   if (src.message != null) out.message = cleanOptionalString(src.message);
   else if (src.comments != null) out.message = cleanOptionalString(src.comments);
   else if (src.questions != null) out.message = cleanOptionalString(src.questions);
-  if (src.status != null) out.status = cleanOptionalString(src.status);
+  if (src.status != null) {
+    const normalizedStatus = normalizeBookingStatus(src.status);
+    if (normalizedStatus) out.status = normalizedStatus;
+  }
   if (src.internal_notes != null) out.internal_notes = cleanOptionalString(src.internal_notes);
   // Keep admin notes populated for forms that only send `message`.
   if (out.internal_notes == null && src.message != null) out.internal_notes = cleanOptionalString(src.message);
@@ -309,7 +364,7 @@ function normalizeBookingPayload(input, { includeId = false } = {}) {
 export default async function handler(req, res) {
   try {
     const dbProvider = getDbProvider();
-    res.setHeader('x-ktd-bookings-version', '2026-05-19a');
+    res.setHeader('x-ktd-bookings-version', '2026-06-06-status-workflow');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -377,12 +432,21 @@ export default async function handler(req, res) {
       const updateMode = String(req.query?.mode || body?.mode || '').trim().toLowerCase() === 'update';
 
       if (!updateMode) {
+        if (rest.status != null) {
+          const normalizedStatus = normalizeBookingStatus(rest.status);
+          if (!normalizedStatus) {
+            return res.status(400).json({ error: bookingStatusErrorMessage(rest.status) });
+          }
+          rest.status = normalizedStatus;
+        }
+
         const createId = cleanOptionalString(id) || (
           (globalThis.crypto && typeof globalThis.crypto.randomUUID === 'function')
             ? globalThis.crypto.randomUUID()
             : `${Date.now()}-${Math.random().toString(16).slice(2)}`
         );
         const payload = normalizeBookingPayload({ id: createId, ...rest }, { includeId: true });
+        if (!payload.status) payload.status = 'new';
 
         if (isSupabaseProvider()) {
           try {
@@ -461,9 +525,30 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'No fields to update' });
       }
 
+      if (rest.status != null) {
+        const normalizedStatus = normalizeBookingStatus(rest.status);
+        if (!normalizedStatus) {
+          return res.status(400).json({ error: bookingStatusErrorMessage(rest.status) });
+        }
+        rest.status = normalizedStatus;
+      }
+
       const updates = normalizeBookingPayload(rest);
       if (Object.keys(updates).length === 0) {
         return res.status(400).json({ error: 'No valid fields to update' });
+      }
+
+      if (updates.status != null) {
+        const currentBooking = await getBookingByIdForProvider(id);
+        const currentStatus = normalizeBookingStatus(currentBooking?.status) || 'new';
+        const allowedNext = BOOKING_STATUS_TRANSITIONS[currentStatus] || [];
+
+        if (currentStatus !== updates.status && !allowedNext.includes(updates.status)) {
+          return res.status(400).json({
+            error: `Invalid status transition from '${currentStatus}' to '${updates.status}'`,
+            allowedNext,
+          });
+        }
       }
 
       if (isSupabaseProvider()) {

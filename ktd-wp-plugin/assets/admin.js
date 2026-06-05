@@ -66,16 +66,48 @@ jQuery(function ($) {
         });
     });
 
-    // ── Quick status update from list table (future enhancement) ────────
+    // ── Quick status update from list table ──────────────────────────────
     $(document).on('change', '.ktd-quick-status', function () {
         const $sel = $(this);
         const id   = $sel.data('id');
+        const prev = $sel.data('current') || '';
+        const next = $sel.val();
+        const $cell = $sel.closest('td');
+        const $badge = $cell.find('.ktd-badge');
+        const $msg = $cell.find('.ktd-inline-status-message');
+
+        if (!id || !next || prev === next) {
+            return;
+        }
+
+        $sel.prop('disabled', true);
+        $msg.css('color', '#6c757d').text('Saving...');
+
         $.post(ktdAjax.url, {
             action: 'ktd_update_booking',
             nonce:  ktdAjax.nonce,
             id:     id,
-            status: $sel.val(),
-        });
+            status: next,
+        })
+            .done(function (res) {
+                if (res.success) {
+                    $sel.data('current', next);
+                    $badge
+                        .attr('class', 'ktd-badge ktd-status-' + next)
+                        .text(next.replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); }));
+                    $msg.css('color', '#155724').text('Saved');
+                } else {
+                    $sel.val(prev);
+                    $msg.css('color', '#721c24').text('Error: ' + (res.data || 'Unknown'));
+                }
+            })
+            .fail(function () {
+                $sel.val(prev);
+                $msg.css('color', '#721c24').text('Request failed');
+            })
+            .always(function () {
+                $sel.prop('disabled', false);
+            });
     });
 
 });

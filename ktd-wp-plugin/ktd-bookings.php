@@ -13,6 +13,7 @@ define( 'KTD_BOOKINGS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'KTD_BOOKINGS_URL', plugin_dir_url( __FILE__ ) );
 
 require_once KTD_BOOKINGS_DIR . 'includes/class-api-client.php';
+require_once KTD_BOOKINGS_DIR . 'includes/class-booking-status.php';
 require_once KTD_BOOKINGS_DIR . 'includes/class-bookings-list.php';
 require_once KTD_BOOKINGS_DIR . 'includes/class-booking-detail.php';
 require_once KTD_BOOKINGS_DIR . 'includes/class-finance.php';
@@ -56,22 +57,22 @@ class KTD_Bookings_Plugin {
     }
 
     public function page_bookings() {
-        $list = new KTD_Bookings_List();
+        $list = new \KTD_Bookings_List();
         $list->render();
     }
 
     public function page_finance() {
-        $finance = new KTD_Finance();
+        $finance = new \KTD_Finance();
         $finance->render();
     }
 
     public function page_booking_detail() {
-        $detail = new KTD_Booking_Detail();
+        $detail = new \KTD_Booking_Detail();
         $detail->render();
     }
 
     public function page_invoice() {
-        $invoice = new KTD_Invoice();
+        $invoice = new \KTD_Invoice();
         $invoice->render();
     }
 
@@ -125,7 +126,38 @@ class KTD_Bookings_Plugin {
             }
         }
 
-        $api    = new KTD_API_Client();
+        if ( isset( $updates['status'] ) ) {
+            if ( ! \KTD_Booking_Status::is_valid( $updates['status'] ) ) {
+                wp_send_json_error( 'Invalid status value.' );
+            }
+
+            $updates['status'] = \KTD_Booking_Status::normalize( $updates['status'] );
+
+            $api              = new \KTD_API_Client();
+            $current_booking  = $api->get_booking( $id );
+            if ( is_wp_error( $current_booking ) ) {
+                wp_send_json_error( $current_booking->get_error_message() );
+            }
+
+            $current_status = \KTD_Booking_Status::normalize( (string) ( $current_booking['status'] ?? 'new' ) );
+            if ( ! \KTD_Booking_Status::can_transition( $current_status, $updates['status'] ) ) {
+                $allowed_next = \KTD_Booking_Status::allowed_next( $current_status );
+                $allowed_text = empty( $allowed_next )
+                    ? 'none'
+                    : implode( ', ', array_map( [ '\\KTD_Booking_Status', 'label' ], $allowed_next ) );
+
+                wp_send_json_error(
+                    sprintf(
+                        'Invalid status transition from %s to %s. Allowed next: %s',
+                        \KTD_Booking_Status::label( $current_status ),
+                        \KTD_Booking_Status::label( $updates['status'] ),
+                        $allowed_text
+                    )
+                );
+            }
+        }
+
+        $api    = new \KTD_API_Client();
         $result = $api->patch_booking( $id, $updates );
         if ( is_wp_error( $result ) ) {
             wp_send_json_error( $result->get_error_message() );
@@ -141,7 +173,7 @@ class KTD_Bookings_Plugin {
         $comment = sanitize_text_field( $_POST['comment'] ?? '' );
         if ( ! $id || ! $comment ) wp_send_json_error( 'Missing id or comment' );
 
-        $api     = new KTD_API_Client();
+        $api     = new \KTD_API_Client();
         $booking = $api->get_booking( $id );
         if ( is_wp_error( $booking ) ) wp_send_json_error( $booking->get_error_message() );
 

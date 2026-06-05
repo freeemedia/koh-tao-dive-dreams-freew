@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
+import { getApiBaseUrl } from '@/lib/apiBase';
 
 const schema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100),
@@ -48,7 +49,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
   const [showAccommodationNotice, setShowAccommodationNotice] = useState(false);
   const [pendingSubmission, setPendingSubmission] = useState<FormData | null>(null);
 
-  const apiBase = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '').trim().replace(/\/+$/, '');
+  const apiBase = getApiBaseUrl();
   const apiUrl = (path: string) => (apiBase ? `${apiBase}${path}` : path);
   const paypalBase = (import.meta.env.VITE_PAYPAL_LINK || 'https://paypal.me/prodivingasia').trim().replace(/\/+$/, '');
   const form = useForm<FormData>({
@@ -102,7 +103,7 @@ const InlineCourseBookingForm: React.FC<Props> = ({
             booking_type: itemType,
             item_title: itemTitle,
             course_title: itemTitle,
-            status: 'pending',
+            status: 'new',
             guests: Number.isFinite(guestCount) ? guestCount : 1,
             deposit_amount: deposit,
             total_amount: deposit > 0 ? Math.round(deposit / 0.2) : 0,

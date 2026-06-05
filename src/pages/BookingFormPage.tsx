@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
 import { sendBookingNotification } from '@/lib/sendBookingNotification';
+import { getApiBaseUrl } from '@/lib/apiBase';
 
 const bookingSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100),
@@ -80,8 +81,7 @@ type BookingItemType = 'course' | 'dive' | 'stay';
 const       BookingPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const apiBaseRaw = (import.meta.env.VITE_API_BASE_URL || '').trim();
-  const apiBase = apiBaseRaw ? apiBaseRaw.replace(/\/+$/, '') : '';
+  const apiBase = getApiBaseUrl();
   const apiUrl = (path: string) => `${apiBase}${path}`;
   const courseSlug = (searchParams.get('course') || '').trim();
   const fallbackCourse = courseSlug ? COURSE_FALLBACKS[courseSlug] : undefined;
@@ -209,7 +209,7 @@ const       BookingPage: React.FC = () => {
         subtotal_amount: totalItemCostMajor > 0 ? totalItemCostMajor : null,
         total_payable_now: amountMajor > 0 ? amountMajor : null,
         message: messageWithSource,
-        status: 'pending',
+        status: 'new',
         deposit_amount: depositAmountMajor,
         total_amount: totalAmountMajor,
         due_amount: balanceAmountMajor,
@@ -220,6 +220,7 @@ const       BookingPage: React.FC = () => {
       let bookingApiWarning: string | null = null;
       try {
         const dbRes = await fetch(apiUrl('/api/bookings'), {
+          
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(apiBookingPayload),

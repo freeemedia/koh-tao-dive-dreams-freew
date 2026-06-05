@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
+import { getApiBaseUrl } from '@/lib/apiBase';
 
 const bookingSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
@@ -36,7 +37,7 @@ const COURSE_DEPOSIT_RATE = 0.2;
 
 const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, itemTitle, depositMajor, depositCurrency }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const apiBase = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '').trim().replace(/\/+$/, '');
+  const apiBase = getApiBaseUrl();
   const apiUrl = (path: string) => (apiBase ? `${apiBase}${path}` : path);
 
   const form = useForm<BookingFormData>({
@@ -100,7 +101,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
             payment_choice: paymentChoice,
             item_type: itemType,
             course_title: itemTitle,
-            status: 'pending',
+            status: 'new',
             booking_type: itemType,
             item_title: itemTitle,
             deposit_amount,

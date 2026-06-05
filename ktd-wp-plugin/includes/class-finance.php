@@ -34,7 +34,7 @@ class KTD_Finance {
 
             $month   = substr( $created, 0, 7 ); // YYYY-MM
             $type    = $b['booking_type'] ?? 'unknown';
-            $status  = $b['status'] ?? 'pending';
+            $status  = \KTD_Booking_Status::normalize( (string) ( $b['status'] ?? 'new' ) );
             $total   = (float) ( $b['total_amount'] ?? 0 );
             $deposit = (float) ( $b['deposit_amount'] ?? 0 );
 
