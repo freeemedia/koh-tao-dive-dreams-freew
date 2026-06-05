@@ -73,6 +73,11 @@ class KTD_Booking_Detail {
                         <?php endforeach; ?>
 
                         <div class="ktd-field-row">
+                            <label>Internal Notes</label>
+                            <textarea name="internal_notes" rows="6" class="large-text"><?php echo esc_textarea( $notes ); ?></textarea>
+                        </div>
+
+                        <div class="ktd-field-row">
                             <label>Status</label>
                             <select name="status">
                                 <?php foreach ( $editable_statuses as $s ) : ?>

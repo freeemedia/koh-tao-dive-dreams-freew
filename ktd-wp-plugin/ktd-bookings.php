@@ -82,7 +82,7 @@ class KTD_Bookings_Plugin {
             update_option( 'ktd_admin_token', sanitize_text_field( $_POST['ktd_admin_token'] ?? '' ) );
             echo '<div class="notice notice-success"><p>Settings saved.</p></div>';
         }
-        $api_url     = get_option( 'ktd_api_url', 'https://www.divinginasia.com' );
+        $api_url     = get_option( 'ktd_api_url', 'https://api.divinginasia.com' );
         $admin_token = get_option( 'ktd_admin_token', '' );
         ?>
         <div class="wrap">
@@ -94,7 +94,7 @@ class KTD_Bookings_Plugin {
                         <th><label for="ktd_api_url">API Base URL</label></th>
                         <td>
                             <input type="url" id="ktd_api_url" name="ktd_api_url" value="<?php echo esc_attr( $api_url ); ?>" class="regular-text" />
-                            <p class="description">e.g. https://www.divinginasia.com</p>
+                            <p class="description">e.g. https://api.divinginasia.com</p>
                         </td>
                     </tr>
                     <tr>
