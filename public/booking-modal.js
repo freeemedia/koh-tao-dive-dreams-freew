@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Payment buttons
   payNowBtn.type = 'button';
-  payNowBtn.textContent = 'Pay 20% Deposit Now';
+  payNowBtn.textContent = 'Pay 10% Deposit Now';
   payNowBtn.style.marginRight = '1rem';
   sendInquiryBtn.type = 'submit';
   sendInquiryBtn.textContent = 'Send Inquiry';
@@ -67,12 +67,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const selected = courseSelect.options[courseSelect.selectedIndex];
     const price = selected.dataset.price ? parseFloat(selected.dataset.price) : 0;
     priceDisplay.textContent = price ? `Course Price: ฿${price}` : '';
-    depositDisplay.textContent = price ? `20% Deposit: ฿${Math.round(price * 0.2)}` : '';
+    depositDisplay.textContent = price ? `10% Deposit: ฿${Math.round(price * 0.1)}` : '';
     payNowBtn.disabled = !price;
     // Update PayPal link hidden field
     const paypalField = document.getElementById('paypal_link_field');
     if (paypalField) {
-      paypalField.value = price ? `https://paypal.me/prodivingasia/${Math.round(price * 0.2)}THB` : '';
+      paypalField.value = price ? `https://paypal.me/prodivingasia/${Math.round(price * 0.1)}THB` : '';
     }
   };
   payNowBtn.disabled = true;
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const price = selected.dataset.price ? parseFloat(selected.dataset.price) : 0;
     if (!price) return;
     // TODO: Integrate Stripe/PayPal checkout here
-    alert('Redirecting to payment for ฿' + Math.round(price * 0.2) + ' deposit.');
+    alert('Redirecting to payment for ฿' + Math.round(price * 0.1) + ' deposit.');
     // After payment, collect form data and send to backend/email if needed
   };
 

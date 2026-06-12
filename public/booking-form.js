@@ -15,7 +15,7 @@ function updatePrice() {
   if (price.startsWith('฿')) {
     // Extract numeric value
     const numeric = parseInt(price.replace(/[^\d]/g, ''), 10);
-    const deposit = Math.round(numeric * 0.2);
+    const deposit = Math.round(numeric * 0.1);
     depositAmount.textContent = `฿${deposit}`;
     paypalLink.href = `https://paypal.me/prodivingasia/${deposit}THB`;
     depositSection.style.display = '';

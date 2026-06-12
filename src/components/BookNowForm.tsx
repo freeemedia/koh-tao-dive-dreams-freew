@@ -12,7 +12,7 @@ const COURSE_PRICES: Record<string, number> = {
   'Fun Dive': 1800,
 };
 
-const COURSE_DEPOSIT_RATE = 0.2;
+const COURSE_DEPOSIT_RATE = 0.1;
 
 const PAYPAL_BASE = 'https://paypal.me/prodivingasia';
 
@@ -239,7 +239,7 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
             {form.course_title && coursePrice > 0 && (
               <div style={{ background: '#f0f8ff', borderRadius: 6, padding: '1rem', marginBottom: 8 }}>
                 <div><strong>Course Price:</strong> {coursePrice.toLocaleString()} THB</div>
-                <div><strong>Deposit (20%):</strong> {deposit.toLocaleString()} THB</div>
+                <div><strong>Deposit (10%):</strong> {deposit.toLocaleString()} THB</div>
                 {priceOverride !== null && (
                   <div style={{ fontSize: '0.9em', color: '#555', marginTop: 4 }}>
                     Prefilled from link ({currencyOverride})
@@ -297,7 +297,7 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
           {showPayOptions && form.course_title && coursePrice > 0 && (
             <div style={{ marginTop: 24, background: '#f8f8f8', borderRadius: 8, padding: 24, textAlign: 'center', boxShadow: '0 1px 6px #0001' }}>
               <h3 style={{ marginBottom: 12 }}>Secure Your Spot</h3>
-              <div style={{ marginBottom: 8 }}>Pay a <strong>20% deposit ({deposit.toLocaleString()} THB)</strong> now via PayPal to confirm your booking, or choose to pay later.</div>
+              <div style={{ marginBottom: 8 }}>Pay a <strong>10% deposit ({deposit.toLocaleString()} THB)</strong> now via PayPal to confirm your booking, or choose to pay later.</div>
               <div style={{ display: 'flex', gap: 16, justifyContent: 'center', marginTop: 16 }}>
                 <button onClick={handlePayNow} disabled={loading} style={{ background: '#0070ba', color: '#fff', border: 'none', borderRadius: 4, padding: '0.75rem 1.5rem', fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}>
                   {loading ? 'Processing...' : 'Pay Now (PayPal)'}

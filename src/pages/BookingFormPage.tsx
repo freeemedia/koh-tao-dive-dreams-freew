@@ -28,7 +28,7 @@ const bookingSchema = z.object({
 
 type BookingFormData = z.infer<typeof bookingSchema>;
 
-const COURSE_DEPOSIT_RATE = 0.2;
+const COURSE_DEPOSIT_RATE = 0.1;
 const SKIP_PAYMENT_MESSAGE = 'You have chosen not to pay right now, no problem! We will contact you soon to arrange bookings and payment. Thank You, Pro Diving Asia Team.';
 
 const COURSE_FALLBACKS: Record<string, { item: string; price?: number; currency?: string }> = {
@@ -215,6 +215,7 @@ const       BookingPage: React.FC = () => {
         due_amount: balanceAmountMajor,
         created_at: new Date().toISOString(),
       };
+      const registrationCode = apiBookingPayload.id.replace(/-/g, '');
 
       let persisted = false;
       let bookingApiWarning: string | null = null;
@@ -320,7 +321,9 @@ const       BookingPage: React.FC = () => {
           const paypalUrl = `${paypalBase}/${amountMajor}THB`;
           setTimeout(() => { window.location.href = paypalUrl; }, 1200);
         } else {
-          setTimeout(() => window.location.href = '/thank-you', 1500);
+          setTimeout(() => {
+            window.location.href = `/registration-complete?registration_code=${encodeURIComponent(registrationCode)}`;
+          }, 1500);
           setInquiryNotice(SKIP_PAYMENT_MESSAGE);
         }
       } else {
@@ -328,7 +331,9 @@ const       BookingPage: React.FC = () => {
         console.error('Booking notification error:', errMsg, responseData);
         if (persisted) {
           toast.warning(`Inquiry saved, but email notification failed: ${errMsg}`);
-          setTimeout(() => window.location.href = '/thank-you', 1500);
+          setTimeout(() => {
+            window.location.href = `/registration-complete?registration_code=${encodeURIComponent(registrationCode)}`;
+          }, 1500);
           setInquiryNotice(SKIP_PAYMENT_MESSAGE);
         } else {
           toast.error(`Submission failed: ${errMsg}. Please retry.`);
@@ -448,13 +453,13 @@ const       BookingPage: React.FC = () => {
                       Includes Fun Dives add-on: ฿{courseFunDiveCostMajor}
                     </div>
                   )}
-                  <div className="text-sm text-muted-foreground mt-1">Deposit payable now (20%): {depositMajor > 0 ? `฿${depositMajor}` : 'Contact us'}</div>
+                  <div className="text-sm text-muted-foreground mt-1">Deposit payable now (10%): {depositMajor > 0 ? `฿${depositMajor}` : 'Contact us'}</div>
                 </>
               ) : itemType === 'dive' ? (
                 <>
                   <div className="text-lg font-semibold">Dive price</div>
                   <div className="text-2xl font-bold">{courseCostMajor > 0 ? `฿${courseCostMajor}` : 'Contact us'}</div>
-                  <div className="text-sm text-muted-foreground mt-1">Deposit payable now (20%): {depositMajor > 0 ? `฿${depositMajor}` : 'Contact us'}</div>
+                  <div className="text-sm text-muted-foreground mt-1">Deposit payable now (10%): {depositMajor > 0 ? `฿${depositMajor}` : 'Contact us'}</div>
                 </>
               ) : (
                 <>
