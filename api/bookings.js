@@ -217,6 +217,14 @@ function cleanOptionalString(value) {
   return normalized ? normalized : null;
 }
 
+function normalizePlaceholderNote(value) {
+  const normalized = cleanOptionalString(value);
+  if (!normalized) return null;
+  const key = normalized.toLowerCase().replace(/[^a-z]/g, '');
+  if (key === 'wordpress' || key === 'wordrpress' || key.startsWith('wordpress')) return null;
+  return normalized;
+}
+
 function cleanOptionalDate(value) {
   const normalized = cleanOptionalString(value);
   if (!normalized) return null;
@@ -304,7 +312,7 @@ function normalizeAmounts(input, out) {
   let due = dueCandidates.map(parseAmount).find((v) => v != null) ?? null;
 
   if (deposit == null && total != null && total > 0) {
-    deposit = Math.round(total * 0.2);
+    deposit = Math.round(total * 0.1);
   }
 
   if (due == null && total != null && deposit != null) {
@@ -343,17 +351,19 @@ function normalizeBookingPayload(input, { includeId = false } = {}) {
   else if (src.diving_experience != null) out.experience_level = cleanOptionalString(src.diving_experience);
   else if (src.divingExperience != null) out.experience_level = cleanOptionalString(src.divingExperience);
   if (src.payment_choice != null) out.payment_choice = cleanOptionalString(src.payment_choice);
-  if (src.message != null) out.message = cleanOptionalString(src.message);
-  else if (src.comments != null) out.message = cleanOptionalString(src.comments);
-  else if (src.questions != null) out.message = cleanOptionalString(src.questions);
+  if (src.message != null) out.message = normalizePlaceholderNote(src.message);
+  else if (src.comments != null) out.message = normalizePlaceholderNote(src.comments);
+  else if (src.questions != null) out.message = normalizePlaceholderNote(src.questions);
   if (src.status != null) {
     const normalizedStatus = normalizeBookingStatus(src.status);
     if (normalizedStatus) out.status = normalizedStatus;
   }
-  if (src.internal_notes != null) out.internal_notes = cleanOptionalString(src.internal_notes);
+  if (src.internal_notes != null) out.internal_notes = normalizePlaceholderNote(src.internal_notes);
   // Keep admin notes populated for forms that only send `message`.
-  if (out.internal_notes == null && src.message != null) out.internal_notes = cleanOptionalString(src.message);
-  if (out.internal_notes == null && src.comments != null) out.internal_notes = cleanOptionalString(src.comments);
+  if (out.internal_notes == null && src.message != null) out.internal_notes = normalizePlaceholderNote(src.message);
+  if (out.internal_notes == null && src.comments != null) out.internal_notes = normalizePlaceholderNote(src.comments);
+  if (src.payment_link_url != null) out.payment_link_url = cleanOptionalString(src.payment_link_url);
+  if (src.paypal_link_url != null) out.paypal_link_url = cleanOptionalString(src.paypal_link_url);
   if (src.bank_transfer_details != null) out.bank_transfer_details = cleanOptionalString(src.bank_transfer_details);
 
   normalizeAmounts(src, out);
@@ -429,7 +439,11 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
       const body = parseBody(req);
       const { id, ...rest } = body || {};
-      const updateMode = String(req.query?.mode || body?.mode || '').trim().toLowerCase() === 'update';
+      const explicitUpdateMode = String(req.query?.mode || body?.mode || '').trim().toLowerCase() === 'update';
+      const hasId = !!cleanOptionalString(id);
+      const likelyCreate = ['name', 'email', 'course_title', 'item_title', 'preferred_date', 'arrival_date']
+        .some((field) => rest[field] != null && cleanOptionalString(rest[field]) != null);
+      const updateMode = explicitUpdateMode || (hasId && !likelyCreate);
 
       if (!updateMode) {
         if (rest.status != null) {
@@ -585,7 +599,56 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'DELETE') {
-      const id = req.query?.id || (parseBody(req) || {}).id;
+      const body = parseBody(req) || {};
+      const id = req.query?.id || body.id;
+      const deleteAllRequested = id === 'all' || String(req.query?.all || body.all || '').toLowerCase() === 'true';
+
+      if (deleteAllRequested) {
+        const confirmation = String(req.query?.confirm || body.confirm || '').trim();
+        if (confirmation !== 'DELETE_ALL_BOOKINGS') {
+          return res.status(400).json({
+            error: 'Bulk delete blocked. Pass confirm=DELETE_ALL_BOOKINGS with all=true (or id=all).',
+          });
+        }
+
+        let rows = [];
+        let deleteById = null;
+
+        if (isSupabaseProvider()) {
+          rows = await listSupabaseBookings();
+          deleteById = deleteSupabaseBookingById;
+        } else if (isMySqlProvider()) {
+          rows = await listMySqlBookings();
+          deleteById = deleteMySqlBookingById;
+        } else if (isWordPressProvider()) {
+          rows = await listWordPressBookings();
+          deleteById = deleteWordPressBookingById;
+        } else {
+          return res.status(500).json({ error: `Unsupported DB provider for bookings: ${dbProvider}` });
+        }
+
+        const ids = [...new Set((Array.isArray(rows) ? rows : []).map((row) => row?.id).filter(Boolean).map(String))];
+        const failed = [];
+
+        for (const bookingId of ids) {
+          try {
+            await deleteById(bookingId);
+          } catch (error) {
+            failed.push({
+              id: bookingId,
+              error: error instanceof Error ? error.message : 'Delete failed',
+            });
+          }
+        }
+
+        return res.status(200).json({
+          deleted: ids.length - failed.length,
+          total: ids.length,
+          failed,
+          provider: dbProvider,
+        });
+      }
+
       if (!id) return res.status(400).json({ error: 'Missing booking id' });
 
       if (isSupabaseProvider()) {
