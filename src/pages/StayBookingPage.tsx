@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/form';
 import { toast } from 'sonner';
 import { sendBookingNotification } from '@/lib/sendBookingNotification';
+import { getApiBaseUrl } from '@/lib/apiBase';
 
 // ─── Accommodation options from /Accommodation page ─────────────────────────
 const ACCOMMODATION_OPTIONS = [
@@ -68,8 +69,7 @@ type StayFormData = z.infer<typeof staySchema>;
 const StayBookingPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const apiBaseRaw = (import.meta.env.VITE_API_BASE_URL || '').trim();
-  const apiBase = apiBaseRaw ? apiBaseRaw.replace(/\/+$/, '') : '';
+  const apiBase = getApiBaseUrl();
   const apiUrl = (path: string) => `${apiBase}${path}`;
 
   const form = useForm<StayFormData>({

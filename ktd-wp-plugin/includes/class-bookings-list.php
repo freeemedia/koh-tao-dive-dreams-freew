@@ -20,14 +20,10 @@ class KTD_Bookings_List {
         }
 
         $filter_status = sanitize_text_field( $_GET['filter_status'] ?? '' );
-        $filter_type   = sanitize_text_field( $_GET['filter_type'] ?? '' );
         $search        = sanitize_text_field( $_GET['s'] ?? '' );
 
         if ( $filter_status ) {
-            $bookings = array_filter( $bookings, fn( $b ) => ( $b['status'] ?? '' ) === $filter_status );
-        }
-        if ( $filter_type ) {
-            $bookings = array_filter( $bookings, fn( $b ) => ( $b['booking_type'] ?? '' ) === $filter_type );
+            $bookings = array_filter( $bookings, fn( $b ) => \KTD_Booking_Status::normalize( (string) ( $b['status'] ?? 'new' ) ) === $filter_status );
         }
         if ( $search ) {
             $s        = strtolower( $search );
@@ -40,8 +36,14 @@ class KTD_Bookings_List {
 
         usort( $bookings, fn( $a, $b ) => strcmp( $b['created_at'] ?? '', $a['created_at'] ?? '' ) );
 
-        $statuses = array_merge( [ '' ], \KTD_Booking_Status::all() );
-        $types    = [ '', 'course', 'accommodation', 'funDive', 'enquiry' ];
+        $statuses = [ '' ];
+        foreach ( $bookings as $b ) {
+            $normalized = \KTD_Booking_Status::normalize( (string) ( $b['status'] ?? '' ) );
+            if ( $normalized !== '' ) {
+                $statuses[] = $normalized;
+            }
+        }
+        $statuses = array_values( array_unique( array_merge( $statuses, \KTD_Booking_Status::all() ) ) );
         ?>
         <div class="wrap ktd-wrap">
             <h1 class="wp-heading-inline">KTD Bookings</h1>
@@ -57,14 +59,7 @@ class KTD_Bookings_List {
                 <select name="filter_status">
                     <?php foreach ( $statuses as $s ) : ?>
                         <option value="<?php echo esc_attr( $s ); ?>" <?php selected( $filter_status, $s ); ?>>
-                            <?php echo $s ? ucfirst( $s ) : 'All Statuses'; ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <select name="filter_type">
-                    <?php foreach ( $types as $t ) : ?>
-                        <option value="<?php echo esc_attr( $t ); ?>" <?php selected( $filter_type, $t ); ?>>
-                            <?php echo $t ? ucfirst( $t ) : 'All Types'; ?>
+                            <?php echo $s ? esc_html( \KTD_Booking_Status::label( $s ) ) : 'All Statuses'; ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -79,7 +74,6 @@ class KTD_Bookings_List {
                         <th>Name</th>
                         <th>Email</th>
                         <th>Course / Item</th>
-                        <th>Type</th>
                         <th>Date</th>
                         <th>Status</th>
                         <th>Payment</th>
@@ -89,7 +83,7 @@ class KTD_Bookings_List {
                 </thead>
                 <tbody>
                     <?php if ( empty( $bookings ) ) : ?>
-                        <tr><td colspan="10">No bookings found.</td></tr>
+                        <tr><td colspan="9">No bookings found.</td></tr>
                     <?php else : ?>
                         <?php foreach ( $bookings as $b ) :
                             $id      = $b['id'] ?? '';
@@ -97,9 +91,16 @@ class KTD_Bookings_List {
                             $status  = \KTD_Booking_Status::normalize( (string) ( $b['status'] ?? 'new' ) );
                             $quick_statuses = array_values( array_unique( array_merge(
                                 [ $status ],
-                                \KTD_Booking_Status::allowed_next( $status )
+                                array_values( array_filter( $statuses, fn( $s ) => $s !== '' ) )
                             ) ) );
-                            $payment = $b['payment_status'] ?? '—';
+                            $payment = (string) ( $b['payment_status'] ?? 'unpaid' );
+                            if ( $payment === '' ) {
+                                $payment = 'unpaid';
+                            }
+                            $quick_payments = array_values( array_unique( array_merge(
+                                [ $payment ],
+                                [ 'unpaid', 'deposit_paid', 'paid', 'refunded' ]
+                            ) ) );
                             $total   = isset( $b['total_amount'] ) ? number_format( (float) $b['total_amount'], 0 ) . ' THB' : '—';
                             $date    = $b['preferred_date'] ?? substr( $b['created_at'] ?? '', 0, 10 );
                             $detail_url  = admin_url( 'admin.php?page=ktd-booking-detail&id=' . urlencode( $id ) );
@@ -110,7 +111,6 @@ class KTD_Bookings_List {
                             <td><?php echo esc_html( $b['name'] ?? '—' ); ?></td>
                             <td><?php echo esc_html( $b['email'] ?? '—' ); ?></td>
                             <td><?php echo esc_html( $title ); ?></td>
-                            <td><?php echo esc_html( $b['booking_type'] ?? '—' ); ?></td>
                             <td><?php echo esc_html( $date ); ?></td>
                             <td>
                                 <span class="ktd-badge ktd-status-<?php echo esc_attr( $status ); ?>"><?php echo esc_html( \KTD_Booking_Status::label( $status ) ); ?></span>
@@ -125,11 +125,23 @@ class KTD_Bookings_List {
                                     <span class="ktd-inline-status-message" aria-live="polite"></span>
                                 </div>
                             </td>
-                            <td><span class="ktd-badge ktd-pay-<?php echo esc_attr( $payment ); ?>"><?php echo esc_html( $payment ); ?></span></td>
+                            <td>
+                                <span class="ktd-badge ktd-pay-<?php echo esc_attr( $payment ); ?>"><?php echo esc_html( ucwords( str_replace( '_', ' ', $payment ) ) ); ?></span>
+                                <div style="margin-top:6px;">
+                                    <select class="ktd-quick-payment" data-id="<?php echo esc_attr( $id ); ?>" data-current="<?php echo esc_attr( $payment ); ?>">
+                                        <?php foreach ( $quick_payments as $quick_payment ) : ?>
+                                            <option value="<?php echo esc_attr( $quick_payment ); ?>" <?php selected( $payment, $quick_payment ); ?>>
+                                                <?php echo esc_html( ucwords( str_replace( '_', ' ', $quick_payment ) ) ); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <span class="ktd-inline-payment-message" aria-live="polite"></span>
+                                </div>
+                            </td>
                             <td><?php echo esc_html( $total ); ?></td>
                             <td class="ktd-actions">
                                 <a href="<?php echo esc_url( $detail_url ); ?>" class="button button-small">Edit</a>
-                                <a href="<?php echo esc_url( $invoice_url ); ?>" class="button button-small" target="_blank">Invoice</a>
+                                <a href="<?php echo esc_url( $invoice_url ); ?>" class="button button-small" target="_blank" rel="noopener noreferrer">Invoice</a>
                             </td>
                         </tr>
                         <?php endforeach; ?>

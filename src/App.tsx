@@ -1,5 +1,5 @@
 import MSDTProgram from './pages/MSDTProgram';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { CurrencyProvider } from './hooks/useCurrency';
@@ -14,14 +14,11 @@ import Index from './pages';
 import NotFound from './pages/NotFound';
 import BookingAffiliate from './pages/BookingAffiliate';
 import AgodaHotels from './pages/AgodaHotels';
-import ClicksDashboard from './pages/ClicksDashboard';
 import BookingPage from './pages/BookingPage';
 import StayBookingPage from './pages/StayBookingPage';
 import ThankYouPage from './pages/ThankYouPage';
-import Admin from './pages/Admin';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Account from './pages/Account';
+import RegistrationCompletePage from './pages/RegistrationCompletePage';
+import AdminRedirect from './pages/AdminRedirect';
 
 import OpenWater from './pages/OpenWater';
 import Advanced from './pages/Advanced';
@@ -105,7 +102,7 @@ import DivemasterInternship from './pages/internship/Divemaster';
 import InstructorInternship from './pages/internship/Instructor';
 import OpenWaterToDivemaster from './pages/OpenWaterToDivemaster';
 import FacebookFeedPage from './pages/FacebookFeedPage';
-import BookingToJiraForm from './components/BookingToJiraForm';
+import TrainingVideos from './pages/TrainingVideos';
 
 // import BookNowSite from './pages/BookNowSite';
 
@@ -123,45 +120,6 @@ const ScrollToTop = () => {
   return null;
 };
 
-const RequireAdmin = ({ children }: { children: JSX.Element }) => {
-  const [status, setStatus] = useState<'loading' | 'allowed' | 'denied'>('loading');
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const checkAdmin = async () => {
-      // Check if admin is authenticated via API token
-      const adminAuth = window.localStorage.getItem('admin_authenticated') === '1';
-
-      if (!isMounted) return;
-
-      if (adminAuth) {
-        setStatus('allowed');
-        return;
-      }
-
-      setStatus('denied');
-    };
-
-    checkAdmin();
-  }, []);
-
-  if (status === 'loading') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-muted">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
-  if (status === 'denied') {
-    return <Navigate to="/admin/login" replace />;
-  }
-
-  return children;
-};
-
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -175,15 +133,11 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/accommodation-booking" element={<BookingAffiliate />} />
               <Route path="/agoda-hotels" element={<AgodaHotels />} />
-              <Route path="/clicks-dashboard" element={<ClicksDashboard />} />
               <Route path="/booking" element={<BookingPage />} />
               <Route path="/stay" element={<StayBookingPage />} />
               <Route path="/thank-you" element={<ThankYouPage />} />
-              <Route path="/admin" element={<RequireAdmin><Admin /></RequireAdmin>} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/admin/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/account" element={<Account />} />
+              <Route path="/registration-complete" element={<RegistrationCompletePage />} />
+              <Route path="/admin" element={<AdminRedirect />} />
               <Route path="/courses" element={<Courses />} />
               <Route path="/courses/open-water" element={<OpenWater />} />
               <Route path="/courses/advanced" element={<Advanced />} />
@@ -192,6 +146,7 @@ const App = () => (
               <Route path="/courses/divemaster" element={<Divemaster />} />
               <Route path="/courses/instructor" element={<Instructor />} />
               <Route path="/courses/msdt-program" element={<MSDTProgram />} />
+              <Route path="/training-videos" element={<TrainingVideos />} />
               <Route path="/courses/scuba-review" element={<ScubaReview />} />
               <Route path="/courses/scuba-diver" element={<ScubaDiver />} />
               <Route path="/courses/discover-scuba" element={<DiscoverScuba />} />
@@ -275,7 +230,6 @@ const App = () => (
               <Route path="/VisasKohTao" element={<VisasKohTao />} />
               <Route path="/WeatherKohTao" element={<WeatherKohTao />} />
               <Route path="/facebook" element={<FacebookFeedPage />} />
-              <Route path="/booking-to-jira" element={<RequireAdmin><BookingToJiraForm /></RequireAdmin>} />
               {/* <Route path="/booknow-site" element={<BookNowSite />} /> */}
               <Route path="*" element={<NotFound />} />
             </Routes>

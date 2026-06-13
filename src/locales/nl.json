@@ -253,7 +253,7 @@
     "finance_paypal_link": "PayPal-link",
     "finance_paypal_placeholder": "https://paypal.me/prodivingasia",
     "finance_course_deposit_rate": "Cursus Aanbetalingspercentage",
-    "finance_course_deposit_rate_placeholder": "0.2",
+    "finance_course_deposit_rate_placeholder": "0.1",
     "finance_default_deposit_amount": "Standaard Aanbetalingsbedrag",
     "finance_default_deposit_amount_placeholder": "bijv. 2500",
     "finance_bank_transfer_details": "Bankoverschrijvingsgegevens",

@@ -161,13 +161,6 @@ class KTD_Invoice {
             </div>
             <?php endif; ?>
 
-            <?php if ( $booking['payment_link_url'] ?? '' ) : ?>
-            <div style="margin-top:16px; font-size:12px;">
-                <strong>Online Payment:</strong>
-                <a href="<?php echo esc_url( $booking['payment_link_url'] ); ?>"><?php echo esc_html( $booking['payment_link_url'] ); ?></a>
-            </div>
-            <?php endif; ?>
-
             <div class="inv-footer">
                 Thank you for diving with Pro Diving Asia! 🤿 &nbsp;|&nbsp; www.divinginasia.com
             </div>

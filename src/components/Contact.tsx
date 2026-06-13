@@ -284,11 +284,7 @@ const Contact = () => {
   );
 };
 
-
-import { useSupabaseUser } from '@/hooks/useSupabaseUser';
-
 const ContactWrapper = () => {
-  const user = useSupabaseUser();
   return (
     <>
       <Contact />

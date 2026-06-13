@@ -3,7 +3,7 @@
  * Plugin Name: Koh Tao Booking Manager
  * Plugin URI: https://divinginasia.com
  * Description: Stores bookings for Koh Tao Dive Dreams and exposes the REST endpoints used by the booking frontend and admin dashboard.
- * Version: 1.0.0
+ * Version: 1.0.5
  * Author: Pro Diving Asia
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -17,17 +17,51 @@ if (!defined('ABSPATH')) {
 final class KTD_Booking_Manager {
     private const OPTION_API_KEY = 'ktd_booking_api_key';
     private const OPTION_PAGE_SLUG = 'ktd-booking-manager';
-    private const TABLE_VERSION = '1.0.0';
+    private const TABLE_VERSION = '1.0.1';
+    private const NOTES_CLEANUP_VERSION = '2026-06-notes-cleanup-v1';
+    private static function is_wordpress_placeholder($value): bool {
+        $normalized = strtolower(preg_replace('/[^a-z]/', '', trim((string) $value)) ?? '');
+        return $normalized === 'wordpress' || $normalized === 'wordrpress' || str_starts_with($normalized, 'wordpress');
+    }
 
     public static function bootstrap(): void {
         add_action('rest_api_init', [self::class, 'register_rest_routes']);
         add_action('admin_menu', [self::class, 'register_admin_page']);
         add_action('admin_init', [self::class, 'register_settings']);
+        add_action('init', [self::class, 'maybe_upgrade_schema']);
+        add_action('init', [self::class, 'run_notes_cleanup_once']);
     }
 
     public static function activate(): void {
         self::create_tables();
         update_option('ktd_booking_manager_db_version', self::TABLE_VERSION);
+        self::run_notes_cleanup_once();
+    }
+
+    public static function maybe_upgrade_schema(): void {
+        $installed = (string) get_option('ktd_booking_manager_db_version', '');
+        if ($installed === self::TABLE_VERSION) {
+            return;
+        }
+
+        self::create_tables();
+        update_option('ktd_booking_manager_db_version', self::TABLE_VERSION);
+    }
+
+    public static function run_notes_cleanup_once(): void {
+        $done = (string) get_option('ktd_notes_cleanup_version', '');
+        if ($done === self::NOTES_CLEANUP_VERSION) {
+            return;
+        }
+
+        global $wpdb;
+        $table = self::bookings_table();
+
+        // One-time data normalization for legacy placeholder values.
+        $wpdb->query("UPDATE {$table} SET internal_notes = '' WHERE LOWER(TRIM(COALESCE(internal_notes, ''))) = 'wordpress'");
+        $wpdb->query("UPDATE {$table} SET message = '' WHERE LOWER(TRIM(COALESCE(message, ''))) = 'wordpress'");
+
+        update_option('ktd_notes_cleanup_version', self::NOTES_CLEANUP_VERSION);
     }
 
     private static function create_tables(): void {
@@ -57,6 +91,8 @@ final class KTD_Booking_Manager {
             message LONGTEXT NULL,
             internal_notes LONGTEXT NULL,
             status VARCHAR(60) DEFAULT 'new',
+            payment_link_url TEXT NULL,
+            paypal_link_url TEXT NULL,
             bank_transfer_details LONGTEXT NULL,
             booking_source VARCHAR(120) DEFAULT 'wordpress',
             source_page VARCHAR(255) DEFAULT '',
@@ -358,10 +394,25 @@ final class KTD_Booking_Manager {
     private static function normalize_booking_payload(array $input, bool $for_insert = true): array {
         $payload = [];
 
-        foreach (['name', 'email', 'phone', 'accommodation', 'experience_level', 'payment_choice', 'payment_mode', 'payment_status', 'currency', 'message', 'internal_notes', 'status', 'bank_transfer_details', 'booking_source', 'source_page', 'event_type', 'accommodation_interest'] as $key) {
+        foreach (['name', 'email', 'phone', 'accommodation', 'experience_level', 'payment_choice', 'payment_mode', 'payment_status', 'currency', 'message', 'internal_notes', 'status', 'payment_link_url', 'paypal_link_url', 'bank_transfer_details', 'booking_source', 'source_page', 'event_type', 'accommodation_interest'] as $key) {
             if ($for_insert || array_key_exists($key, $input)) {
                 $payload[$key] = self::sanitize_string($input[$key] ?? '');
             }
+        }
+
+        // Legacy dashboard compatibility: treat `comments` as alias of `internal_notes`.
+        if ($for_insert || array_key_exists('comments', $input)) {
+            $comments = self::sanitize_string($input['comments'] ?? '');
+            if (!array_key_exists('internal_notes', $input) || trim((string) ($payload['internal_notes'] ?? '')) === '') {
+                $payload['internal_notes'] = $comments;
+            }
+        }
+
+        if (isset($payload['internal_notes']) && self::is_wordpress_placeholder($payload['internal_notes'])) {
+            $payload['internal_notes'] = '';
+        }
+        if (isset($payload['message']) && self::is_wordpress_placeholder($payload['message'])) {
+            $payload['message'] = '';
         }
 
         $payload['item_type'] = self::sanitize_string($input['item_type'] ?? $input['booking_type'] ?? '');
@@ -429,8 +480,20 @@ final class KTD_Booking_Manager {
         $row['id'] = isset($row['id']) ? (string) $row['id'] : '';
         $row['course_title'] = (string) ($row['course_title'] ?: $row['item_title'] ?: '');
         $row['item_title'] = (string) ($row['item_title'] ?: $row['course_title'] ?: '');
-        $row['internal_notes'] = (string) ($row['internal_notes'] ?: $row['message'] ?: '');
-        $row['message'] = (string) ($row['message'] ?: $row['internal_notes'] ?: '');
+        // Keep message and internal notes independent to avoid leaking source placeholders.
+        $row['internal_notes'] = isset($row['internal_notes']) ? (string) $row['internal_notes'] : '';
+        $row['message'] = isset($row['message']) ? (string) $row['message'] : '';
+
+        // Normalize legacy placeholder values so dashboards do not show meaningless notes.
+        if (self::is_wordpress_placeholder($row['internal_notes'])) {
+            $row['internal_notes'] = '';
+        }
+        if (self::is_wordpress_placeholder($row['message'])) {
+            $row['message'] = '';
+        }
+
+        // Legacy dashboard compatibility: expose notes under `comments` too.
+        $row['comments'] = $row['internal_notes'];
 
         foreach (['total_amount', 'deposit_amount', 'due_amount', 'subtotal_amount', 'total_payable_now'] as $key) {
             $row[$key] = isset($row[$key]) && $row[$key] !== null && $row[$key] !== '' ? (float) $row[$key] : null;

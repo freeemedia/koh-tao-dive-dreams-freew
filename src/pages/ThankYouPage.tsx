@@ -45,23 +45,23 @@ const ThankYouPage: React.FC = () => {
   }, [countdown, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-900 to-blue-800 flex items-center justify-center px-4 py-16">
-      <div className="max-w-xl w-full bg-white rounded-2xl shadow-2xl overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-emerald-900 flex items-center justify-center px-4 py-16">
+      <div className="max-w-2xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all hover:scale-[1.02]">
         {/* Header band */}
-        <div className="bg-emerald-500 py-8 px-6 text-center">
-          <div className="text-5xl mb-3">🎉</div>
-          <h1 className="text-2xl md:text-3xl font-bold text-white">Booking Request Received!</h1>
-          <p className="text-emerald-100 mt-2">
+        <div className="bg-gradient-to-r from-emerald-500 to-teal-600 py-12 px-8 text-center">
+          <div className="text-7xl mb-4 animate-bounce">🎉</div>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">Booking Request Received!</h1>
+          <p className="text-emerald-100 mt-3 text-lg font-medium">
             Thank you — we'll be in touch shortly to confirm your details.
           </p>
         </div>
 
-        <div className="p-6 space-y-5">
+        <div className="p-8 space-y-6">
           {/* Booking summary */}
           {bookingData && (
-            <div className="rounded-xl border bg-gray-50 p-4 text-sm space-y-2">
-              <h2 className="font-semibold text-gray-700 mb-3 uppercase tracking-wide text-xs">
-                Your Booking Summary
+            <div className="rounded-2xl border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-6 text-sm space-y-3 shadow-lg">
+              <h2 className="font-bold text-emerald-800 mb-4 uppercase tracking-wider text-sm flex items-center gap-2">
+                <span className="text-xl">📋</span> Your Booking Summary
               </h2>
               {[
                 { label: 'Activity / Course', value: bookingData.item_title },
@@ -93,16 +93,18 @@ const ThankYouPage: React.FC = () => {
           )}
 
           {/* What's next */}
-          <div className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-900">
-            <p className="font-semibold mb-1">What happens next?</p>
-            <ul className="list-disc list-inside space-y-1 text-blue-800">
+          <div className="rounded-2xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6 text-sm text-blue-900 shadow-lg">
+            <p className="font-bold mb-3 text-lg flex items-center gap-2">
+              <span className="text-xl">✨</span> What happens next?
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-blue-800 font-medium">
               <li>You'll receive a confirmation email shortly.</li>
               <li>Our team will review your request and contact you within 24 hours.</li>
               <li>
                 Questions? WhatsApp us at{' '}
                 <a
                   href="https://wa.me/31638697279"
-                  className="font-semibold underline"
+                  className="font-bold underline text-blue-600 hover:text-blue-800 transition-colors"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -114,17 +116,21 @@ const ThankYouPage: React.FC = () => {
           </div>
 
           {/* Countdown + buttons */}
-          <div className="text-center space-y-3">
-            <p className="text-sm text-gray-400">
+          <div className="text-center space-y-4">
+            <p className="text-base text-gray-500 font-medium">
               Redirecting to homepage in{' '}
-              <span className="font-semibold text-gray-600">{countdown}s</span>…
+              <span className="font-bold text-gray-700 text-xl">{countdown}s</span>…
             </p>
-            <div className="flex gap-3 justify-center">
-              <Button variant="outline" onClick={() => navigate(-1)}>
+            <div className="flex gap-4 justify-center">
+              <Button 
+                variant="outline" 
+                onClick={() => navigate(-1)}
+                className="px-6 py-3 text-base font-semibold border-2 hover:bg-gray-100"
+              >
                 ← Go back
               </Button>
               <Button
-                className="bg-blue-700 hover:bg-blue-800 text-white"
+                className="bg-gradient-to-r from-blue-700 to-blue-900 hover:from-blue-800 hover:to-blue-950 text-white px-6 py-3 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
                 onClick={() => navigate('/')}
               >
                 Go to Homepage

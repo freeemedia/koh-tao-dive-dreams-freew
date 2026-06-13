@@ -27,20 +27,34 @@ class KTD_Booking_Detail {
         $current_status     = \KTD_Booking_Status::normalize( (string) ( $booking['status'] ?? 'new' ) );
         $editable_statuses  = array_values( array_unique( array_merge(
             [ $current_status ],
-            \KTD_Booking_Status::allowed_next( $current_status )
+            \KTD_Booking_Status::all()
         ) ) );
-        $allowed_next_text  = implode( ', ', array_map( [ '\\KTD_Booking_Status', 'label' ], \KTD_Booking_Status::allowed_next( $current_status ) ) );
         $payments  = [ 'unpaid', 'deposit_paid', 'paid', 'refunded' ];
-        $notes     = $booking['internal_notes'] ?? '';
+        $notes     = trim( (string) ( $booking['internal_notes'] ?? $booking['comments'] ?? '' ) );
+        $notes_key = strtolower( preg_replace( '/[^a-z]/', '', $notes ) ?? '' );
+        if ( $notes_key === 'wordpress' || $notes_key === 'wordrpress' || str_starts_with( $notes_key, 'wordpress' ) ) {
+            $notes = '';
+        }
+        $message   = trim( (string) ( $booking['message'] ?? '' ) );
+        $message_key = strtolower( preg_replace( '/[^a-z]/', '', $message ) ?? '' );
+        if ( $message_key === 'wordpress' || $message_key === 'wordrpress' || str_starts_with( $message_key, 'wordpress' ) ) {
+            $message = '';
+        }
         $comments  = $this->parse_comments( $notes );
         $list_url  = admin_url( 'admin.php?page=ktd-bookings' );
+        $finance_url = admin_url( 'admin.php?page=ktd-finance' );
         $invoice_url = admin_url( 'admin.php?page=ktd-invoice&id=' . urlencode( $id ) );
+        $payment_url = trim( (string) ( $booking['payment_link_url'] ?? $booking['paypal_link_url'] ?? '' ) );
         ?>
         <div class="wrap ktd-wrap">
             <h1>
                 Booking #<?php echo esc_html( $id ); ?>
                 <a href="<?php echo esc_url( $list_url ); ?>" class="page-title-action">← All Bookings</a>
-                <a href="<?php echo esc_url( $invoice_url ); ?>" class="page-title-action" target="_blank">🧾 Invoice</a>
+                <a href="<?php echo esc_url( $finance_url ); ?>" class="page-title-action">💰 Finance</a>
+                <a href="<?php echo esc_url( $invoice_url ); ?>" class="page-title-action" target="_blank" rel="noopener noreferrer">🧾 Invoice</a>
+                <?php if ( $payment_url ) : ?>
+                    <a href="<?php echo esc_url( $payment_url ); ?>" class="page-title-action" target="_blank" rel="noopener noreferrer">🔗 Payment Link</a>
+                <?php endif; ?>
             </h1>
 
             <div class="ktd-detail-grid">
@@ -73,24 +87,12 @@ class KTD_Booking_Detail {
                         <?php endforeach; ?>
 
                         <div class="ktd-field-row">
-                            <label>Internal Notes</label>
-                            <textarea name="internal_notes" rows="6" class="large-text"><?php echo esc_textarea( $notes ); ?></textarea>
-                        </div>
-
-                        <div class="ktd-field-row">
                             <label>Status</label>
                             <select name="status">
                                 <?php foreach ( $editable_statuses as $s ) : ?>
                                     <option value="<?php echo esc_attr( $s ); ?>" <?php selected( $current_status, $s ); ?>><?php echo esc_html( \KTD_Booking_Status::label( $s ) ); ?></option>
                                 <?php endforeach; ?>
                             </select>
-                            <p class="description">
-                                <?php if ( $allowed_next_text ) : ?>
-                                    Allowed next statuses: <?php echo esc_html( $allowed_next_text ); ?>
-                                <?php else : ?>
-                                    This booking is in a terminal status and cannot transition further.
-                                <?php endif; ?>
-                            </p>
                         </div>
 
                         <div class="ktd-field-row">
@@ -106,15 +108,16 @@ class KTD_Booking_Detail {
                             <button type="submit" class="button button-primary">Save Changes</button>
                             <span class="ktd-save-status"></span>
                         </div>
+                        <textarea name="internal_notes" id="ktd-internal-notes-hidden" style="display:none;"><?php echo esc_textarea( $notes ); ?></textarea>
                     </form>
                 </div>
 
                 <!-- RIGHT: Message + Comments -->
                 <div class="ktd-card">
                     <h2>Customer Message</h2>
-                    <div class="ktd-message-box"><?php echo nl2br( esc_html( $booking['message'] ?? '—' ) ); ?></div>
+                    <div class="ktd-message-box"><?php echo nl2br( esc_html( $message !== '' ? $message : '—' ) ); ?></div>
 
-                    <h2>Internal Notes / Comments</h2>
+                    <h2>Comments (Editable)</h2>
                     <div class="ktd-comments" id="ktd-comments">
                         <?php if ( empty( $comments ) ) : ?>
                             <p class="ktd-no-comments">No comments yet.</p>
@@ -129,8 +132,10 @@ class KTD_Booking_Detail {
                     </div>
 
                     <div class="ktd-add-comment" data-id="<?php echo esc_attr( $id ); ?>">
-                        <textarea id="ktd-comment-input" rows="3" placeholder="Add a note…" class="large-text"></textarea>
-                        <button class="button button-secondary" id="ktd-comment-btn">Add Comment</button>
+                        <label for="ktd-comments-editor"><strong>Edit Comments</strong></label>
+                        <textarea id="ktd-comments-editor" rows="6" placeholder="Edit internal comments…" class="large-text"><?php echo esc_textarea( $notes ); ?></textarea>
+                        <p class="description">Directly edit and save all comments for this booking.</p>
+                        <button class="button button-secondary" id="ktd-save-comments-btn">Save Comments</button>
                         <span class="ktd-save-status" id="ktd-comment-status"></span>
                     </div>
                 </div>
@@ -144,12 +149,24 @@ class KTD_Booking_Detail {
         $comments = [];
         foreach ( explode( "\n", $notes ) as $line ) {
             $line = trim( $line );
+            $line_key = strtolower( preg_replace( '/[^a-z]/', '', $line ) ?? '' );
+            if ( $line === '' || $line_key === 'wordpress' || $line_key === 'wordrpress' || str_starts_with( $line_key, 'wordpress' ) ) {
+                continue;
+            }
+
             if ( preg_match( '/^\[([^\]]+)\]\s+Admin:\s+(.+)$/', $line, $m ) ) {
                 $comments[] = [
                     'date' => gmdate( 'd M Y H:i', strtotime( $m[1] ) ),
                     'text' => $m[2],
                 ];
+                continue;
             }
+
+            // Show plain note lines as comments too for legacy data formats.
+            $comments[] = [
+                'date' => 'Note',
+                'text' => $line,
+            ];
         }
         return $comments;
     }

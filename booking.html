@@ -133,7 +133,7 @@
       Thank you! Your enquiry has been sent.<br>
       <a id="paypalLink" href="https://paypal.me/prodivingasia" target="_blank" style="display:inline-block;margin:1em 0 0.5em 0;padding:0.75em 2em;background:#0070ba;color:#fff;border-radius:4px;font-size:1.1em;text-decoration:none;font-weight:bold;">Pay Deposit via PayPal</a><br>
       <button id="goHomeBtn" style="margin:0.5em 0 0 0;padding:0.7em 2em;background:#e0f2f1;color:#0070ba;border:none;border-radius:6px;font-size:1em;cursor:pointer;">Return Home</button>
-      <div style="margin-top:1em;color:#888;font-size:0.95em;">You will be redirected to the Thank You page in 10 seconds.</div>
+      <div style="margin-top:1em;color:#888;font-size:0.95em;">You will be redirected to the Registration Complete page in 10 seconds.</div>
     </div>
     <div class="error-message" id="errorMsg">Sorry, there was a problem sending your enquiry. Please try again.</div>
   </div>
@@ -158,7 +158,12 @@
           successMsg.style.display = 'block';
           form.reset();
           // Add event for Go Home button
-          setTimeout(() => { window.location.href = 'thankyou.html'; }, 10000);
+          setTimeout(() => {
+            const registrationCode = (window.crypto && typeof window.crypto.randomUUID === 'function')
+              ? window.crypto.randomUUID().replace(/-/g, '').slice(0, 32)
+              : Math.random().toString(36).slice(2) + Date.now().toString(36);
+            window.location.href = `registration-complete.html?registration_code=${encodeURIComponent(registrationCode)}`;
+          }, 10000);
         } else {
           errorMsg.style.display = 'block';
         }

@@ -112,3 +112,67 @@
 @media (max-width: 900px) {
     .ktd-finance-grid { grid-template-columns: 1fr; }
 }
+
+/* Dashboard */
+.ktd-dashboard-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+.ktd-dashboard-header h1 { margin: 0; }
+.ktd-dashboard-header p { margin-top: 6px; color: #666; }
+.ktd-dashboard-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.ktd-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin: 18px 0 24px;
+}
+.ktd-dashboard-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.ktd-dashboard-card-total {
+    border-color: #0077aa;
+    box-shadow: 0 0 0 1px rgba(0,119,170,.08) inset;
+}
+.ktd-dashboard-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    color: #888;
+}
+.ktd-dashboard-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: #222;
+}
+.ktd-dashboard-panel {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 18px 20px;
+}
+.ktd-dashboard-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+.ktd-dashboard-panel-header h2 {
+    margin: 0;
+    font-size: 15px;
+}
+.ktd-dashboard-table td,
+.ktd-dashboard-table th {
+    vertical-align: middle;
+}

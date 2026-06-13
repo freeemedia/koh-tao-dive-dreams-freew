@@ -22,7 +22,6 @@ class KTD_Finance {
         $filter_year = (int) ( $_GET['year'] ?? gmdate( 'Y' ) );
 
         $by_month    = [];
-        $by_type     = [];
         $by_status   = [];
         $total_rev   = 0;
         $total_dep   = 0;
@@ -33,20 +32,17 @@ class KTD_Finance {
             if ( $year !== $filter_year ) continue;
 
             $month   = substr( $created, 0, 7 ); // YYYY-MM
-            $type    = $b['booking_type'] ?? 'unknown';
             $status  = \KTD_Booking_Status::normalize( (string) ( $b['status'] ?? 'new' ) );
             $total   = (float) ( $b['total_amount'] ?? 0 );
             $deposit = (float) ( $b['deposit_amount'] ?? 0 );
 
             $by_month[ $month ]  = ( $by_month[ $month ] ?? 0 ) + $total;
-            $by_type[ $type ]    = ( $by_type[ $type ] ?? 0 ) + $total;
             $by_status[ $status ] = ( $by_status[ $status ] ?? 0 ) + 1;
             $total_rev  += $total;
             $total_dep  += $deposit;
         }
 
         ksort( $by_month );
-        arsort( $by_type );
 
         $available_years = array_unique( array_map( fn( $b ) => (int) substr( $b['created_at'] ?? '', 0, 4 ), $bookings ) );
         rsort( $available_years );
@@ -106,22 +102,9 @@ class KTD_Finance {
                     </table>
                 </div>
 
-                <!-- By Type -->
+                <!-- By Status -->
                 <div class="ktd-card">
-                    <h2>Revenue by Type</h2>
-                    <table class="wp-list-table widefat fixed striped">
-                        <thead><tr><th>Type</th><th>Revenue (THB)</th></tr></thead>
-                        <tbody>
-                            <?php foreach ( $by_type as $type => $amount ) : ?>
-                                <tr>
-                                    <td><?php echo esc_html( ucfirst( $type ) ); ?></td>
-                                    <td><?php echo number_format( $amount, 0 ); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-
-                    <h2 style="margin-top:24px">Bookings by Status</h2>
+                    <h2>Bookings by Status</h2>
                     <table class="wp-list-table widefat fixed striped">
                         <thead><tr><th>Status</th><th>Count</th></tr></thead>
                         <tbody>

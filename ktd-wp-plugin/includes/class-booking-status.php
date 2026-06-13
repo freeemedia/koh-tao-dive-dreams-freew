@@ -19,21 +19,22 @@ class KTD_Booking_Status {
 
     public static function normalize( string $status ): string {
         $normalized = strtolower( trim( $status ) );
+        if ( $normalized === '' ) {
+            return 'new';
+        }
         if ( $normalized === 'pending' ) {
             return 'new';
         }
         if ( in_array( $normalized, self::VALUES, true ) ) {
             return $normalized;
         }
-        return 'new';
+        // Keep unknown statuses as-is so KTD can mirror whatever WP currently stores.
+        return $normalized;
     }
 
     public static function is_valid( string $status ): bool {
         $normalized = strtolower( trim( $status ) );
-        if ( $normalized === 'pending' ) {
-            return true;
-        }
-        return in_array( $normalized, self::VALUES, true );
+        return $normalized !== '';
     }
 
     public static function allowed_next( string $status ): array {
@@ -42,12 +43,7 @@ class KTD_Booking_Status {
     }
 
     public static function can_transition( string $current, string $next ): bool {
-        $current_normalized = self::normalize( $current );
-        $next_normalized    = self::normalize( $next );
-        if ( $current_normalized === $next_normalized ) {
-            return true;
-        }
-        return in_array( $next_normalized, self::allowed_next( $current_normalized ), true );
+        return true;
     }
 
     public static function label( string $status ): string {

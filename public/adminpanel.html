@@ -77,11 +77,17 @@
       const match = comments && comments.match(/https:\/\/paypal\.me\/[\w/]+/);
       return match ? match[0] : null;
     }
+    function normalizeNotes(value) {
+      const raw = String(value || '').trim();
+      const key = raw.toLowerCase().replace(/[^a-z]/g, '');
+      if (!raw || key === 'wordpress' || key === 'wordrpress' || key.startsWith('wordpress')) return '';
+      return raw;
+    }
     function renderTable(bookings) {
       const tbody = document.querySelector('#bookingsTable tbody');
       tbody.innerHTML = '';
       bookings.forEach(b => {
-        const comments = b.message || b.comments || '';
+        const comments = normalizeNotes(b.internal_notes || b.comments || b.message || '');
         const paypalLink = b.paypal_link || extractPayPalLink(comments);
         tbody.innerHTML += `<tr>
           <td>${b.id}</td>
@@ -92,7 +98,10 @@
           <td>${b.preferred_date || b.date || ''}</td>
           <td>${b.booking_type || b.level || ''}</td>
           <td>${b.experience_level || b.experience || ''}</td>
-          <td style="max-width:200px;white-space:pre-line;">${comments.replace(/(https:\/\/paypal\.me\/[\w/]+)/g, '<a href="$1" target="_blank" class="paypal-link">PayPal</a>')}</td>
+          <td style="max-width:260px;white-space:pre-line;">
+            <textarea class="notes-input" data-id="${b.id}" rows="2" style="width:100%;min-width:180px;">${comments.replace(/</g, '&lt;')}</textarea>
+            <button class="save-note-btn" data-id="${b.id}" style="margin-top:4px;padding:3px 8px;font-size:12px;">Save</button>
+          </td>
           <td>${paypalLink ? `<a href="${paypalLink}" target="_blank" class="paypal-link">PayPal</a>` : ''}</td>
           <td><select class="status-select" data-id="${b.id}">
             <option value="new"${b.status === 'new' ? ' selected' : ''}>new</option>
@@ -136,6 +145,18 @@
 
         // Handle edit/delete/status change
         document.addEventListener('click', async function(e) {
+          if (e.target.classList.contains('save-note-btn')) {
+            const id = e.target.getAttribute('data-id');
+            const ta = document.querySelector('.notes-input[data-id="' + id + '"]');
+            const notes = normalizeNotes((ta && ta.value) || '');
+            await fetch(`${API_BASE}/api/bookings`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id, internal_notes: notes, comments: notes, message: notes })
+            });
+            fetchBookings().then(renderTable);
+            return;
+          }
           if (e.target.classList.contains('delete-btn')) {
             const id = e.target.getAttribute('data-id');
             if (confirm('Delete booking #' + id + '?')) {
@@ -147,12 +168,13 @@
           }
           if (e.target.classList.contains('edit-btn')) {
             const id = e.target.getAttribute('data-id');
-            const newComments = prompt('Edit comments:');
+            const ta = document.querySelector('.notes-input[data-id="' + id + '"]');
+            const newComments = prompt('Edit comments:', (ta && ta.value) || '');
             if (newComments !== null) {
               await fetch(`${API_BASE}/api/bookings`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, message: newComments })
+                body: JSON.stringify({ id, internal_notes: normalizeNotes(newComments), comments: normalizeNotes(newComments), message: normalizeNotes(newComments) })
               });
               fetchBookings().then(renderTable);
             }

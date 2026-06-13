@@ -16,22 +16,10 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@rocketmedia" />
     <meta name="twitter:image" content="g" />
-    <!-- Google Tag Manager -->
-    <script>
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','GTM-P4D36PXQ');
-    </script>
-    <!-- End Google Tag Manager -->
+    <script src="/analytics-loader.js"></script>
   </head>
 
   <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P4D36PXQ"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
     <div id="root"></div>
     <!-- Book Now Button -->
     <button class="book-now-btn" style="position:fixed;bottom:2rem;right:2rem;z-index:9999;">Book Now / Inquiry</button>
