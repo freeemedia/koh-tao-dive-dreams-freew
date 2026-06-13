@@ -589,7 +589,7 @@ const Courses = () => {
                   <span className="text-blue-300 line-through text-sm">{t('courses.specialOffers.combo.originalPrice')}</span>
                   <span className="text-2xl font-bold">{getDisplayedPrice(t('courses.specialOffers.combo.price'))}</span>
                 </div>
-                <p className="text-xs text-blue-100 mb-3">20% deposit: {getDisplayedPrice('฿3,800')}</p>
+                <p className="text-xs text-blue-100 mb-3">10% deposit: {getDisplayedPrice('฿1,900')}</p>
                 <a
                   href="/booking?item=Open%20Water%20%2B%20Advanced&type=course&price=19000&currency=THB&deposit=3800"
                   className="block w-full rounded-lg bg-white py-3 text-center font-semibold text-red-700 no-underline hover:bg-red-50"
@@ -610,7 +610,7 @@ const Courses = () => {
                   <span className="text-gray-400 line-through text-lg">{getDisplayedPrice('฿24,000')}</span>
                   <span className="text-3xl font-bold">{getDisplayedPrice('฿18,000')}</span>
                 </div>
-                <p className="text-xs text-gray-500 mb-3">20% deposit: {getDisplayedPrice('฿3,600')}</p>
+                <p className="text-xs text-gray-500 mb-3">10% deposit: {getDisplayedPrice('฿1,800')}</p>
               </div>
               <a
                 href="/booking?item=3%20Specialty%20Bundle&type=course&price=18000&currency=THB"
@@ -632,7 +632,7 @@ const Courses = () => {
                   <span className="line-through text-blue-200">{getDisplayedPrice('฿66,800')}</span>
                   <span className="text-3xl font-extrabold">{getDisplayedPrice('฿56,780')}</span>
                 </div>
-                <p className="text-xs text-blue-100 mb-3">20% deposit: {getDisplayedPrice('฿11,356')}</p>
+                <p className="text-xs text-blue-100 mb-3">10% deposit: {getDisplayedPrice('฿5,678')}</p>
               </div>
               <a
                 href="/booking?item=Open%20Water%20to%20Divemaster%20Package&type=course&price=56780&currency=THB&deposit=11356"

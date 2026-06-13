@@ -49,7 +49,7 @@ const COURSES = [
 
 const TOTAL_THB = COURSES.reduce((sum, c) => sum + c.priceTHB, 0);
 const PACKAGE_THB = Math.round(TOTAL_THB * 0.85); // 15% package saving
-const DEPOSIT_THB = Math.round(PACKAGE_THB * 0.2);
+const DEPOSIT_THB = Math.round(PACKAGE_THB * 0.1);
 
 const OpenWaterToDivemaster: React.FC = () => {
   const { convertCurrency, currency } = useCurrency();

@@ -39,10 +39,6 @@ export default defineConfig(({ mode }) => {
             return 'vendor-react';
           }
 
-          if (id.includes('node_modules/@supabase')) {
-            return 'vendor-supabase';
-          }
-
           if (id.includes('node_modules/@tiptap')) {
             return 'vendor-editor';
           }

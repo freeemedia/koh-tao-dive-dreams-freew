@@ -132,6 +132,7 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
 
   const sendToBookingApiAndEmail = async (payNow: boolean): Promise<boolean> => {
     const totalAmount = coursePrice > 0 ? coursePrice : null;
+    const commissionAmount = totalAmount > 0 ? Math.round(totalAmount * 0.1) : 0;
     const depositAmount = deposit > 0 ? deposit : null;
     const dueAmount = totalAmount != null && depositAmount != null
       ? Math.max(totalAmount - depositAmount, 0)
@@ -159,6 +160,7 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
             selected_price: totalAmount,
             currency: currencyOverride,
             total_amount: totalAmount,
+            commission_amount: commissionAmount > 0 ? commissionAmount : null,
             deposit_amount: depositAmount,
             due_amount: dueAmount,
             booking_source: 'website-form',
@@ -208,6 +210,8 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
     setLoading(true);
     const ok = await sendToBookingApiAndEmail(true);
     if (ok) {
+      const commissionAmount = coursePrice > 0 ? Math.round(coursePrice * 0.1) : 0;
+      const totalPayable = deposit + commissionAmount;
       trackBookingSubmitted({
         item_name: form.course_title,
         item_category: 'course',
@@ -215,7 +219,7 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
         currency: currencyOverride,
         payment_choice: 'deposit_requested',
       });
-      window.location.href = `${PAYPAL_BASE}/${deposit}THB`;
+      window.location.href = `${PAYPAL_BASE}/${totalPayable}THB`;
       return;
     }
     setLoading(false);
@@ -290,12 +294,14 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
               <div style={{ background: '#f0f8ff', borderRadius: 6, padding: '1rem', marginBottom: 8 }}>
                 <div><strong>Course Price:</strong> {coursePrice.toLocaleString()} THB</div>
                 <div><strong>Deposit ({DEPOSIT_PERCENT_LABEL}):</strong> {deposit.toLocaleString()} THB</div>
+                <div><strong>Commission (10%):</strong> {Math.round(coursePrice * 0.1).toLocaleString()} THB</div>
+                <div><strong>Total Payable Now:</strong> {(deposit + Math.round(coursePrice * 0.1)).toLocaleString()} THB</div>
                 {priceOverride !== null && (
                   <div style={{ fontSize: '0.9em', color: '#555', marginTop: 4 }}>
                     Prefilled from link ({currencyOverride})
                   </div>
                 )}
-                <div style={{ fontSize: '0.95em', color: '#555', marginTop: 4 }}>You can pay the deposit now to secure your spot, or choose to pay later.</div>
+                <div style={{ fontSize: '0.95em', color: '#555', marginTop: 4 }}>You can pay the deposit + commission now to secure your spot, or choose to pay later.</div>
               </div>
             )}
             {form.course_title === 'Other / Ask us' && (
@@ -352,7 +358,7 @@ const BookNowForm: React.FC<BookNowFormProps> = ({ fullPage = false }) => {
           {showPayOptions && form.course_title && coursePrice > 0 && (
             <div style={{ marginTop: 24, background: '#f8f8f8', borderRadius: 8, padding: 24, textAlign: 'center', boxShadow: '0 1px 6px #0001' }}>
               <h3 style={{ marginBottom: 12 }}>Secure Your Spot</h3>
-              <div style={{ marginBottom: 8 }}>Pay a <strong>{DEPOSIT_PERCENT_LABEL} deposit ({deposit.toLocaleString()} THB)</strong> now via PayPal to confirm your booking, or choose to pay later.</div>
+              <div style={{ marginBottom: 8 }}>Pay a <strong>{DEPOSIT_PERCENT_LABEL} deposit ({deposit.toLocaleString()} THB) + 10% commission ({Math.round(coursePrice * 0.1).toLocaleString()} THB) = {(deposit + Math.round(coursePrice * 0.1)).toLocaleString()} THB</strong> now via PayPal to confirm your booking, or choose to pay later.</div>
               <div style={{ display: 'flex', gap: 16, justifyContent: 'center', marginTop: 16 }}>
                 <button onClick={handlePayNow} disabled={loading} style={{ background: '#0070ba', color: '#fff', border: 'none', borderRadius: 4, padding: '0.75rem 1.5rem', fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}>
                   {loading ? 'Processing...' : 'Pay Now (PayPal)'}

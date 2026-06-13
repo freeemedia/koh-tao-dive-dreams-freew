@@ -168,11 +168,12 @@ const       BookingPage: React.FC = () => {
     console.log('Form validation errors:', form.formState.errors);
     setIsSubmitting(true);
     try {
-      const amountMajor = (isStayBooking ? 0 : depositMajor) + totalAddons;
+      const commissionAmount = totalItemCostMajor > 0 ? Math.round(totalItemCostMajor * 0.1) : 0;
+      const amountMajor = (isStayBooking ? 0 : depositMajor) + totalAddons + commissionAmount;
       const totalAmountMajor = totalItemCostMajor > 0 ? totalItemCostMajor : null;
       const depositAmountMajor = amountMajor > 0 ? amountMajor : null;
       const balanceAmountMajor = totalItemCostMajor > 0
-        ? Math.max(totalItemCostMajor - amountMajor, 0)
+        ? Math.max(totalItemCostMajor - (depositMajor + totalAddons), 0)
         : null;
       const selectedAddonsList = isDiveBooking
         ? availableAddons.filter((addon) => selectedAddons[addon.id]).map((addon) => ({
@@ -205,6 +206,7 @@ const       BookingPage: React.FC = () => {
         addons_json: JSON.stringify(selectedAddonsList),
         addons_total: totalAddons,
         subtotal_amount: totalItemCostMajor > 0 ? totalItemCostMajor : null,
+        commission_amount: commissionAmount > 0 ? commissionAmount : null,
         total_payable_now: amountMajor > 0 ? amountMajor : null,
         message: messageWithSource,
         status: 'new',
@@ -621,10 +623,10 @@ const       BookingPage: React.FC = () => {
           <div className="text-sm text-muted-foreground">
             {isStayBooking ? 'Payment:' : (isDiveBooking ? 'Total payable now (incl. add-ons):' : 'Total payable now:')}
           </div>
-          <div className="text-2xl font-bold">{isStayBooking ? 'Quote on request' : `฿${depositMajor + totalAddons}`}</div>
+          <div className="text-2xl font-bold">{isStayBooking ? 'Quote on request' : `฿${depositMajor + totalAddons + Math.round(totalItemCostMajor * 0.1)}`}</div>
           {!isStayBooking && totalItemCostMajor > 0 && (
             <div className="text-sm text-muted-foreground mt-1">
-              Total: ฿{totalItemCostMajor} · Deposit: ฿{depositMajor + totalAddons} · Balance: ฿{Math.max(totalItemCostMajor - (depositMajor + totalAddons), 0)}
+              Total: ฿{totalItemCostMajor} · Deposit (10%): ฿{depositMajor} · Commission (10%): ฿{Math.round(totalItemCostMajor * 0.1)} · Add-ons: ฿{totalAddons} · Balance: ฿{Math.max(totalItemCostMajor - depositMajor, 0)}
             </div>
           )}
         </div>

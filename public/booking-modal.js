@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Payment buttons
   payNowBtn.type = 'button';
-  payNowBtn.textContent = 'Pay 20% Deposit Now';
+  payNowBtn.textContent = 'Pay 0% Deposit Now';
   payNowBtn.style.marginRight = '1rem';
   sendInquiryBtn.type = 'submit';
   sendInquiryBtn.textContent = 'Send Inquiry';
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const price = selected.dataset.price ? parseFloat(selected.dataset.price) : 0;
     if (!price) return;
     // TODO: Integrate Stripe/PayPal checkout here
-    alert('Redirecting to payment for ฿' + Math.round(price * 0.2) + ' deposit.');
+    alert('Redirecting to payment for ฿' + Math.round(price * 0) + ' deposit.');
     // After payment, collect form data and send to backend/email if needed
   };
 
