@@ -312,7 +312,7 @@ function normalizeAmounts(input, out) {
   let due = dueCandidates.map(parseAmount).find((v) => v != null) ?? null;
 
   if (deposit == null && total != null && total > 0) {
-    deposit = Math.round(total * 0.1);
+    deposit = Math.round(total * 0.2);
   }
 
   if (due == null && total != null && deposit != null) {

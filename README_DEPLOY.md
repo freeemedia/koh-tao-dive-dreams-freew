@@ -1,5 +1,6 @@
 # Deploying to Hostinger + Vercel (recommended split)
 
+
 For pure static hosting on Hostinger (no Node runtime), use [HOSTINGER_STATIC_DEPLOY.md](HOSTINGER_STATIC_DEPLOY.md).
 
 | Layer | Host | What runs |
@@ -47,7 +48,7 @@ curl -s -o /dev/null -w "%{http_code}\n" https://YOUR_VERCEL_URL/api/bookings
 
 | Variable | When | Example |
 |----------|------|---------|
-| `VITE_API_BASE_URL` | **Build** (required for split) | `https://your-project.vercel.app` |
+| `VITE_API_BASE_URL` | **Build** (recommended) | `https://api.divinginasia.com` |
 | `VITE_SUPABASE_URL` | Build | (if using Supabase in UI) |
 | `VITE_SUPABASE_ANON_KEY` | Build | public anon key only |
 | `VITE_ADMIN_EMAILS` | Build | optional |
@@ -56,6 +57,8 @@ curl -s -o /dev/null -w "%{http_code}\n" https://YOUR_VERCEL_URL/api/bookings
 Do **not** put `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, or other secrets on Hostinger unless you run server code there — they belong on **Vercel only**.
 
 **Start command:** `npm run start:hostinger` (or `node hostinger-server.cjs`)
+
+The Hostinger server **proxies `/api/*` to `https://api.divinginasia.com`**, so bookings work even when the frontend build has an empty `VITE_API_BASE_URL`.
 
 Local smoke test:
 

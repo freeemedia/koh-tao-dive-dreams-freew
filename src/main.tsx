@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
+import { resolveApiBaseUrl } from '@/lib/apiBase'
 
 const rootElement = document.getElementById('root');
 
@@ -40,17 +41,7 @@ window.addEventListener('unhandledrejection', (event) => {
 	renderStartupError('Unhandled promise rejection', event.reason || 'Unknown rejection');
 });
 
-const apiBaseRaw = ((import.meta.env.VITE_API_BASE_URL as string | undefined) || (import.meta.env.VITE_API_URL as string | undefined) || '').trim();
-
-const runtimeFallbackApiBase = (() => {
-	const host = window.location.hostname.toLowerCase();
-	if (host === 'divinginasia.com' || host === 'www.divinginasia.com' || host === 'admin.divinginasia.com') {
-		return 'https://api.divinginasia.com';
-	}
-	return '';
-})();
-
-const apiBase = (apiBaseRaw || runtimeFallbackApiBase).replace(/\/+$/, '');
+const apiBase = resolveApiBaseUrl();
 
 if (apiBase) {
 	const originalFetch = window.fetch.bind(window);

@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { usePageContent } from '@/hooks/usePageContent';
 // PageContentEditor import removed
 import InlineCourseBookingForm from './InlineCourseBookingForm';
+import { depositFromTotal } from '@/lib/depositRate';
 import DropboxGallerySection from './DropboxGallerySection';
 import ImageRow from './ImageRow';
 
@@ -305,7 +306,7 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
             <InlineCourseBookingForm
               itemType={bookingType}
               itemTitle={bookingItemName || content.hero_title || ''}
-              depositMajor={thbAmount > 0 ? Math.round(thbAmount * 0.2) : undefined}
+              depositMajor={thbAmount > 0 ? depositFromTotal(thbAmount) : undefined}
               depositCurrency="THB"
             />
           </div>

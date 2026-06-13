@@ -10,7 +10,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
-import { getApiBaseUrl } from '@/lib/apiBase';
+import { getApiBaseUrl, apiUrl } from '@/lib/apiBase';
+import { totalFromDeposit } from '@/lib/depositRate';
+import { trackBookingSubmitted } from '@/lib/analytics';
 
 const schema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100),
@@ -106,8 +108,8 @@ const InlineCourseBookingForm: React.FC<Props> = ({
             status: 'new',
             guests: Number.isFinite(guestCount) ? guestCount : 1,
             deposit_amount: deposit,
-            total_amount: deposit > 0 ? Math.round(deposit / 0.2) : 0,
-            due_amount: deposit > 0 ? Math.round(deposit / 0.2) - deposit : 0,
+            total_amount: totalFromDeposit(deposit),
+            due_amount: deposit > 0 ? totalFromDeposit(deposit) - deposit : 0,
             booking_source: crmSource,
             currency: depositCurrency,
             created_at: new Date().toISOString(),
@@ -122,6 +124,13 @@ const InlineCourseBookingForm: React.FC<Props> = ({
       }
 
       if (!dbError) {
+        trackBookingSubmitted({
+          item_name: itemTitle,
+          item_category: itemType,
+          value: deposit > 0 ? totalFromDeposit(deposit) : undefined,
+          currency: depositCurrency,
+          payment_choice: data.paymentChoice,
+        });
         if (dbResult?.warning) {
           toast.warning(`Booking saved with warning: ${dbResult.warning}`);
         }
