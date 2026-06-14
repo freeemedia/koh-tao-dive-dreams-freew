@@ -59,7 +59,6 @@
     "@tiptap/extension-underline": "^2.0.0",
     "@tiptap/react": "^2.0.3",
     "@tiptap/starter-kit": "^2.0.0",
-    "@vercel/analytics": "^2.0.1",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "aws-amplify": "^6.16.2",
     "better-sqlite3": "^12.5.0",

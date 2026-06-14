@@ -13,6 +13,7 @@ interface BookingData {
   deposit_amount?: string;
   total_amount?: string;
   balance_amount?: string;
+  commission_amount?: string;
   payment_choice?: string;
   [key: string]: string | undefined;
 }

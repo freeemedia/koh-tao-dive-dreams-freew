@@ -77,6 +77,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
       // Calculate totals from a percentage-based deposit model.
       const deposit_amount = typeof depositMajor === 'number' ? depositMajor : 0;
       const total_amount = totalFromDeposit(deposit_amount);
+      const commission_amount = total_amount > 0 ? Math.round(total_amount * 0.1) : 0;
       const due_amount = total_amount > 0
         ? Math.max(total_amount - deposit_amount, 0)
         : 0;
@@ -104,6 +105,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
             item_title: itemTitle,
             deposit_amount,
             total_amount,
+            commission_amount: commission_amount > 0 ? commission_amount : null,
             due_amount,
             created_at: new Date().toISOString(),
           }),

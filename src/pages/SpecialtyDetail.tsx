@@ -56,7 +56,9 @@ const SpecialtyDetail: React.FC = () => {
             <CardContent>
               <div className="space-y-4">
                 <p><strong>Duration:</strong> {data.duration}</p>
-                <p><strong>Deposit:</strong> {data.depositMajor ? `฿${data.depositMajor}` : 'Contact us'}</p>
+                <p><strong>Deposit (10%):</strong> {data.depositMajor ? `฿${data.depositMajor}` : 'Contact us'}</p>
+                <p><strong>Commission (10%):</strong> {data.depositMajor ? `฿${Math.round((data.depositMajor * 5) * 0.1)}` : 'Contact us'}</p>
+                <p><strong>Total Payable Now:</strong> {data.depositMajor ? `฿${data.depositMajor + Math.round((data.depositMajor * 5) * 0.1)}` : 'Contact us'}</p>
                 <p className="text-muted-foreground">Detailed curriculum, prerequisites, and certification information available on request.</p>
                 <div className="mt-6">
                   <Button onClick={() => {

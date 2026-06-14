@@ -83,6 +83,8 @@ const InlineCourseBookingForm: React.FC<Props> = ({
   const submitBooking = async (data: FormData) => {
     try {
       const deposit = typeof depositMajor === 'number' ? depositMajor : 0;
+      const totalAmount = totalFromDeposit(deposit);
+      const commissionAmount = totalAmount > 0 ? Math.round(totalAmount * 0.1) : 0;
       const guestCount = data.guest_count === '6' ? 6 : Number(data.guest_count || '1');
 
       let dbResult: any = null;
@@ -108,8 +110,9 @@ const InlineCourseBookingForm: React.FC<Props> = ({
             status: 'new',
             guests: Number.isFinite(guestCount) ? guestCount : 1,
             deposit_amount: deposit,
-            total_amount: totalFromDeposit(deposit),
-            due_amount: deposit > 0 ? totalFromDeposit(deposit) - deposit : 0,
+            total_amount: totalAmount,
+            commission_amount: commissionAmount > 0 ? commissionAmount : null,
+            due_amount: deposit > 0 ? totalAmount - deposit : 0,
             booking_source: crmSource,
             currency: depositCurrency,
             created_at: new Date().toISOString(),
@@ -139,8 +142,9 @@ const InlineCourseBookingForm: React.FC<Props> = ({
         form.reset();
 
         if (data.paymentChoice === 'paypal' && deposit > 0) {
+          const totalPayable = deposit + commissionAmount;
           toast.success('Booking sent! Redirecting to PayPal...');
-          setTimeout(() => { window.location.href = `${paypalBase}/${deposit}THB`; }, 1500);
+          setTimeout(() => { window.location.href = `${paypalBase}/${totalPayable}THB`; }, 1500);
         } else {
           toast.success('Booking inquiry sent! We\'ll be in touch within 24 hours.');
           setTimeout(() => { window.location.href = '/thank-you'; }, 1200);
