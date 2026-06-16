@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { usePageContent } from '@/hooks/usePageContent';
 
 const parseLines = (value: string) =>
   value
@@ -42,11 +41,7 @@ const ViewpointsKohTao = () => {
         : 'Start early for sunrise and cooler temperatures\nWear sturdy shoes and bring enough water\nTrails can be steep and slippery after rain\nBest light for photography: early morning and sunset',
   };
 
-  const { content } = usePageContent({
-    pageSlug: 'viewpoints-koh-tao',
-    locale,
-    fallbackContent,
-  });
+  const content = fallbackContent;
 
   const points = parseLabeledItems(content.points_list || fallbackContent.points_list);
   const hikingTips = parseLines(content.hiking_tips_list || fallbackContent.hiking_tips_list);

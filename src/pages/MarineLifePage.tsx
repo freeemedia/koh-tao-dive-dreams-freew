@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Link } from 'react-router-dom';
 import { MapPin, Waves, Fish, Anchor, Eye, Clock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { usePageContent } from '@/hooks/usePageContent';
 
 const parseSpecies = (value: string) => {
   if (!value) return [];
@@ -72,7 +71,7 @@ const MarineLifePage = () => {
     macro_life: 'Nudibranchs|Colorful sea slugs with unique patterns and shapes, perfect for macro photography.|1-15cm|Coral reefs|Year-round|/marine-life/nudibranchs\nBanded sea krait|Venomous sea snakes that hunt fish and eels in shallow water.|Up to 1.5m|Shallow reefs|Year-round|/marine-life/banded-sea-krait\nBearded scorpionfish|Master of camouflage with venomous spines, perfectly disguised as coral.|Up to 30cm|Coral reefs|Year-round|/marine-life/bearded-scorpion-fish\nCephalopods|Intelligent octopuses and cuttlefish, masters of camouflage and problem solving.|5cm-3m|Coral reefs and deep water|Year-round|/marine-life/cephalopods',
   };
 
-  const { content: pageContent } = usePageContent({ pageSlug: 'marine-life-page', locale, fallbackContent });
+  const pageContent = fallbackContent;
 
   const pelagicSpecies = parseSpecies(pageContent.pelagic_species);
   const reefSharks = parseSpecies(pageContent.reef_sharks);

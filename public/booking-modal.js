@@ -48,9 +48,11 @@ document.addEventListener('DOMContentLoaded', function () {
   // Diving experience
   form.innerHTML += '<label>Diving Experience:<select name="experience"><option value="">Select</option><option value="certified">Certified Diver</option><option value="beginner">Beginner</option></select></label>';
 
+  const DEPOSIT_RATE = 0.1;
+
   // Payment buttons
   payNowBtn.type = 'button';
-  payNowBtn.textContent = 'Pay 0% Deposit Now';
+  payNowBtn.textContent = 'Pay 10% Deposit Now';
   payNowBtn.style.marginRight = '1rem';
   sendInquiryBtn.type = 'submit';
   sendInquiryBtn.textContent = 'Send Inquiry';
@@ -66,13 +68,14 @@ document.addEventListener('DOMContentLoaded', function () {
   courseSelect.onchange = function () {
     const selected = courseSelect.options[courseSelect.selectedIndex];
     const price = selected.dataset.price ? parseFloat(selected.dataset.price) : 0;
+    const depositAmount = Math.round(price * DEPOSIT_RATE);
     priceDisplay.textContent = price ? `Course Price: ฿${price}` : '';
-    depositDisplay.textContent = price ? `20% Deposit: ฿${Math.round(price * 0.2)}` : '';
+    depositDisplay.textContent = price ? `10% Deposit: ฿${depositAmount}` : '';
     payNowBtn.disabled = !price;
     // Update PayPal link hidden field
     const paypalField = document.getElementById('paypal_link_field');
     if (paypalField) {
-      paypalField.value = price ? `https://paypal.me/prodivingasia/${Math.round(price * 0.2)}THB` : '';
+      paypalField.value = price ? `https://paypal.me/prodivingasia/${depositAmount}THB` : '';
     }
   };
   payNowBtn.disabled = true;
@@ -82,8 +85,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const selected = courseSelect.options[courseSelect.selectedIndex];
     const price = selected.dataset.price ? parseFloat(selected.dataset.price) : 0;
     if (!price) return;
+    const depositAmount = Math.round(price * DEPOSIT_RATE);
     // TODO: Integrate Stripe/PayPal checkout here
-    alert('Redirecting to payment for ฿' + Math.round(price * 0) + ' deposit.');
+    alert('Redirecting to payment for ฿' + depositAmount + ' deposit.');
     // After payment, collect form data and send to backend/email if needed
   };
 

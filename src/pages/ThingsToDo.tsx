@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { usePageContent } from '@/hooks/usePageContent';
 
 const parseLines = (value: string) =>
   value
@@ -39,11 +38,7 @@ const ThingsToDo = () => {
     activity_guide: locale === 'nl' ? 'gids met activiteiten' : 'activity guide',
   };
 
-  const { content } = usePageContent({
-    pageSlug: 'things-to-do',
-    locale,
-    fallbackContent,
-  });
+  const content = fallbackContent;
 
   const activities = parseLines(content.activities_list || fallbackContent.activities_list);
   const ideas = parseLines(content.ideas_list || fallbackContent.ideas_list);

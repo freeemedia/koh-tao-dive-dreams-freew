@@ -22,9 +22,9 @@
 **/.builds/
 **/node_modules/
 **/.DS_Store
-**/.git/
 .git
-.git/**
+.git/
+**/.git/
 .kilo/
 dist/
 *.zip

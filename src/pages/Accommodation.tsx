@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { trackAffiliateClick } from '@/lib/affiliateTracking';
 import { trackTripComAnalyticsEvent } from '@/lib/trackTripComAnalyticsEvent';
-import { usePageContent } from '@/hooks/usePageContent';
 
 const TRIP_ALLIANCE_ID = import.meta.env.VITE_TRIP_ALLIANCE_ID as string | undefined;
 const TRIP_SITE_ID = import.meta.env.VITE_TRIP_SITE_ID as string | undefined;
@@ -103,13 +102,7 @@ const Accommodation = () => {
         continueBooking: 'Continue to stay form',
       };
 
-  const locale = isDutch ? 'nl' : 'en';
-  const { content } = usePageContent({
-    pageSlug: 'accommodation',
-    locale,
-    fallbackContent: fallbackLabels,
-  });
-  const labels = { ...fallbackLabels, ...content } as typeof fallbackLabels;
+  const labels = fallbackLabels;
 
   const roomCards: RoomCard[] = isDutch
     ? [
