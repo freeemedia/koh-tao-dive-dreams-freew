@@ -33,7 +33,7 @@ interface BookingFormProps {
   depositCurrency?: string;
 }
 
-const COURSE_DEPOSIT_RATE = 0.2;
+const COURSE_DEPOSIT_RATE = 0.1;
 
 const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, itemTitle, depositMajor, depositCurrency }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);

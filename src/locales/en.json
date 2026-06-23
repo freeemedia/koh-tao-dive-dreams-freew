@@ -251,7 +251,7 @@
     "finance_paypal_link": "PayPal Link",
     "finance_paypal_placeholder": "https://paypal.me/prodivingasia",
     "finance_course_deposit_rate": "Course Deposit Rate",
-    "finance_course_deposit_rate_placeholder": "0.2",
+    "finance_course_deposit_rate_placeholder": "0.1",
     "finance_default_deposit_amount": "Default Deposit Amount",
     "finance_default_deposit_amount_placeholder": "e.g. 2500",
     "finance_bank_transfer_details": "Bank Transfer Details",

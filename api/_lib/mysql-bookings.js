@@ -94,6 +94,8 @@ const FIELD_MAP = [
   'preferred_date',
   'experience_level',
   'payment_choice',
+  'payment_status',
+  'payment_link_url',
   'message',
   'status',
   'internal_notes',
@@ -116,6 +118,8 @@ const BOOKING_COLUMN_DEFINITIONS = {
   preferred_date: 'DATE NULL',
   experience_level: 'VARCHAR(120) NULL',
   payment_choice: 'VARCHAR(120) NULL',
+  payment_status: 'VARCHAR(80) NULL',
+  payment_link_url: 'TEXT NULL',
   message: 'TEXT NULL',
   status: 'VARCHAR(80) NULL',
   internal_notes: 'TEXT NULL',
@@ -145,6 +149,8 @@ async function ensureMySqlBookingsSchema() {
           preferred_date DATE NULL,
           experience_level VARCHAR(120) NULL,
           payment_choice VARCHAR(120) NULL,
+          payment_status VARCHAR(80) NULL,
+          payment_link_url TEXT NULL,
           message TEXT NULL,
           status VARCHAR(80) NULL,
           internal_notes TEXT NULL,
@@ -251,13 +257,14 @@ export async function updateMySqlBookingById(id, updates) {
   await ensureMySqlBookingsSchema();
   const data = mapPayload(updates);
   delete data.id;
-  data.updated_at = new Date();
 
-  const keys = Object.keys(data);
-  if (keys.length === 0) {
+  if (Object.keys(data).length === 0) {
     throw new Error('No valid fields to update');
   }
 
+  data.updated_at = new Date();
+
+  const keys = Object.keys(data);
   const setClause = keys.map((key) => `\`${key}\` = ?`).join(', ');
   const values = keys.map((key) => data[key]);
 

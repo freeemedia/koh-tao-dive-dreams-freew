@@ -24,7 +24,13 @@ dist-ssr
 *.sw?
 .vercel
 .env
-.env*.local
+.env.*
+!.env.example
+!.env.template
+!.env.hostinger.starter
+upload.env
+hostinger-env-mysql.txt
+HOSTIINGER.env.hostinger.mysql
 
 # amplify
 .amplify

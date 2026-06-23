@@ -204,8 +204,13 @@ export default async function handler(req, res) {
       } catch (wordpressError) {
         const message = wordpressError instanceof Error ? wordpressError.message : 'WordPress delete failed';
         if (message.toLowerCase().includes('no route was found')) {
-          const archivedBooking = await updateWordPressBookingById(id, { status: 'archived' });
-          return res.status(200).json({ ok: true, deleted: false, archived: true, booking: archivedBooking });
+          try {
+            const archivedBooking = await updateWordPressBookingById(id, { status: 'archived' });
+            return res.status(200).json({ ok: true, deleted: false, archived: true, booking: archivedBooking });
+          } catch (archiveError) {
+            const archiveMessage = archiveError instanceof Error ? archiveError.message : 'Archive fallback also failed';
+            return res.status(502).json({ error: `Delete route missing and archive failed: ${archiveMessage}`, provider: dbProvider });
+          }
         }
         return res.status(502).json({ error: message, provider: dbProvider });
       }

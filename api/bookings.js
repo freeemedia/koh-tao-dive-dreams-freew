@@ -27,12 +27,33 @@ import {
 
 const BOOKING_STATUS_VALUES = ['new', 'confirmed', 'deposit_paid', 'completed', 'cancelled'];
 const BOOKING_STATUS_TRANSITIONS = {
-  new: ['confirmed', 'deposit_paid', 'cancelled'],
+  new: ['confirmed', 'cancelled'],
   confirmed: ['deposit_paid', 'completed', 'cancelled'],
-  deposit_paid: ['confirmed', 'completed', 'cancelled'],
+  deposit_paid: ['completed', 'cancelled'],
   completed: [],
   cancelled: [],
 };
+
+function ensureBookingDeleteAuthorized(req) {
+  const allowDelete = String(process.env.ALLOW_BOOKING_DELETE || '').trim().toLowerCase() === 'true';
+  if (!allowDelete) {
+    return { ok: false, status: 403, error: 'Booking deletion is disabled. Set ALLOW_BOOKING_DELETE=true to enable.' };
+  }
+
+  const viewToken = process.env.ADMIN_BOOKINGS_VIEW_TOKEN || process.env.ADMIN_VIEW_TOKEN;
+  const suppliedViewToken = req.headers['x-admin-view-token'] || req.query?.view_token;
+  if (viewToken && suppliedViewToken && String(suppliedViewToken) === String(viewToken)) {
+    return { ok: true };
+  }
+
+  const staticToken = process.env.ADMIN_BOOKINGS_VIEW_TOKEN || process.env.ADMIN_LOGIN_TOKEN || process.env.ADMIN_API_TOKEN || process.env.ADMIN_PASSWORD;
+  const suppliedAdminToken = req.headers['x-admin-login-token'];
+  if (staticToken && suppliedAdminToken && String(suppliedAdminToken) === String(staticToken)) {
+    return { ok: true };
+  }
+
+  return { ok: false, status: 401, error: 'Unauthorized' };
+}
 
 async function sendFluentBookingWebhook(payload) {
   const webhookUrl = String(process.env.FLUENT_BOOKING_WEBHOOK_URL || '').trim();
@@ -169,21 +190,31 @@ function mergeWarnings(...warnings) {
 
 async function dispatchBookingNotifications(payload) {
   const mode = getNotificationMode();
-  if (mode === 'fluent_only' || mode === 'fluent-only' || mode === 'fluent') {
-    await sendFluentBookingWebhook(payload).catch(() => {});
-    return;
-  }
+  const tasks = (mode === 'fluent_only' || mode === 'fluent-only' || mode === 'fluent')
+    ? [['Fluent webhook', sendFluentBookingWebhook(payload)]]
+    : [
+        ['Booking notification email', sendBookingNotificationEmail(payload)],
+        ['Customer invoice email', sendCustomerInvoiceEmail(payload)],
+        ['Fluent webhook', sendFluentBookingWebhook(payload)],
+      ];
 
-  await Promise.all([
-    sendBookingNotificationEmail(payload).catch(() => {}),
-    sendCustomerInvoiceEmail(payload).catch(() => {}),
-    sendFluentBookingWebhook(payload).catch(() => {}),
-  ]);
+  const results = await Promise.allSettled(tasks.map(([, task]) => task));
+  return results
+    .map((result, index) => {
+      if (result.status !== 'rejected') return null;
+      const label = tasks[index][0];
+      const reason = result.reason instanceof Error ? result.reason.message : String(result.reason);
+      return `${label} failed: ${reason}`;
+    })
+    .filter(Boolean);
 }
 
 async function dispatchBookingNotificationsWithWarning(payload) {
   try {
-    await dispatchBookingNotifications(payload);
+    const failures = await dispatchBookingNotifications(payload);
+    if (failures.length) {
+      return `Booking saved, but notification delivery had issues: ${failures.join('; ')}`;
+    }
     return null;
   } catch (error) {
     return error instanceof Error ? error.message : 'Booking saved, but notification delivery failed';
@@ -599,6 +630,11 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'DELETE') {
+      const deleteAuth = ensureBookingDeleteAuthorized(req);
+      if (!deleteAuth.ok) {
+        return res.status(deleteAuth.status || 401).json({ error: deleteAuth.error || 'Unauthorized' });
+      }
+
       const body = parseBody(req) || {};
       const id = req.query?.id || body.id;
       const deleteAllRequested = id === 'all' || String(req.query?.all || body.all || '').toLowerCase() === 'true';

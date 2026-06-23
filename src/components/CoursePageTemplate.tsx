@@ -305,7 +305,7 @@ const CoursePageTemplate: React.FC<CoursePageProps> = ({
             <InlineCourseBookingForm
               itemType={bookingType}
               itemTitle={bookingItemName || content.hero_title || ''}
-              depositMajor={thbAmount > 0 ? Math.round(thbAmount * 0.2) : undefined}
+              depositMajor={thbAmount > 0 ? Math.round(thbAmount * 0.1) : undefined}
               depositCurrency="THB"
             />
           </div>
