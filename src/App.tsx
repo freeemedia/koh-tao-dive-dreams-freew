@@ -105,6 +105,7 @@ import DivemasterInternship from './pages/internship/Divemaster';
 import InstructorInternship from './pages/internship/Instructor';
 import OpenWaterToDivemaster from './pages/OpenWaterToDivemaster';
 import FacebookFeedPage from './pages/FacebookFeedPage';
+import TrainingVideos from './pages/TrainingVideos';
 import BookingToJiraForm from './components/BookingToJiraForm';
 
 // import BookNowSite from './pages/BookNowSite';
@@ -275,6 +276,7 @@ const App = () => (
               <Route path="/VisasKohTao" element={<VisasKohTao />} />
               <Route path="/WeatherKohTao" element={<WeatherKohTao />} />
               <Route path="/facebook" element={<FacebookFeedPage />} />
+              <Route path="/training-videos" element={<TrainingVideos />} />
               <Route path="/booking-to-jira" element={<RequireAdmin><BookingToJiraForm /></RequireAdmin>} />
               {/* <Route path="/booknow-site" element={<BookNowSite />} /> */}
               <Route path="*" element={<NotFound />} />
