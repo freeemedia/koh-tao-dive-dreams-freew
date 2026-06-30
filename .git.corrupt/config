@@ -1,0 +1,143 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+	precomposeunicode = true
+[remote "upstream"]
+	url = https://github.com/one-media-asia/koh-tao-dive-dreams.git
+	fetch = +refs/heads/*:refs/remotes/upstream/*
+[branch "main"]
+	remote = origin
+	vscode-merge-base = origin/main
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#8"
+	merge = refs/heads/main
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#11"
+[lfs]
+	repositoryformatversion = 0
+[branch "undefined"]
+	vscode-merge-base = origin/main
+[branch "rollback-to-commit-7b90f76"]
+	remote = upstream
+	merge = refs/heads/rollback-to-commit-7b90f76
+	vscode-merge-base = origin/rollback-to-commit-7b90f76
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#7"
+[branch "master"]
+	remote = upstream
+	merge = refs/heads/master
+	vscode-merge-base = origin/master
+	github-pr-owner-number = "one-media-asia#koh-tao-dive-dreams#3"
+[branch "rollback-version"]
+	github-pr-base-branch = "one-media-asia#koh-tao-dive-dreams#main"
+	vscode-merge-base = origin/rollback-to-commit-7b90f76
+[remote "origin"]
+	url = https://github.com/one-media-asia/koh-tao-dive-dreams.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[user]
+	name = One Media Asia
+	email = onemediaasia@duck.com
+[branch "0cb6484b-4e02-4a39-8814-a731e1189b9b"]
+	vscode-merge-base = origin/main
+	remote = origin
+	merge = refs/heads/0cb6484b-4e02-4a39-8814-a731e1189b9b
+[branch "0cb6484b-4e02-4a39-8814-a731e1189b9b-1"]
+	remote = origin
+	merge = refs/heads/0cb6484b-4e02-4a39-8814-a731e1189b9b-1
+[commit]
+	template = /Users/onemediaasia/Documents/koh-tao-dive-dreams/.git/worktrees/0cb6484b-4e02-4a39-8814-a731e1189b9b-2/gkcommittemplate.txt
+[branch "0cb6484b-4e02-4a39-8814-a731e1189b9b-2"]
+	vscode-merge-base = origin/0cb6484b-4e02-4a39-8814-a731e1189b9b

@@ -1,0 +1,17 @@
+{
+  "name": "divinginasia-node-api",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "build": "echo \"No build step required for Node API\"",
+    "start": "node server.cjs"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.5.0",
+    "express": "^5.2.1",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

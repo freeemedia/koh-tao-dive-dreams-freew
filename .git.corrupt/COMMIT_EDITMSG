@@ -1,0 +1,58 @@
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch main
+# Your branch is ahead of 'origin/main' by 5 commits.
+#   (use "git push" to publish your local commits)
+#
+# Changes to be committed:
+#	modified:   .env.example
+#	modified:   .vercelignore
+#
+# Changes not staged for commit:
+#	modified:   .env.example
+#	modified:   .env.template
+#	modified:   .env.vercel.prod
+#	modified:   .vscode/settings.json
+#	modified:   README_DEPLOY.md
+#	modified:   api/_lib/supabase-bookings.js
+#	modified:   api/_lib/wordpress-bookings.js
+#	modified:   api/bookings.js
+#	modified:   api/page-content.js
+#	modified:   api/send-booking-notification.js
+#	modified:   bookings.js
+#	modified:   deploy-artifacts/theme-upload/wp-content/themes/hostinger-ai-theme/template-ktd-dashboard.php
+#	modified:   hostinger-server.cjs
+#	modified:   index.html
+#	modified:   ktd-wp-plugin-dashboard.zip
+#	modified:   ktd-wp-plugin/includes/class-api-client.php
+#	modified:   ktd-wp-plugin/ktd-bookings.php
+#	modified:   package-lock.json
+#	modified:   package.json
+#	modified:   public/booking.html
+#	modified:   scripts/write-static-htaccess.cjs
+#	modified:   server.cjs
+#	modified:   src/components/AmountTabs.tsx
+#	modified:   src/components/BookNowForm.tsx
+#	modified:   src/components/BookingForm.tsx
+#	modified:   src/components/InlineCourseBookingForm.tsx
+#	modified:   src/components/WordPressPageDisplay.tsx
+#	modified:   src/lib/adminAccess.ts
+#	modified:   src/pages/BookingFormPage.tsx
+#	modified:   src/pages/SpecialtyDetail.tsx
+#	modified:   src/pages/ThankYouPage.tsx
+#	modified:   src/pages/TrainingVideos.tsx
+#	modified:   wordpress-plugin/koh-tao-booking-manager/koh-tao-booking-manager.php
+#
+# Untracked files:
+#	Wireshark 4.6.6 (1).dmg
+#	Wireshark 4.6.6.dmg
+#	[]]].xlsx
+#	admin.divinginasia.com_petergreaney_recoverycodes.txt
+#	contract_130.pdf
+#	htaccess_Backup_for_admin.divinginasia.com.txt
+#	kali-linux-2026.1-virtualbox-amd64.7z
+#	scripts/security-audit.cjs
+#	www.wordfence.com_recoverycodes.txt
+#

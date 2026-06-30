@@ -1,0 +1,5 @@
+INSERT INTO bookings (name, email, phone, course, date, experience, level, comments, status, created_at) VALUES
+('Alice Smith', 'alice@example.com', '1234567890', 'Open Water', '2026-05-01', 'Yes', 'Beginner', 'Looking forward to it!\nPay your deposit via PayPal: https://paypal.me/divinginasia', 'pending', '2026-04-22 10:00:00'),
+('Bob Lee', 'bob@example.com', '0987654321', 'Advanced Open Water', '2026-05-10', 'No', 'Advanced', 'Please confirm my booking.\nPay your deposit via PayPal: https://paypal.me/divinginasia', 'paid', '2026-04-22 11:00:00'),
+('Carol Chan', 'carol@example.com', '5551234567', 'Rescue Diver', '2026-06-15', 'Yes', 'Intermediate', 'Do you have gear rental?\nPay your deposit via PayPal: https://paypal.me/divinginasia', 'pending', '2026-04-22 12:00:00'),
+('David Kim', 'david@example.com', '4445556666', 'Dive Master', '2026-07-01', 'No', 'Advanced', 'Excited for the course!\nPay your deposit via PayPal: https://paypal.me/divinginasia', 'cancelled', '2026-04-22 13:00:00');

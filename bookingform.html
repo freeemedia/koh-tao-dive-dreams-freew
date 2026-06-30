@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Redirecting to booking...</title>
+	<link rel="icon" href="/images/logo.png" />
+	<meta http-equiv="refresh" content="0; url=/booking" />
+	<script>
+		const target = '/booking' + window.location.search + window.location.hash;
+		window.location.replace(target);
+	</script>
+</head>
+<body>
+	<p>Redirecting to the booking form...</p>
+</body>
+</html>

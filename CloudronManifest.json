@@ -1,0 +1,10 @@
+{
+  "id": "com.example.koh-tao-dive-dream",
+  "title": "Koh Tao Dive Dream",
+  "author": "Your Name",
+  "description": "A web app for Koh Tao Dive Dream.",
+  "version": "1.0.0",
+  "healthCheckPath": "/",
+  "httpPort": 3002,
+  "manifestVersion": 2
+}

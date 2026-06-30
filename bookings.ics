@@ -1,0 +1,97 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Pro Diving Asia//Confirmed Bookings Calendar//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Pro Diving Asia Confirmed Bookings
+X-PUBLISHED-TTL:PT15M
+REFRESH-INTERVAL;VALUE=DURATION:PT15M
+BEGIN:VEVENT
+UID:c6f27185-3ad2-4124-9bea-8d6b37da2757@prodiving.asia
+DTSTAMP:20260403T135926Z
+DTSTART;VALUE=DATE:20260425
+DTEND;VALUE=DATE:20260426
+SUMMARY:Booking: PADI Open Water Course (sebastian van riemsdijk)
+DESCRIPTION:Name: sebastian van riemsdijk\nEmail: petergreaney@gmail.com\nPhone: +66639230132\nStatus: confirmed\nMessage: test 2140\n\nBooking Source: direct\nBooking ID: c6f27185-3ad2-4124-9bea-8d6b37da2757
+END:VEVENT
+BEGIN:VEVENT
+UID:3685d0b5-4494-4bfe-8985-96965a7a8fa3@prodiving.asia
+DTSTAMP:20260403T135926Z
+DTSTART;VALUE=DATE:20260411
+DTEND;VALUE=DATE:20260412
+SUMMARY:Booking: PADI Open Water Course + 2 Fun Dives (frid@2106-Peter Greaney)
+DESCRIPTION:Name: frid@2106-Peter Greaney\nEmail: petergreaney@gmail.com\nPhone: +66639230132\nStatus: confirmed\nMessage: test new forms\n\nBooking Source: direct\nBooking ID: 3685d0b5-4494-4bfe-8985-96965a7a8fa3
+END:VEVENT
+BEGIN:VEVENT
+UID:71167189-863b-40d0-a970-1a0c70e025e1@prodiving.asia
+DTSTAMP:20260403T135926Z
+DTSTART;VALUE=DATE:20260410
+DTEND;VALUE=DATE:20260411
+SUMMARY:Booking: PADI Open Water Course + 1 Fun Dives (Peter Greaney)
+DESCRIPTION:Name: Peter Greaney\nEmail: petergreaney@gmail.com\nPhone: +66639230132\nStatus: confirmed\nMessage: sadsw\n\nBooking Source: direct\nBooking ID: 71167189-863b-40d0-a970-1a0c70e025e1
+END:VEVENT
+BEGIN:VEVENT
+UID:59534e76-e5ff-4ac5-b478-3125620c941d@prodiving.asia
+DTSTAMP:20260403T135926Z
+DTSTART;VALUE=DATE:20260418
+DTEND;VALUE=DATE:20260419
+SUMMARY:Booking: PADI Open Water Course + 2 Fun Dives (Peter Greaney)
+DESCRIPTION:Name: Peter Greaney\nEmail: petergreaney@gmail.com\nPhone: +66639230132\nStatus: confirmed\nMessage: 18/04\n\nBooking Source: direct\nBooking ID: 59534e76-e5ff-4ac5-b478-3125620c941d
+END:VEVENT
+BEGIN:VEVENT
+UID:981c499f-7ea6-4ea8-9dc0-5d624a29be09@prodiving.asia
+DTSTAMP:20260403T135926Z
+DTSTART;VALUE=DATE:20260417
+DTEND;VALUE=DATE:20260418
+SUMMARY:Booking: Sail Rock (Peter Greaney)
+DESCRIPTION:Name: Peter Greaney\nEmail: petergreaney@gmail.com\nPhone: 0639230132\nStatus: confirmed\nMessage: test\nBooking ID: 981c499f-7ea6-4ea8-9dc0-5d624a29be09
+END:VEVENT
+BEGIN:VEVENT
+UID:105d36b8-510a-4830-a9f9-d3dfa43edf17@prodiving.asia
+DTSTAMP:20260403T135926Z
+DTSTART;VALUE=DATE:20260424
+DTEND;VALUE=DATE:20260425
+SUMMARY:Booking: Chumphon Pinnacle (Peter Greaney)
+DESCRIPTION:Name: Peter Greaney\nEmail: petergreaney@gmail.com\nPhone: 0639230132\nStatus: confirmed\nMessage: d\nBooking ID: 105d36b8-510a-4830-a9f9-d3dfa43edf17
+END:VEVENT
+BEGIN:VEVENT
+UID:04e9bfd9-3585-42b7-81e3-3abd4758fc52@prodiving.asia
+DTSTAMP:20260403T135926Z
+DTSTART;VALUE=DATE:20260509
+DTEND;VALUE=DATE:20260510
+SUMMARY:Booking: Emergency First Response (EFR) + 6 Fun Dives (Peter Greaney)
+DESCRIPTION:Name: Peter Greaney\nEmail: petergreaney@gmail.com\nPhone: +66639230132\nStatus: confirmed\nMessage: 9/may\n\nBooking Source: direct\nBooking ID: 04e9bfd9-3585-42b7-81e3-3abd4758fc52
+END:VEVENT
+BEGIN:VEVENT
+UID:db5d7321-c293-42f6-a16c-b7f52705e860@prodiving.asia
+DTSTAMP:20260403T135926Z
+DTSTART;VALUE=DATE:20260418
+DTEND;VALUE=DATE:20260419
+SUMMARY:Booking: Shark Island (Peter Greaney)
+DESCRIPTION:Name: Peter Greaney\nEmail: petergreaney@gmail.com\nPhone: 0639230132\nStatus: confirmed\nMessage: test11111\nBooking ID: db5d7321-c293-42f6-a16c-b7f52705e860
+END:VEVENT
+BEGIN:VEVENT
+UID:1dcd0399-ec0a-42d3-b5b1-42fed2c93dc9@prodiving.asia
+DTSTAMP:20260403T135926Z
+DTSTART;VALUE=DATE:20260417
+DTEND;VALUE=DATE:20260418
+SUMMARY:Booking: PADI Open Water Course + 4 Fun Dives (sebastian van riemsdijk)
+DESCRIPTION:Name: sebastian van riemsdijk\nEmail: bas@onemedia.asia\nPhone: +6281353833289\nStatus: confirmed\nMessage: test 17/04/ical\n\nBooking Source: direct\nBooking ID: 1dcd0399-ec0a-42d3-b5b1-42fed2c93dc9
+END:VEVENT
+BEGIN:VEVENT
+UID:edb1b969-8fe0-4192-b88f-4b977dafd767@prodiving.asia
+DTSTAMP:20260403T135926Z
+DTSTART;VALUE=DATE:20260430
+DTEND;VALUE=DATE:20260501
+SUMMARY:Booking: PADI Open Water Course + 3 Fun Dives (james tester Greaney)
+DESCRIPTION:Name: james tester Greaney\nEmail: petergreaney@gmail.com\nPhone: +353910235458\nStatus: confirmed\nMessage: test calendar\n\nBooking Source: direct\nBooking ID: edb1b969-8fe0-4192-b88f-4b977dafd767
+END:VEVENT
+BEGIN:VEVENT
+UID:4037828a-bb1d-4fbf-8915-d6150566aba3@prodiving.asia
+DTSTAMP:20260403T135926Z
+DTSTART;VALUE=DATE:20260416
+DTEND;VALUE=DATE:20260417
+SUMMARY:Booking: Chumphon Pinnacle (Peter Greaney)
+DESCRIPTION:Name: Peter Greaney\nEmail: petergreaney@gmail.com\nPhone: 0639230132\nStatus: confirmed\nMessage: yesfef\nBooking ID: 4037828a-bb1d-4fbf-8915-d6150566aba3
+END:VEVENT
+END:VCALENDAR

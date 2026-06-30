@@ -1,0 +1,114 @@
+/* KTD Bookings Manager – Admin Styles */
+
+.ktd-wrap { max-width: 1200px; }
+
+/* Filters bar */
+.ktd-filters { margin: 16px 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.ktd-filters input[type="search"] { min-width: 220px; }
+
+/* Table */
+.ktd-table { font-size: 13px; }
+.ktd-table td { vertical-align: middle; }
+.ktd-count { margin-top: 8px; color: #888; font-size: 12px; }
+
+/* Actions */
+.ktd-actions { white-space: nowrap; }
+.ktd-actions .button { margin-right: 4px; }
+
+/* Badges */
+.ktd-badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+.ktd-status-confirmed  { background: #d4edda; color: #155724; }
+.ktd-status-pending    { background: #fff3cd; color: #856404; }
+.ktd-status-cancelled  { background: #f8d7da; color: #721c24; }
+.ktd-status-completed  { background: #cce5ff; color: #004085; }
+.ktd-status-enquiry    { background: #e2e3e5; color: #383d41; }
+.ktd-pay-paid          { background: #d4edda; color: #155724; }
+.ktd-pay-unpaid        { background: #f8d7da; color: #721c24; }
+.ktd-pay-deposit_paid  { background: #fff3cd; color: #856404; }
+.ktd-pay-refunded      { background: #e2e3e5; color: #383d41; }
+
+/* Detail grid */
+.ktd-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 16px;
+}
+@media (max-width: 900px) {
+    .ktd-detail-grid { grid-template-columns: 1fr; }
+}
+
+/* Cards */
+.ktd-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 20px 24px;
+}
+.ktd-card h2 { font-size: 15px; margin-bottom: 14px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+
+/* Detail form fields */
+.ktd-field-row { display: flex; align-items: center; margin-bottom: 10px; gap: 12px; }
+.ktd-field-row label { min-width: 130px; font-size: 13px; color: #444; font-weight: 600; }
+.ktd-field-row input,
+.ktd-field-row select { flex: 1; }
+.ktd-save-status { font-size: 12px; color: #0077aa; margin-left: 8px; }
+
+/* Message box */
+.ktd-message-box {
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 12px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    min-height: 60px;
+    line-height: 1.6;
+}
+
+/* Comments */
+.ktd-comments { margin-bottom: 16px; max-height: 260px; overflow-y: auto; }
+.ktd-comment { padding: 8px 10px; border-bottom: 1px solid #f0f0f0; font-size: 12px; line-height: 1.5; }
+.ktd-comment-date { color: #999; margin-right: 8px; }
+.ktd-comment-text { color: #333; }
+.ktd-no-comments { color: #999; font-size: 12px; }
+.ktd-add-comment { margin-top: 8px; }
+.ktd-add-comment textarea { width: 100%; margin-bottom: 8px; font-size: 13px; }
+
+/* Finance stats */
+.ktd-stat-cards {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 16px 0 24px;
+}
+.ktd-stat-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 16px 24px;
+    min-width: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.ktd-stat-label { font-size: 11px; text-transform: uppercase; color: #888; letter-spacing: 0.5px; }
+.ktd-stat-value { font-size: 22px; font-weight: 700; color: #0077aa; }
+
+/* Finance grid */
+.ktd-finance-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+@media (max-width: 900px) {
+    .ktd-finance-grid { grid-template-columns: 1fr; }
+}

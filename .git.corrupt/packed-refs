@@ -1,0 +1,18 @@
+# pack-refs with: peeled fully-peeled sorted 
+c7fab708b297b54e808c4d3df7d5c48476d2515c refs/heads/backup/hostinger-stable-2026-05-19
+2632fe63004501604e827739c1005a9d8220aded refs/heads/main
+a226d7b5feaa2b4a9dbebd07c3a6003fac55e002 refs/heads/master
+dad4ec82c6a3f6aee9dccb51ba2a281cb3ca6402 refs/heads/rollback-to-commit-7b90f76
+7b90f76d46c598f38634a2618c13eb4c5ebe378f refs/heads/rollback-version
+c7fab708b297b54e808c4d3df7d5c48476d2515c refs/remotes/origin/backup/hostinger-stable-2026-05-19
+01c42e026f671fba9cbbcefb855bd1de33acfb35 refs/remotes/origin/main
+a226d7b5feaa2b4a9dbebd07c3a6003fac55e002 refs/remotes/origin/master
+9b752233ccf67cd5c91f74d32b6bcfa670808e72 refs/remotes/origin/rollback-to-commit-7b90f76
+410589bbb6a16fb2fb2279485af93705d0ad68fa refs/remotes/upstream/main
+a226d7b5feaa2b4a9dbebd07c3a6003fac55e002 refs/remotes/upstream/master
+8242cc3d341dc8f394e9bf4c4b4ae59aea684740 refs/remotes/upstream/rollback-to-commit-7b90f76
+36f99bb74e5dd6f8de88a8ab7dcd681452f87e3c refs/stash
+864c40128363e7ac5f137085134c74b3fd353057 refs/tags/checkpoint-2026-05-07-stable-booking
+^b3630e40918eb1032d54215d064b117fc7a7270c
+993a089c1f21bfec103040a5a99596c5ad46b58c refs/tags/stable-hostinger-2026-05-19
+^c7fab708b297b54e808c4d3df7d5c48476d2515c

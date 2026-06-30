@@ -1,0 +1,48 @@
+{
+  "name": "Destination",
+  "fields": [
+    {
+      "id": "destination",
+      "name": "Destination",
+      "type": "Symbol",
+      "required": true
+    },
+    {
+      "id": "description",
+      "name": "Description",
+      "type": "RichText",
+      "required": false
+    },
+    {
+      "id": "featuredImage",
+      "name": "Featured image",
+      "type": "Asset",
+      "required": false
+    },
+    {
+      "id": "bestDiveSites",
+      "name": "Best dive sites",
+      "type": "Text",
+      "required": false
+    },
+    {
+      "id": "divePackages",
+      "name": "Dive packages",
+      "type": "Text",
+      "required": false
+    },
+    {
+      "id": "reviews",
+      "name": "Reviews",
+      "type": "Array",
+      "items": { "type": "Link", "linkType": "Entry" },
+      "required": false
+    },
+    {
+      "id": "contactInfo",
+      "name": "Contact info",
+      "type": "Object",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "name": "Pro Diving Asia – Koh Tao",
+  "short_name": "Dive Asia",
+  "description": "Koh Tao dive courses, fun diving, dive site reports and more.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e1a2b",
+  "theme_color": "#0ea5e9",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dive Site Reports",
+      "short_name": "Reports",
+      "url": "/dive-site-reports",
+      "description": "View and submit dive site condition reports"
+    },
+    {
+      "name": "Book a Course",
+      "short_name": "Book",
+      "url": "/booking",
+      "description": "Book a PADI dive course or fun dive"
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration Complete | Diving In Asia</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #e0f7fa 0%, #f8f8f8 100%);
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      max-width: 500px;
+      margin: 5rem auto;
+      background: #fff;
+      padding: 2.5rem 2rem 2rem;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px #0070ba22;
+      text-align: center;
+    }
+    .logo {
+      max-width: 120px;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 2px 8px #0070ba33);
+    }
+    h1 {
+      color: #009688;
+      margin-bottom: 0.75rem;
+      font-size: 2rem;
+      letter-spacing: 0.5px;
+    }
+    p {
+      color: #333;
+      margin-bottom: 1.1rem;
+      font-size: 1.03rem;
+    }
+    .code-box {
+      margin: 1.2rem 0 1.6rem;
+      padding: 1rem;
+      background: #e8f5e9;
+      border: 1px solid #b2dfdb;
+      border-radius: 10px;
+    }
+    .code-label {
+      display: block;
+      color: #00695c;
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+    .code-value {
+      color: #004d40;
+      font-size: 1.15rem;
+      font-weight: 700;
+      word-break: break-all;
+      letter-spacing: 0.04em;
+    }
+    .note {
+      background: #e3f2fd;
+      border-radius: 10px;
+      padding: 1rem;
+      color: #01579b;
+      font-size: 0.96rem;
+      text-align: left;
+      margin: 1.2rem 0;
+    }
+    .home-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: #0070ba;
+      background: #e3f2fd;
+      padding: 0.7em 1.5em;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.2s, color 0.2s;
+    }
+    .home-link:hover {
+      background: #b3e5fc;
+      color: #01579b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="/images/logo.png" alt="Diving In Asia Logo" class="logo" />
+    <h1>Registration Complete</h1>
+    <p>Thank you. Your registration has been received successfully.</p>
+
+    <div class="code-box">
+      <span class="code-label">Registration Code</span>
+      <span class="code-value" id="registrationCode">-</span>
+    </div>
+
+    <div class="note">
+      Please keep this code for reference. Our team may ask for it when confirming your booking details.
+    </div>
+
+    <a href="/" class="home-link">Return to Home</a>
+  </div>
+
+  <script>
+    function generateCode() {
+      if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+        return window.crypto.randomUUID().replace(/-/g, '').slice(0, 32);
+      }
+      return Math.random().toString(36).slice(2) + Date.now().toString(36);
+    }
+
+    function initRegistrationCode() {
+      var params = new URLSearchParams(window.location.search);
+      var code = (params.get('registration_code') || '').trim();
+      if (!code) {
+        code = generateCode();
+        params.set('registration_code', code);
+        var nextUrl = window.location.pathname + '?' + params.toString();
+        window.history.replaceState({}, '', nextUrl);
+      }
+      var target = document.getElementById('registrationCode');
+      if (target) target.textContent = code;
+    }
+
+    document.addEventListener('DOMContentLoaded', initRegistrationCode);
+  </script>
+</body>
+</html>
