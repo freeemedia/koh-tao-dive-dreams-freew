@@ -1,1 +1,0 @@
-// This page has been removed. Booking is now only available via the modal.

@@ -548,36 +548,6 @@ const Courses = () => {
           ))}
         </div>
 
-        <div className="mb-16 rounded-2xl border border-cyan-200 bg-gradient-to-r from-slate-950 via-cyan-950 to-slate-900 p-8 text-white shadow-xl shadow-cyan-950/20">
-          <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.3em] text-cyan-300">
-                {isDutch ? 'Extra training' : 'Extra training'}
-              </p>
-              <h3 className="mt-3 text-3xl font-bold">
-                {isDutch ? 'Bekijk gratis trainingsvideos' : 'Watch free training videos'}
-              </h3>
-              <p className="mt-4 max-w-2xl text-cyan-50/85">
-                {isDutch
-                  ? 'Voor Divemaster- en Instructor-kandidaten hebben we een aparte resource hub met theorie, briefing tips en pro-level voorbereiding.'
-                  : 'We have a separate resource hub for Divemaster and Instructor candidates with theory, briefing tips, and pro-level prep.'}
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
-              <Button asChild size="lg" className="bg-cyan-400 text-slate-950 hover:bg-cyan-300">
-                <Link to="/training-videos">
-                  {isDutch ? 'Naar trainingsvideos' : 'Go to training videos'}
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="border-white/30 bg-white/5 text-white hover:bg-white/10 hover:text-white">
-                <Link to="/courses/msdt-program">
-                  {isDutch ? 'Bekijk MSDT' : 'View MSDT'}
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-
         <div className="bg-blue-600 rounded-xl p-8 text-white text-center">
           <h3 className="text-2xl font-bold mb-4">{t('courses.specialOffers.title')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 text-left items-stretch">
@@ -591,7 +561,7 @@ const Courses = () => {
                 </div>
                 <p className="text-xs text-blue-100 mb-3">10% deposit: {getDisplayedPrice('฿1,900')}</p>
                 <a
-                  href="/booking?item=Open%20Water%20%2B%20Advanced&type=course&price=19000&currency=THB&deposit=3800"
+                  href="/booking?item=Open%20Water%20%2B%20Advanced&type=course&price=19000&currency=THB&deposit=1900"
                   className="block w-full rounded-lg bg-white py-3 text-center font-semibold text-red-700 no-underline hover:bg-red-50"
                 >
                   {isDutch ? 'Boek Combo' : 'Book Combo'}
@@ -635,7 +605,7 @@ const Courses = () => {
                 <p className="text-xs text-blue-100 mb-3">10% deposit: {getDisplayedPrice('฿5,678')}</p>
               </div>
               <a
-                href="/booking?item=Open%20Water%20to%20Divemaster%20Package&type=course&price=56780&currency=THB&deposit=11356"
+                href="/booking?item=Open%20Water%20to%20Divemaster%20Package&type=course&price=56780&currency=THB&deposit=5678"
                 className="block w-full rounded-lg bg-white py-3 text-center font-semibold text-blue-700 no-underline hover:bg-blue-50"
               >
                 {isDutch ? 'Boek bij ons' : 'Book with us'}

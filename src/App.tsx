@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { CurrencyProvider } from './hooks/useCurrency';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { Toaster } from '@/components/ui/toaster';
+import { Toaster as Sonner } from '@/components/ui/sonner';
 
 import Layout from './components/Layout';
 import Courses from './components/Courses';
@@ -11,9 +14,14 @@ import Index from './pages';
 import NotFound from './pages/NotFound';
 import BookingAffiliate from './pages/BookingAffiliate';
 import AgodaHotels from './pages/AgodaHotels';
+import ClicksDashboard from './pages/ClicksDashboard';
 import BookingPage from './pages/BookingPage';
 import StayBookingPage from './pages/StayBookingPage';
 import ThankYouPage from './pages/ThankYouPage';
+import Admin from './pages/Admin';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Account from './pages/Account';
 
 import OpenWater from './pages/OpenWater';
 import Advanced from './pages/Advanced';
@@ -69,11 +77,36 @@ import ViewpointsKohTao from './pages/ViewpointsKohTao';
 import VisasKohTao from './pages/VisasKohTao';
 import WeatherKohTao from './pages/WeatherKohTao';
 
+import DeepDiver from './pages/specialty/DeepDiver';
+import WreckDiver from './pages/specialty/WreckDiver';
+import EnrichedAirDiver from './pages/specialty/EnrichedAirDiver';
+import NightDiver from './pages/specialty/NightDiver';
+import PeakPerformanceBuoyancy from './pages/specialty/PeakPerformanceBuoyancy';
+import SearchRecovery from './pages/specialty/SearchRecovery';
+import SelfReliantDiver from './pages/specialty/SelfReliantDiver';
+import SidemountDiver from './pages/specialty/SidemountDiver';
+import UnderwaterNavigator from './pages/specialty/UnderwaterNavigator';
+import FishIdentification from './pages/specialty/FishIdentification';
+import DiveAgainstDebris from './pages/specialty/DiveAgainstDebris';
+import CoralWatch from './pages/specialty/CoralWatch';
+import DPVDiver from './pages/specialty/DPVDiver';
+import SharkConservation from './pages/specialty/SharkConservation';
+import SeaTurtleAwareness from './pages/specialty/SeaTurtleAwareness';
+import WhaleSharkAwareness from './pages/specialty/WhaleSharkAwareness';
+import AdaptiveSupportDiver from './pages/specialty/AdaptiveSupportDiver';
+import BoatDiver from './pages/specialty/BoatDiver';
+import CurrentDiver from './pages/specialty/CurrentDiver';
+import Photography from './pages/specialty/Photography';
+import EmergencyO2Provider from './pages/specialty/EmergencyO2Provider';
+import EquipmentSpecialist from './pages/specialty/EquipmentSpecialist';
+import UnderwaterNaturalist from './pages/specialty/UnderwaterNaturalist';
+
 import DivemasterInternship from './pages/internship/Divemaster';
 import InstructorInternship from './pages/internship/Instructor';
 import OpenWaterToDivemaster from './pages/OpenWaterToDivemaster';
 import FacebookFeedPage from './pages/FacebookFeedPage';
 import TrainingVideos from './pages/TrainingVideos';
+import BookingToJiraForm from './components/BookingToJiraForm';
 
 // import BookNowSite from './pages/BookNowSite';
 
@@ -132,17 +165,26 @@ const RequireAdmin = ({ children }: { children: JSX.Element }) => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <CurrencyProvider>
-      <BrowserRouter>
-        <ScrollToTop />
-        <Layout>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <CurrencyProvider>
+        <BrowserRouter>
+          <ScrollToTop />
+          <Layout>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/accommodation-booking" element={<BookingAffiliate />} />
               <Route path="/agoda-hotels" element={<AgodaHotels />} />
+              <Route path="/clicks-dashboard" element={<ClicksDashboard />} />
               <Route path="/booking" element={<BookingPage />} />
               <Route path="/stay" element={<StayBookingPage />} />
               <Route path="/thank-you" element={<ThankYouPage />} />
+              <Route path="/admin" element={<RequireAdmin><Admin /></RequireAdmin>} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/admin/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/account" element={<Account />} />
               <Route path="/courses" element={<Courses />} />
               <Route path="/courses/open-water" element={<OpenWater />} />
               <Route path="/courses/advanced" element={<Advanced />} />
@@ -151,7 +193,6 @@ const App = () => (
               <Route path="/courses/divemaster" element={<Divemaster />} />
               <Route path="/courses/instructor" element={<Instructor />} />
               <Route path="/courses/msdt-program" element={<MSDTProgram />} />
-              <Route path="/training-videos" element={<TrainingVideos />} />
               <Route path="/courses/scuba-review" element={<ScubaReview />} />
               <Route path="/courses/scuba-diver" element={<ScubaDiver />} />
               <Route path="/courses/discover-scuba" element={<DiscoverScuba />} />
@@ -160,6 +201,29 @@ const App = () => (
               <Route path="/courses/dsd-deluxe" element={<DiscoverScubaDeluxe />} />
               <Route path="/courses/pro-level" element={<ProLevelCourses />} />
               <Route path="/courses/specialties/:slug" element={<SpecialtyDetail />} />
+              <Route path="/specialty/deep-diver" element={<DeepDiver />} />
+              <Route path="/specialty/wreck-diver" element={<WreckDiver />} />
+              <Route path="/specialty/enriched-air-diver" element={<EnrichedAirDiver />} />
+              <Route path="/specialty/night-diver" element={<NightDiver />} />
+              <Route path="/specialty/peak-performance-buoyancy" element={<PeakPerformanceBuoyancy />} />
+              <Route path="/specialty/search-recovery" element={<SearchRecovery />} />
+              <Route path="/specialty/self-reliant-diver" element={<SelfReliantDiver />} />
+              <Route path="/specialty/sidemount-diver" element={<SidemountDiver />} />
+              <Route path="/specialty/underwater-navigator" element={<UnderwaterNavigator />} />
+              <Route path="/specialty/fish-identification" element={<FishIdentification />} />
+              <Route path="/specialty/dive-against-debris" element={<DiveAgainstDebris />} />
+              <Route path="/specialty/coral-watch" element={<CoralWatch />} />
+              <Route path="/specialty/dpv-diver" element={<DPVDiver />} />
+              <Route path="/specialty/shark-conservation" element={<SharkConservation />} />
+              <Route path="/specialty/sea-turtle-awareness" element={<SeaTurtleAwareness />} />
+              <Route path="/specialty/whaleshark-awareness" element={<WhaleSharkAwareness />} />
+              <Route path="/specialty/adaptive-support" element={<AdaptiveSupportDiver />} />
+              <Route path="/specialty/boat-diver" element={<BoatDiver />} />
+              <Route path="/specialty/current-diver" element={<CurrentDiver />} />
+              <Route path="/specialty/photography" element={<Photography />} />
+              <Route path="/specialty/emergency-o2" element={<EmergencyO2Provider />} />
+              <Route path="/specialty/equipment-specialist" element={<EquipmentSpecialist />} />
+              <Route path="/specialty/underwater-naturalist" element={<UnderwaterNaturalist />} />
               <Route path="/internship/divemaster" element={<DivemasterInternship />} />
               <Route path="/internship/instructor" element={<InstructorInternship />} />
               <Route path="/packages/open-water-to-divemaster" element={<OpenWaterToDivemaster />} />
@@ -212,13 +276,16 @@ const App = () => (
               <Route path="/VisasKohTao" element={<VisasKohTao />} />
               <Route path="/WeatherKohTao" element={<WeatherKohTao />} />
               <Route path="/facebook" element={<FacebookFeedPage />} />
+              <Route path="/training-videos" element={<TrainingVideos />} />
+              <Route path="/booking-to-jira" element={<RequireAdmin><BookingToJiraForm /></RequireAdmin>} />
               {/* <Route path="/booknow-site" element={<BookNowSite />} /> */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>
         </BrowserRouter>
       </CurrencyProvider>
-    </QueryClientProvider>
-  );
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;

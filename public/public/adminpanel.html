@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Bookings</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f8f8; margin: 0; }
+    .container { max-width: 900px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 24px #0070ba22; padding: 2rem; }
+    h1 { color: #0070ba; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+    th, td { padding: 0.7em 1em; border-bottom: 1px solid #e0e0e0; text-align: left; }
+    th { background: #e0f7fa; color: #0070ba; }
+    tr:hover { background: #f1f8e9; }
+    .paypal-link { color: #fff; background: #0070ba; padding: 0.4em 1em; border-radius: 4px; text-decoration: none; font-weight: bold; }
+    .search-bar { margin-bottom: 1.5em; }
+    .search-bar input { padding: 0.5em 1em; border-radius: 6px; border: 1px solid #b2dfdb; font-size: 1em; }
+    .section-title { color: #0070ba; margin-top: 2.5rem; border-top: 2px solid #e0f7fa; padding-top: 1.5rem; }
+    .wp-badge { display: inline-block; background: #21759b; color: #fff; font-size: 0.75em; padding: 0.2em 0.6em; border-radius: 4px; margin-left: 0.5em; vertical-align: middle; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Booking Admin Panel</h1>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search by name, email, course..." />
+    </div>
+    <table id="bookingsTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Course</th>
+          <th>Date</th>
+          <th>Level</th>
+          <th>Experience</th>
+          <th>Comments</th>
+          <th>PayPal</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <h2 class="section-title">WordPress Mirror <span class="wp-badge">WP</span></h2>
+    <table id="wpBookingsTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Course</th>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Experience</th>
+          <th>Deposit</th>
+          <th>Pay Link</th>
+          <th>Message</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody><tr><td colspan="12" style="color:#aaa;text-align:center;">Loading WP bookings…</td></tr></tbody>
+    </table>
+  </div>
+  <script>
+    const API_BASE = window.location.port === '3003' ? 'http://localhost:3003' : '';
+    async function fetchBookings() {
+      const res = await fetch(`${API_BASE}/api/bookings`);
+      const data = await res.json();
+      return Array.isArray(data) ? data : (data.bookings || []);
+    }
+    function extractPayPalLink(comments) {
+      const match = comments && comments.match(/https:\/\/paypal\.me\/[\w/]+/);
+      return match ? match[0] : null;
+    }
+    function renderTable(bookings) {
+      const tbody = document.querySelector('#bookingsTable tbody');
+      tbody.innerHTML = '';
+      bookings.forEach(b => {
+        const comments = b.message || b.comments || '';
+        const paypalLink = b.paypal_link || extractPayPalLink(comments);
+        tbody.innerHTML += `<tr>
+          <td>${b.id}</td>
+          <td>${b.name || ''}</td>
+          <td>${b.email || ''}</td>
+          <td>${b.phone || ''}</td>
+          <td>${b.item_title || b.course_title || b.course || ''}</td>
+          <td>${b.preferred_date || b.date || ''}</td>
+          <td>${b.booking_type || b.level || ''}</td>
+          <td>${b.experience_level || b.experience || ''}</td>
+          <td style="max-width:200px;white-space:pre-line;">${comments.replace(/(https:\/\/paypal\.me\/[\w/]+)/g, '<a href="$1" target="_blank" class="paypal-link">PayPal</a>')}</td>
+          <td>${paypalLink ? `<a href="${paypalLink}" target="_blank" class="paypal-link">PayPal</a>` : ''}</td>
+          <td><select class="status-select" data-id="${b.id}">
+            <option value="new"${b.status === 'new' ? ' selected' : ''}>new</option>
+            <option value="pending"${b.status === 'pending' ? ' selected' : ''}>pending</option>
+            <option value="confirmed"${b.status === 'confirmed' ? ' selected' : ''}>confirmed</option>
+            <option value="paid"${b.status === 'paid' ? ' selected' : ''}>paid</option>
+            <option value="cancelled"${b.status === 'cancelled' ? ' selected' : ''}>cancelled</option>
+          </select></td>
+          <td>${b.created_at ? new Date(b.created_at).toLocaleString() : ''}</td>
+          <td>
+            <button class="edit-btn" data-id="${b.id}">Edit</button>
+            <button class="delete-btn" data-id="${b.id}">Delete</button>
+          </td>
+        </tr>`;
+      });
+        // Export bookings as CSV
+        function exportCSV(bookings) {
+          const headers = ['ID','Name','Email','Phone','Course','Date','Level','Experience','Comments','Status','Created'];
+          const rows = bookings.map(b => [b.id,b.name,b.email,b.phone,b.item_title||b.course_title,b.preferred_date,b.booking_type,b.experience_level,b.message,b.status,b.created_at]);
+          let csv = headers.join(',') + '\n';
+          csv += rows.map(r => r.map(x => '"'+String(x||'').replace(/"/g,'""')+'"').join(',')).join('\n');
+          const blob = new Blob([csv], {type:'text/csv'});
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'bookings.csv';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
+
+        // Filter by date/status
+        function filterByDateStatus(bookings, date, status) {
+          return bookings.filter(b => {
+            let match = true;
+            if (date) match = match && (b.preferred_date === date);
+            if (status && status !== 'all') match = match && (b.status === status);
+            return match;
+          });
+        }
+
+        // Handle edit/delete/status change
+        document.addEventListener('click', async function(e) {
+          if (e.target.classList.contains('delete-btn')) {
+            const id = e.target.getAttribute('data-id');
+            if (confirm('Delete booking #' + id + '?')) {
+              await fetch(`${API_BASE}/api/bookings?id=${encodeURIComponent(id)}`, {
+                method: 'DELETE'
+              });
+              fetchBookings().then(renderTable);
+            }
+          }
+          if (e.target.classList.contains('edit-btn')) {
+            const id = e.target.getAttribute('data-id');
+            const newComments = prompt('Edit comments:');
+            if (newComments !== null) {
+              await fetch(`${API_BASE}/api/bookings`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, message: newComments })
+              });
+              fetchBookings().then(renderTable);
+            }
+          }
+        });
+        document.addEventListener('change', async function(e) {
+          if (e.target.classList.contains('status-select')) {
+            const id = e.target.getAttribute('data-id');
+            const status = e.target.value;
+            await fetch(`${API_BASE}/api/bookings`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id, status })
+            });
+            fetchBookings().then(renderTable);
+          }
+        });
+        // Export button
+        const exportBtn = document.createElement('button');
+        exportBtn.textContent = 'Export CSV';
+        exportBtn.style = 'margin-bottom:1em;float:right;background:#0070ba;color:#fff;padding:0.5em 1.2em;border:none;border-radius:6px;cursor:pointer;';
+        exportBtn.onclick = async () => {
+          const allBookings = await fetchBookings();
+          exportCSV(allBookings);
+        };
+        document.querySelector('.container').insertBefore(exportBtn, document.querySelector('.search-bar'));
+
+        // Date and status filter UI
+        const filterDiv = document.createElement('div');
+        filterDiv.style = 'margin-bottom:1em;';
+        filterDiv.innerHTML = '<input type="date" id="dateFilter" style="margin-right:1em;"/><select id="statusFilter"><option value="all">All Statuses</option><option value="pending">Pending</option><option value="paid">Paid</option><option value="cancelled">Cancelled</option></select>';
+        document.querySelector('.container').insertBefore(filterDiv, document.querySelector('.search-bar'));
+        document.getElementById('dateFilter').addEventListener('change', async function() {
+          const allBookings = await fetchBookings();
+          renderTable(filterByDateStatus(allBookings, this.value, document.getElementById('statusFilter').value));
+        });
+        document.getElementById('statusFilter').addEventListener('change', async function() {
+          const allBookings = await fetchBookings();
+          renderTable(filterByDateStatus(allBookings, document.getElementById('dateFilter').value, this.value));
+        });
+    }
+    function filterBookings(bookings, query) {
+      query = query.toLowerCase();
+      return bookings.filter(b =>
+        (b.name || '').toLowerCase().includes(query) ||
+        (b.email || '').toLowerCase().includes(query) ||
+        (b.item_title || b.course_title || '').toLowerCase().includes(query) ||
+        (b.phone || '').toLowerCase().includes(query) ||
+        (b.message || '').toLowerCase().includes(query)
+      );
+    }
+    document.getElementById('searchInput').addEventListener('input', async function() {
+      const allBookings = await fetchBookings();
+      renderTable(filterBookings(allBookings, this.value));
+    });
+    // Initial load
+    fetchBookings().then(renderTable);
+
+    // WordPress mirror section
+    async function fetchWpBookings() {
+      try {
+        const res = await fetch(`${API_BASE}/api/admin-bookings`, {
+          headers: { 'x-admin-view-token': 'liveyourlifeinparadise' }
+        });
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data)) return data.data;
+        return Array.isArray(data) ? data : (data.bookings || []);
+      } catch (e) { return []; }
+    }
+    function renderWpTable(bookings) {
+      const tbody = document.querySelector('#wpBookingsTable tbody');
+      if (!bookings.length) {
+        tbody.innerHTML = '<tr><td colspan="12" style="color:#aaa;text-align:center;">No WP bookings found.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = bookings.map(b => `<tr>
+        <td>${b.id || ''}</td>
+        <td>${b.name || ''}</td>
+        <td>${b.email || ''}</td>
+        <td>${b.phone || ''}</td>
+        <td>${b.item_title || ''}</td>
+        <td>${b.preferred_date || ''}</td>
+        <td>${b.booking_type || ''}</td>
+        <td>${b.experience_level || ''}</td>
+        <td>${b.deposit_amount != null ? b.deposit_amount : ''}</td>
+        <td>${b.paypal_link ? `<a href="${b.paypal_link}" target="_blank" class="paypal-link">Pay</a>` : ''}</td>
+        <td style="max-width:200px;white-space:pre-line;">${b.message || ''}</td>
+        <td>${b.status || ''}</td>
+      </tr>`).join('');
+    }
+    fetchWpBookings().then(renderWpTable);
+  </script>
+</body>
+</html>

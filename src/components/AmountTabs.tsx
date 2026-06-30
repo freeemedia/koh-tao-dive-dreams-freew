@@ -5,23 +5,21 @@ interface AmountTabsProps {
   total: number;
   due: number;
   paid: number;
-  commission?: number;
-  onAmountChange?: (field: 'deposit' | 'total' | 'due' | 'paid' | 'commission', value: number) => void;
+  onAmountChange?: (field: 'deposit' | 'total' | 'due' | 'paid', value: number) => void;
 }
 
 const tabLabels = [
   { key: 'deposit', label: 'Deposit' },
   { key: 'total', label: 'Total' },
-  { key: 'commission', label: 'Commission' },
   { key: 'due', label: 'Due' },
   { key: 'paid', label: 'Paid' },
 ] as const;
 
 type TabKey = typeof tabLabels[number]['key'];
 
-export const AmountTabs: React.FC<AmountTabsProps> = ({ deposit, total, due, paid, commission = 0, onAmountChange }) => {
+export const AmountTabs: React.FC<AmountTabsProps> = ({ deposit, total, due, paid, onAmountChange }) => {
   const [activeTab, setActiveTab] = useState<TabKey>('total');
-  const [amounts, setAmounts] = useState({ deposit, total, due, paid, commission });
+  const [amounts, setAmounts] = useState({ deposit, total, due, paid });
 
   const handleEdit = (key: TabKey, value: string) => {
     const num = Number(value);

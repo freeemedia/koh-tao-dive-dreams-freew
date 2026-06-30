@@ -191,7 +191,6 @@ const Footer: React.FC = () => {
               <li><Link to="/courses/rescue" className="hover:text-white transition">Rescue Diver</Link></li>
               <li><Link to="/courses/divemaster" className="hover:text-white transition">Divemaster</Link></li>
               <li><Link to="/fun-diving-koh-tao" className="hover:text-white transition">{isDutch ? 'Fun Diving' : 'Fun Diving'}</Link></li>
-              <li><Link to="/training-videos" className="hover:text-white transition">{isDutch ? 'Trainingsvideos' : 'Training Videos'}</Link></li>
               <li><Link to="/marine-life" className="hover:text-white transition">{isDutch ? 'Mariene Fauna' : 'Marine Life'}</Link></li>
             </ul>
           </div>
@@ -299,12 +298,48 @@ const Footer: React.FC = () => {
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { i18n } = useTranslation();
   const isDutch = i18n.language.startsWith('nl');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isAdminRoute = location.pathname.startsWith('/admin') && location.pathname !== '/admin/login';
+  const [user, setUser] = React.useState<any>(null);
+  const [isAdmin, setIsAdmin] = React.useState(false);
   const [showBookNow, setShowBookNow] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkAuth = async () => {
+      const adminSession = window.localStorage.getItem('admin_authenticated') === '1';
+      setIsAdmin(adminSession);
+    };
+    checkAuth();
+
+    // Listen for storage changes (e.g., logout from another tab)
+    const handleStorageChange = () => {
+      const adminSession = window.localStorage.getItem('admin_authenticated') === '1';
+      setIsAdmin(adminSession);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    window.localStorage.removeItem('admin_authenticated');
+    window.localStorage.removeItem('admin_login_token');
+    toast.success(isDutch ? 'Succesvol uitgelogd' : 'Successfully logged out');
+    navigate('/admin/login');
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <InstallBanner />
-      <Navigation />
+      <Navigation user={user} isAdmin={isAdmin} isAdminRoute={isAdminRoute} />
+      {isAdminRoute && (
+        <div className="fixed top-20 right-4 z-50">
+          <Button variant="outline" onClick={handleLogout}>{isDutch ? 'Uitloggen' : 'Logout'}</Button>
+        </div>
+      )}
       {/* Global Book Now Button removed as requested */}
       {/* Book Now Modal */}
       <BookNowModal open={showBookNow} onClose={() => setShowBookNow(false)} />

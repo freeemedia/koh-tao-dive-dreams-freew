@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { usePageContent } from '@/hooks/usePageContent';
 
 const parseLines = (value: string) =>
   value
@@ -39,7 +40,11 @@ const FoodDrink = () => {
         : 'Pad Thai - stir-fried rice noodles with shrimp or chicken\nSom Tam - spicy green papaya salad\nFresh grilled fish with lime and chili\nMango sticky rice for dessert',
   };
 
-  const content = fallbackContent;
+  const { content } = usePageContent({
+    pageSlug: 'food-drink',
+    locale,
+    fallbackContent,
+  });
 
   const highlights = parseLines(content.highlights_list || fallbackContent.highlights_list);
   const tastes = parseLines(content.tastes_list || fallbackContent.tastes_list);

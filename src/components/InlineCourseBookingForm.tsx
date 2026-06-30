@@ -10,9 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
-import { getApiBaseUrl, apiUrl } from '@/lib/apiBase';
-import { totalFromDeposit } from '@/lib/depositRate';
-import { trackBookingSubmitted } from '@/lib/analytics';
+import { getApiBaseUrl } from '@/lib/apiBase';
 
 const schema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100),
@@ -83,8 +81,6 @@ const InlineCourseBookingForm: React.FC<Props> = ({
   const submitBooking = async (data: FormData) => {
     try {
       const deposit = typeof depositMajor === 'number' ? depositMajor : 0;
-      const totalAmount = totalFromDeposit(deposit);
-      const commissionAmount = totalAmount > 0 ? Math.round(totalAmount * 0.1) : 0;
       const guestCount = data.guest_count === '6' ? 6 : Number(data.guest_count || '1');
 
       let dbResult: any = null;
@@ -110,9 +106,8 @@ const InlineCourseBookingForm: React.FC<Props> = ({
             status: 'new',
             guests: Number.isFinite(guestCount) ? guestCount : 1,
             deposit_amount: deposit,
-            total_amount: totalAmount,
-            commission_amount: commissionAmount > 0 ? commissionAmount : null,
-            due_amount: deposit > 0 ? totalAmount - deposit : 0,
+            total_amount: deposit > 0 ? Math.round(deposit / 0.2) : 0,
+            due_amount: deposit > 0 ? Math.round(deposit / 0.2) - deposit : 0,
             booking_source: crmSource,
             currency: depositCurrency,
             created_at: new Date().toISOString(),
@@ -127,13 +122,6 @@ const InlineCourseBookingForm: React.FC<Props> = ({
       }
 
       if (!dbError) {
-        trackBookingSubmitted({
-          item_name: itemTitle,
-          item_category: itemType,
-          value: deposit > 0 ? totalFromDeposit(deposit) : undefined,
-          currency: depositCurrency,
-          payment_choice: data.paymentChoice,
-        });
         if (dbResult?.warning) {
           toast.warning(`Booking saved with warning: ${dbResult.warning}`);
         }
@@ -142,9 +130,8 @@ const InlineCourseBookingForm: React.FC<Props> = ({
         form.reset();
 
         if (data.paymentChoice === 'paypal' && deposit > 0) {
-          const totalPayable = deposit + commissionAmount;
           toast.success('Booking sent! Redirecting to PayPal...');
-          setTimeout(() => { window.location.href = `${paypalBase}/${totalPayable}THB`; }, 1500);
+          setTimeout(() => { window.location.href = `${paypalBase}/${deposit}THB`; }, 1500);
         } else {
           toast.success('Booking inquiry sent! We\'ll be in touch within 24 hours.');
           setTimeout(() => { window.location.href = '/thank-you'; }, 1200);

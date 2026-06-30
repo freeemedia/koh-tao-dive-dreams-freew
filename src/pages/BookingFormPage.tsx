@@ -12,8 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
 import { sendBookingNotification } from '@/lib/sendBookingNotification';
-import { apiUrl } from '@/lib/apiBase';
-import { DEPOSIT_PERCENT_LABEL, depositFromTotal } from '@/lib/depositRate';
+import { getApiBaseUrl } from '@/lib/apiBase';
 
 const bookingSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100),
@@ -29,6 +28,7 @@ const bookingSchema = z.object({
 
 type BookingFormData = z.infer<typeof bookingSchema>;
 
+const COURSE_DEPOSIT_RATE = 0.1;
 const SKIP_PAYMENT_MESSAGE = 'You have chosen not to pay right now, no problem! We will contact you soon to arrange bookings and payment. Thank You, Pro Diving Asia Team.';
 
 const COURSE_FALLBACKS: Record<string, { item: string; price?: number; currency?: string }> = {
@@ -81,6 +81,8 @@ type BookingItemType = 'course' | 'dive' | 'stay';
 const       BookingPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const apiBase = getApiBaseUrl();
+  const apiUrl = (path: string) => `${apiBase}${path}`;
   const courseSlug = (searchParams.get('course') || '').trim();
   const fallbackCourse = courseSlug ? COURSE_FALLBACKS[courseSlug] : undefined;
   const hasDirectBookingContext = Boolean(
@@ -131,7 +133,7 @@ const       BookingPage: React.FC = () => {
     ? getFunDiveRate(courseFunDiveCount) * courseFunDiveCount
     : 0;
   const totalItemCostMajor = isCourseBooking ? courseCostMajor + courseFunDiveCostMajor : courseCostMajor;
-  const depositFromPrice = depositFromTotal(totalItemCostMajor);
+  const depositFromPrice = totalItemCostMajor > 0 ? Math.round(totalItemCostMajor * COURSE_DEPOSIT_RATE) : 0;
   const depositMajor = depositFromPrice;
 
   const [selectedAddons, setSelectedAddons] = useState<Record<string, boolean>>({});
@@ -168,12 +170,11 @@ const       BookingPage: React.FC = () => {
     console.log('Form validation errors:', form.formState.errors);
     setIsSubmitting(true);
     try {
-      const commissionAmount = totalItemCostMajor > 0 ? Math.round(totalItemCostMajor * 0.1) : 0;
-      const amountMajor = (isStayBooking ? 0 : depositMajor) + totalAddons + commissionAmount;
+      const amountMajor = (isStayBooking ? 0 : depositMajor) + totalAddons;
       const totalAmountMajor = totalItemCostMajor > 0 ? totalItemCostMajor : null;
       const depositAmountMajor = amountMajor > 0 ? amountMajor : null;
       const balanceAmountMajor = totalItemCostMajor > 0
-        ? Math.max(totalItemCostMajor - (depositMajor + totalAddons), 0)
+        ? Math.max(totalItemCostMajor - amountMajor, 0)
         : null;
       const selectedAddonsList = isDiveBooking
         ? availableAddons.filter((addon) => selectedAddons[addon.id]).map((addon) => ({
@@ -206,7 +207,6 @@ const       BookingPage: React.FC = () => {
         addons_json: JSON.stringify(selectedAddonsList),
         addons_total: totalAddons,
         subtotal_amount: totalItemCostMajor > 0 ? totalItemCostMajor : null,
-        commission_amount: commissionAmount > 0 ? commissionAmount : null,
         total_payable_now: amountMajor > 0 ? amountMajor : null,
         message: messageWithSource,
         status: 'new',
@@ -236,12 +236,6 @@ const       BookingPage: React.FC = () => {
         }
       } catch (dbErr) {
         console.warn('Booking persistence failed; continuing with email flow.', dbErr);
-      }
-
-      if (!persisted) {
-        const saveError = bookingApiWarning || 'Could not save booking. Please try again or contact us directly.';
-        toast.error(`Booking not saved: ${saveError}`);
-        return;
       }
 
       // Send booking notification via backend API
@@ -459,13 +453,13 @@ const       BookingPage: React.FC = () => {
                       Includes Fun Dives add-on: ฿{courseFunDiveCostMajor}
                     </div>
                   )}
-                  <div className="text-sm text-muted-foreground mt-1">Deposit payable now ({DEPOSIT_PERCENT_LABEL}): {depositMajor > 0 ? `฿${depositMajor}` : 'Contact us'}</div>
+                  <div className="text-sm text-muted-foreground mt-1">Deposit payable now (10%): {depositMajor > 0 ? `฿${depositMajor}` : 'Contact us'}</div>
                 </>
               ) : itemType === 'dive' ? (
                 <>
                   <div className="text-lg font-semibold">Dive price</div>
                   <div className="text-2xl font-bold">{courseCostMajor > 0 ? `฿${courseCostMajor}` : 'Contact us'}</div>
-                  <div className="text-sm text-muted-foreground mt-1">Deposit payable now ({DEPOSIT_PERCENT_LABEL}): {depositMajor > 0 ? `฿${depositMajor}` : 'Contact us'}</div>
+                  <div className="text-sm text-muted-foreground mt-1">Deposit payable now (10%): {depositMajor > 0 ? `฿${depositMajor}` : 'Contact us'}</div>
                 </>
               ) : (
                 <>
@@ -623,10 +617,10 @@ const       BookingPage: React.FC = () => {
           <div className="text-sm text-muted-foreground">
             {isStayBooking ? 'Payment:' : (isDiveBooking ? 'Total payable now (incl. add-ons):' : 'Total payable now:')}
           </div>
-          <div className="text-2xl font-bold">{isStayBooking ? 'Quote on request' : `฿${depositMajor + totalAddons + Math.round(totalItemCostMajor * 0.1)}`}</div>
+          <div className="text-2xl font-bold">{isStayBooking ? 'Quote on request' : `฿${depositMajor + totalAddons}`}</div>
           {!isStayBooking && totalItemCostMajor > 0 && (
             <div className="text-sm text-muted-foreground mt-1">
-              Total: ฿{totalItemCostMajor} · Deposit (10%): ฿{depositMajor} · Commission (10%): ฿{Math.round(totalItemCostMajor * 0.1)} · Add-ons: ฿{totalAddons} · Balance: ฿{Math.max(totalItemCostMajor - depositMajor, 0)}
+              Total: ฿{totalItemCostMajor} · Deposit: ฿{depositMajor + totalAddons} · Balance: ฿{Math.max(totalItemCostMajor - (depositMajor + totalAddons), 0)}
             </div>
           )}
         </div>

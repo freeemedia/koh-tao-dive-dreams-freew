@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payments | Diving In Asia</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #e0f7fa 0%, #f8f8f8 100%);
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      max-width: 480px;
+      margin: 4rem auto;
+      background: #fff;
+      padding: 2.5rem 2rem 2rem 2rem;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px #0070ba22;
+      text-align: center;
+    }
+    .logo {
+      max-width: 120px;
+      margin-bottom: 1.5rem;
+      filter: drop-shadow(0 2px 8px #0070ba33);
+    }
+    h1 {
+      color: #009688;
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+      letter-spacing: 1px;
+    }
+    .subtitle {
+      color: #555;
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Payment buttons ── */
+    .payment-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85em;
+      align-items: center;
+      margin: 1.5rem 0 2rem;
+    }
+    .pay-btn {
+      display: inline-block;
+      padding: 0.8em 2em;
+      border-radius: 6px;
+      font-size: 1.05em;
+      text-decoration: none;
+      font-weight: bold;
+      width: 300px;
+      text-align: center;
+      transition: opacity 0.2s;
+    }
+    .pay-btn:hover { opacity: 0.85; }
+    .pay-btn.stripe-custom  { background: #635bff; color: #fff; }
+    .pay-btn.paypal         { background: #0070ba; color: #fff; }
+    .pay-btn.stripe-fixed   { background: #4f46e5; color: #fff; }
+
+    .pay-label {
+      font-size: 0.78em;
+      color: #888;
+      margin-top: -0.4em;
+      margin-bottom: 0.4em;
+    }
+
+    /* ── Payment methods list ── */
+    .methods {
+      background: #e0f2f1;
+      border-radius: 10px;
+      padding: 1.2rem 1rem;
+      color: #00695c;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+    .methods ul {
+      text-align: left;
+      max-width: 300px;
+      margin: 0.8rem auto 0;
+      padding-left: 1.2em;
+      color: #00796b;
+    }
+    .methods li { margin-bottom: 0.3em; }
+
+    /* ── WhatsApp ── */
+    .whatsapp-box {
+      background: #f5fdf7;
+      border: 1px solid #c8e6c9;
+      border-radius: 10px;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.97rem;
+      color: #555;
+    }
+    .whatsapp-link {
+      color: #25d366;
+      font-weight: bold;
+      font-size: 1.1em;
+      text-decoration: none;
+    }
+    .whatsapp-link:hover { color: #128c7e; }
+
+    /* ── Thank-you section (shown after booking) ── */
+    .thankyou-banner {
+      display: none;
+      background: #e8f5e9;
+      border: 1px solid #a5d6a7;
+      border-radius: 10px;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      color: #2e7d32;
+      font-size: 1rem;
+    }
+    .booking-summary {
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1.2rem 1rem;
+      margin-bottom: 1.5rem;
+      text-align: left;
+      font-size: 0.93rem;
+    }
+    .booking-summary h3 {
+      margin-top: 0;
+      margin-bottom: 0.8rem;
+      color: #009688;
+      font-size: 1rem;
+    }
+    .booking-summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid #eee;
+    }
+    .booking-summary-row:last-child { border-bottom: none; }
+    .summary-label { font-weight: 500; color: #333; }
+    .summary-value { color: #666; }
+
+    /* ── Nav links ── */
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    .nav-links a {
+      color: #0070ba;
+      background: #e3f2fd;
+      padding: 0.6em 1.3em;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: background 0.2s;
+    }
+    .nav-links a:hover { background: #b3e5fc; }
+
+    .team {
+      color: #888;
+      margin-top: 2rem;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="/images/logo.png" alt="Diving In Asia Logo" class="logo" />
+    <h1>Payments</h1>
+    <p class="subtitle">Choose how you'd like to secure your booking or course spot.</p>
+
+    <!-- Shown after a booking submission -->
+    <div id="thankyouBanner" class="thankyou-banner">
+      <strong>&#10003; Booking received!</strong> Your inquiry has been submitted. Pay a deposit below to lock in your spot, or we'll be in touch shortly.
+    </div>
+
+    <!-- Booking summary (populated from sessionStorage) -->
+    <div id="bookingSummary" class="booking-summary" style="display:none;">
+      <h3>Your Booking Details</h3>
+      <div id="summaryContent"></div>
+    </div>
+
+    <!-- Payment buttons -->
+    <div class="payment-section">
+      <a href="https://buy.stripe.com/6oUfZh41igAWcAYgKH7EQ01" target="_blank" rel="noopener" class="pay-btn stripe-custom">
+        Choose Your Own Deposit — Secure a Course
+      </a>
+      <p class="pay-label">Pay any amount via Stripe to lock in your spot</p>
+
+      <a href="https://paypal.me/prodivingasia" target="_blank" rel="noopener" class="pay-btn paypal">
+        Pay Deposit via PayPal
+      </a>
+      <p class="pay-label">Send any amount to our PayPal</p>
+
+      <a href="https://book.stripe.com/bJe8wPfK0fwSgRecur7EQ00" target="_blank" rel="noopener" class="pay-btn stripe-fixed">
+        Pay Fixed Deposit via Stripe
+      </a>
+      <p class="pay-label">Fixed deposit amount for standard bookings</p>
+    </div>
+
+    <!-- Accepted methods -->
+    <div class="methods">
+      <strong>We also accept payment by:</strong>
+      <ul>
+        <li><strong>Revolut</strong></li>
+        <li><strong>Wise Bank Transfer</strong></li>
+        <li><strong>Credit / Debit Card (Stripe)</strong></li>
+        <li><strong>PayPal</strong></li>
+      </ul>
+    </div>
+
+    <!-- WhatsApp -->
+    <div class="whatsapp-box">
+      <strong>Need help or want to pay another way?</strong><br>
+      Message us on WhatsApp:<br>
+      <a href="https://wa.me/66639230132" target="_blank" rel="noopener" class="whatsapp-link">+66 63 923 0132</a>
+    </div>
+
+    <div class="nav-links">
+      <a href="/booking">Make a Booking</a>
+      <a href="/">Return to Home</a>
+    </div>
+    <div class="team">— Diving In Asia Team —</div>
+  </div>
+
+  <script>
+    (function () {
+      // Show thank-you banner + booking summary if arriving from a booking form
+      try {
+        const bookingData = sessionStorage.getItem('bookingData');
+        if (bookingData) {
+          const data = JSON.parse(bookingData);
+
+          // Show thank-you banner
+          document.getElementById('thankyouBanner').style.display = 'block';
+
+          // Populate summary
+          const fields = [
+            { label: 'Activity',        value: data.item_title },
+            { label: 'Name',            value: data.name },
+            { label: 'Email',           value: data.email },
+            { label: 'Phone',           value: data.phone },
+            { label: 'Nationality',     value: data.nationality },
+            { label: 'Accommodation',   value: data.accommodation },
+            { label: 'Preferred Date',  value: data.preferred_date },
+            { label: 'Experience',      value: data.experience_level },
+            { label: 'Deposit Amount',  value: data.deposit_amount },
+            { label: 'Payment Choice',  value: data.payment_choice },
+          ];
+
+          let html = '';
+          fields.forEach(function (f) {
+            if (f.value && f.value !== 'N/A') {
+              html += '<div class="booking-summary-row">' +
+                '<span class="summary-label">' + f.label + ':</span>' +
+                '<span class="summary-value">' + f.value + '</span>' +
+                '</div>';
+            }
+          });
+
+          if (html) {
+            document.getElementById('summaryContent').innerHTML = html;
+            document.getElementById('bookingSummary').style.display = 'block';
+            sessionStorage.removeItem('bookingData');
+          }
+        }
+      } catch (e) {
+        console.error('Payments page booking summary error:', e);
+      }
+    })();
+  </script>
+</body>
+</html>

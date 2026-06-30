@@ -36,7 +36,7 @@ export default function ContactForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3 text-slate-900">
+    <form onSubmit={handleSubmit}>
       <input
         type="text"
         name="name"
@@ -44,7 +44,6 @@ export default function ContactForm() {
         value={form.name}
         onChange={handleChange}
         required
-        className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-500 shadow-sm focus:border-blue-500 focus:outline-none"
       />
       <input
         type="email"
@@ -53,7 +52,6 @@ export default function ContactForm() {
         value={form.email}
         onChange={handleChange}
         required
-        className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-500 shadow-sm focus:border-blue-500 focus:outline-none"
       />
       <textarea
         name="message"
@@ -61,12 +59,11 @@ export default function ContactForm() {
         value={form.message}
         onChange={handleChange}
         required
-        className="min-h-[120px] w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-500 shadow-sm focus:border-blue-500 focus:outline-none"
       />
-      <button type="submit" className="rounded-md bg-blue-700 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-800">
+      <button type="submit" className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors">
         Send
       </button>
-      <div className="text-sm text-slate-700">{status}</div>
+      <div>{status}</div>
     </form>
   );
 }

@@ -10,9 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
-import { getApiBaseUrl, apiUrl } from '@/lib/apiBase';
-import { COURSE_DEPOSIT_RATE, depositFromTotal, totalFromDeposit } from '@/lib/depositRate';
-import { trackBookingSubmitted } from '@/lib/analytics';
+import { getApiBaseUrl } from '@/lib/apiBase';
 
 const bookingSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
@@ -34,6 +32,8 @@ interface BookingFormProps {
   depositMajor?: number;
   depositCurrency?: string;
 }
+
+const COURSE_DEPOSIT_RATE = 0.2;
 
 const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, itemTitle, depositMajor, depositCurrency }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -76,8 +76,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
 
       // Calculate totals from a percentage-based deposit model.
       const deposit_amount = typeof depositMajor === 'number' ? depositMajor : 0;
-      const total_amount = totalFromDeposit(deposit_amount);
-      const commission_amount = total_amount > 0 ? Math.round(total_amount * 0.1) : 0;
+      const total_amount = deposit_amount > 0
+        ? Math.round(deposit_amount / COURSE_DEPOSIT_RATE)
+        : 0;
       const due_amount = total_amount > 0
         ? Math.max(total_amount - deposit_amount, 0)
         : 0;
@@ -105,7 +106,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
             item_title: itemTitle,
             deposit_amount,
             total_amount,
-            commission_amount: commission_amount > 0 ? commission_amount : null,
             due_amount,
             created_at: new Date().toISOString(),
           }),
@@ -118,13 +118,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ isOpen, onClose, itemType, it
         dbError = err instanceof Error ? err.message : 'Booking persistence failed';
       }
       if (!dbError) {
-        trackBookingSubmitted({
-          item_name: itemTitle,
-          item_category: itemType,
-          value: total_amount > 0 ? total_amount : undefined,
-          currency: String(depositCurrency || 'THB'),
-          payment_choice: paymentChoice,
-        });
         if (dbResult?.warning) {
           toast.warning(`Booking saved with warning: ${dbResult.warning}`);
         }
