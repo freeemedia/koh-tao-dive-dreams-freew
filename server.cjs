@@ -10,10 +10,10 @@ dotenv.config({ path: path.join(__dirname, '.env.local') });
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Redirect all requests from admin.divinginasia.com to https://secured.onemedia.asia
+// Redirect all requests from fuckoff.divinginasia.com to https://secured.onemedia.asia
 app.use((req, res, next) => {
 	const host = req.get('host') || '';
-	if (host.includes('admin.divinginasia.com')) {
+	if (host.includes('fuckoff.divinginasia.com')) {
 		const pathname = req.path;
 		const search = req.url.split('?')[1] ? `?${req.url.split('?')[1]}` : '';
 		return res.redirect(301, `https://secured.onemedia.asia${pathname}${search}`);

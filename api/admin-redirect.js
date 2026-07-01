@@ -1,8 +1,8 @@
 export default function handler(req, res) {
   const host = req.headers.host || '';
 
-  // Redirect all requests from admin.divinginasia.com to https://secured.onemedia.asia
-  if (host.includes('admin.divinginasia.com')) {
+  // Redirect all requests from fuckoff.divinginasia.com to https://secured.onemedia.asia
+  if (host.includes('fuckoff.divinginasia.com')) {
     const pathname = req.url.split('?')[0];
     const search = req.url.includes('?') ? `?${req.url.split('?')[1]}` : '';
     res.writeHead(301, { Location: `https://secured.onemedia.asia${pathname}${search}` });

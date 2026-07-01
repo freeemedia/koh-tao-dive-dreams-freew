@@ -13,7 +13,7 @@ export interface WordPressPage {
 }
 
 const WP_SITES = [
-  'https://admin.divinginasia.com',
+  'https://fuckoff.divinginasia.com',
   'https://www.divinginasia.com',
 ];
 
