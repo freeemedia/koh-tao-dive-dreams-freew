@@ -13,7 +13,7 @@ export function getApiBaseUrl(): string {
 
   const runtimeFallbackApiBase = (() => {
     const host = window.location.hostname.toLowerCase();
-    if (host === 'divinginasia.com' || host === 'www.divinginasia.com' || host === 'fuckoff.divinginasia.com') {
+    if (host === 'divinginasia.com' || host === 'www.divinginasia.com' || host === 'admin.divinginasia.com') {
       return 'https://api.divinginasia.com';
     }
     return '';

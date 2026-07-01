@@ -51,7 +51,7 @@ function applyContentFixes(rows, slug, locale) {
 }
 
 async function fetchFromWordPress(slug, locale) {
-  const canonicalWpUrl = 'https://fuckoff.divinginasia.com';
+  const canonicalWpUrl = 'https://admin.divinginasia.com';
   let wpUrl = (process.env.WP_BOOKING_URL || '').trim().replace(/\/$/, '');
   if (!wpUrl) {
     wpUrl = canonicalWpUrl;
