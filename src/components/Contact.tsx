@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, MessageCircle } from 'lucide-react';
-import { toast } from 'sonner';
 import { usePageContent } from '@/hooks/usePageContent';
 import { useTranslation } from 'react-i18next';
 
@@ -10,17 +9,9 @@ const Contact = () => {
   const { i18n } = useTranslation();
   const isDutch = i18n.language.startsWith('nl');
   const locale = isDutch ? 'nl' : 'en';
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const apiBase = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '').trim().replace(/\/+$/, '');
-  const apiUrl = (path: string) => (apiBase ? `${apiBase}${path}` : path);
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    subject: 'Course Information',
-    message: ''
-  });
+  const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', subject: '', message: '' });
+  const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [formMessage, setFormMessage] = useState('');
 
   const fallbackContent = useMemo(() => {
     if (isDutch) {
@@ -96,84 +87,44 @@ const Contact = () => {
     fallbackContent,
   });
 
-  const subjectOptions = useMemo(() => {
-    return [
-      content.subject_option_1,
-      content.subject_option_2,
-      content.subject_option_3,
-      content.subject_option_4,
-    ].filter((value): value is string => Boolean(value && value.trim()));
-  }, [content]);
-
-  useEffect(() => {
-    setFormData((prev) => {
-      const defaultSubject = subjectOptions[0] || 'Course Information';
-      if (subjectOptions.includes(prev.subject)) return prev;
-      return { ...prev, subject: defaultSubject };
-    });
-  }, [subjectOptions]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const {
-      name,
-      value
-    } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = event.target;
+    setFormData((current) => ({ ...current, [name]: value }));
   };
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setFormStatus('submitting');
+    setFormMessage('');
+
     try {
-      const payload = {
-        type: 'contact',
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        subject: formData.subject || 'Contact Form Submission',
-        message: formData.message
-      };
-      const response = await fetch(apiUrl('/api/submit'), {
+      const response = await fetch('/api/send-booking-notification', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: `${formData.firstName} ${formData.lastName}`.trim(),
+          email: formData.email,
+          message: formData.message,
+          subject: formData.subject || 'General inquiry',
+          item_title: 'Contact form submission',
+          payment_choice: 'inquire',
+        }),
       });
-      const data = await response.json().catch(() => null);
-      
+
+      const result = await response.json().catch(() => ({}));
       if (!response.ok) {
-        const errMsg = data?.message || data?.error || response.statusText || 'Request failed';
-        throw new Error(`Server returned ${response.status}: ${errMsg}`);
+        throw new Error(result?.error || 'Unable to send your message right now.');
       }
 
-      if (data.success) {
-        toast.success("Message sent successfully! We'll get back to you soon.");
-        if (data.warning) {
-          toast.warning(`Saved your inquiry, but email delivery needs attention: ${data.warning}`);
-        }
-        setFormData({
-          firstName: '',
-          lastName: '',
-          email: '',
-          subject: subjectOptions[0] || 'Course Information',
-          message: ''
-        });
-      } else {
-        const errMsg = data?.message || data?.error || 'Submission failed';
-        console.error('Contact API error:', errMsg, data);
-        toast.error(`Failed: ${errMsg}. Please try again or email us directly.`);
-      }
+      setFormStatus('success');
+      setFormMessage('Thanks! Your message is on its way and we will reply shortly.');
+      setFormData({ firstName: '', lastName: '', email: '', subject: '', message: '' });
     } catch (error) {
-      console.error('Contact form submission failed:', error);
-      const message = error instanceof Error ? error.message : 'Network error';
-      toast.error(`Failed to save contact: ${message}. Please try again or email us at contact@divinginasia.com`);
-    } finally {
-      setIsSubmitting(false);
+      setFormStatus('error');
+      setFormMessage(error instanceof Error ? error.message : 'Unable to send your message right now.');
     }
   };
+
   return (
     <section id="contact" className="py-20 bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -242,38 +193,49 @@ const Contact = () => {
           </div>
 
           <div className="bg-gray-800 rounded-lg p-8">
-            <h3 className="text-2xl font-bold mb-6 text-center">Booking / Inquiry Form</h3>
-            <form action="https://api.web3forms.com/submit" method="POST" className="space-y-4">
-              <input type="hidden" name="access_key" value="b42b4f7a-b0b3-4ba9-8197-cf5abe9f09e6" />
-              <label htmlFor="name" className="block font-semibold">Name</label>
-              <input type="text" id="name" name="name" required className="w-full border border-gray-300 rounded px-3 py-2" />
+            <h3 className="text-2xl font-bold mb-4">{content.form_title}</h3>
+            <form onSubmit={handleSubmit} className="space-y-4 text-left">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <label className="block text-sm font-medium text-gray-200">
+                  <span className="mb-2 block">{content.form_first_name_label}</span>
+                  <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} className="w-full rounded-md border border-gray-600 bg-gray-900 px-3 py-2 text-white outline-none ring-0 focus:border-blue-400" />
+                </label>
+                <label className="block text-sm font-medium text-gray-200">
+                  <span className="mb-2 block">{content.form_last_name_label}</span>
+                  <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} className="w-full rounded-md border border-gray-600 bg-gray-900 px-3 py-2 text-white outline-none ring-0 focus:border-blue-400" />
+                </label>
+              </div>
 
-              <label htmlFor="email" className="block font-semibold">Email</label>
-              <input type="email" id="email" name="email" required className="w-full border border-gray-300 rounded px-3 py-2" />
+              <label className="block text-sm font-medium text-gray-200">
+                <span className="mb-2 block">{content.form_email_label}</span>
+                <input type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full rounded-md border border-gray-600 bg-gray-900 px-3 py-2 text-white outline-none ring-0 focus:border-blue-400" />
+              </label>
 
-              <label htmlFor="phone" className="block font-semibold">Phone</label>
-              <input type="text" id="phone" name="phone" className="w-full border border-gray-300 rounded px-3 py-2" />
+              <label className="block text-sm font-medium text-gray-200">
+                <span className="mb-2 block">{content.form_subject_label}</span>
+                <select name="subject" value={formData.subject} onChange={handleChange} className="w-full rounded-md border border-gray-600 bg-gray-900 px-3 py-2 text-white outline-none focus:border-blue-400">
+                  <option value="">Select a topic</option>
+                  <option value={content.subject_option_1}>{content.subject_option_1}</option>
+                  <option value={content.subject_option_2}>{content.subject_option_2}</option>
+                  <option value={content.subject_option_3}>{content.subject_option_3}</option>
+                  <option value={content.subject_option_4}>{content.subject_option_4}</option>
+                </select>
+              </label>
 
-              <label htmlFor="course_title" className="block font-semibold">Course / Package</label>
+              <label className="block text-sm font-medium text-gray-200">
+                <span className="mb-2 block">{content.form_message_label}</span>
+                <textarea name="message" rows={5} value={formData.message} onChange={handleChange} required className="w-full rounded-md border border-gray-600 bg-gray-900 px-3 py-2 text-white outline-none focus:border-blue-400" />
+              </label>
 
-              <input type="text" id="course_title" name="course_title" className="w-full border border-gray-300 rounded px-3 py-2 text-black" style={{ color: '#222' }} />
+              <button type="submit" disabled={formStatus === 'submitting'} className="w-full rounded-md bg-blue-500 px-4 py-2 font-semibold text-white transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-70">
+                {formStatus === 'submitting' ? content.form_sending_label : content.form_submit_label}
+              </button>
 
-              <label htmlFor="preferred_date" className="block font-semibold">Preferred Date</label>
-
-              <input type="date" id="preferred_date" name="preferred_date" className="w-full border border-gray-300 rounded px-3 py-2 text-black" style={{ color: '#222' }} />
-
-              <label htmlFor="experience_level" className="block font-semibold">Experience Level</label>
-              <select id="experience_level" name="experience_level" className="w-full border border-gray-300 rounded px-3 py-2 text-black" style={{ color: '#222' }}>
-                <option value="">Select...</option>
-                <option value="beginner">Beginner</option>
-                <option value="intermediate">Intermediate</option>
-                <option value="professional">Professional</option>
-              </select>
-
-              <label htmlFor="message" className="block font-semibold">Comments / Questions</label>
-              <textarea id="message" name="message" rows={4} required className="w-full border border-gray-300 rounded px-3 py-2 text-black" style={{ color: '#222' }}></textarea>
-
-              <button type="submit" className="w-full mt-4 py-3 bg-blue-600 text-white rounded font-bold hover:bg-blue-700 transition">Send Booking</button>
+              {formMessage ? (
+                <p className={`text-sm ${formStatus === 'success' ? 'text-emerald-300' : 'text-rose-300'}`}>
+                  {formMessage}
+                </p>
+              ) : null}
             </form>
           </div>
         </div>

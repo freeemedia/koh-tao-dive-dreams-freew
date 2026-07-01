@@ -4,7 +4,6 @@ import { Menu, X, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import LanguageSwitcher from './LanguageSwitcher';
-import { Badge } from '@/components/ui/badge';
 
 const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boolean, isAdminRoute?: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +12,6 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
   const [infoOpen, setInfoOpen] = useState(false);
   const [diveSitesOpen, setDiveSitesOpen] = useState(false);
   const [marineLifeOpen, setMarineLifeOpen] = useState(false);
-  const [accountOpen, setAccountOpen] = useState(false);
   // user, isAdmin, isAdminRoute now come from props
   const navigate = useNavigate();
   const location = useLocation();
@@ -99,14 +97,7 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
     // accommodation: isDutch ? 'Accommodatie' : 'Stay',
     // thingsToDo: isDutch ? 'Te Doen' : 'To Do',
     // banksKohTao: isDutch ? 'Banken' : 'Banks',
-    login: isDutch ? 'Inloggen' : 'Login',
-    signup: isDutch ? 'Registreren' : 'Sign up',
     info: isDutch ? 'Info' : 'Info',
-    account: isDutch ? 'Account' : 'Account',
-    myAccount: isDutch ? 'Mijn account' : 'My Account',
-    logout: isDutch ? 'Uitloggen' : 'Logout',
-    adminDashboard: isDutch ? 'Admin Dashboard' : 'Admin Dashboard',
-    analytics: isDutch ? '📊 Analytics' : '📊 Analytics',
     visa: isDutch ? 'Visum' : 'Visa',
     funDivingHeading: isDutch ? 'Fun diven' : 'Fun diving',
     funDivingKohTao: isDutch ? 'Fun Diving Koh Tao' : 'Fun diving Koh Tao',
@@ -558,94 +549,6 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
               {navItems[1].name}
             </a>
 
-            {/* Account dropdown */}
-            <div className="relative group">
-              <button
-                onClick={() => setAccountOpen(!accountOpen)}
-                className="text-gray-700 hover:text-blue-600 transition-colors duration-200 font-medium flex items-center gap-2"
-              >
-                {labels.account}
-                <ChevronRight className="h-4 w-4 transition-transform duration-200 group-hover:rotate-90" />
-              </button>
-              <div className="absolute right-0 top-full pt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                <div className="bg-[#0b1e3d]/80 rounded-lg shadow-2xl border border-[#1a3a5c] min-w-[180px] p-3">
-                  <ul className="space-y-1">
-                    {user ? (
-                      <>
-                        <li className="text-xs text-gray-400 px-3 py-2 border-b border-[#1a3a5c]">
-                          {user.email}
-                        </li>
-                        {isAdmin && (
-                          <li className="px-3 py-2 border-b border-[#1a3a5c]">
-                            <Badge className="bg-green-600">Admin</Badge>
-                          </li>
-                        )}
-                        <li>
-                          <Link
-                            to="/account"
-                            className="block py-2 px-3 text-sm text-gray-300 hover:text-white hover:bg-[#1a3a5c] transition-all duration-150 rounded"
-                          >
-                            {labels.myAccount}
-                          </Link>
-                        </li>
-                        {isAdmin && (
-                          <li>
-                            <Link
-                              to="/admin"
-                              className="block py-2 px-3 text-sm text-green-400 hover:text-green-300 hover:bg-[#1a3a5c] transition-all duration-150 rounded font-medium"
-                            >
-                              {labels.adminDashboard}
-                            </Link>
-                          </li>
-                        )}
-                        {isAdmin && (
-                          <li>
-                            <Link
-                              to="/clicks-dashboard"
-                              className="block py-2 px-3 text-sm text-blue-400 hover:text-blue-300 hover:bg-[#1a3a5c] transition-all duration-150 rounded font-medium"
-                            >
-                              {labels.analytics}
-                            </Link>
-                          </li>
-                        )}
-                        <li>
-                          <button
-                            onClick={async () => {
-                              window.localStorage.removeItem('admin_authenticated');
-                              window.localStorage.removeItem('admin_login_token');
-                              navigate('/');
-                            }}
-                            className="w-full text-left py-2 px-3 text-sm text-gray-300 hover:text-white hover:bg-[#1a3a5c] transition-all duration-150 rounded"
-                          >
-                            {labels.logout}
-                          </button>
-                        </li>
-                      </>
-                    ) : (
-                      <>
-                        <li>
-                          <Link
-                            to="/login"
-                            className="block py-2 px-3 text-sm text-gray-300 hover:text-white hover:bg-[#1a3a5c] transition-all duration-150 rounded"
-                          >
-                            {labels.login}
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            to="/signup"
-                            className="block py-2 px-3 text-sm text-gray-300 hover:text-white hover:bg-[#1a3a5c] transition-all duration-150 rounded"
-                          >
-                            {labels.signup}
-                          </Link>
-                        </li>
-                      </>
-                    )}
-                  </ul>
-                </div>
-              </div>
-            </div>
-
             <LanguageSwitcher />
           </div>
 
@@ -839,60 +742,6 @@ const Navigation = ({ user, isAdmin, isAdminRoute }: { user?: any, isAdmin?: boo
                 {navItems[1].name}
               </a>
 
-              {/* Mobile account accordion */}
-              <div>
-                <button
-                  onClick={() => setAccountOpen(!accountOpen)}
-                  className="flex items-center justify-between w-full px-3 py-2 text-gray-700 hover:text-blue-600"
-                >
-                  <div className="flex items-center gap-2">
-                    <span>{labels.account}</span>
-                    {isAdmin && <Badge className="bg-green-600 text-xs">Admin</Badge>}
-                  </div>
-                  <ChevronRight
-                    className={`h-4 w-4 transition-transform duration-200 ${accountOpen ? 'rotate-90' : ''}`}
-                  />
-                </button>
-                {accountOpen && (
-                  <div className="pl-4 space-y-1 bg-muted rounded-lg mx-2 py-2">
-                    {user ? (
-                      <>
-                        <div className="text-xs text-gray-400 px-3 py-2 border-b border-gray-200">
-                          {user.email}
-                        </div>
-                        <Link to="/account" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
-                          {labels.myAccount}
-                        </Link>
-                        {isAdmin && (
-                          <Link to="/clicks-dashboard" className="block px-3 py-1.5 text-sm text-blue-600 hover:text-blue-700 font-medium" onClick={() => setIsOpen(false)}>
-                            {labels.analytics}
-                          </Link>
-                        )}
-                        <button
-                          onClick={async () => {
-                            window.localStorage.removeItem('admin_authenticated');
-                            window.localStorage.removeItem('admin_login_token');
-                            setIsOpen(false);
-                            navigate('/');
-                          }}
-                          className="w-full text-left px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600"
-                        >
-                          {labels.logout}
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <Link to="/login" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
-                          {labels.login}
-                        </Link>
-                        <Link to="/signup" className="block px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600" onClick={() => setIsOpen(false)}>
-                          {labels.signup}
-                        </Link>
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
             </div>
           </div>
         )}
