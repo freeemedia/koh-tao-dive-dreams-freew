@@ -1,0 +1,46 @@
+# Exclude secondary apps and archived build trees from Vercel deployment
+/admin/
+/pages/
+/divinginasia.com/
+/backup/
+/rebuilkd/
+/empty/
+/General/
+/General 2/
+/admmin.lem-mov/
+/access/
+/calandar/
+/divingasia/
+/htms/
+/ios/
+/tmp/
+/wordpress-plugin/
+/www.divinginasia.com/
+
+# Exclude local artifacts
+**/.next/
+**/.builds/
+**/node_modules/
+**/.DS_Store
+**/.git/
+.git
+.git/**
+.kilo/
+dist/
+*.zip
+*.tar
+*.tar.gz
+*.crdownload
+u983007073.20260507175856.tar.gz.crdownload
+
+# Exclude local-only scripts and generated files
+scripts/manual-api/
+*.sqlite
+*.sql
+*.csv
+*.ics
+
+# Exclude duplicate/legacy manifests and exports
+package 2.json
+vercel 2.json
+*.log

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accommodation | Agoda Integration</title>
+  <style>
+    body { font-family: sans-serif; background: #f8f8f8; margin: 0; }
+    .container { max-width: 700px; margin: 3rem auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 12px #0002; padding: 2rem; }
+    h1 { text-align: center; color: #0070ba; margin-bottom: 2rem; }
+    .hotel-card { background: #f4f4ff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 1.5rem; margin-bottom: 2rem; text-align: center; }
+    .hotel-card img { max-width: 320px; border-radius: 6px; margin-bottom: 1rem; }
+    .hotel-card a { display: inline-block; margin-top: 1em; background: #635bff; color: #fff; padding: 0.7em 1.5em; border-radius: 4px; text-decoration: none; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Our Recommended Accommodation</h1>
+    <div class="hotel-card" id="agoda-hotel">
+      Loading hotel info...
+    </div>
+  </div>
+  <script>
+    // Static fallback for Agoda hotel info (custom integration would require a backend proxy for API calls)
+    document.getElementById('agoda-hotel').innerHTML = `
+      <h2>Koh Tao Simple Life Resort</h2>
+      <img src="https://pix8.agoda.net/hotelImages/804/804994/804994_15062916490031491794.jpg?s=312x" alt="Koh Tao Simple Life Resort">
+      <p>14/11 Moo 2, Sairee Beach, Koh Tao, Thailand</p>
+      <a href="https://www.agoda.com/partners/partnersearch.aspx?cid=1962043&hid=804994" target="_blank">View & Book on Agoda</a>
+    `;
+  </script>
+</body>
+</html>
