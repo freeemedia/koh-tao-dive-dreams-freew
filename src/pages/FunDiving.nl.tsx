@@ -8,6 +8,7 @@ import { Fish, Waves, MapPin, Clock, DollarSign, Users } from 'lucide-react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useEffect, useState, useMemo } from 'react';
 import { usePageContent } from '@/hooks/usePageContent';
+import { tryAutoScroll, scrollToWithOffset } from '@/lib/scroll';
 
 const FunDiving = () => {
   const navigate = useNavigate();
@@ -146,7 +147,7 @@ const FunDiving = () => {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/images/photo-1682687982423-295485af248a.avif')] bg-cover bg-center" />
+        <div className="absolute inset-0 bg-[url('https://api.divinginasia.com/images/whale.webp')] bg-cover bg-center" />
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative z-10 text-center text-white px-4">
           <h1 className="text-5xl md:text-7xl font-bold mb-6">{content.fun_diving_hero_title}</h1>
