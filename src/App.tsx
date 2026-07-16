@@ -18,7 +18,7 @@ import ClicksDashboard from './pages/ClicksDashboard';
 import BookingPage from './pages/BookingPage';
 import StayBookingPage from './pages/StayBookingPage';
 import ThankYouPage from './pages/ThankYouPage';
-import Admin from './pages/Admin';
+import AdminRedirect from './pages/AdminRedirect';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Account from './pages/Account';
@@ -180,7 +180,7 @@ const App = () => (
               <Route path="/booking" element={<BookingPage />} />
               <Route path="/stay" element={<StayBookingPage />} />
               <Route path="/thank-you" element={<ThankYouPage />} />
-              <Route path="/admin" element={<RequireAdmin><Admin /></RequireAdmin>} />
+              <Route path="/admin" element={<RequireAdmin><AdminRedirect /></RequireAdmin>} />
               <Route path="/login" element={<Login />} />
               <Route path="/admin/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
