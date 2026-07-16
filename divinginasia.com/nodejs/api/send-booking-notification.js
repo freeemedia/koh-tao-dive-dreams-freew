@@ -82,7 +82,7 @@ export async function sendBookingNotificationEmail(payload = {}) {
             <td style="padding:28px 32px 0 32px;">
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td><span style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:1px;">🤿 PRO DIVING ASIA</span></td>
+                  <td><span style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:1px;">🤿 GO. PRO DIVING ASIA</span></td>
                   <td align="right"><span style="background:rgba(255,255,255,0.18);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:1px;">⚠️ ADMIN NOTIFICATION</span></td>
                 </tr>
               </table>
@@ -128,7 +128,7 @@ export async function sendBookingNotificationEmail(payload = {}) {
 
       <!-- Footer -->
       <tr><td style="background:#f8fafc;border-top:1px solid #e8edf2;padding:20px 32px;text-align:center;">
-        <p style="margin:0;color:#6b7280;font-size:12px;">Pro Diving Asia · Koh Tao, Thailand · This is an automated admin notification</p>
+        <p style="margin:0;color:#6b7280;font-size:12px;">Go. Pro Diving Asia · Koh Tao, Thailand · This is an automated admin notification</p>
       </td></tr>
 
     </table>

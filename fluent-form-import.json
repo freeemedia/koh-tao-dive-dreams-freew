@@ -393,7 +393,7 @@
     "form_settings": {
       "confirmation": {
         "redirectTo": "samePage",
-        "messageToShow": "Thank you! Your booking enquiry has been received. We\u2019ll be in touch within 24 hours. \u2014 Pro Diving Asia Team",
+        "messageToShow": "Thank you! Your booking enquiry has been received. We\u2019ll be in touch within 24 hours. \u2014 Go. Pro Diving Asia Team",
         "customPage": null,
         "samePageFormBehavior": "hide_form"
       },

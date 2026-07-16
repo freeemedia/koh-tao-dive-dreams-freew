@@ -184,7 +184,7 @@ const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20 border-solid border-0 py-2">
           <div className="flex items-center pl-6">
-            <img src="/images/logo.png" alt="Pro Diving Asia Logo" className="block h-14 w-auto ml-0 mr-5" />
+            <img src="/images/logo.png" alt="Go. Pro Diving Asia Logo" className="block h-14 w-auto ml-0 mr-5" />
           </div>
           {/* Desktop nav */}
           <div className="hidden md:flex items-center space-x-7 pl-[10px] pt-4 text-[1.05rem]">

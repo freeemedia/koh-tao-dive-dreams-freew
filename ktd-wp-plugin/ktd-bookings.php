@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: KTD Bookings Manager
- * Description: Manage Pro Diving Asia bookings from WordPress admin. Finance, invoices, status updates.
+* Description: Manage Go. Pro Diving Asia bookings from WordPress admin. Finance, invoices, status updates.
  * Version: 1.0.0
  * Author: One Media Asia
  */

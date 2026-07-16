@@ -26,7 +26,7 @@ class KTD_Web3Forms_Client {
         $payload = [
             'access_key' => $this->access_key,
             'subject'   => $subject,
-            'from_name' => 'Pro Diving Asia',
+            'from_name' => 'Go. Pro Diving Asia',
             'email'     => $booking_data['email'] ?? 'noreply@divinginasia.com',
             'message'   => $message,
         ];

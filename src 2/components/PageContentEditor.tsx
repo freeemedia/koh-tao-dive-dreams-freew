@@ -34,7 +34,7 @@ const getErrorMessage = (err: unknown) => {
 
 const PAGE_DEFINITIONS: Record<string, ContentItem[]> = {
   'home': [
-    { section_key: 'hero_title', content_value: 'Dive Koh Tao with Pro Diving Asia', content_type: 'text', label: 'Hero Title' },
+    { section_key: 'hero_title', content_value: 'Dive Koh Tao with Go. Pro Diving Asia', content_type: 'text', label: 'Hero Title' },
     { section_key: 'hero_subtitle', content_value: 'Discover world-class diving, friendly instructors, and unforgettable underwater adventures on Koh Tao.', content_type: 'textarea', label: 'Hero Subtitle' },
     { section_key: 'hero_primary_cta', content_value: 'Book Now', content_type: 'text', label: 'Hero Primary CTA' },
     { section_key: 'hero_secondary_cta', content_value: 'Courses', content_type: 'text', label: 'Hero Secondary CTA' },

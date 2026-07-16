@@ -52,7 +52,7 @@ const Contact = () => {
         form_message_label: 'Bericht',
         form_submit_label: 'Verstuur bericht',
         form_sending_label: 'Versturen...',
-        footer_line_1: '© 2026 Go Pro Diving Asia. Alle rechten voorbehouden. Powered by One Media Asia @ www.onemedia.asia',
+        footer_line_1: '© 2026 Go. Pro Diving Asia. Alle rechten voorbehouden. Powered by One Media Asia @ www.onemedia.asia',
         footer_line_2: 'Ontdek de magie onder de golven in het duikparadijs van Thailand.',
       };
     }
@@ -85,7 +85,7 @@ const Contact = () => {
       form_message_label: 'Message',
       form_submit_label: 'Send Message',
       form_sending_label: 'Sending...',
-      footer_line_1: '© 2026 Go Pro Diving Asia. All rights reserved. Powered by One Media Asia @ www.onemedia.asia',
+      footer_line_1: '© 2026 Go. Pro Diving Asia. All rights reserved. Powered by One Media Asia @ www.onemedia.asia',
       footer_line_2: "Discover the magic beneath the waves in Thailand's diving paradise.",
     };
   }, [isDutch]);

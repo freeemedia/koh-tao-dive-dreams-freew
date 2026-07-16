@@ -34,7 +34,7 @@ async function sendWeb3FormsNotification(payload) {
   const formData = new URLSearchParams();
   formData.append('access_key', accessKey);
   formData.append('subject', subject);
-  formData.append('from_name', 'Pro Diving Asia');
+  formData.append('from_name', 'Go. Pro Diving Asia');
   formData.append('email', payload.email || 'noreply@divinginasia.com');
   formData.append('message', messageLines.join('\n'));
   

@@ -107,7 +107,7 @@ export const starterReports: DiveSiteReport[] = [
 export const starterTrips: DiveTrip[] = [
   {
     id: 't1',
-    shopName: 'Pro Diving Asia',
+    shopName: 'Go. Pro Diving Asia',
     tripDate: '2026-05-02',
     departure: '07:00',
     site: 'Sail Rock',

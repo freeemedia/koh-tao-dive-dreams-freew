@@ -1,6 +1,6 @@
 BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//Pro Diving Asia//Bookings Calendar//EN
+PRODID:-//Go. Pro Diving Asia//Bookings Calendar//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT

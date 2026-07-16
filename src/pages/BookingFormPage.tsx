@@ -29,7 +29,7 @@ const bookingSchema = z.object({
 
 type BookingFormData = z.infer<typeof bookingSchema>;
 
-const SKIP_PAYMENT_MESSAGE = 'You have chosen not to pay right now, no problem! We will contact you soon to arrange bookings and payment. Thank You, Pro Diving Asia Team.';
+const SKIP_PAYMENT_MESSAGE = 'You have chosen not to pay right now, no problem! We will contact you soon to arrange bookings and payment. Thank You, Go. Pro Diving Asia Team.';
 
 const COURSE_FALLBACKS: Record<string, { item: string; price?: number; currency?: string }> = {
   'open-water': { item: 'PADI Open Water Course', price: 11500, currency: 'THB' },

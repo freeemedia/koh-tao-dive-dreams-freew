@@ -77,7 +77,7 @@ class KTD_Invoice {
 
             <div class="inv-header">
                 <div class="company">
-                    <h1>Pro Diving Asia</h1>
+                    <h1>Go. Pro Diving Asia</h1>
                     <p>Koh Tao, Surat Thani, Thailand<br>
                     Email: info@divinginasia.com<br>
                     Web: www.divinginasia.com</p>
@@ -168,7 +168,7 @@ class KTD_Invoice {
             <?php endif; ?>
 
             <div class="inv-footer">
-                Thank you for diving with Pro Diving Asia! 🤿 &nbsp;|&nbsp; www.divinginasia.com
+                Thank you for diving with Go. Pro Diving Asia! 🤿 &nbsp;|&nbsp; www.divinginasia.com
             </div>
 
             <div class="no-print" style="text-align:center; margin-top:32px;">

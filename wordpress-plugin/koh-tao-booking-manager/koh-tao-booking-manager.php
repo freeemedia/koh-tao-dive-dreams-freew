@@ -4,7 +4,7 @@
  * Plugin URI: https://divinginasia.com
  * Description: Stores bookings for Koh Tao Dive Dreams and exposes the REST endpoints used by the booking frontend and admin dashboard.
  * Version: 1.0.0
- * Author: Pro Diving Asia
+ * Author: Go. Pro Diving Asia
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Text Domain: koh-tao-booking-manager

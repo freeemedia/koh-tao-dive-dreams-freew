@@ -6135,7 +6135,7 @@ ff297d1b-8d28-4156-bd72-14bb00e947da	home	en	course_efr_price	text	฿3,500	cont
 bf0d140f-67dc-447b-b8aa-7977b18b79f1	contact	nl	form_title	text	Stuur ons een bericht	contact@prodiving.asia	2026-03-12 10:14:37.06477+00	2026-03-14 18:57:12.645596+00
 2f21146f-93e5-4729-8aa9-2d99d8d3ef63	contact	nl	form_first_name_label	text	Voornaam	contact@prodiving.asia	2026-03-12 10:14:37.06477+00	2026-03-14 18:57:12.645596+00
 ea65323c-5e71-4405-ae48-b5676bf26daf	contact	nl	form_last_name_label	text	Achternaam	contact@prodiving.asia	2026-03-12 10:14:37.06477+00	2026-03-14 18:57:12.645596+00
-829ad101-7873-4585-854a-36384dc2f064	contact	nl	footer_line_1	textarea	© 2026 Pro Diving Asia. All rights reserved. Powered by One Media Asia @ www.onemedia.asia	contact@prodiving.asia	2026-03-12 10:14:37.06477+00	2026-03-14 18:57:12.645596+00
+829ad101-7873-4585-854a-36384dc2f064	contact	nl	footer_line_1	textarea	© 2026 Go. Pro Diving Asia. All rights reserved. Powered by One Media Asia @ www.onemedia.asia	contact@prodiving.asia	2026-03-12 10:14:37.06477+00	2026-03-14 18:57:12.645596+00
 70acc181-6d89-4330-a9e4-47b49b83de14	open-water	nl	main	text	main test	\N	2026-03-28 13:10:40.754266+00	2026-03-28 13:10:40.754266+00
 24f78bfe-02c8-4a3a-806f-54996eef1794	home	nl	about_headline	text	Een klein eiland,  21 km², hagelwitte stranden, turquoise baaien en omringd door meer dan 15 duik plekken..	contact@prodiving.asia	2026-03-12 10:57:14.010608+00	2026-03-19 11:20:46.954052+00
 865fb6c2-60a1-49ee-a8a9-1432953efa69	accommodation	nl	heroTitle	text	Verblijf bij ons op Koh Tao	\N	2026-03-27 11:51:48.105016+00	2026-03-28 20:56:02.462461+00
@@ -6195,7 +6195,7 @@ f477a9ca-d62f-4903-b287-3d9f347931eb	scuba-review	nl	duration	text	1-2 days	\N	2
 15879881-e6ad-45aa-810b-846442c1ccc3	mango-bay	en	images	text	/images/mango-bay.webp	\N	2026-03-27 16:24:21.72643+00	2026-03-28 12:47:09.516174+00
 dde591f0-0629-48e0-8f83-7aaca2bec2c3	specialty/night-diver	en	hero_title	text	Night Diver Specialty Course	contact@prodiving.asia	2026-03-12 10:27:14.506533+00	2026-03-27 09:56:50.040346+00
 32464573-033a-4577-82bc-944f332f0753	mango-bay	nl	marine_life_highlights	text	Gezond rifecosysteem\nKleurrijke harde en zachte koralen\nZeeanemonen\nRijk onderwaterleven	\N	2026-03-27 13:40:10.789117+00	2026-03-28 12:47:09.516174+00
-7dea3b64-dc62-4b11-8395-f6a19176238e	contact	en	footer_line_1	textarea	Copyright © 2026 Pro Diving Asia. All rights reserved. Powered by One Media Asia @ www.onemedia.asia	contact@prodiving.asia	2026-03-12 14:31:13.936296+00	2026-03-27 15:36:52.774606+00
+7dea3b64-dc62-4b11-8395-f6a19176238e	contact	en	footer_line_1	textarea	Copyright © 2026 Go. Pro Diving Asia. All rights reserved. Powered by One Media Asia @ www.onemedia.asia	contact@prodiving.asia	2026-03-12 14:31:13.936296+00	2026-03-27 15:36:52.774606+00
 e88a5576-4128-4541-8b39-2e0714e5127b	discover-scuba-deluxe	nl	hero_title	text	Discover Scuba Diving Deluxe. dutch	\N	2026-03-19 11:07:40.674469+00	2026-03-27 13:13:36.994736+00
 bd8b3820-5b6e-4c76-9476-e66b0e976c26	contact	en	footer_line_2	textarea	Discover the magic beneath the waves in Thailand's diving paradise.	contact@prodiving.asia	2026-03-12 14:31:13.936296+00	2026-03-27 15:36:52.774606+00
 5c713fe5-25dc-4f28-bd6a-542ff9c58c5f	contact	en	form_email_label	text	Emailsdsdsdsds	contact@prodiving.asia	2026-03-12 14:31:13.936296+00	2026-03-27 15:36:52.774606+00

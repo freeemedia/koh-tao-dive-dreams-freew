@@ -1,9 +1,9 @@
 BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//Pro Diving Asia//Confirmed Bookings Calendar//EN
+PRODID:-//Go. Pro Diving Asia//Confirmed Bookings Calendar//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
-X-WR-CALNAME:Pro Diving Asia Confirmed Bookings
+X-WR-CALNAME:Go. Pro Diving Asia Confirmed Bookings
 X-PUBLISHED-TTL:PT15M
 REFRESH-INTERVAL;VALUE=DURATION:PT15M
 BEGIN:VEVENT
